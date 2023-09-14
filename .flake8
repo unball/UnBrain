@@ -1,5 +1,0 @@
-[flake8]
-ignore = F401
-exlude = .git, __pycahe__,build,env
-max-line-length = 80
-max-complexity = 10

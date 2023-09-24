@@ -18,10 +18,12 @@ args = parser.parse_args()
 
 if args.disable_alp_gui: client.gui.disabled = True
 
+team_yellow = True if args.team_color == 'yellow' else False
+
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False, 
-    team_yellow=True,
+    team_yellow=False,
     team_side=1,
     immediate_start=True,
     static_entities=False,

@@ -4,7 +4,7 @@ from .entity.goalKeeper import GoalKeeper
 from .entity.defender import Defender
 from .entity.midfielder import Midfielder
 from .entity.controlTest import ControlTester
-#from client.protobuf.vssref_common_pb2 import Foul
+from client.protobuf.vssref_common_pb2 import Foul
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
 from .movements import blockBallElipse
@@ -38,6 +38,7 @@ class MainStrategy(Strategy):
         self.static_entities = static_entities
 
     def manageReferee(self, rp, command):
+
         if command is None: return
         self.goalkeeperIndx = None
         self.AttackerIdx = None

@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import logging
 import time
-import sys
-from client.client_pickle import ClientPickle
 from vision.receiver import FiraClient
 
 class Loop:

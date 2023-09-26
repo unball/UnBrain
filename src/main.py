@@ -23,12 +23,10 @@ team_yellow = True if args.team_color == 'yellow' else False
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False, 
-    team_yellow=False,
-    team_side=1,
-    immediate_start=True,
-    static_entities=False,
-    port=args.port,
-    n_robots=3
+    team_yellow=True if args.team_color == 'yellow' else False,
+    team_side=1 if args.team_side == 'left' else -1,
+    immediate_start=args.immediate_start,
+    static_entities=args.static_entities
 )
 
 loop.run()

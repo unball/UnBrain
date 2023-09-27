@@ -198,7 +198,7 @@ class Attacker(Entity):
 
         # Campo repulsivo pro midfielder não atrapalhar o atacante
         if self.slave and self.attackState == 0:
-            print("I {0} am slave".format(self.robot.id))
+            #print("I {0} am slave".format(self.robot.id))
             for robot in [r for r in otherAllies if r.entity.__class__.__name__ ==  "Attacker"]:
                 self.robot.field = AvoidanceField(self.robot.field, AvoidCircle(robot.pos, 0.08), borderSize=0.20)
 

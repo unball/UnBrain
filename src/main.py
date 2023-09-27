@@ -23,8 +23,8 @@ team_yellow = True if args.team_color == 'yellow' else False
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False, 
-    team_yellow=False,
-    team_side=1,
+    team_yellow=team_yellow,
+    team_side=args.team_side,
     immediate_start=True,
     static_entities=False,
     port=args.port,

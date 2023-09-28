@@ -41,6 +41,9 @@ class SerialRadio():
       # Computa o checksum
       checksum += vl+vr
 
+    # Concatena flag de controle
+    message += (controlFlag).to_bytes(2,byteorder='little', signed=True)
+
     # Concatena o vetor de dados à mensagem
     for v in data: message += (v).to_bytes(2,byteorder='little', signed=True)
 

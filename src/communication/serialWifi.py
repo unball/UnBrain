@@ -47,9 +47,6 @@ class SerialRadio():
       # Computa o checksum
       checksum += v+w
 
-    # Adds the control flag to the checksum
-    checksum += int(World.control)
-
     # Concatena flag de controle
     message += (bool(World.control)).to_bytes(2,byteorder='little', signed=True)
 

@@ -1,3 +1,5 @@
+from tools import encodeSpeeds
+
 import serial
 import time
 from world import World
@@ -33,14 +35,17 @@ class SerialRadio():
     data = [0] * 6
 
     # Adiciona as velocidades ao vetor de dados
-    for i,(vl,vr) in enumerate(msg):
+    for i,m in enumerate(msg):
+
+      # Converte para velocidade nos motores
+      v,w = encodeSpeeds(m.v, m.w)
 
       # Coloca no vetor de dados
-      data[i] = vl
-      data[i+3] = vr
+      data[i] = v
+      data[i+3] = w
 
       # Computa o checksum
-      checksum += vl+vr
+      checksum += v+w
 
     # Concatena flag de controle
     message += (bool(World.control)).to_bytes(2,byteorder='little', signed=True)

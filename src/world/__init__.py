@@ -48,7 +48,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False):
+    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False):
         self.n_robots = n_robots
         self._team = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
         self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
@@ -62,6 +62,7 @@ class World:
         self.checkBatteries = False
         self.manualControlSpeedV = 0
         self.manualControlSpeedW = 0
+        self.control = control
         
     def update(self, message):
         logging.info(message)

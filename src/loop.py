@@ -2,7 +2,7 @@ from client.referee import RefereeCommands, RefereePlacement
 from client.gui import clientProvider
 from strategy import MainStrategy
 from UVF_screen import UVFScreen
-from communication.serialRadio import SerialRadio
+from communication.serialWifi import SerialRadio
 from world import World
 from client import VSS
 
@@ -25,6 +25,7 @@ class Loop:
         static_entities=False,
         port=5001,
         n_robots=3,
+        control = False
     ):
         # Instancia interface com o simulador
         #self.vss = VSS(team_yellow=team_yellow)

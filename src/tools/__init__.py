@@ -127,3 +127,11 @@ def bestWithHyst(state: int, possibleStates: list, possibleStatesDistances: list
 
   best = np.argmin(distances)
   return possibleStates[best]
+
+""" Encode speeds from float to int, maximum linear velocity is 2 m/s and maximum angular speed is 64 rad/s """
+def encodeSpeeds(v: float, w: float) -> (int, int):
+  
+  venc = int(v/2 * 32767)
+  wenc = int(w/64 * 32767)
+
+  return (1 if venc >= 0 else -1) * (abs(venc) % 32767), (1 if wenc >= 0 else -1) * (abs(wenc) % 32767)

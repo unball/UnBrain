@@ -30,7 +30,7 @@ loop = Loop(
     static_entities=False,
     port=args.port,
     n_robots=3,
-    control=control
+    control=args.control
 )
 
 loop.run()

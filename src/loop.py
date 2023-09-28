@@ -25,6 +25,7 @@ class Loop:
         static_entities=False,
         port=5001,
         n_robots=3,
+        control = False
     ):
         # Instancia interface com o simulador
         #self.vss = VSS(team_yellow=team_yellow)

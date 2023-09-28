@@ -47,6 +47,7 @@ class SerialRadio():
       # Computa o checksum
       checksum += v+w
 
+    # Adds the control flag to the checksum
     checksum += int(World.control)
 
     # Concatena flag de controle

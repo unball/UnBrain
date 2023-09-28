@@ -25,12 +25,16 @@ class Control(ABC):
         #     return (3,3)
 
         v, w = self.output(robot)
+
+        if(controlFlag){
+            return float(v), float(w)
+        }
         robot.lastControlLinVel = v
         
         vr, vl = speeds2motors(v, w)
 
-        vr = int(deadzone(sat(vr, 223), 32, -32))
-        vl = int(deadzone(sat(vl, 223), 32, -32))
+        vr = float(deadzone(sat(vr, 223), 32, -32))
+        vl = float(deadzone(sat(vl, 223), 32, -32))
 
         # print(
         #     f"ur: {ur}\ter: {vr - vision_vr}, vr: {vr}, vision_vr: {vision_vr}")

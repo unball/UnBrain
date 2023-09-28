@@ -2,7 +2,7 @@ from client.referee import RefereeCommands, RefereePlacement
 from client.gui import clientProvider
 from strategy import MainStrategy
 from UVF_screen import UVFScreen
-from communication.serialRadio import SerialRadio
+from communication.serialWifi import SerialRadio
 from world import World
 from client import VSS
 

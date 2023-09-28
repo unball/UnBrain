@@ -26,9 +26,9 @@ class Control(ABC):
 
         v, w = self.output(robot)
 
-        if(controlFlag){
+        if(self.world.control):
             return float(v), float(w)
-        }
+        
         robot.lastControlLinVel = v
         
         vr, vl = speeds2motors(v, w)

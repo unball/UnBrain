@@ -20,7 +20,7 @@ args = parser.parse_args()
 if args.disable_alp_gui: client.gui.disabled = True
 
 team_yellow = True if args.team_color == 'yellow' else False
-team_side=1 if args.team_side == 'left' else -1,
+team_side=1 if args.team_side == 'left' else -1
 
 # Instancia o programa principal
 loop = Loop(
@@ -33,5 +33,6 @@ loop = Loop(
     n_robots=3,
     control=args.control
 )
+
 
 loop.run()

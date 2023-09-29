@@ -25,7 +25,7 @@ class Loop:
         static_entities=False,
         port=5001,
         n_robots=3,
-        control = False
+        control=False
     ):
         # Instancia interface com o simulador
         #self.vss = VSS(team_yellow=team_yellow)
@@ -43,7 +43,7 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.visionclient = FiraClient()
-        self.radio = SerialRadio()
+        self.radio = SerialRadio(control = control)
         self.execute = False
         self.t0 = time.time()
 

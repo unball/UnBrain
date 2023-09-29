@@ -48,7 +48,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False):
+    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False):
         self.n_robots = n_robots
         self._team = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
         self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
@@ -62,8 +62,10 @@ class World:
         self.checkBatteries = False
         self.manualControlSpeedV = 0
         self.manualControlSpeedW = 0
+        self.control = control
         
     def update(self, message):
+        logging.info(message)
         if self.team_yellow: 
             yellow = self.team
             blue = self.enemies
@@ -72,21 +74,25 @@ class World:
             blue = self.team
 
         robot_id = 0
-        
+
         if self.team_yellow:
-            for robot in range(self.n_robots):
+            team = message.robots_yellow
+            for _ in team:
                 yellow[robot_id].update(
                     message.robots_yellow[robot_id].x,
                     message.robots_yellow[robot_id].y,
                     message.robots_yellow[robot_id].orientation
                 )
+                robot_id+=1
         else:
-            blue[robot_id].update(
-                message.robots_blue[robot_id].x,
-                message.robots_blue[robot_id].y,
-                message.robots_blue[robot_id].orientation
-            )
-        robot_id+=1
+            team = message.robots_yellow
+            for _ in team:
+                blue[robot_id].update(
+                    message.robots_blue[robot_id].x,
+                    message.robots_blue[robot_id].y,
+                    message.robots_blue[robot_id].orientation
+                )
+                robot_id+=1
         self.ball.update(message.balls[0].x, message.balls[0].y)
         # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]

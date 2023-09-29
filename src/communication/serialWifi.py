@@ -1,12 +1,15 @@
+from tools import encodeSpeeds
+
 import serial
 import time
 
 class SerialRadio():
   """Implementa a comunicação usando simplesmente a interface serial"""
-  def __init__(self):
+  def __init__(self, control = False):
 
     self.serial = None
     self.failCount = 0
+    self.control = control
 
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
@@ -31,15 +34,21 @@ class SerialRadio():
     # Vetor de dados
     data = [0] * 6
 
+    # Concatena flag de controle
+    message += (int(self.control)).to_bytes(2,byteorder='little', signed=True)
+
     # Adiciona as velocidades ao vetor de dados
-    for i,(vl,vr) in enumerate(msg):
+    for i,m in enumerate(msg):
+
+      # Converte para velocidade nos motores
+      v,w = encodeSpeeds(m.v, m.w)
 
       # Coloca no vetor de dados
-      data[i] = vl
-      data[i+3] = vr
+      data[i] = v
+      data[i+3] = w
 
       # Computa o checksum
-      checksum += vl+vr
+      checksum += v+w
 
     # Concatena o vetor de dados à mensagem
     for v in data: message += (v).to_bytes(2,byteorder='little', signed=True)

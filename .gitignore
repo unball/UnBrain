@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -134,3 +135,14 @@ dmypy.json
 
 doc/
 
+=======
+__pycache__
+world/__pycache__
+vision/__pycache__
+UVF_screen/__pycache__
+tools/__pycache__
+strategy/__pycache__
+control/__pycache__
+communication/__pycache__
+client/__pycache__
+>>>>>>> origin/main

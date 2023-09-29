@@ -14,6 +14,7 @@ parser.add_argument('--static-entities', dest='static_entities', action='store_c
 parser.add_argument('--disable-alp-gui', dest='disable_alp_gui', action='store_const', const=True, default=False, help='If set, no communciation with ALP-GUI overhead will be added.')
 parser.add_argument('--port', dest='port', type=int, default=5001, help='Port number to bind the pickle socket.')
 parser.add_argument('--n_robots', dest='n_robots', type=int, default=5, help='Number of robots for each time in the match.')
+parser.add_argument('--control', dest='control', action='store_const', const=True, default=False, help='If the firmware should control the output.')
 args = parser.parse_args()
 
 if args.disable_alp_gui: client.gui.disabled = True
@@ -23,10 +24,20 @@ team_yellow = True if args.team_color == 'yellow' else False
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False, 
+<<<<<<< HEAD
     team_yellow=True if args.team_color == 'yellow' else False,
     team_side=1 if args.team_side == 'left' else -1,
     immediate_start=args.immediate_start,
     static_entities=args.static_entities
+=======
+    team_yellow=team_yellow,
+    team_side=args.team_side,
+    immediate_start=True,
+    static_entities=False,
+    port=args.port,
+    n_robots=3,
+    control=args.control
+>>>>>>> origin/main
 )
 
 loop.run()

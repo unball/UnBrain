@@ -58,6 +58,10 @@ class MainStrategy(Strategy):
                 positions.append((1, (0,  0.30, 1.2*180)))
                 positions.append((2, (0, -0.30, 0.8*180)))
                 rp.send(positions)
+
+                # trocamos rp para ap (automatic replacer) algo assim
+                # ai temos ap = AutomaticPlacement()
+                # e assim ao inves de ser rp.send(positions) será ap.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18

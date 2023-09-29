@@ -1,16 +1,17 @@
 from ..entity import Entity
-from strategy.field.DirectionalField import DirectionalField
+from strategy.field.attractive import AttractiveField
 from tools import angError
 from control.UFC import UFC_Simple
 import numpy as np
 import time
 
 class AutomaticPlacement(Entity):
-    def __init__(self, world, robot, side=1):
-        super().__init__(world, robot)
+    def __init__(self, world, robot, automaticPose, side=1):
+        super().__init__(world, robot, automaticPose)
 
         self._control = UFC_Simple(self.world)
         self.lastChat = 0
+        self.goalPose = automaticPose
 
     @property
     def control(self):
@@ -39,10 +40,6 @@ class AutomaticPlacement(Entity):
     def fieldDecider(self):
         rr = np.array(self.robot.pos)
         
-        # definir campo aqui
-        # temos que receber as posições definidas
-        if rr[0] > 0.65:
-            self.robot.field = DirectionalField(np.pi, Pb=([-0.65,rr[1],np.pi]))
-        if  rr[0] < -0.65:
-            self.robot.field = DirectionalField(0, Pb=([0.65,rr[1],0]))
+        # TODO: testar em diferentes locais do campo (x>0, y>0, x<0 e y<0)
+        self.robot.field = AttractiveField((self.goalPose[0], self.goalPose[1], self.goalPose[2]))
 

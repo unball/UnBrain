@@ -1,6 +1,6 @@
 from ..entity import Entity
-from strategy.field.attractive import AttractiveField
 from strategy.field.UVF import UVF
+from strategy.field.DirectionalField import DirectionalField
 from tools import angError
 from control.UFC import UFC_Simple
 import numpy as np
@@ -40,7 +40,9 @@ class AutomaticPlacement(Entity):
                 self.robot.direction *= -1
 
     def fieldDecider(self):
-        
-        # TODO: testar em diferentes locais do campo (x>0, y>0, x<0 e y<0)
-        # self.robot.field = AttractiveField((self.goalPose[0], self.goalPose[1], self.goalPose[2]))
-        self.robot.field = UVF(self.goalPose, radius=self.spiralRadius, Kr=0.03)
+        rr = np.array(self.robot.pos)
+
+        if(rr[0] > self.goalPose[0] or rr[1] > self.goalPose[1] or rr[2] > self.goalPose[2]):
+            self.robot.field = UVF(self.goalPose, radius=self.spiralRadius, Kr=0.03)
+
+        self.robot.field = DirectionalField(self.goalPose[2])

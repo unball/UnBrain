@@ -14,6 +14,8 @@ import logging
 import time
 from vision.receiver import FiraClient
 
+from strategy.automaticReplacer import AutomaticReplacer
+
 class Loop:
     def __init__(
         self, 
@@ -32,7 +34,8 @@ class Loop:
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
-        self.rp = RefereePlacement(team_yellow=team_yellow)
+        # self.rp = RefereePlacement(team_yellow=team_yellow)
+        self.arp = AutomaticReplacer()
 
         # Instancia o mundo e a estratégia
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start)
@@ -83,7 +86,9 @@ class Loop:
         if self.execute: self.world.update(message.detection)
         
         command = self.rc.receive()
-        if command is not None: self.strategy.manageReferee(self.rp, command)
+        if command is not None: 
+            # obedece o comando e sai do busy loop
+            self.strategy.manageReferee(self.arp, command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

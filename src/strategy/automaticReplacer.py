@@ -17,6 +17,12 @@ class AutomaticReplacer():
         self.world.team[1].updateEntity(ap(self.pose[1]))
         self.world.team[2].updateEntity(ap(self.pose[2]))
 
+        for robot in self.world.team:
+            robot.updateSpin()
+            if robot.entity is not None:
+                robot.entity.fieldDecider()
+                robot.entity.directionDecider()
+
         # para todos os robos quando receber foul que nao seja game on, stop ou halt
         # envia v, w = 0 para robos 0,1,2 
         control_output = [(0,0), (0,0), (0,0)] 

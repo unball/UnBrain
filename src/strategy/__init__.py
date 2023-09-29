@@ -37,7 +37,7 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
-    def manageReferee(self, rp, command):
+    def manageReferee(self, arp, command):
 
         if command is None: return
         self.goalkeeperIndx = None
@@ -57,11 +57,7 @@ class MainStrategy(Strategy):
                 positions = [(0, (rg[0], rg[1], 90))]
                 positions.append((1, (0,  0.30, 1.2*180)))
                 positions.append((2, (0, -0.30, 0.8*180)))
-                rp.send(positions)
-
-                # trocamos rp para ap (automatic replacer) algo assim
-                # ai temos ap = AutomaticPlacement()
-                # e assim ao inves de ser rp.send(positions) será ap.send(positions)
+                arp.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
@@ -71,7 +67,7 @@ class MainStrategy(Strategy):
                 robotPos = penaltiPos  - 0.065 * unit(ang*np.pi/180)
                 positions.append((1, (robotPos[0],  robotPos[1], ang)))
                 positions.append((2, (0, -0.30, 3)))
-                rp.send(positions)
+                arp.send(positions)
 
         # Inicia jogo
         elif command.foul == Foul.GAME_ON:

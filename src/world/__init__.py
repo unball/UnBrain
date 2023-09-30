@@ -85,7 +85,7 @@ class World:
                 )
                 robot_id+=1
         else:
-            team = message.robots_yellow
+            team = message.robots_blue
             for _ in team:
                 blue[robot_id].update(
                     message.robots_blue[robot_id].x,

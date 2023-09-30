@@ -8,7 +8,7 @@ import time
 
 class AutomaticPlacement(Entity):
     def __init__(self, world, robot, automaticPose, side=1):
-        super().__init__(world, robot, automaticPose)
+        super().__init__(world, robot)
 
         self._control = UFC_Simple(self.world)
         self.lastChat = 0
@@ -40,7 +40,7 @@ class AutomaticPlacement(Entity):
                 self.robot.direction *= -1
 
     def fieldDecider(self):
-        rr = np.array(self.robot.pos)
+        rr = np.array(self.robot.pose)
 
         if(rr[0] > self.goalPose[0] or rr[1] > self.goalPose[1] or rr[2] > self.goalPose[2]):
             self.robot.field = UVF(self.goalPose, radius=self.spiralRadius, Kr=0.03)

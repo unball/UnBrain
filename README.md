@@ -14,7 +14,12 @@ apt-get install python3.8 python3.8-dev python3.8-venv
 #create a venv
 python3.8 -m venv env
 source env/bin/activate
-
 #install requirements into it
 pip install -r requirements.txt
+```
+
+please compile the proto files
+```bash
+cd src/client/protobuf
+./protobuf.sh
 ```

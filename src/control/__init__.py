@@ -21,13 +21,11 @@ class Control(ABC):
         
         robot.lastControlLinVel = v
         
-        # A ser feito no firmware:
+        vr, vl = speeds2motors(v, w)
 
-        # vr, vl = speeds2motors(v, w)
-        # vr = int(deadzone(sat(vr, 223), 32, -32))
-        # vl = int(deadzone(sat(vl, 223), 32, -32))
-        
-        return v, w
+        vr = int(deadzone(sat(vr, 223), 32, -32))
+        vl = int(deadzone(sat(vl, 223), 32, -32))
 
+        return vr, vl
 
 

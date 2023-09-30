@@ -3,8 +3,8 @@ from client.referee import RefereeCommands
 from strategy.entity.automaticPlacement import AutomaticPlacement
 import numpy as np
 class AutomaticReplacer():
-    def __init__(self, automaticPositions):
-        super().__init__(automaticPositions)
+    def __init__(self, automaticPositions=[]):
+        super().__init__()
 
         self.pose = automaticPositions
 

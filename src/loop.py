@@ -32,14 +32,15 @@ class Loop:
         # Instancia interface com o simulador FIRASim
         #self.vss = VSS(team_yellow=team_yellow)
 
-        # Instancia interfaces com o referee
-        self.rc = RefereeCommands()
-        # self.rp = RefereePlacement(team_yellow=team_yellow)
-        self.arp = AutomaticReplacer()
 
         # Instancia o mundo e a estratégia
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
+
+        # Instancia interfaces com o referee
+        self.rc = RefereeCommands()
+        # self.rp = RefereePlacement(team_yellow=team_yellow)
+        self.arp = AutomaticReplacer(world)
 
         # Variáveis
         self.loopTime = 1.0 / loop_freq

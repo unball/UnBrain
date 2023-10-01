@@ -42,7 +42,7 @@ class AutomaticPlacement(Entity):
     def fieldDecider(self):
         rr = np.array(self.robot.pose)
 
-        if(rr[0] > self.goalPose[0] or rr[1] > self.goalPose[1] or rr[2] > self.goalPose[2]):
+        if(rr[0] > self.goalPose[0] or rr[1] > self.goalPose[1]):
             self.robot.field = UVF(self.goalPose, radius=self.spiralRadius, Kr=0.03)
 
         self.robot.field = DirectionalField(self.goalPose[2])

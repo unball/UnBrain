@@ -78,18 +78,20 @@ class World:
         if self.team_yellow:
             team = message.robots_yellow
             for _ in team:
+                # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 yellow[robot_id].update(
-                    message.robots_yellow[robot_id].x,
-                    message.robots_yellow[robot_id].y,
+                    message.robots_yellow[robot_id].x / 1000,
+                    message.robots_yellow[robot_id].y / 1000,
                     message.robots_yellow[robot_id].orientation
                 )
                 robot_id+=1
         else:
             team = message.robots_blue
             for _ in team:
+                # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 blue[robot_id].update(
-                    message.robots_blue[robot_id].x,
-                    message.robots_blue[robot_id].y,
+                    message.robots_blue[robot_id].x / 1000,
+                    message.robots_blue[robot_id].y / 1000,
                     message.robots_blue[robot_id].orientation
                 )
                 robot_id+=1

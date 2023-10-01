@@ -39,6 +39,11 @@ class MainStrategy(Strategy):
 
     def manageReferee(self, arp, command):
 
+        # Pegar apenas id que existe dos robos
+        robot_id = []
+        for robot in self.world.team:
+            robot_id.append(robot.id)
+
         if command is None: return
         self.goalkeeperIndx = None
         self.AttackerIdx = None
@@ -54,19 +59,19 @@ class MainStrategy(Strategy):
             if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
-                positions = [(0, (rg[0], rg[1], 90))]
-                positions.append((1, (0,  0.30, 1.2*180)))
-                positions.append((2, (0, -0.30, 0.8*180)))
+                positions = [(robot_id[0], (rg[0], rg[1], 90))]
+                positions.append((robot_id[1], (0,  0.30, 1.2*180)))
+                positions.append((robot_id[2], (0, -0.30, 0.8*180)))
                 arp.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
-                positions = [(0, (rg[0], rg[1], 90))]
+                positions = [(robot_id[0], (rg[0], rg[1], 90))]
                 penaltiPos = np.array([0.360, 0])
                 ang = 15 
                 robotPos = penaltiPos  - 0.065 * unit(ang*np.pi/180)
-                positions.append((1, (robotPos[0],  robotPos[1], ang)))
-                positions.append((2, (0, -0.30, 3)))
+                positions.append((robot_id[1], (robotPos[0],  robotPos[1], ang)))
+                positions.append((robot_id[2], (0, -0.30, 3)))
                 arp.send(positions)
 
         # Inicia jogo

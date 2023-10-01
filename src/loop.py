@@ -40,7 +40,7 @@ class Loop:
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
         # self.rp = RefereePlacement(team_yellow=team_yellow)
-        self.arp = AutomaticReplacer(world)
+        self.arp = AutomaticReplacer(self.world)
 
         # Variáveis
         self.loopTime = 1.0 / loop_freq

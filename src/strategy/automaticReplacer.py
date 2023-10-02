@@ -61,9 +61,9 @@ class AutomaticReplacer():
         # isOutside_rr1 = np.abs(rr[1][0]) > np.abs(robot_pose[1][0]) or np.abs(rr[1][1]) > np.abs(robot_pose[1][1]) or np.abs(rr[1][2]) > np.abs(robot_pose[1][2])
         # isOutside_rr2 = np.abs(rr[2][0]) > np.abs(robot_pose[2][0]) or np.abs(rr[2][1]) > np.abs(robot_pose[2][1]) or np.abs(rr[2][2]) > np.abs(robot_pose[2][2])
 
-        isOutside_rr0 = not ((np.abs(self.goalPose - 0.01) <= rr[0][0] <= np.abs(self.goalPose + 0.01) ) or ( np.abs(self.goalPose - 0.01) <= rr[0][1] <= np.abs(self.goalPose + 0.01) ))
-        isOutside_rr1 = not ((np.abs(self.goalPose - 0.01) <= rr[1][0] <= np.abs(self.goalPose + 0.01) ) or ( np.abs(self.goalPose - 0.01) <= rr[1][1] <= np.abs(self.goalPose + 0.01) ))
-        isOutside_rr2 = not ((np.abs(self.goalPose - 0.01) <= rr[2][0] <= np.abs(self.goalPose + 0.01) ) or ( np.abs(self.goalPose - 0.01) <= rr[2][1] <= np.abs(self.goalPose + 0.01) ))
+        isOutside_rr0 = not ((np.abs(robot_pose[0][0] - 0.01) <= rr[0][0] <= np.abs(robot_pose[0][0] + 0.01) ) or ( np.abs(robot_pose[0][0] - 0.01) <= rr[0][1] <= np.abs(robot_pose[0][0] + 0.01) ))
+        isOutside_rr1 = not ((np.abs(robot_pose[1][0] - 0.01) <= rr[1][0] <= np.abs(robot_pose[1][0] + 0.01) ) or ( np.abs(robot_pose[1][1] - 0.01) <= rr[1][1] <= np.abs(robot_pose[1][1] + 0.01) ))
+        isOutside_rr2 = not ((np.abs(robot_pose[2][0] - 0.01) <= rr[2][0] <= np.abs(robot_pose[2][0] + 0.01) ) or ( np.abs(robot_pose[2][1] - 0.01) <= rr[2][1] <= np.abs(robot_pose[2][1] + 0.01) ))
 
         # Cria variaveis para robos para codigo ficar menos verboso no while True
         robot1 = self.world.team[robot_id[0]]
@@ -97,4 +97,16 @@ class AutomaticReplacer():
             
             # Envia comando para robo
             self.radio.send(control_output)
+            
+if __name__ == "__main__":
+    rc = RefereeCommands('224.5.23.2', 10003)
+    arp = AutomaticReplacer()
+
+    while True:
+        command = rc.receive()
+        if command is None: continue
+        
+        print(command)
+
+        arp.send([(0, (0,0,0)), (1, (0.5,0.5,0)), (2, (-0.5,-0.5,0))])
 

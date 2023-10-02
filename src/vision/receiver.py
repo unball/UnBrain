@@ -2,12 +2,13 @@ import socket
 import struct
 from time import time
 import vision.wrapper_pb2 as wr
+import constants
 
 class FiraClient:
 
     def __init__(self, 
-            vision_ip="224.5.23.2",
-            vision_port=10015):
+            vision_ip=constants.HOST_VSSS_VISION,
+            vision_port=constants.PORT_VSSS_VISION):
         """
         Init SSLClient object.
         Extended description of function.

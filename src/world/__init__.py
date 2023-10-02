@@ -1,5 +1,7 @@
 from .elements import *
 import logging
+import time
+import math
 
 class Field:
     def __init__(self, side):
@@ -59,13 +61,12 @@ class World:
         self.allyGoals = 0
         self.enemyGoals = 0
         self.updateCount = 0
-        self.checkBatteries = False
+        self.checkBatteries = True
         self.manualControlSpeedV = 0
         self.manualControlSpeedW = 0
         self.control = control
         
     def update(self, message):
-        logging.info(message)
         if self.team_yellow: 
             yellow = self.team
             blue = self.enemies
@@ -82,17 +83,20 @@ class World:
                 yellow[robot_id].update(
                     message.robots_yellow[robot_id].x / 1000,
                     message.robots_yellow[robot_id].y / 1000,
-                    message.robots_yellow[robot_id].orientation
+                    message.robots_yellow[robot_id].orientation * -1
                 )
                 robot_id+=1
         else:
             team = message.robots_blue
             for _ in team:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
+                
+                
+                
                 blue[robot_id].update(
                     message.robots_blue[robot_id].x / 1000,
                     message.robots_blue[robot_id].y / 1000,
-                    message.robots_blue[robot_id].orientation
+                    message.robots_blue[robot_id].orientation * -1
                 )
                 robot_id+=1
         self.ball.update(message.balls[0].x, message.balls[0].y)
@@ -100,6 +104,15 @@ class World:
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]
         logging.info("Vision update.")
+        with open('docs/robot.txt', 'a') as f:
+            
+            f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))
+            
+            #f.write("x[0]"+str(math.floor(message.robots_blue[0].x))+"cm\n\n")
+            #f.write("y[0]"+str(math.floor(message.robots_blue[0].y))+"cm\n\n")
+            #f.write("t[0]"+str(message.robots_blue[0].orientation)+"angulos\n\n")
+            #time.sleep(6)
+            
         self.updateCount += 1
 
     def addAllyGoal(self):

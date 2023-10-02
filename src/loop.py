@@ -50,6 +50,7 @@ class Loop:
         self.radio = SerialRadio(control = control)
         self.execute = False
         self.t0 = time.time()
+        self.referee = True
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -83,13 +84,22 @@ class Loop:
 
     def busyLoop(self):
         message = self.visionclient.receive_frame()
+        #print("oiiiiiiiiiiiiiiiiii", message)
+        
         self.execute = True if message else False
+        
+        
         if self.execute: self.world.update(message.detection)
         
-        command = self.rc.receive()
-        if command is not None: 
-            # obedece o comando e sai do busy loop
-            self.strategy.manageReferee(self.arp, command)
+        if(self.referee): 
+            
+            
+            print("executando via referee")
+            command = self.rc.receive()
+            if command is not None: 
+                print("recebendo do referee")
+                # obedece o comando e sai do busy loop
+                self.strategy.manageReferee(self.arp, command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

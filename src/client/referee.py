@@ -9,7 +9,7 @@ import vssref_placement_pb2
 import constants
 import struct
 
-class RefereeCommands:
+class RefereeCommands():
     def __init__(self, host=constants.HOST_REFEREE, port=constants.PORT_REFEREE_COMMAND):
         self.host = host
         self.port = port

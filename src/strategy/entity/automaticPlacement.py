@@ -15,6 +15,8 @@ class AutomaticPlacement(Entity):
         self.goalPose = automaticPose
         self.spiralRadius = 0.07
 
+        self.outOfPosition = False
+
     @property
     def control(self):
         return self._control
@@ -42,7 +44,16 @@ class AutomaticPlacement(Entity):
     def fieldDecider(self):
         rr = np.array(self.robot.pose)
 
-        if(np.abs(rr[0]) > np.abs(self.goalPose[0]) or np.abs(rr[1]) > np.abs(self.goalPose[1])):
-            self.robot.field = UVF(self.goalPose, radius=self.spiralRadius, Kr=0.03)
-        else:
+        # robo fora da posição 
+            # o que define robo fora da posição?
+            # vai para posição UVF
+        # robo na posição
+            # corrige direção com campo direcional
+
+        if( np.abs(self.goalPose - 0.01) <= rr[0] <= np.abs(self.goalPose + 0.01) ) and ( np.abs(self.goalPose - 0.01) <= rr[1] <= np.abs(self.goalPose + 0.01) ):
             self.robot.field = DirectionalField(self.goalPose[2])
+        else:
+            if np.abs(self.goalPose[1]) > 0:
+                self.robot.field = UVF(self.goalPose, direction=-np.sign(self.goalPose[1]), radius=self.spiralRadius)
+            else: 
+                self.robot.field = UVF(self.goalPose, radius=self.spiralRadius)

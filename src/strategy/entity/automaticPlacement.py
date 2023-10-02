@@ -50,7 +50,7 @@ class AutomaticPlacement(Entity):
         # robo na posição
             # corrige direção com campo direcional
 
-        if( np.abs(self.goalPose - 0.01) <= rr[0] <= np.abs(self.goalPose + 0.01) ) and ( np.abs(self.goalPose - 0.01) <= rr[1] <= np.abs(self.goalPose + 0.01) ):
+        if( np.abs(self.goalPose[0] - 0.01) <= rr[0] <= np.abs(self.goalPose[0] + 0.01) ) and ( np.abs(self.goalPose[1] - 0.01) <= rr[1] <= np.abs(self.goalPose[1] + 0.01) ):
             self.robot.field = DirectionalField(self.goalPose[2])
         else:
             if np.abs(self.goalPose[1]) > 0:

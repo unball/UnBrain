@@ -23,7 +23,8 @@ class SerialRadio():
         #self.serial = serial.Serial('/dev/ttyUSB6', 115200)
         
         porta = [port.device for port in serial.tools.list_ports.comports()][0]
-        #subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+        #subprocess.Popen(["sudo", "chmod", "a+rw", porta], stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
         print("Acessando a porta USB", porta)
         self.serial = serial.Serial(porta, 115200)
         

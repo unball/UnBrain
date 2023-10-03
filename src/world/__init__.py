@@ -92,26 +92,40 @@ class World:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 
                 
+                #print(message)
+                print("x",(message.robots_blue[robot_id].x*-1) / 1000)
+                print("y",(message.robots_blue[robot_id].y*-1) / 1000)
+                print("th",(message.robots_blue[robot_id].orientation*-1))
+                print("bola x",message.balls[0].x * -1 / 1000)
+                print("bola y",message.balls[0].y * -1 / 1000)
+                #exit()
+                
+                
                 
                 blue[robot_id].update(
-                    message.robots_blue[robot_id].x / 1000,
-                    message.robots_blue[robot_id].y / 1000,
-                    message.robots_blue[robot_id].orientation * -1
+                    (message.robots_blue[robot_id].x / 1000 )* -1,
+                    (message.robots_blue[robot_id].y / 1000) * -1,
+                    (message.robots_blue[robot_id].orientation) * 1
+                    
                 )
                 robot_id+=1
-        self.ball.update(message.balls[0].x, message.balls[0].y)
+        self.ball.update((message.balls[0].x * -1) / 1000 , (message.balls[0].y * -1)/ 1000 )
         # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]
-        logging.info("Vision update.")
-        with open('docs/robot.txt', 'a') as f:
-            
-            f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))
-            
-            #f.write("x[0]"+str(math.floor(message.robots_blue[0].x))+"cm\n\n")
-            #f.write("y[0]"+str(math.floor(message.robots_blue[0].y))+"cm\n\n")
-            #f.write("t[0]"+str(message.robots_blue[0].orientation)+"angulos\n\n")
-            #time.sleep(6)
+        #logging.info("Vision update.")
+        
+        if True:
+            pass
+        else:
+            with open('docs/robot.txt', 'a') as f:
+                
+                f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))
+                
+                #f.write("x[0]"+str(math.floor(message.robots_blue[0].x))+"cm\n\n")
+                #f.write("y[0]"+str(math.floor(message.robots_blue[0].y))+"cm\n\n")
+                #f.write("t[0]"+str(message.robots_blue[0].orientation)+"angulos\n\n")
+                #time.sleep(6)
             
         self.updateCount += 1
 

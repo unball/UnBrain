@@ -2,6 +2,7 @@ numpy
 scipy
 pygame
 serial
+pyserial
 matplotlib
 protobuf==3.20.0
 

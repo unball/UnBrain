@@ -43,7 +43,7 @@ class SerialRadio():
     data = [0] * 6
 
     # Adiciona as velocidades ao vetor de dados
-    for i,(vl,vr) in enumerate(msg):
+    for i,(vr,vl) in enumerate(msg):
 
       # Coloca no vetor de dados
       data[i] = vl

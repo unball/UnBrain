@@ -1,0 +1,53 @@
+.logo {
+    background-image: url('../assets/UnBall_orange.png');
+    background-size: 100% auto;
+    background-position: 0px -10px;
+}
+
+.recordControlBox {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.recordScale highlight {
+    background-color: #ffffff;
+}
+
+.recordScale slider {
+    background: rgb(255, 255, 255);
+}
+
+.recordingControlBox {
+}
+
+.recordScaleBox {
+}
+
+/* .recordButton {
+    background: #bb0d0d;
+}
+
+.recordPlayButton {
+    background: #1ff318;
+} */
+
+.recordControlButton {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-radius: 50px;
+    border: none;
+    background: none;
+}
+
+.recordButtonRecording image {
+    color: red;
+}
+
+.recordButtonNotRecording image {
+    color: white;
+}

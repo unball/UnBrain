@@ -47,7 +47,7 @@ class Element:
 
     @property
     def y(self):
-        return self.y_raw
+        return  self.world.field.side * self.y_raw
 
     @property
     def pos(self):

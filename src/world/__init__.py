@@ -53,7 +53,7 @@ class World:
     def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False):
         self.n_robots = n_robots
         self._team = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
-        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
+        #self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
         self.ball = Ball(self)
         self.field = Field(side)
         self.vss = vss
@@ -69,45 +69,43 @@ class World:
     def update(self, message):
         if self.team_yellow: 
             yellow = self.team
-            blue = self.enemies
+            #blue = self.enemies
         else:
-            yellow = self.enemies
+            #yellow = self.enemies
             blue = self.team
 
         robot_id = 0
 
         if self.team_yellow:
+            print("yellow")
             team = message.robots_yellow
             for _ in team:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 yellow[robot_id].update(
                     message.robots_yellow[robot_id].x / 1000,
                     message.robots_yellow[robot_id].y / 1000,
-                    message.robots_yellow[robot_id].orientation * -1
+                    message.robots_yellow[robot_id].orientation 
                 )
                 robot_id+=1
         else:
+            print("blue")
             team = message.robots_blue
-            for _ in team:
+            for item in team:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 
-                
                 #print(message)
-                print(f"x {(((message.robots_blue[robot_id].x) / 1000)*-1):.2f}")
-                print(f"y {(((message.robots_blue[robot_id].y) / 1000)*-1):.2f}")
-                print(f"th {(((message.robots_blue[robot_id].orientation))):.2f}")
-                print(f"x bola {(((message.balls[0].x) / 1000)*-1):.2f}")
-                print(f"y bola {(((message.balls[0].y) / 1000)*-1):.2f}")
-                print("------------------------------")
-                #print("bola x",message.balls[0].x * -1 / 1000)
-                #print("bola y",message.balls[0].y * -1 / 1000)
+                print("x",(message.robots_blue[robot_id].x) / 1000)
+                print("y",(message.robots_blue[robot_id].y) / 1000)
+                print("th",(message.robots_blue[robot_id].orientation*-1))
+                print("bola x",message.balls[0].x  / 1000)
+                print("bola y",message.balls[0].y / 1000)
                 #exit()
                 
-                
+                print(robot_id)
                 
                 blue[robot_id].update(
-                    (message.robots_blue[robot_id].x / 1000 )* -1.2,
-                    (message.robots_blue[robot_id].y / 1000) * -1.1,
+                    (message.robots_blue[robot_id].x / 1000 ),
+                    (message.robots_blue[robot_id].y / 1000) ,
                     (message.robots_blue[robot_id].orientation) * 1
                     
                 )
@@ -116,7 +114,7 @@ class World:
                     f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))
                 
                 robot_id+=1
-        self.ball.update((message.balls[0].x * -1) / 1000 , (message.balls[0].y * -1)/ 1000 )
+        self.ball.update((message.balls[0].x) / 1000 , (message.balls[0].y)/ 1000 )
         # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]

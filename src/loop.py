@@ -50,7 +50,7 @@ class Loop:
         self.radio = SerialRadio(control = control)
         self.execute = False
         self.t0 = time.time()
-        self.referee = False
+        self.referee = True
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf

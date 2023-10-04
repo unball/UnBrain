@@ -94,9 +94,9 @@ class World:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 
                 #print(message)
-                print("x",(message.robots_blue[robot_id].x * -1) / 1000)
-                print("y",(message.robots_blue[robot_id].y * -1) / 1000)
-                print("th",(message.robots_blue[robot_id].orientation + np.pi ))
+                print("x",(message.robots_blue[robot_id].x) / 1000)
+                print("y",(message.robots_blue[robot_id].y) / 1000)
+                print("th",(message.robots_blue[robot_id].orientation*-1))
                 print("bola x",message.balls[0].x  / 1000)
                 print("bola y",message.balls[0].y / 1000)
                 #exit()
@@ -104,9 +104,9 @@ class World:
                 print(robot_id)
                 
                 blue[robot_id].update(
-                    (message.robots_blue[robot_id].x * -1 / 1000 ),
-                    (message.robots_blue[robot_id].y * -1 / 1000) ,
-                    (message.robots_blue[robot_id].orientation - np.pi) 
+                    (message.robots_blue[robot_id].x / 1000 ),
+                    (message.robots_blue[robot_id].y / 1000) ,
+                    (message.robots_blue[robot_id].orientation) * 1
                     
                 )
                 with open('docs/robot.txt', 'a') as f:
@@ -114,7 +114,7 @@ class World:
                     f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))
                 
                 robot_id+=1
-        self.ball.update((message.balls[0].x *-1) / 1000 , (message.balls[0].y *-1)/ 1000 )
+        self.ball.update((message.balls[0].x) / 1000 , (message.balls[0].y)/ 1000 )
         # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]

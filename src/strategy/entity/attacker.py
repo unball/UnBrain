@@ -78,8 +78,10 @@ class Attacker(Entity):
                 
                 # Inverter a direção se o robô ficar preso em algo
                 elif not self.robot.isAlive() and self.robot.spin == 0:
+                    print("oiiii")
                     self.lastChat = time.time()
                     self.robot.direction *= -1
+            print("robot is alive", self.robot.isAlive())
     
     def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange
@@ -101,7 +103,7 @@ class Attacker(Entity):
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]
-        enemies = [robot for robot in self.world.enemies]
+        #enemies = [robot for robot in self.world.enemies]
 
         # Atualiza histórico de velocidade do robô
         self.vravg = 0.995 * self.vravg + 0.005 * np.dot(vr, unit(ang(rr, rb)))
@@ -113,10 +115,10 @@ class Attacker(Entity):
         # else:
         #     self.robot.setSpin(0)
 
-        if norm(rr, rb) < 0.085 and np.abs(rb[1]) > rl[1] and np.any([norm(rr, x.pos) < 0.20 for x in enemies]):
-            self.robot.setSpin(-np.sign(rr[1]), timeOut=1)
-        else:
-            self.robot.setSpin(0)
+        #if norm(rr, rb) < 0.085 and np.abs(rb[1]) > rl[1] and np.any([norm(rr, x.pos) < 0.20 for x in enemies]):
+         #   self.robot.setSpin(-np.sign(rr[1]), timeOut=1)
+        #else:
+         #   self.robot.setSpin(0)
 
         # Define estado do movimento
         # Ir até a bola
@@ -161,7 +163,7 @@ class Attacker(Entity):
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
-                rps = np.array([r.pos for r in enemies+otherAllies])
+                #rps = np.array([r.pos for r in enemies+otherAllies])
                 # Pbv = avoidObstacle(Pb, rr[:2], rl-[0.15,0], rps)
                 Pbv = Pb
 

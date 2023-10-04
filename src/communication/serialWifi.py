@@ -16,18 +16,19 @@ class SerialRadio():
     if self.serial is not None: self.serial.close()
 
   def send(self, msg, waitack=True):
-    """Envia a mensagem via barramento serial em `/dev/ttyUSB0`."""
+    """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
     try:
       if self.serial is None:
         
         #self.serial = serial.Serial('/dev/ttyUSB6', 115200)
-        
         porta = [port.device for port in serial.tools.list_ports.comports()][0]
-        #subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+        #subprocess.Popen(["sudo", "chmod", "a+rw", porta], stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
         print("Acessando a porta USB", porta)
         self.serial = serial.Serial(porta, 115200)
         
         self.serial.timeout = 0.100
+        
     except Exception as e:
       print(e)
       print("Falha ao abrir serial")

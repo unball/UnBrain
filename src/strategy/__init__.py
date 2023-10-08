@@ -45,9 +45,16 @@ class MainStrategy(Strategy):
             robot_id.append(robot.id)
 
         if command is None: return
+        
         self.goalkeeperIndx = None
         self.AttackerIdx = None
-
+        
+        if self.world.debug and command is not None:
+            print("\n\n\n")
+            print(command.gameHalf)
+            print("\n\n\n------------------")
+            #exit()
+            
         # Verifica gol
         if command.foul == Foul.KICKOFF:
             if RefereeCommands.color2side(command.teamcolor) == self.world.field.side:
@@ -76,11 +83,23 @@ class MainStrategy(Strategy):
 
         # Inicia jogo
         elif command.foul == Foul.GAME_ON:
-            for robot in self.world.raw_team: robot.turnOn()
+            
+            if(self.world.debug):
+                print("COMANDO START ENVIADO")
+            
+            for robot in self.world.raw_team: 
+                robot.turnOn()
             
         # Pausa jogo
         elif command.foul == Foul.STOP or command.foul == Foul.HALT:
-            for robot in self.world.raw_team: robot.turnOff()
+            
+            if(self.world.debug):
+                print("COMANDO STOP OU HALT ENVIADO")
+            
+            for robot in self.world.raw_team: 
+                #self.radio.send([(0,0) for robot in self.world.team])
+                #robot.turnOff()
+                pass
     
     def nearestGoal(self, indexes):
         rg = np.array([-0.75, 0])

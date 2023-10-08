@@ -78,10 +78,10 @@ class Attacker(Entity):
                 
                 # Inverter a direção se o robô ficar preso em algo
                 elif not self.robot.isAlive() and self.robot.spin == 0:
-                    print("oiiii")
+                    print("ESTAMOS NO IS ALIVE")
                     self.lastChat = time.time()
                     self.robot.direction *= -1
-            print("robot is alive", self.robot.isAlive())
+            #print("robot is alive", self.robot.isAlive())
     
     def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange

@@ -49,7 +49,7 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.visionclient = FiraClient()
-        self.radio = SerialRadio(control = control)
+        self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
 

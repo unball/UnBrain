@@ -2,15 +2,17 @@ from tools import encodeSpeeds
 import serial.tools.list_ports
 import serial
 import subprocess
+import world
 import time
 
 class SerialRadio():
   """Implementa a comunicação usando simplesmente a interface serial"""
-  def __init__(self, control = False):
+  def __init__(self, control = False, debug = False):
 
     self.serial = None
     self.failCount = 0
     self.control = control
+    self.debug = debug
 
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
@@ -44,9 +46,13 @@ class SerialRadio():
     data = [0] * 6
 
     # Adiciona as velocidades ao vetor de dados
-    for i,(vr,vl) in enumerate(msg):
 
+    for i,(vr,vl) in enumerate(msg):
+      #vl, vr =  100, 0
       # Coloca no vetor de dados
+      if(self.debug):
+        print(f"{i} VL {vl}, VR {vr}")
+      
       data[i] = vl
       data[i+3] = vr
 

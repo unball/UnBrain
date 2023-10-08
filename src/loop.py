@@ -22,19 +22,21 @@ class Loop:
         loop_freq=90, 
         draw_uvf=False, 
         team_yellow=False, 
-        team_side=1, 
+        team_side=1,
         immediate_start=False, 
+        referee=False, 
         static_entities=False,
         port=5001,
         n_robots=3,
-        control=False
+        control=False,
+        debug = False
     ):
         # Instancia interface com o simulador FIRASim
         #self.vss = VSS(team_yellow=team_yellow)
 
 
         # Instancia o mundo e a estratégia
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start)
+        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee
@@ -50,7 +52,6 @@ class Loop:
         self.radio = SerialRadio(control = control)
         self.execute = False
         self.t0 = time.time()
-        self.referee = True
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -84,20 +85,18 @@ class Loop:
 
     def busyLoop(self):
         message = self.visionclient.receive_frame()
-        #print("oiiiiiiiiiiiiiiiiii", message)
         
         self.execute = True if message else False
         
         
         if self.execute: self.world.update(message.detection)
         
-        if(self.referee): 
-            
-            
-            print("executando via referee")
+        if(self.world.debug):
+            print("Executando com referee:", self.world.referee)
+        
+        if(self.world.referee):
             command = self.rc.receive()
             if command is not None: 
-                print("recebendo do referee")
                 # obedece o comando e sai do busy loop
                 self.strategy.manageReferee(self.arp, command)
 

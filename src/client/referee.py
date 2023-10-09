@@ -2,7 +2,9 @@ import socket
 import pathlib
 moduleFolder = str(pathlib.Path(__name__).parent.absolute())
 import sys
+
 sys.path.append(moduleFolder + '/protobuf/')
+
 import vssref_command_pb2
 import vssref_common_pb2
 import vssref_placement_pb2 
@@ -28,7 +30,6 @@ class RefereeCommands():
         )
 
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-
         return sock
 
     def color2side(color):
@@ -38,7 +39,7 @@ class RefereeCommands():
 
     def receive(self):
         try:
-            data = self.socket.recv(1024)
+            data = self.socket.recv(512)
             
             if len(data) > 0:
                 command = vssref_command_pb2.VSSRef_Command()

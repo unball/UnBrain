@@ -1,94 +1,106 @@
 import socket
 import pathlib
+
 moduleFolder = str(pathlib.Path(__file__).parent.absolute())
 import sys
+
+
+from google.protobuf.json_format import MessageToJson
+
 sys.path.append(moduleFolder + '/protobuf/')
 sys.path.append(moduleFolder + '/../')
-# import command_pb2
-# import common_pb2
-# import packet_pb2
-# import replacement_pb2
+
+import json
+
+import packet_pb2
 import constants
 import numpy as np
 import time
-import threading
-import copy
+
+import struct
 
 class FIRASimVision:
+    
+    print("FIRASIM VISION INITIATED")
+    
     def __init__(self, host=constants.HOST_FIRASIM_VISION, port=constants.PORT_FIRASIM_VISION):
+        
+        super(FIRASimVision, self).__init__()
+        self.frame = {}
+        
         self.host = host
         self.port = port
+        
         self.socket = self.createSocket(host, port)
-
-        # self._receiveThread = threading.Thread(target=self.loop)
-        # self._lock = threading.Lock()
-        # self._packet = None
-        # self._run = False
-
-    def createSocket(self, host, port, blocking = False):
+        self.socket.recv(1024)
+        self._fps = 0
+        
+        print("FIRASIM VISION SOCKET", self.host, self.port)
+        
+        
+        
+    def assign_vision(self, game):
+        self.game = game
+        
+    def createSocket(self, host, port):
         # create UDP c  
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setblocking(blocking)
+        
+        print("Starting vision...")
+        print("Vision completed!")
+        
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32) 
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+        
         sock.bind((host, port))
+        
+        mreq = struct.pack(
+            "4sl",
+            socket.inet_aton(self.host),
+            socket.INADDR_ANY
+        )
+
+        sock.setsockopt(
+            socket.IPPROTO_IP, 
+            socket.IP_ADD_MEMBERSHIP, 
+            mreq
+        )
         
         selfHost = socket.gethostbyname(socket.gethostname())
         sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(selfHost))
         sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(host) + socket.inet_aton(selfHost))
-
+        
         return sock
 
     def read(self):
-        try:
-            data = self.socket.recv(512)
+       
+        data = self.socket.recv(1024)        
+        
+        while True:
             
-            if len(data) > 0:
-                environment = packet_pb2.Environment()
-                environment.ParseFromString(data)
-                return environment
-            return None        
-        except:
-            return None
-
-    # def loop(self):
-    #     while self._run:
-    #         packet = self.receive()
-
-    #         if not self._lock.locked():
-    #             self._lock.acquire()
-    #             self._packet = packet
-    #             self._lock.release()
-
-    #         time.sleep(0.016)
-
-    # def read(self):
-    #     self._lock.acquire()
-    #     packet = copy.deepcopy(self._packet)
-    #     self._lock.release()
-
-    #     return packet
-
-    # def start(self):
-    #     self._run = True
-    #     self._receiveThread.start()
-
-    # def stop(self):
-    #     self._run = False
-
+            environment = packet_pb2.Environment()
+            data = self.socket.recv(1024)
+            environment.ParseFromString(data)
+            
+            environment = json.loads(MessageToJson(environment))
+            
+            return environment
+           
+            
 class FIRASimCommand:
+    print("FIRASIM COMMANDS INITIATED")
     def __init__(self, host=constants.HOST_FIRASIM_COMMAND, port=constants.PORT_FIRASIM_COMMAND, team_yellow = False):
+        
         self.host = host
         self.port = port
         self.team_yellow = team_yellow
-
         self.socket = self.createSocket(host, port)
+        
 
     def createSocket(self, host, port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.connect((host, port))
-
+        
         return sock
 
     def write(self, index, vl, vr):
@@ -148,13 +160,10 @@ if __name__ == "__main__":
     vision = FIRASimVision()
     vision.start()
 
-    # while True:
-    #     command.setBallPos(*np.random.random(2))
-    #     time.sleep(1000)
-
     t0 = time.time()
+    
     while True:
-        packet = vision.read()
+        packet = vision.run()
         if packet is not None:
             t1 = time.time()
             print(packet)

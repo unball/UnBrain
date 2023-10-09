@@ -2,7 +2,7 @@ from .elements import *
 import logging
 import time
 import math
-
+import json
 class Field:
     def __init__(self, side):
         self.width = 1.75
@@ -73,70 +73,42 @@ class World:
     def update(self, message):
         if self.team_yellow:
             yellow = self.team
+            teamStr = "robotsYellow"
             # blue = self.enemies
         else:
             # yellow = self.enemies
             blue = self.team
+            teamStr = "robotsBlue"
 
         robot_id = 0
         
-        #print(message)
-        
-
+        robots = message["frame"][teamStr]
+            
         if self.team_yellow:
             
-            team = message.robots_yellow
-            for _ in team:
-                # Pela vsss vision recebemos em mm e nossa estrategia usa m
-                if self.debug:
-
-                    print(f"Yellow - {robot_id}")
-                    
-                    print(f"x {(message.robots_yellow[robot_id].x) / 1000:.2f} | y {(message.robots_yellow[robot_id].y) / 1000:.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
-                    
-                yellow[robot_id].update(
-                    message.robots_yellow[robot_id].x / 1000,
-                    message.robots_yellow[robot_id].y / 1000,
-                    message.robots_yellow[robot_id].orientation
-                )
+            print("Yellow")
+            for robot in robots:
+                print(robot)
+                yellow[robot_id].update(robot["x"]/1000, robot["y"]/1000, robot["orientation"])
+                robot_id+=1
                 robot_id += 1
+
         else:
-            # print("blue")
-            team = message.robots_blue
-    
-            for _ in team:
-                # Pela vsss vision recebemos em mm e nossa estrategia usa m
+            print("Blue")
+            
+            for robot in robots:
+                print(robot)
+                blue[robot_id].update(robot["x"]/1000, robot["y"]/1000, robot["orientation"])
+                robot_id+=1
+            
+        
+        self.ball.update((message["frame"]["ball"]["x"]) /1000, (message["frame"]["ball"]["y"]) / 1000)
 
-                if self.debug:
-                    print("Blue")
-                    print(f"x {((message.robots_blue[robot_id].x) / 1000):.2f} y {(message.robots_blue[robot_id].y) / 1000:.2f} th {(message.robots_blue[robot_id].orientation):.2f}")
-
-                    """ with open('docs/robot.txt', 'a') as f:
-                    
-                            f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))"""
-
-                blue[robot_id].update(
-                    (message.robots_blue[robot_id].x / 1000),
-                    (message.robots_blue[robot_id].y / 1000),
-                    (message.robots_blue[robot_id].orientation),
-
-                )
-
-
-        if self.team_yellow:
-            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-        else:
-            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-
-        if self.debug:
-            print(f"bola {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
-
+        
         # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]
         # logging.info("Vision update.")
-
-        self.updateCount += 1
 
     def addAllyGoal(self):
         print("Gol aliado!")

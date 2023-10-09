@@ -6,7 +6,7 @@ from communication.serialWifi import SerialRadio
 from world import World
 
 # Importa interface com FiraSim
-# from client import VSS
+from client import VSS
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,16 +32,17 @@ class Loop:
         debug = False
     ):
         # Instancia interface com o simulador FIRASim
-        #self.vss = VSS(team_yellow=team_yellow)
+        self.vss = VSS(team_yellow=team_yellow)
 
 
         # Instancia o mundo e a estratégia
         self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee)
+        
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
-        # self.rp = RefereePlacement(team_yellow=team_yellow)
+        self.rp = RefereePlacement(team_yellow=team_yellow)
         self.arp = AutomaticReplacer(self.world)
 
         # Variáveis
@@ -84,22 +85,22 @@ class Loop:
         self.draw()
 
     def busyLoop(self):
-        message = self.visionclient.receive_frame()
         
-        self.execute = True if message else False
+        #using firasim client
+        message = self.vss.vision.read()
+    
+        if message is not None: self.world.update(message)
         
+        command = self.rc.receive()
+        #if command is not None: self.strategy.manageReferee(self.rp, command)
         
-        if self.execute: self.world.update(message.detection)
+        #mensagem do vsss-vision
+        #message = self.visionclient.receive_frame()
+        
         
         if(self.world.debug):
             print("Executando com referee:", self.world.referee)
         
-        if(self.world.referee):
-            command = self.rc.receive()
-            if command is not None: 
-                # obedece o comando e sai do busy loop
-                self.strategy.manageReferee(self.arp, command)
-
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)

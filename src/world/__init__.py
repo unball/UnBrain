@@ -63,7 +63,6 @@ class World:
         self.allyGoals = 0
         self.enemyGoals = 0
         self.updateCount = 0
-        self.checkBatteries = True
         self.manualControlSpeedV = 0
         self.manualControlSpeedW = 0
         self.control = control
@@ -89,10 +88,7 @@ class World:
             for _ in team:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
                 if self.debug:
-
-                    print(f"Yellow - {robot_id}")
-                    
-                    print(f"x {(message.robots_yellow[robot_id].x) / 1000:.2f} | y {(message.robots_yellow[robot_id].y) / 1000:.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
+                    print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / 1000:.2f} | y {(message.robots_yellow[robot_id].y) / 1000:.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
                     
                 yellow[robot_id].update(
                     message.robots_yellow[robot_id].x / 1000,
@@ -101,37 +97,25 @@ class World:
                 )
                 robot_id += 1
         else:
-            # print("blue")
             team = message.robots_blue
     
             for _ in team:
-                # Pela vsss vision recebemos em mm e nossa estrategia usa m
 
                 if self.debug:
-                    print("Blue")
-                    print(f"x {((message.robots_blue[robot_id].x) / 1000):.2f} y {(message.robots_blue[robot_id].y) / 1000:.2f} th {(message.robots_blue[robot_id].orientation):.2f}")
-
-                    """ with open('docs/robot.txt', 'a') as f:
-                    
-                            f.write(str(math.floor(message.robots_blue[0].x))+" "+str(math.floor(message.robots_blue[0].y))+" " + str((message.robots_blue[0].orientation))+(' \n'))"""
-
+                    print(f"BLUE {robot_id} | x {((message.robots_blue[robot_id].x) / 1000):.2f} | y {(message.robots_blue[robot_id].y) / 1000:.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
+                
                 blue[robot_id].update(
                     (message.robots_blue[robot_id].x / 1000),
                     (message.robots_blue[robot_id].y / 1000),
                     (message.robots_blue[robot_id].orientation),
-
                 )
+                robot_id+=1
 
-
-        if self.team_yellow:
-            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-        else:
-            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
+        self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
 
         if self.debug:
             print(f"bola {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
 
-        # self.checkBatteries = message["check_batteries"]
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]
         # logging.info("Vision update.")

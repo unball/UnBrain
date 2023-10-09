@@ -27,7 +27,7 @@ class RefereeCommands():
             socket.INADDR_ANY
         )
 
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        #sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
         return sock
 

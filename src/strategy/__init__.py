@@ -163,7 +163,7 @@ class MainStrategy(Strategy):
     def update(self):
         if self.static_entities:
             self.world.team[2].updateEntity(GoalKeeper)
-            self.world.team[1].updateEntity(Attacker)
+            self.world.team[1].updateEntity(Defender)
             self.world.team[0].updateEntity(Attacker)
         else:
             formation = self.formationDecider()

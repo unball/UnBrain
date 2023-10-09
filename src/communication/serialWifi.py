@@ -48,11 +48,8 @@ class SerialRadio():
     # Adiciona as velocidades ao vetor de dados
 
     for i,(vr,vl) in enumerate(msg):
-      #vl, vr =  100, 0
-      # Coloca no vetor de dados
       if(self.debug):
-        print(f"{i} VL {vl}, VR {vr}")
-      
+        print(f"ROBO {i} | VL {vl} | VR {vr}")
       data[i] = vl
       data[i+3] = vr
 

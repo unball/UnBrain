@@ -116,6 +116,7 @@ class Loop:
             if command is not None:
                 
                 self.last_command = command
+                self.initiated_once = True
                 # obedece o comando e sai do busy loop
                 
             self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)

@@ -30,7 +30,9 @@ class Loop:
         n_robots=3,
         control=False,
         debug = False,
-        mirror=False
+        mirror=False,
+        last_command = None, #comando de STOP do REFEREE
+        initiated_once = False
     ):
         # Instancia interface com o simulador FIRASim
         #self.vss = VSS(team_yellow=team_yellow)
@@ -53,6 +55,9 @@ class Loop:
         self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
+        
+        self.last_command = last_command
+        self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -89,17 +94,42 @@ class Loop:
         
         self.execute = True if message else False
         
-        
         if self.execute: self.world.update(message.detection)
         
-        if(self.world.debug):
-            print("Executando com referee:", self.world.referee)
+        if( (self.world.debug) and (self.world.referee)):
+            print("------------------------------")
+            print("Executando com referee:")
+        else:
+            print("-----------------------------")
+            print("Executando sem referee:")
         
         if(self.world.referee):
+        
             command = self.rc.receive()
-            if command is not None: 
+            
+            if(self.world.debug and command is not None):
+                print(self.last_command)
+                print(command)
+            elif(self.world.debug and command is None and not self.initiated_once):
+                print("NENHUM PACOTE RECEBIDO AINDA")
+            
+            if command is not None:
+                
+                self.last_command = command
                 # obedece o comando e sai do busy loop
-                self.strategy.manageReferee(self.arp, command)
+                
+            self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)
+            
+            if(self.world.debug and self.last_command != None):
+                print("REFEREE RODANDO")
+                
+                
+        
+
+            
+        
+        
+        
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

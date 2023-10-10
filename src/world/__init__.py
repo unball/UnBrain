@@ -48,8 +48,6 @@ class Field:
     @property
     def goalAreaSize(self):
         return (self.goalAreaWidth, self.goalAreaHeight)
-
-
 class World:
     def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False, debug=False, referee=False,mirror=False):
         self.n_robots = n_robots
@@ -79,61 +77,59 @@ class World:
             blue = self.team
 
         robot_id = 0
-
+        
+        if self.mirror: 
+            if self.debug:
+                print("UTILIZANDO CAMPO INVERTIDO")
+            mirror = (-1,np.pi)
+        else: 
+            if self.debug:
+                print("UTILIZANDO CAMPO SEM INVERSÃO")
+            mirror = (1,0)
+        
         if self.team_yellow:
             
             team = message.robots_yellow
             for _ in team:
                 # Pela vsss vision recebemos em mm e nossa estrategia usa m
-                if self.mirror:
-                    if self.debug:
-                        print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / -1000:.2f} | y {(message.robots_yellow[robot_id].y) / -1000:.2f} | th {(message.robots_yellow[robot_id].orientation+np.pi):.2f}")
-                        
-                    yellow[robot_id].update(
-                        message.robots_yellow[robot_id].x / -1000,
-                        message.robots_yellow[robot_id].y / -1000,
-                        message.robots_yellow[robot_id].orientation+np.pi
-                    )
+
+                if self.debug:
+                    print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_yellow[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_yellow[robot_id].orientation)+mirror[1]:.2f}")
                     
-                else:
-                    if self.debug:
-                        print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / 1000:.2f} | y {(message.robots_yellow[robot_id].y) / 1000:.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
-                        
-                    yellow[robot_id].update(
-                        message.robots_yellow[robot_id].x / 1000,
-                        message.robots_yellow[robot_id].y / 1000,
-                        message.robots_yellow[robot_id].orientation
-                    )
-                robot_id += 1
+                yellow[robot_id].update(
+                    message.robots_yellow[robot_id].x / (1000*mirror[0]),
+                    message.robots_yellow[robot_id].y / (1000*mirror[0]),
+                    message.robots_yellow[robot_id].orientation + mirror[1]
+                )
+            robot_id += 1
         else:
             team = message.robots_blue
     
             for _ in team:
-                if self.mirror:
-                    if self.debug:
-                        print(f"Blue- {robot_id} | x {(message.robots_blue[robot_id].x) / -1000:.2f} | y {(message.robots_blue[robot_id].y) / -1000:.2f} | th {(message.robots_blue[robot_id].orientation+np.pi):.2f}")
-                        
-                    blue[robot_id].update(
-                        message.robots_blue[robot_id].x / -1000,
-                        message.robots_blue[robot_id].y / -1000,
-                        message.robots_blue[robot_id].orientation+np.pi
-                    )
+
+                if self.debug:
+                    print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_blue[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_blue[robot_id].orientation + mirror[1]):.2f}")
                     
-                else:
-                    if self.debug:
-                        print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / 1000:.2f} | y {(message.robots_blue[robot_id].y) / 1000:.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
-                        
-                    blue[robot_id].update(
-                        message.robots_blue[robot_id].x / 1000,
-                        message.robots_blue[robot_id].y / 1000,
-                        message.robots_blue[robot_id].orientation
-                    )
-                robot_id+=1
+                blue[robot_id].update(
+                    message.robots_blue[robot_id].x / (1000*mirror[0]),
+                    message.robots_blue[robot_id].y / (1000*mirror[0]),
+                    message.robots_blue[robot_id].orientation+mirror[1]
+                )
+            robot_id+=1
 
-        self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-
-        if self.debug:
-            print(f"bola {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+        if self.mirror:
+            
+            self.ball.update((message.balls[0].x) / -1000, (message.balls[0].y) / -1000)
+            
+            if self.debug:
+                print(f"bola {(message.balls[0].x/-1000):.2f} {(message.balls[0].y / -1000):.2f}")
+                
+        else:
+            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
+            if self.debug:
+                print(f"bola {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+        
+        
 
         # self.manualControlSpeedV = message["manualControlSpeedV"]
         # self.manualControlSpeedW = message["manualControlSpeedW"]

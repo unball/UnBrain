@@ -2,12 +2,13 @@ import socket
 import struct
 from time import time
 import vision.wrapper_pb2 as wr
+import constants
 
 class FiraClient:
 
     def __init__(self, 
-            vision_ip="224.5.23.2",
-            vision_port=10015):
+            vision_ip=constants.HOST_VSSS_VISION,
+            vision_port=constants.PORT_VSSS_VISION):
         """
         Init SSLClient object.
         Extended description of function.
@@ -26,7 +27,7 @@ class FiraClient:
         self.vision_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 128)
         self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
-        self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack("=4sl", socket.inet_aton(self.vision_ip), socket.INADDR_ANY))
+        #self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack("=4sl", socket.inet_aton(self.vision_ip), socket.INADDR_ANY)) #volta aqui dps raul myron e ana beatriz macedo dourado @raul @ana
         self.vision_sock.bind((self.vision_ip, self.vision_port))
 
         # self.vision_sock.setblocking(True)

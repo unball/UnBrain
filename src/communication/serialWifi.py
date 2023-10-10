@@ -1,25 +1,36 @@
 from tools import encodeSpeeds
-
+import serial.tools.list_ports
 import serial
+import subprocess
+import world
 import time
 
 class SerialRadio():
   """Implementa a comunicação usando simplesmente a interface serial"""
-  def __init__(self, control = False):
+  def __init__(self, control = False, debug = False):
 
     self.serial = None
     self.failCount = 0
     self.control = control
+    self.debug = debug
 
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
 
   def send(self, msg, waitack=True):
-    """Envia a mensagem via barramento serial em `/dev/ttyUSB0`."""
+    """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
     try:
       if self.serial is None:
-        self.serial = serial.Serial('/dev/ttyUSB0', 115200)
+        
+        #self.serial = serial.Serial('/dev/ttyUSB6', 115200)
+        porta = [port.device for port in serial.tools.list_ports.comports()][0]
+        #subprocess.Popen(["sudo", "chmod", "a+rw", porta], stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+        print("Acessando a porta USB", porta)
+        self.serial = serial.Serial(porta, 115200)
+        
         self.serial.timeout = 0.100
+        
     except Exception as e:
       print(e)
       print("Falha ao abrir serial")
@@ -35,9 +46,10 @@ class SerialRadio():
     data = [0] * 6
 
     # Adiciona as velocidades ao vetor de dados
-    for i,(vl,vr) in enumerate(msg):
 
-      # Coloca no vetor de dados
+    for i,(vr,vl) in enumerate(msg):
+      if(self.debug):
+        print(f"ROBO {i} | VL {vl} | VR {vr}")
       data[i] = vl
       data[i+3] = vr
 
@@ -62,12 +74,14 @@ class SerialRadio():
           else:
             if result[0] != limitedChecksum or result[1] != data[0] or result[2] != data[3]:
               print("Enviado:\t" + str(limitedChecksum) + "\t" + str(data[0]) + "\t" + str(data[3]))
+              print("Falha no checksum")
               print("ACK:\t\t" + response)
         except:
           #print("Enviado:\t" + str(data[0]) + " " + str(data[5]) + " " + ' '.join([hex(c) for c in list(message)]))
           print(data)
           print(limitedChecksum)
           print("ACK:\t\t" + response)
+          
     except Exception as e:
       self.failCount += 1
       print("Falha ao enviar: " + str(self.failCount) + ", " + str(e))

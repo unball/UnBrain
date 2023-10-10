@@ -22,19 +22,24 @@ class Loop:
         loop_freq=90, 
         draw_uvf=False, 
         team_yellow=False, 
-        team_side=1, 
+        team_side=1,
         immediate_start=False, 
+        referee=False, 
         static_entities=False,
         port=5001,
         n_robots=3,
-        control=False
+        control=False,
+        debug = False,
+        mirror=False,
+        last_command = None, #comando de STOP do REFEREE
+        initiated_once = False
     ):
         # Instancia interface com o simulador FIRASim
         #self.vss = VSS(team_yellow=team_yellow)
 
 
         # Instancia o mundo e a estratégia
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start)
+        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee
@@ -47,9 +52,12 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.visionclient = FiraClient()
-        self.radio = SerialRadio(control = control)
+        self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
+        
+        self.last_command = last_command
+        self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -83,13 +91,45 @@ class Loop:
 
     def busyLoop(self):
         message = self.visionclient.receive_frame()
+        
         self.execute = True if message else False
+        
         if self.execute: self.world.update(message.detection)
         
-        command = self.rc.receive()
-        if command is not None: 
-            # obedece o comando e sai do busy loop
-            self.strategy.manageReferee(self.arp, command)
+        if( (self.world.debug) and (self.world.referee)):
+            print("------------------------------")
+            print("Executando com referee:")
+        else:
+            print("-----------------------------")
+            print("Executando sem referee:")
+        
+        if(self.world.referee):
+        
+            command = self.rc.receive()
+            
+            if(self.world.debug and command is not None):
+                print(self.last_command)
+                print(command)
+            elif(self.world.debug and command is None and not self.initiated_once):
+                print("NENHUM PACOTE RECEBIDO AINDA")
+            
+            if command is not None:
+                
+                self.last_command = command
+                # obedece o comando e sai do busy loop
+                
+            self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)
+            
+            if(self.world.debug and self.last_command != None):
+                print("REFEREE RODANDO")
+                
+                
+        
+
+            
+        
+        
+        
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

@@ -3,9 +3,18 @@ Sistema principal da UnBall que agrega as áreas de visão, estratégia, comunic
 
 ```bash
 #for it to run
+sudo adduser $USER dialout
+sudo chmod a+rw /dev/ttyUSB* #*related to the port
+sudo apt install python3-gi
 python3 src/main.py --team-color blue --team-side left
 ```
+To end the program please to 
 
+```bash
+ctrl + z
+#and 
+kill %1
+```
 install requirements
 
 ```bash

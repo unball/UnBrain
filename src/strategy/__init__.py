@@ -57,7 +57,7 @@ class MainStrategy(Strategy):
             
         # Verifica gol
         if command.foul == Foul.KICKOFF:
-            if RefereeCommands.color2side(command.teamcolor) == self.world.field.mirror:
+            if RefereeCommands.color2side(command.teamcolor) == self.world.field.side:
                 self.world.addEnemyGoal()
             elif RefereeCommands.color2side(command.teamcolor) == -self.world.field.side:
                 self.world.addAllyGoal()
@@ -72,7 +72,7 @@ class MainStrategy(Strategy):
                 arp.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
-                rg[0] += 0.18
+                rg[0] += 0.2
                 positions = [(robot_id[0], (rg[0], rg[1], 90))]
                 penaltiPos = np.array([0.360, 0])
                 ang = 15 

@@ -29,6 +29,8 @@ parser.add_argument('--control', dest='control', action='store_const', const=Tru
                     default=False, help='If the firmware should control the output.')
 parser.add_argument('--debug', dest='debug', action='store_const',
                     const=True, default=False, help='Set debug mode for vision.')
+parser.add_argument('--mirror', dest='mirror', action='store_const',
+                    const=True, default=False, help='If vision is mirrored or not. Affects angles.')
 
 args = parser.parse_args()
 
@@ -50,6 +52,7 @@ loop = Loop(
     n_robots=3,
     control=args.control,
     debug=args.debug,
+    mirror=args.mirror
 )
 
 loop.run()

@@ -57,7 +57,7 @@ class MainStrategy(Strategy):
             
         # Verifica gol
         if command.foul == Foul.KICKOFF:
-            if RefereeCommands.color2side(command.teamcolor) == self.world.field.side:
+            if RefereeCommands.color2side(command.teamcolor) == self.world.field.mirror:
                 self.world.addEnemyGoal()
             elif RefereeCommands.color2side(command.teamcolor) == -self.world.field.side:
                 self.world.addAllyGoal()

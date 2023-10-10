@@ -76,7 +76,6 @@ class World:
             # yellow = self.enemies
             blue = self.team
 
-        robot_id = 0
         
         if self.mirror: 
             if self.debug:
@@ -87,12 +86,14 @@ class World:
                 print("UTILIZANDO CAMPO SEM INVERSÃO")
             mirror = (1,0)
         
+        
         if self.team_yellow:
             
+            robot_id = 0
             team = message.robots_yellow
+            
             for _ in team:
-                # Pela vsss vision recebemos em mm e nossa estrategia usa m
-
+                
                 if self.debug:
                     print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_yellow[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_yellow[robot_id].orientation)+mirror[1]:.2f}")
                     
@@ -101,8 +102,11 @@ class World:
                     message.robots_yellow[robot_id].y / (1000*mirror[0]),
                     message.robots_yellow[robot_id].orientation + mirror[1]
                 )
-            robot_id += 1
+                
+                robot_id += 1
         else:
+            robot_id = 0
+
             team = message.robots_blue
     
             for _ in team:
@@ -115,7 +119,7 @@ class World:
                     message.robots_blue[robot_id].y / (1000*mirror[0]),
                     message.robots_blue[robot_id].orientation+mirror[1]
                 )
-            robot_id+=1
+                robot_id+=1
 
         if self.mirror:
             

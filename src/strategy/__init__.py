@@ -72,7 +72,7 @@ class MainStrategy(Strategy):
                 arp.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
-                rg[0] += 0.18
+                rg[0] += 0.2
                 positions = [(robot_id[0], (rg[0], rg[1], 90))]
                 penaltiPos = np.array([0.360, 0])
                 ang = 15 

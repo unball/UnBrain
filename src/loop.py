@@ -29,14 +29,15 @@ class Loop:
         port=5001,
         n_robots=3,
         control=False,
-        debug = False
+        debug = False,
+        mirror=False
     ):
         # Instancia interface com o simulador FIRASim
         #self.vss = VSS(team_yellow=team_yellow)
 
 
         # Instancia o mundo e a estratégia
-        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee)
+        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee

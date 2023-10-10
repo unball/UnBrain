@@ -37,7 +37,7 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
-    def manageReferee(self, arp, command, initiated_once):
+    def manageReferee(self, arp, command, initiated_once, automatic_placement):
 
         # Pegar apenas id que existe dos robos
         robot_id = []
@@ -116,6 +116,8 @@ class MainStrategy(Strategy):
                 arp.send(positions)
         
         elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_1:
+            if(self.world.debug):
+                print("FREE BALL Q1")
             if self.world.field.side == 1:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
@@ -132,6 +134,10 @@ class MainStrategy(Strategy):
                 arp.send(positions)
         
         elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_2:
+            
+            if(self.world.debug):
+                print("FREE BALL Q2")
+
             if self.world.field.side == 1:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
@@ -148,6 +154,10 @@ class MainStrategy(Strategy):
                 arp.send(positions)  
 
         elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_3:
+            
+            if(self.world.debug):
+                print("FREE BALL Q2")
+                
             if self.world.field.side == 1:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
@@ -166,6 +176,10 @@ class MainStrategy(Strategy):
                 arp.send(positions)    
 
         elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_4:
+            
+            if(self.world.debug):
+                print("FREE BALL Q4")
+                
             if self.world.field.side == 1:
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
@@ -173,15 +187,20 @@ class MainStrategy(Strategy):
 
                 positions.append((robot_id[1], ( 0.14 , -0.38 , 0)))
                 positions.append((robot_id[2], ( 0.1 , 0.18 , -1.5*(180/np.pi)) ))
+                
                 arp.send(positions)
             else: 
+                
                 rg = -np.array(self.world.field.goalPos)
                 rg[0] += 0.18
                 positions = [(robot_id[0], (rg[0], rg[1], 180))]
 
                 positions.append(robot_id[1], ( 0.23 , 0.1 , -1.6*(180/np.pi)) ) 
                 positions.append((robot_id[2], ( 0.57 , -0.37 , -3*(180/np.pi)) ) ) 
+                
                 arp.send(positions)       
+                
+            automatic_placement = True
 
         elif command.foul == Foul.GOAL_KICK:
             if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:

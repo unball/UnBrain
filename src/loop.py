@@ -34,9 +34,6 @@ class Loop:
         last_command = None, #comando de STOP do REFEREE
         initiated_once = False
     ):
-        # Instancia interface com o simulador FIRASim
-        #self.vss = VSS(team_yellow=team_yellow)
-
 
         # Instancia o mundo e a estratégia
         self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
@@ -44,7 +41,7 @@ class Loop:
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
-        # self.rp = RefereePlacement(team_yellow=team_yellow)
+        
         self.arp = AutomaticReplacer(self.world)
 
         # Variáveis
@@ -66,6 +63,12 @@ class Loop:
             self.UVF_screen.initialiazeScreen()
             self.UVF_screen.initialiazeObjects()
         
+        
+    def update_placement_state(self, last_command):
+        self.last_command = last_command
+        
+    
+    
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
         self.lastupdatecount = self.world.updateCount
@@ -96,6 +99,8 @@ class Loop:
         
         if self.execute: self.world.update(message.detection)
         
+        print("ESTADO POSICIONAMENTO AUTOMATICO:")
+        
         if( (self.world.debug) and (self.world.referee)):
             print("------------------------------")
             print("Executando com referee:")
@@ -118,8 +123,8 @@ class Loop:
                 self.last_command = command
                 self.initiated_once = True
                 # obedece o comando e sai do busy loop
-                
-            self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)
+            
+            self.strategy.manageReferee(self.arp, self.last_command)
             
             if(self.world.debug and self.last_command != None):
                 print("REFEREE RODANDO")

@@ -4,6 +4,7 @@ from strategy.entity.automaticPlacement import AutomaticPlacement
 import numpy as np 
 from communication.serialWifi import SerialRadio
 import time
+from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 
 class AutomaticReplacer():
     def __init__(self, world):
@@ -17,6 +18,7 @@ class AutomaticReplacer():
         # Para parar todos os robos quando receber foul
 
         for robot in self.world.raw_team: robot.turnOff()
+        
 
         # Pega pose e id do robo dada por position de manageReferee para enviar comandos depois
         robot_pose = []
@@ -75,9 +77,13 @@ class AutomaticReplacer():
         
         for robot in self.world.raw_team: robot.turnOn()
         initial_time = time.time()
-        
+
+
+
         while True:
+            print("WORLD LAST COMMAND", self.world.last_command)
             # Inicializa vetor com v e w a serem enviados para robô
+            # print("COMMAND", command)
             control_output = []
             current_time = time.time()
             isOutside_rr0 = not ((np.abs(robot_pose[0][0] - 0.01) <= rr[0][0] <= np.abs(robot_pose[0][0] + 0.01) ) or ( np.abs(robot_pose[0][0] - 0.01) <= rr[0][1] <= np.abs(robot_pose[0][0] + 0.01) ))
@@ -86,32 +92,40 @@ class AutomaticReplacer():
 
             if self.world.debug:
                 print(f"Tempo tentando o posicionamento automático: {(current_time-initial_time):.2f}")
-            # Se todos os robôs chegaram na posição desejada
-            if(not isOutside_rr0 and not isOutside_rr1 and not isOutside_rr2) or current_time-initial_time > 1:
-                for robot in self.world.raw_team: robot.turnOff()
-                
-                # self.world.initiated_once = False
-                self.world.last_command = None
-                break
                 
                 # A partir daqui criamos o vetor com v e w de cada robo a ser enviado
                 # para o modulo de comunicação do robo
-            # if(isOutside_rr0):
-            #     control_output.append(robot1.entity.control.actuate(robot1))
-            # if( not isOutside_rr0):
-            #     control_output.append((0,0))
-            # if(isOutside_rr1):
-            #     control_output.append(robot2.entity.control.actuate(robot2))
-            # if(not isOutside_rr1):
-            #     control_output.append((0,0))
-            # if(isOutside_rr2):
-            #     control_output.append(robot3.entity.control.actuate(robot3))
-            # if(not isOutside_rr2):
-            #     control_output.append((0,0))
+            if(isOutside_rr0):
+                control_output.append(robot1.entity.control.actuate(robot1))
+            if( not isOutside_rr0):
+                control_output.append((0,0))
+            if(isOutside_rr1):
+                control_output.append(robot2.entity.control.actuate(robot2))
+            if(not isOutside_rr1):
+                control_output.append((0,0))
+            if(isOutside_rr2):
+                control_output.append(robot3.entity.control.actuate(robot3))
+            if(not isOutside_rr2):
+                control_output.append((0,0))
             
-            # # Envia comando para robo
-            # self.radio.send(control_output)
+            # Envia comando para robo
+            self.radio.send(control_output)
         
+            # Se todos os robôs chegaram na posição desejada
+            if (current_time - initial_time > 1):
+                self.radio.send([(0,0) for robot in self.world.team])
+                for robot in self.world.raw_team: robot.turnOff()
+                # self.world.initiated_once = False
+                self.world.last_command = None
+                break
+
+            elif(not isOutside_rr0 and not isOutside_rr1 and not isOutside_rr2):
+                self.radio.send([(0,0) for robot in self.world.team])
+                for robot in self.world.raw_team: robot.turnOff()
+                # self.world.initiated_once = False
+                self.world.last_command = None 
+                break
+
 """       
 if __name__ == "__main__":
 

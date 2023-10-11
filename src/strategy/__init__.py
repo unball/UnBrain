@@ -37,20 +37,23 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
-    def manageReferee(self, arp, command, initiated_once, automatic_placement):
+    def manageReferee(self, arp, command):
 
         # Pegar apenas id que existe dos robos
         robot_id = []
         for robot in self.world.team:
             robot_id.append(robot.id)
 
-        if command is None: 
-            
-            if(not initiated_once):
-                
-                for robot in self.world.raw_team: 
-                    robot.turnOff()
+        if command is None:
             return
+
+        # if command is None: 
+            
+            # if(not initiated_once):
+                
+            #     for robot in self.world.raw_team: 
+            #         robot.turnOff()
+            # return
         
         self.goalkeeperIndx = None
         self.AttackerIdx = None

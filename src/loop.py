@@ -4,6 +4,7 @@ from strategy import MainStrategy
 from UVF_screen import UVFScreen
 from communication.serialWifi import SerialRadio
 from world import World
+from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 
 # Importa interface com FiraSim
 # from client import VSS
@@ -53,8 +54,8 @@ class Loop:
         self.execute = False
         self.t0 = time.time()
         
-        self.last_command = last_command
-        self.initiated_once = initiated_once
+        # self.world.last_command = last_command
+        # self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -64,8 +65,8 @@ class Loop:
             self.UVF_screen.initialiazeObjects()
         
         
-    def update_placement_state(self, last_command):
-        self.last_command = last_command
+    # def update_placement_state(self, last_command):
+    #     self.last_command = last_command
         
     
     
@@ -113,20 +114,24 @@ class Loop:
             command = self.rc.receive()
             
             if(self.world.debug and command is not None):
-                print(self.last_command)
+                print(self.world.last_command)
                 print(command)
-            elif(self.world.debug and command is None and not self.initiated_once):
+            elif(self.world.debug and command is None):
                 print("NENHUM PACOTE RECEBIDO AINDA")
             
-            if command is not None:
+            if command is not None and self.world.last_command is not None:
                 
-                self.last_command = command
-                self.initiated_once = True
+                if(command.timestamp != self.world.last_command.timestamp): 
+                    self.world.last_command = command
+                else:
+                    self.world.last_command = None
+
+                # self.initiated_once = True
                 # obedece o comando e sai do busy loop
             
-            self.strategy.manageReferee(self.arp, self.last_command)
+            self.strategy.manageReferee(self.arp, self.world.last_command)
             
-            if(self.world.debug and self.last_command != None):
+            if(self.world.debug and self.world.last_command != None):
                 print("REFEREE RODANDO")
                 
                 
@@ -158,7 +163,10 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
-                
+                if self.world.last_command.foul == Foul.STOP:
+                    break
+            
+            print("SAI DO BISI LOOP")
             # Tempo inicial do loop
             t0 = time.time()
 

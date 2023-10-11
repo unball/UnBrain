@@ -71,6 +71,7 @@ class Loop:
     
     
     def loop(self):
+        
         if self.world.updateCount == self.lastupdatecount: return
         self.lastupdatecount = self.world.updateCount
         
@@ -114,41 +115,33 @@ class Loop:
             command = self.rc.receive()
             
             if(self.world.debug and command is not None):
-                print(self.world.last_command)
-                print(command)
+                print("ULTIMO PACOTE LIDO SALVO:", self.world.last_command)
+                #print("PACOTE RECEBIDO:", command)
             elif(self.world.debug and command is None):
                 print("NENHUM PACOTE RECEBIDO AINDA")
             
             if command is not None and self.world.last_command is not None:
                 
+                if(self.world.debug and self.world.last_command != None):
+                
                 if(command.timestamp != self.world.last_command.timestamp): 
                     self.world.last_command = command
+                    print("salvo ultimo comando")
+                    exit()
                 else:
-                    self.world.last_command = None
-
-                # self.initiated_once = True
+                    pass
+                    #self.world.last_command = None
                 # obedece o comando e sai do busy loop
+            
             
             self.strategy.manageReferee(self.arp, self.world.last_command)
             
             if(self.world.debug and self.world.last_command != None):
                 print("REFEREE RODANDO")
-                
-                
-        
-
-            
-        
-        
-        
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
-
-        # Plota inimigos no ALP-GUI
-        # for robot in self.world.enemies:
-        #     clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
 
@@ -163,8 +156,10 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
-                if self.world.last_command.foul == Foul.STOP:
-                    break
+                if self.world.last_command is not None:
+                    if self.world.last_command.foul  == Foul.STOP:
+                        #pass
+                        break
             
             print("SAI DO BISI LOOP")
             # Tempo inicial do loop

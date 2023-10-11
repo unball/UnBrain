@@ -16,6 +16,8 @@ from vision.receiver import FiraClient
 
 from strategy.automaticReplacer import AutomaticReplacer
 
+import constants
+
 class Loop:
     def __init__(
         self, 
@@ -78,7 +80,15 @@ class Loop:
         self.strategy.update()
 
         # Executa o controle
+        
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        
+        if self.world.debug and constants.DEBUG_ACTUATE:
+            contador = 0
+            for vr, vl in control_output:
+                print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
+                contador+=1
+        
         if self.execute:
             for robot in self.world.raw_team: robot.turnOn()   
             self.radio.send(control_output)
@@ -99,8 +109,8 @@ class Loop:
         if( (self.world.debug) and (self.world.referee)):
             print("------------------------------")
             print("Executando com referee:")
-        else:
-            print("-----------------------------")
+        elif((self.world.debug) and not (self.world.referee)):
+            print("------------------------------")
             print("Executando sem referee:")
         
         if(self.world.referee):

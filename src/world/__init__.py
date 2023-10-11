@@ -2,6 +2,7 @@ from .elements import *
 import logging
 import time
 import math
+import constants
 
 class Field:
     def __init__(self, side):
@@ -94,31 +95,41 @@ class World:
             
             for _ in team:
                 
-                if self.debug:
-                    print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_yellow[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_yellow[robot_id].orientation)+mirror[1]:.2f}")
-                    
-                yellow[robot_id].update(
-                    message.robots_yellow[robot_id].x / (1000*mirror[0]),
-                    message.robots_yellow[robot_id].y / (1000*mirror[0]),
-                    message.robots_yellow[robot_id].orientation + mirror[1]
-                )
+                camisa = team[robot_id].robot_id
+                
+                if (constants.CAMISA_1 == camisa) or (constants.CAMISA_2 == camisa) or (constants.CAMISA_3):
+
+                    if self.debug:
+                        print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_yellow[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_yellow[robot_id].orientation)+mirror[1]:.2f}")
+                        
+                    yellow[robot_id].update(
+                        message.robots_yellow[robot_id].x / (1000*mirror[0]),
+                        message.robots_yellow[robot_id].y / (1000*mirror[0]),
+                        message.robots_yellow[robot_id].orientation + mirror[1]
+                    )
                 
                 robot_id += 1
+                
         else:
             robot_id = 0
 
             team = message.robots_blue
     
             for _ in team:
+                       
+                camisa = team[robot_id].robot_id
+                
+                if (constants.CAMISA_1 == camisa) or (constants.CAMISA_2 == camisa) or (constants.CAMISA_3):
 
-                if self.debug:
-                    print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_blue[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_blue[robot_id].orientation + mirror[1]):.2f}")
+                    if self.debug:
+                        print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_blue[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_blue[robot_id].orientation + mirror[1]):.2f}")
+                        
+                    blue[robot_id].update(
+                        message.robots_blue[robot_id].x / (1000*mirror[0]),
+                        message.robots_blue[robot_id].y / (1000*mirror[0]),
+                        message.robots_blue[robot_id].orientation+mirror[1]
+                    )
                     
-                blue[robot_id].update(
-                    message.robots_blue[robot_id].x / (1000*mirror[0]),
-                    message.robots_blue[robot_id].y / (1000*mirror[0]),
-                    message.robots_blue[robot_id].orientation+mirror[1]
-                )
                 robot_id+=1
 
         if self.mirror:
@@ -126,12 +137,12 @@ class World:
             self.ball.update((message.balls[0].x) / -1000, (message.balls[0].y) / -1000)
             
             if self.debug:
-                print(f"bola {(message.balls[0].x/-1000):.2f} {(message.balls[0].y / -1000):.2f}")
+                print(f"BALL {(message.balls[0].x/-1000):.2f} {(message.balls[0].y / -1000):.2f}")
                 
         else:
             self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
             if self.debug:
-                print(f"bola {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+                print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         
         
 

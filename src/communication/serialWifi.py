@@ -3,6 +3,7 @@ import serial.tools.list_ports
 import serial
 import subprocess
 import world
+import constants
 import time
 
 class SerialRadio():
@@ -22,18 +23,15 @@ class SerialRadio():
     try:
       if self.serial is None:
         
-        #self.serial = serial.Serial('/dev/ttyUSB6', 115200)
         porta = [port.device for port in serial.tools.list_ports.comports()][0]
-        #subprocess.Popen(["sudo", "chmod", "a+rw", porta], stdout=subprocess.PIPE, shell=True)
         subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
         print("Acessando a porta USB", porta)
         self.serial = serial.Serial(porta, 115200)
-        
         self.serial.timeout = 0.100
         
     except Exception as e:
-      print(e)
-      print("Falha ao abrir serial")
+      if(constants.SHOW_DEBUG_WIFI_ERROR):
+        print("FALHA AO ABRIR SERIAL, Erro:", e)
       return
 
     # Início da mensagem
@@ -48,7 +46,7 @@ class SerialRadio():
     # Adiciona as velocidades ao vetor de dados
 
     for i,(vr,vl) in enumerate(msg):
-      if(self.debug):
+      if(self.debug and self.serial is not None):
         print(f"ROBO {i} | VL {vl} | VR {vr}")
       data[i] = vl
       data[i+3] = vr

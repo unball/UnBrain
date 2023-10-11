@@ -67,6 +67,7 @@ class World:
         self.referee = referee
         self.debug = debug
         self.mirror = mirror
+        self.last_command = None
 
     def update(self, message):
         if self.team_yellow:

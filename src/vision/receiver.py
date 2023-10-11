@@ -27,20 +27,26 @@ class FiraClient:
         self.vision_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 128)
         self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
-        #self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack("=4sl", socket.inet_aton(self.vision_ip), socket.INADDR_ANY)) #volta aqui dps raul myron e ana beatriz macedo dourado @raul @ana
+        # self.vision_sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack("=4sl", socket.inet_aton(self.vision_ip), socket.INADDR_ANY)) #volta aqui dps raul myron e ana beatriz macedo dourado @raul @ana
         self.vision_sock.bind((self.vision_ip, self.vision_port))
 
         # self.vision_sock.setblocking(True)
         self.frame = None
         self.det_frame = None
+        
+        self.verify_vision = False
 
     def receive_frame(self):
         """Receive package and decode."""
         data = None
         while True:
             try:
+                if self.verify_vision == False:
+                    print("******* No data being received from vision *******")
                 data, _ = self.vision_sock.recvfrom(1024)
+                self.verify_vision = True
             except Exception as e:
+                self.verify_vision = False
                 print(e)
             if data != None:
                 break
@@ -50,6 +56,3 @@ class FiraClient:
         else: decoded_data = None
         return(decoded_data)
     
-# a = FiraClient()
-# while True:
-#     print(type(a.receive_frame()))

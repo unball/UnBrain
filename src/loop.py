@@ -65,8 +65,8 @@ class Loop:
             self.UVF_screen.initialiazeObjects()
         
         
-    # def update_placement_state(self, last_command):
-    #     self.last_command = last_command
+    def setLastCommand(self, last_command):
+        self.last_command = last_command
         
     
     
@@ -84,6 +84,9 @@ class Loop:
 
         # Executa o controle
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        
+        print("STATE ROBOTS:", control_output)
+        
         if self.execute:
             for robot in self.world.raw_team: robot.turnOn()   
             self.radio.send(control_output)
@@ -132,9 +135,8 @@ class Loop:
                     pass
                     #self.world.last_command = None
                 # obedece o comando e sai do busy loop
-            
-            
-            self.strategy.manageReferee(self.arp, self.world.last_command)
+                
+            self.strategy.manageReferee(self.arp, self.last_command)
             
             if(self.world.debug and self.world.last_command != None):
                 print("REFEREE RODANDO")

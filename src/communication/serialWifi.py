@@ -32,6 +32,7 @@ class SerialRadio():
         self.serial.timeout = 0.100
         
     except Exception as e:
+      return
       print(e)
       print("Falha ao abrir serial")
       return

@@ -77,11 +77,8 @@ class AutomaticReplacer():
         
         for robot in self.world.raw_team: robot.turnOn()
         initial_time = time.time()
-
-
-
+        
         while True:
-            print("WORLD LAST COMMAND", self.world.last_command)
             # Inicializa vetor com v e w a serem enviados para robô
             # print("COMMAND", command)
             control_output = []
@@ -92,22 +89,31 @@ class AutomaticReplacer():
 
             if self.world.debug:
                 print(f"Tempo tentando o posicionamento automático: {(current_time-initial_time):.2f}")
-                
+            
+            # Se todos os robôs chegaram na posição desejada
+            if(not isOutside_rr0 and not isOutside_rr1 and not isOutside_rr2) or current_time-initial_time > 1:
+                print("PASSOU DE UM SEGUNDO O LOOP DEVERIA PARAR")
+                for robot in self.world.raw_team: robot.turnOff()
+                self.world.setLastCommand = None
+                #self.world.initiated_once = False
+                #exit()
                 # A partir daqui criamos o vetor com v e w de cada robo a ser enviado
                 # para o modulo de comunicação do robo
-            if(isOutside_rr0):
-                control_output.append(robot1.entity.control.actuate(robot1))
-            if( not isOutside_rr0):
-                control_output.append((0,0))
-            if(isOutside_rr1):
-                control_output.append(robot2.entity.control.actuate(robot2))
-            if(not isOutside_rr1):
-                control_output.append((0,0))
-            if(isOutside_rr2):
-                control_output.append(robot3.entity.control.actuate(robot3))
-            if(not isOutside_rr2):
-                control_output.append((0,0))
-            
+            try:
+                if(isOutside_rr0):
+                    control_output.append(robot1.entity.control.actuate(robot1))
+                if( not isOutside_rr0):
+                    control_output.append((0,0))
+                if(isOutside_rr1):
+                    control_output.append(robot2.entity.control.actuate(robot2))
+                if(not isOutside_rr1):
+                    control_output.append((0,0))
+                if(isOutside_rr2):
+                    control_output.append(robot3.entity.control.actuate(robot3))
+                if(not isOutside_rr2):
+                    control_output.append((0,0))
+            except:
+                pass
             # Envia comando para robo
             self.radio.send(control_output)
         

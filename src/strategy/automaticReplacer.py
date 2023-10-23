@@ -75,7 +75,7 @@ class AutomaticReplacer():
         for robot in self.world.raw_team: robot.turnOn()
         initial_time = time.time()
         
-        while True:
+        while self.world.last_command:
             # Inicializa vetor com v e w a serem enviados para robô
             control_output = []
             current_time = time.time()
@@ -90,9 +90,9 @@ class AutomaticReplacer():
             if(not isOutside_rr0 and not isOutside_rr1 and not isOutside_rr2) or current_time-initial_time > 1:
                 print("PASSOU DE UM SEGUNDO O LOOP DEVERIA PARAR")
                 for robot in self.world.raw_team: robot.turnOff()
-                self.world.setLastCommand = None
-                #self.world.initiated_once = False
+                self.world.setLastCommand(None)
                 #exit()
+
                 # A partir daqui criamos o vetor com v e w de cada robo a ser enviado
                 # para o modulo de comunicação do robo
             try:

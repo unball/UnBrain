@@ -49,7 +49,7 @@ class Field:
     def goalAreaSize(self):
         return (self.goalAreaWidth, self.goalAreaHeight)
 class World:
-    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False, debug=False, referee=False,mirror=False):
+    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False, debug=False, referee=False,mirror=False, last_command=None):
         self.n_robots = n_robots
         self._team = [TeamRobot(self, i, on=immediate_start)
                       for i in range(self.n_robots)]
@@ -67,7 +67,7 @@ class World:
         self.referee = referee
         self.debug = debug
         self.mirror = mirror
-        self.last_command = None
+        self.last_command = last_command
 
     def update(self, message):
         if self.team_yellow:
@@ -141,6 +141,9 @@ class World:
         # logging.info("Vision update.")
 
         self.updateCount += 1
+
+    def setLastCommand(self, last_command):
+        self.last_command = last_command
 
     def addAllyGoal(self):
         print("Gol aliado!")

@@ -95,7 +95,15 @@ class MainStrategy(Strategy):
                         positions.append((robot_id[1], (0.3,  0, 180)))
                         positions.append((robot_id[2], (0.1, 0, 180)))
                         arp.send(positions)
-
+             # Pausa jogo
+            elif command.foul == Foul.STOP or command.foul == Foul.HALT:
+                
+                if(self.world.debug):
+                    print("COMANDO STOP OU HALT ENVIADO")
+                
+                for robot in self.world.raw_team: 
+                    robot.turnOff()
+                    
             elif command.foul == Foul.PENALTY_KICK:
                 if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
                     rg = -np.array(self.world.field.goalPos)
@@ -224,14 +232,7 @@ class MainStrategy(Strategy):
                 for robot in self.world.raw_team: 
                     robot.turnOn()
                 
-            # Pausa jogo
-            elif command.foul == Foul.STOP or command.foul == Foul.HALT:
-                
-                if(self.world.debug):
-                    print("COMANDO STOP OU HALT ENVIADO")
-                
-                for robot in self.world.raw_team: 
-                    robot.turnOff()
+           
         else:
             print("Command IS NONE")
 

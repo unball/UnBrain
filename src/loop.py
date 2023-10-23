@@ -32,8 +32,6 @@ class Loop:
         control=False,
         debug = False,
         mirror=False,
-        last_command = None, #comando de STOP do REFEREE
-        initiated_once = False
     ):
 
         # Instancia o mundo e a estratégia
@@ -53,22 +51,13 @@ class Loop:
         self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
-        
-        # self.world.last_command = last_command
-        # self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
         if self.draw_uvf:
             self.UVF_screen = UVFScreen(self.world, index_uvf_robot=1)
             self.UVF_screen.initialiazeScreen()
-            self.UVF_screen.initialiazeObjects()
-        
-        
-    def setLastCommand(self, last_command):
-        self.last_command = last_command
-        
-    
+            self.UVF_screen.initialiazeObjects()        
     
     def loop(self):
         
@@ -118,28 +107,16 @@ class Loop:
             command = self.rc.receive()
             
             if(self.world.debug and command is not None):
-                print("ULTIMO PACOTE LIDO SALVO:", self.world.last_command)
-                #print("PACOTE RECEBIDO:", command)
+                print(self.world.last_command)
+                print(command)
             elif(self.world.debug and command is None):
                 print("NENHUM PACOTE RECEBIDO AINDA")
             
-            if command is not None and self.world.last_command is not None:
-                
-                if(self.world.debug and self.world.last_command != None):
-                
-                if(command.timestamp != self.world.last_command.timestamp): 
-                    self.world.last_command = command
-                    print("salvo ultimo comando")
-                    exit()
-                else:
-                    pass
-                    #self.world.last_command = None
+            if command is not None:
+                self.world.setLastCommand(command) 
                 # obedece o comando e sai do busy loop
-                
-            self.strategy.manageReferee(self.arp, self.last_command)
-            
-            if(self.world.debug and self.world.last_command != None):
-                print("REFEREE RODANDO")
+            else:
+                self.strategy.manageReferee(self.arp, self.world.last_command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

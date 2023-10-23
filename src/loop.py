@@ -117,9 +117,7 @@ class Loop:
             
             else:
                 self.strategy.manageReferee(self.arp, self.world.last_command)
-   
-            if self.world.last_command is not None:
-                self.strategy.manageReferee(self.arp, self.world.last_command)
+
             
         
             

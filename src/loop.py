@@ -135,15 +135,8 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
-                if self.world.last_command is not None:
-                    if self.world.last_command.foul  == Foul.STOP:
-                        #pass
-                        break
-            
-            print("SAI DO BISI LOOP")
-            # Tempo inicial do loop
-            t0 = time.time()
 
+        
             # Executa o loop
             self.loop()
 

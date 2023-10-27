@@ -75,23 +75,46 @@ class World:
             yellow = self.team
         else:
             blue = self.team
+            
+        if self.mirror: 
+            if self.debug:
+                print("UTILIZANDO CAMPO INVERTIDO")
+            mirror = (-1,np.pi)
+        else: 
+            if self.debug:
+                print("UTILIZANDO CAMPO SEM INVERSÃO")
+            mirror = (1,0)
+        
 
-        if self.team_yellow:
+        if self.team_yellow:            
+                
             for robot in message.frame.robots_yellow:
-                yellow[robot.robot_id].update(robot.x, robot.y, robot.orientation)
+                
+                if self.debug:
+                    print(f"Yellow - {robot.robot_id} | x {(robot.x*mirror[0]):.2f} | y {(robot.y*mirror[0]):.2f} | th {(robot.orientation+mirror[1]):.2f}")
+
+                yellow[robot.robot_id].update(
+                        robot.x*mirror[0], 
+                        robot.y*mirror[0], 
+                        robot.orientation+mirror[1]
+            )
+                
         else:
 
             for robot in message.frame.robots_blue:
         
-                print(f"Blue - {robot.robot_id} | x {(robot.x):.2f} | y {(robot.y):.2f} | th {(robot.orientation)}")
+                
+                if self.debug:
+                    print(f"Blue - {robot.robot_id} | x {(robot.x*mirror[0]):.2f} | y {(robot.y*mirror[0]):.2f} | th {(robot.orientation+mirror[1])}")
+                        
 
                 blue[robot.robot_id].update(
-                    robot.x, 
-                    robot.y, 
-                    robot.orientation,
+                    robot.x*mirror[0], 
+                    robot.y*mirror[0], 
+                    robot.orientation+mirror[1],
                 )
 
-        self.ball.update(message.frame.ball.x, message.frame.ball.y)
+        self.ball.update(message.frame.ball.x*mirror[0], message.frame.ball.y*mirror[0])
 
         self.updateCount += 1
         

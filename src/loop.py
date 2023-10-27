@@ -4,6 +4,7 @@ from strategy import MainStrategy
 from UVF_screen import UVFScreen
 from communication.serialWifi import SerialRadio
 from world import World
+from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 
 # Importa interface com FiraSim
 # from client import VSS
@@ -33,12 +34,7 @@ class Loop:
         control=False,
         debug = False,
         mirror=False,
-        last_command = None, #comando de STOP do REFEREE
-        initiated_once = False
     ):
-        # Instancia interface com o simulador FIRASim
-        #self.vss = VSS(team_yellow=team_yellow)
-
 
         # Instancia o mundo e a estratégia
         self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
@@ -46,7 +42,7 @@ class Loop:
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
-        # self.rp = RefereePlacement(team_yellow=team_yellow)
+        
         self.arp = AutomaticReplacer(self.world)
 
         # Variáveis
@@ -57,18 +53,16 @@ class Loop:
         self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
-        
-        self.last_command = last_command
-        self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
         if self.draw_uvf:
             self.UVF_screen = UVFScreen(self.world, index_uvf_robot=1)
             self.UVF_screen.initialiazeScreen()
-            self.UVF_screen.initialiazeObjects()
-        
+            self.UVF_screen.initialiazeObjects()        
+    
     def loop(self):
+        
         if self.world.updateCount == self.lastupdatecount: return
         self.lastupdatecount = self.world.updateCount
         
@@ -106,6 +100,8 @@ class Loop:
         
         if self.execute: self.world.update(message.detection)
         
+        print("ESTADO POSICIONAMENTO AUTOMATICO:")
+        
         if( (self.world.debug) and (self.world.referee)):
             print("------------------------------")
             print("Executando com referee:")
@@ -118,36 +114,20 @@ class Loop:
             command = self.rc.receive()
             
             if(self.world.debug and command is not None):
-                print(self.last_command)
+                print(self.world.last_command)
                 print(command)
-            elif(self.world.debug and command is None and not self.initiated_once):
+            elif(self.world.debug and command is None):
                 print("NENHUM PACOTE RECEBIDO AINDA")
             
             if command is not None:
-                
-                self.last_command = command
+                self.world.setLastCommand(command) 
                 # obedece o comando e sai do busy loop
-                
-            self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)
-            
-            if(self.world.debug and self.last_command != None):
-                print("REFEREE RODANDO")
-                
-                
-        
-
-            
-        
-        
-        
+            else:
+                self.strategy.manageReferee(self.arp, self.world.last_command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
-
-        # Plota inimigos no ALP-GUI
-        # for robot in self.world.enemies:
-        #     clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
 
@@ -162,10 +142,8 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
-                
-            # Tempo inicial do loop
-            t0 = time.time()
 
+        
             # Executa o loop
             self.loop()
 

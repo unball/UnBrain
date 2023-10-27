@@ -2,9 +2,7 @@ import socket
 import pathlib
 moduleFolder = str(pathlib.Path(__name__).parent.absolute())
 import sys
-
 sys.path.append(moduleFolder + '/protobuf/')
-
 import vssref_command_pb2
 import vssref_common_pb2
 import vssref_placement_pb2 
@@ -29,7 +27,8 @@ class RefereeCommands():
             socket.INADDR_ANY
         )
 
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        #sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
         return sock
 
     def color2side(color):
@@ -39,8 +38,8 @@ class RefereeCommands():
 
     def receive(self):
         try:
-            data = self.socket.recv(512)
-            
+            self.socket.setblocking(False)
+            data = self.socket.recv(1024)
             if len(data) > 0:
                 command = vssref_command_pb2.VSSRef_Command()
                 command.ParseFromString(data)
@@ -79,9 +78,9 @@ class RefereePlacement:
 
 
 if __name__ == "__main__":
-    rc = RefereeCommands('224.5.23.2', 10003)
-    rpb = RefereePlacement('224.5.23.2', 10004)
-    rpy = RefereePlacement('224.5.23.2', 10004, True)
+    rc = RefereeCommands(constants.HOST_REFEREE, constants.PORT_REFEREE_COMMAND)
+    rpb = RefereePlacement(constants.HOST_REFEREE, constants.PORT_REFEREE_BLUE)
+    rpy = RefereePlacement(constants.HOST_REFEREE, constants.PORT_REFEREE_BLUE, True)
 
     while True:
         command = rc.receive()

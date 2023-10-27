@@ -16,6 +16,8 @@ from vision.receiver import FiraClient
 
 from strategy.automaticReplacer import AutomaticReplacer
 
+import constants
+
 class Loop:
     def __init__(
         self, 
@@ -24,25 +26,28 @@ class Loop:
         team_yellow=False, 
         team_side=1,
         immediate_start=False, 
-        referee=False, 
+        referee=False,
+        FIRASim = False, 
         static_entities=False,
         port=5001,
         n_robots=3,
         control=False,
-        debug = False
+        debug = False,
+        mirror=False,
+        last_command = None, #comando de STOP do REFEREE
+        initiated_once = False
     ):
         # Instancia interface com o simulador FIRASim
-        self.vss = VSS(team_yellow=team_yellow)
+        self.FIRASim = VSS(team_yellow=team_yellow)
 
 
         # Instancia o mundo e a estratégia
-        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee)
-        
+        self.world = World(n_robots=n_robots, side=team_side, debug=debug, FIRASim = FIRASim, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
-        self.rp = RefereePlacement(team_yellow=team_yellow)
+        # self.rp = RefereePlacement(team_yellow=team_yellow)
         self.arp = AutomaticReplacer(self.world)
 
         # Variáveis
@@ -53,6 +58,9 @@ class Loop:
         self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
+        
+        self.last_command = last_command
+        self.initiated_once = initiated_once
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -73,7 +81,20 @@ class Loop:
         self.strategy.update()
 
         # Executa o controle
+        if not self.draw_uvf: 
+            self.FIRASim.command.writeMulti([robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None])
+        else:
+            self.FIRASim.command.writeMulti([(0,0) for robot in self.world.team])
+
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        print(control_output)
+        
+        if self.world.debug and constants.DEBUG_ACTUATE:
+            contador = 0
+            for vr, vl in control_output:
+                print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
+                contador+=1
+        
         if self.execute:
             for robot in self.world.raw_team: robot.turnOn()   
             self.radio.send(control_output)
@@ -85,22 +106,62 @@ class Loop:
         self.draw()
 
     def busyLoop(self):
+        if(self.world.FIRASim):
+            message = self.FIRASim.vision.read()
+            print("mensagem FIRASim", message)
+
+            self.execute = True if message else False
+            
+            if self.execute: self.world.FIRASim_update(message)
+
+            if( (self.world.debug) and (self.world.referee)):
+                print("------------------------------")
+                print("Executando com referee:")
+            elif((self.world.debug) and not (self.world.referee)):
+                print("------------------------------")
+                print("Executando sem referee:")
+        else:
+            message = self.visionclient.receive_frame()
+            
+            self.execute = True if message else False   
+            
+            if self.execute: self.world.update(message.detection)
+            
+            if( (self.world.debug) and (self.world.referee)):
+                print("------------------------------")
+                print("Executando com referee:")
+            elif((self.world.debug) and not (self.world.referee)):
+                print("------------------------------")
+                print("Executando sem referee:")
         
-        #using firasim client
-        message = self.vss.vision.read()
-    
-        if message is not None: self.world.update(message)
+        if(self.world.referee):
         
-        command = self.rc.receive()
-        #if command is not None: self.strategy.manageReferee(self.rp, command)
+            command = self.rc.receive()
+            
+            if(self.world.debug and command is not None):
+                print(self.last_command)
+                print(command)
+            elif(self.world.debug and command is None and not self.initiated_once):
+                print("NENHUM PACOTE RECEBIDO AINDA")
+            
+            if command is not None:
+                
+                self.last_command = command
+                # obedece o comando e sai do busy loop
+                
+            self.strategy.manageReferee(self.arp, self.last_command, self.initiated_once)
+            
+            if(self.world.debug and self.last_command != None):
+                print("REFEREE RODANDO")
+                
+                
         
-        #mensagem do vsss-vision
-        #message = self.visionclient.receive_frame()
+
+            
         
         
-        if(self.world.debug):
-            print("Executando com referee:", self.world.referee)
         
+
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)

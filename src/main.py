@@ -17,6 +17,10 @@ parser.add_argument('--immediate-start', dest='immediate_start', action='store_c
 
 parser.add_argument('--referee', dest='referee', action='store_const', const=True,
                     default=False, help='If you are using referee for start.')
+
+parser.add_argument('--FIRASim', dest='FIRASim', action='store_const', const=True,
+                    default=False, help='If you are using FIRASim for start.')
+
 parser.add_argument('--static-entities', dest='static_entities', action='store_const', const=True,
                     default=False, help='If strategy will keep robots with the same entities all the time.')
 parser.add_argument('--disable-alp-gui', dest='disable_alp_gui', action='store_const', const=True,
@@ -29,6 +33,8 @@ parser.add_argument('--control', dest='control', action='store_const', const=Tru
                     default=False, help='If the firmware should control the output.')
 parser.add_argument('--debug', dest='debug', action='store_const',
                     const=True, default=False, help='Set debug mode for vision.')
+parser.add_argument('--mirror', dest='mirror', action='store_const',
+                    const=True, default=False, help='If vision is mirrored or not. Affects angles.')
 
 args = parser.parse_args()
 
@@ -44,12 +50,14 @@ loop = Loop(
     immediate_start=args.immediate_start,
     team_yellow=team_yellow,
     team_side=team_side,
+    FIRASim=args.FIRASim,
     referee=args.referee,
     static_entities=args.static_entities,
     port=args.port,
     n_robots=3,
     control=args.control,
     debug=args.debug,
+    mirror=args.mirror
 )
 
 loop.run()

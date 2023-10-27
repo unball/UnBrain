@@ -37,23 +37,23 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
-    def manageReferee(self, arp, command):
+    def manageReferee(self, arp, command, initiated_once):
 
         # Pegar apenas id que existe dos robos
         robot_id = []
         for robot in self.world.team:
             robot_id.append(robot.id)
 
-        if command is None: return
+        if command is None: 
+            
+            if(not initiated_once):
+                
+                for robot in self.world.raw_team: 
+                    robot.turnOff()
+            return
         
         self.goalkeeperIndx = None
         self.AttackerIdx = None
-        
-        if self.world.debug and command is not None:
-            print("\n\n\n")
-            print(command.gameHalf)
-            print("\n\n\n------------------")
-            #exit()
             
         # Verifica gol
         if command.foul == Foul.KICKOFF:
@@ -72,7 +72,7 @@ class MainStrategy(Strategy):
                 arp.send(positions)
             else:
                 rg = -np.array(self.world.field.goalPos)
-                rg[0] += 0.18
+                rg[0] += 0.2
                 positions = [(robot_id[0], (rg[0], rg[1], 90))]
                 penaltiPos = np.array([0.360, 0])
                 ang = 15 
@@ -97,9 +97,8 @@ class MainStrategy(Strategy):
                 print("COMANDO STOP OU HALT ENVIADO")
             
             for robot in self.world.raw_team: 
-                #self.radio.send([(0,0) for robot in self.world.team])
-                #robot.turnOff()
-                pass
+                robot.turnOff()
+
     
     def nearestGoal(self, indexes):
         rg = np.array([-0.75, 0])
@@ -163,14 +162,8 @@ class MainStrategy(Strategy):
     def update(self):
         if self.static_entities:
             self.world.team[2].updateEntity(GoalKeeper)
-            self.world.team[1].updateEntity(Attacker)
+            self.world.team[1].updateEntity(Defender)
             self.world.team[0].updateEntity(Attacker)
-
-        elif self.world.checkBatteries:
-            self.world.team[2].updateEntity(Attacker)
-            self.world.team[1].updateEntity(Attacker)
-            self.world.team[0].updateEntity(ControlTester)
-
         else:
             formation = self.formationDecider()
             toDecide = self.availableRobotIndexes()

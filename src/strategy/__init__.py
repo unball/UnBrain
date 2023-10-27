@@ -48,13 +48,11 @@ class MainStrategy(Strategy):
             for robot in self.world.raw_team: 
                 robot.turnOff()
         
-        #print(command)
-        #exit()
-                
-        self.goalkeeperIndx = None
-        self.AttackerIdx = None
+
         
-        if command is not None:
+        else:
+            self.goalkeeperIndx = None
+            self.AttackerIdx = None
             if command.foul == Foul.KICKOFF:
                 
                 if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
@@ -231,11 +229,7 @@ class MainStrategy(Strategy):
                 
                 for robot in self.world.raw_team: 
                     robot.turnOn()
-                
-           
-        else:
-            print("Command IS NONE")
-
+    
     
     def nearestGoal(self, indexes):
         rg = np.array([-0.75, 0])

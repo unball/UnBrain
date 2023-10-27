@@ -10,9 +10,9 @@ pygame
 scipy
 protobuf
 matplotlib
-dubins
+#dubins
 opencv-python
-vext
-vext.gi
+#vext
+#vext.gi
 serial
 pygame

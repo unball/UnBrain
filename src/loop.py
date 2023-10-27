@@ -100,8 +100,6 @@ class Loop:
         
         if self.execute: self.world.update(message.detection)
         
-        print("ESTADO POSICIONAMENTO AUTOMATICO:")
-        
         if( (self.world.debug) and (self.world.referee)):
             print("------------------------------")
             print("Executando com referee:")

@@ -2,14 +2,12 @@
 from client.referee import RefereeCommands
 from strategy.entity.automaticPlacement import AutomaticPlacement
 import numpy as np 
-from communication.serialWifi import SerialRadio
 
 class AutomaticReplacer():
     def __init__(self, world):
         super().__init__()
 
         self.world = world
-        self.radio = SerialRadio()
 
     def send(self, position):
         

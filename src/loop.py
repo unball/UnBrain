@@ -2,7 +2,6 @@ from client.referee import RefereeCommands, RefereePlacement
 from client.gui import clientProvider
 from strategy import MainStrategy
 from UVF_screen import UVFScreen
-from communication.serialWifi import SerialRadio
 from world import World
 
 # Importa interface com FiraSim
@@ -55,7 +54,6 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.visionclient = FiraClient()
-        self.radio = SerialRadio(control = control, debug = self.world.debug)
         self.execute = False
         self.t0 = time.time()
         
@@ -80,59 +78,37 @@ class Loop:
         # Executa estratégia
         self.strategy.update()
 
-        # Executa o controle
-        if not self.draw_uvf: 
-            self.FIRASim.command.writeMulti([robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None])
-        else:
-            self.FIRASim.command.writeMulti([(0,0) for robot in self.world.team])
-
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
-        print(control_output)
-        
+
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0
             for vr, vl in control_output:
                 print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
                 contador+=1
-        
-        if self.execute:
-            for robot in self.world.raw_team: robot.turnOn()   
-            self.radio.send(control_output)
+                
+        print(control_output)        
+                
+        # Controla o robo
+        if not self.draw_uvf: 
+            self.FIRASim.command.writeMulti(control_output)
         else:
-            self.radio.send([(0,0) for robot in self.world.team])
-            for robot in self.world.raw_team: robot.turnOff()
+            pass
 
+        
         # Desenha no ALP-GUI
         self.draw()
 
     def busyLoop(self):
-        if(self.world.FIRASim):
-            message = self.FIRASim.vision.read()
-            print("mensagem FIRASim", message)
+        
+        message = self.FIRASim.vision.read()
 
-            self.execute = True if message else False
-            
-            if self.execute: self.world.FIRASim_update(message)
-
-            if( (self.world.debug) and (self.world.referee)):
-                print("------------------------------")
-                print("Executando com referee:")
-            elif((self.world.debug) and not (self.world.referee)):
-                print("------------------------------")
-                print("Executando sem referee:")
-        else:
-            message = self.visionclient.receive_frame()
-            
-            self.execute = True if message else False   
-            
-            if self.execute: self.world.update(message.detection)
-            
-            if( (self.world.debug) and (self.world.referee)):
-                print("------------------------------")
-                print("Executando com referee:")
-            elif((self.world.debug) and not (self.world.referee)):
-                print("------------------------------")
-                print("Executando sem referee:")
+        if message is not None: self.world.update(message)
+    
+        self.execute = True if message else False
+        
+        if self.execute: self.world.FIRASim_update(message)
+        
+        
         
         if(self.world.referee):
         

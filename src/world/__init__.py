@@ -70,87 +70,31 @@ class World:
         self.mirror = mirror
 
     def update(self, message):
-        if self.team_yellow:
+        
+        if self.team_yellow: 
             yellow = self.team
-            # blue = self.enemies
         else:
-            # yellow = self.enemies
             blue = self.team
 
-        
-        if self.mirror: 
-            if self.debug:
-                print("UTILIZANDO CAMPO INVERTIDO")
-            mirror = (-1,np.pi)
-        else: 
-            if self.debug:
-                print("UTILIZANDO CAMPO SEM INVERSÃO")
-            mirror = (1,0)
-        
-        
         if self.team_yellow:
-            
-            robot_id = 0
-            team = message.robots_yellow
-            
-            for _ in team:
-                
-                camisa = team[robot_id].robot_id
-                
-                if (constants.CAMISA_1 == camisa) or (constants.CAMISA_2 == camisa) or (constants.CAMISA_3):
-
-                    if self.debug:
-                        print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_yellow[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_yellow[robot_id].orientation)+mirror[1]:.2f}")
-                        
-                    yellow[robot_id].update(
-                        message.robots_yellow[robot_id].x / (1000*mirror[0]),
-                        message.robots_yellow[robot_id].y / (1000*mirror[0]),
-                        message.robots_yellow[robot_id].orientation + mirror[1]
-                    )
-                
-                robot_id += 1
-                
+            for robot in message.frame.robots_yellow:
+                yellow[robot.robot_id].update(robot.x, robot.y, robot.orientation)
         else:
-            robot_id = 0
 
-            team = message.robots_blue
-    
-            for _ in team:
-                       
-                camisa = team[robot_id].robot_id
-                
-                if (constants.CAMISA_1 == camisa) or (constants.CAMISA_2 == camisa) or (constants.CAMISA_3):
-
-                    if self.debug:
-                        print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000*mirror[0]):.2f} | y {(message.robots_blue[robot_id].y) / (1000*mirror[0]):.2f} | th {(message.robots_blue[robot_id].orientation + mirror[1]):.2f}")
-                        
-                    blue[robot_id].update(
-                        message.robots_blue[robot_id].x / (1000*mirror[0]),
-                        message.robots_blue[robot_id].y / (1000*mirror[0]),
-                        message.robots_blue[robot_id].orientation+mirror[1]
-                    )
-                    
-                robot_id+=1
-
-        if self.mirror:
-            
-            self.ball.update((message.balls[0].x) / -1000, (message.balls[0].y) / -1000)
-            
-            if self.debug:
-                print(f"BALL {(message.balls[0].x/-1000):.2f} {(message.balls[0].y / -1000):.2f}")
-                
-        else:
-            self.ball.update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-            if self.debug:
-                print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+            for robot in message.frame.robots_blue:
         
-        
+                print(f"Blue - {robot.robot_id} | x {(robot.x):.2f} | y {(robot.y):.2f} | th {(robot.orientation)}")
 
-        # self.manualControlSpeedV = message["manualControlSpeedV"]
-        # self.manualControlSpeedW = message["manualControlSpeedW"]
-        # logging.info("Vision update.")
+                blue[robot.robot_id].update(
+                    robot.x, 
+                    robot.y, 
+                    robot.orientation,
+                )
+
+        self.ball.update(message.frame.ball.x, message.frame.ball.y)
 
         self.updateCount += 1
+        
     def FIRASim_update(self, message):
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])
         # enemiesPos = zip(message["enemy_x"], message["enemy_y"], message["enemy_th"], message["enemy_vx"], message["enemy_vy"], message["enemy_w"])

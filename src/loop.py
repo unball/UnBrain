@@ -80,28 +80,33 @@ class Loop:
         # Executa estratégia
         self.strategy.update()
 
-        # Executa o controle
-        if not self.draw_uvf: 
-            self.FIRASim.command.writeMulti([robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None])
-        else:
-            self.FIRASim.command.writeMulti([(0,0) for robot in self.world.team])
-
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
-        print(control_output)
-        
+        if not self.draw_uvf and self.world.FIRASim: 
+            self.FIRASim.command.writeMulti(control_output)
+        elif self.draw_uvf and self.world.FIRASim:
+            self.FIRASim.command.writeMulti([(0,0) for robot in self.world.team])
+        elif self.execute and not self.world.FIRASim:
+            for robot in self.world.raw_team: robot.turnOn()   
+            self.radio.send(control_output)
+        elif not self.execute and not self.world.FIRASim:
+            self.radio.send([(0,0) for robot in self.world.team])
+            for robot in self.world.raw_team: robot.turnOff()
+
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0
             for vr, vl in control_output:
                 print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
                 contador+=1
-        
-        if self.execute:
-            for robot in self.world.raw_team: robot.turnOn()   
-            self.radio.send(control_output)
+                
+        print(control_output)        
+                
+        # Controla o robo
+        if not self.draw_uvf: 
+            self.FIRASim.command.writeMulti(control_output)
         else:
-            self.radio.send([(0,0) for robot in self.world.team])
-            for robot in self.world.raw_team: robot.turnOff()
+            pass
 
+        
         # Desenha no ALP-GUI
         self.draw()
 

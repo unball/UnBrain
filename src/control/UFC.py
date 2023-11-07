@@ -65,11 +65,11 @@ class UFC_Simple(Control):
     # Lei de controle da velocidade angular
     w = v * phi + omega
 
-    if robot.id == 0:
-      print("v escolhido: v",(np.argmin(vels)+1))
+    #if robot.id == 0:
+    # print("v escolhido: v",(np.argmin(vels)+1))
     #   print(f"ref(th): {(th * 180 / np.pi):.0f}º")
     #   print(f"erro(th): {(eth * 180 / np.pi):.0f}º")
-      print(f"vref: {v:.2f}")
+    # print(f"vref: {v:.2f}")
     #   print(f", wref: {w:.2f}")
     #   print(f"v: {robot.velmod:.2f}", end='')
     #   print(f", w: {robot.w:.2f}")

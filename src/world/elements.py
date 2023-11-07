@@ -47,7 +47,7 @@ class Element:
 
     @property
     def y(self):
-        return self.y_raw
+        return  self.world.field.side * self.y_raw
 
     @property
     def pos(self):
@@ -184,7 +184,7 @@ class TeamRobot(Robot):
     
     def isAlive(self):
         """Verifica se o robô está vivo baseado na relação entre a velocidade enviada pelo controle e a velocidade medida pela visão"""
-        if not self.on:
+        """ if not self.on:
             self.timeLastResponse = time.time()
             return True
 
@@ -201,7 +201,7 @@ class TeamRobot(Robot):
                 #     self.turnOff()
                 return False
         else:
-            self.timeLastResponse = time.time()
+            self.timeLastResponse = time.time() """
         
         return True
 

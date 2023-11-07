@@ -17,7 +17,9 @@ Primeiro, é necessário instalar as bibliotecas necessárias para executar o si
 a configuração de um ambiente virtual tal como se segue:
 
 ```bash
-apt-get install python3.8 python3.8-dev python3.8-venv
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get install python3.8 python3.8-dev python3.8-venv
+sudo apt-get install python3.8 python3-dev python3-venv
 
 #Cria o ambiente virutal
 python3.8 -m venv venv

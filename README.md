@@ -45,6 +45,13 @@ cd src/client/protobuf
 ./protobuf.sh
 ```
 
+Antes de realizar a execução, cuidados sobre o [serial](https://github.com/unball/UnBrain/blob/main/src/communication/serialWifi.py) atualize o chmod com seu password sudo e por fim execute o comando bash abaixo: 
+```bash
+sudo adduser $USER dialout
+```
+
+E atualize o sudo chmod em 
+
 Por fim, podemos executar o sistema como segue:
 
 ```bash

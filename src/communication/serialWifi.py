@@ -20,11 +20,12 @@ class SerialRadio():
 
   def send(self, msg, waitack=True):
     """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
+    password = input('Digite sua senha:')
     try:
       if self.serial is None:
         
         porta = [port.device for port in serial.tools.list_ports.comports()][0]
-        subprocess.Popen("echo '04594618189' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen("echo" + password + " | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
         print("Acessando a porta USB", porta)
         self.serial = serial.Serial(porta, 115200)
         self.serial.timeout = 0.100

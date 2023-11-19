@@ -25,7 +25,6 @@ class Loop:
         loop_freq=90, 
         draw_uvf=False, 
         team_yellow=False, 
-        team_side=1,
         immediate_start=False, 
         referee=False, 
         static_entities=False,
@@ -37,7 +36,7 @@ class Loop:
     ):
 
         # Instancia o mundo e a estratégia
-        self.world = World(n_robots=n_robots, side=team_side, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
+        self.world = World(n_robots=n_robots, debug=debug,team_yellow=team_yellow, immediate_start=immediate_start, referee=referee,mirror=mirror)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Instancia interfaces com o referee

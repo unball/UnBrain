@@ -5,7 +5,7 @@ import math
 import constants
 
 class Field:
-    def __init__(self, side):
+    def __init__(self, mirror):
         self.width = 1.75
         self.height = 1.35
         self.goalAreaWidth = 0.15
@@ -13,8 +13,9 @@ class Field:
 
         self.xmargin = 0.30
         self.ymargin = 0.18
-        self.side = side
-
+        if mirror == True:
+            self.side = -1
+        else: self.side = 1
         self.areaEllipseSize = (0.35, 0.52)
         self.areaEllipseCenter = (-self.maxX + 0.10, 0)
 
@@ -50,13 +51,13 @@ class Field:
     def goalAreaSize(self):
         return (self.goalAreaWidth, self.goalAreaHeight)
 class World:
-    def __init__(self, n_robots=3, side=1, vss=None, team_yellow=False, immediate_start=False, control=False, debug=False, referee=False,mirror=False, last_command=None):
+    def __init__(self, n_robots=3, vss=None, team_yellow=False, immediate_start=False, control=False, debug=False, referee=False,mirror=False, last_command=None):
         self.n_robots = n_robots
         self._team = [TeamRobot(self, i, on=immediate_start)
                       for i in range(self.n_robots)]
         # self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
         self.ball = Ball(self)
-        self.field = Field(side)
+        self.field = Field(mirror)
         self.vss = vss
         self.team_yellow = team_yellow
         self.allyGoals = 0

@@ -9,8 +9,6 @@ logging.basicConfig(level=logging.INFO)
 parser = argparse.ArgumentParser(description='ALP-Winners system')
 parser.add_argument('--team-color', dest='team_color',
                     type=str, choices=['yellow', 'blue'], help='Team color.')
-parser.add_argument('--team-side', dest='team_side', type=str,
-                    choices=['left', 'right'], help='Team side.')
 
 parser.add_argument('--immediate-start', dest='immediate_start', action='store_const', const=False,
                     default=True, help='If robots should start moving without VSSReferee telling so.')
@@ -38,14 +36,12 @@ if args.disable_alp_gui:
     client.gui.disabled = True
 
 team_yellow = True if args.team_color == 'yellow' else False
-team_side = 1 if args.team_side == 'left' else -1
 
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False,
     immediate_start=args.immediate_start,
     team_yellow=team_yellow,
-    team_side=team_side,
     referee=args.referee,
     static_entities=args.static_entities,
     port=args.port,

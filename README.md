@@ -21,13 +21,13 @@ sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get install python3.8 python3.8-dev python3.8-venv
 sudo apt-get install python3.8 python3-dev python3-venv
 
-#Cria o ambiente virutal
+# Cria o ambiente virutal
 python3.8 -m venv venv
 
 # Entra no ambiente virtual
 source env/bin/activate
 
-#install requirements into it
+# Instala requisitos
 pip3 install -r requirements.txt
 ```
 

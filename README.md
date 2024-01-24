@@ -22,7 +22,7 @@ sudo apt-get install python3.8 python3.8-dev python3.8-venv
 sudo apt-get install python3.8 python3-dev python3-venv
 
 #Cria o ambiente virutal
-python3.8 -m venv venv
+python3.8 -m venv env
 
 # Entra no ambiente virtual
 source env/bin/activate

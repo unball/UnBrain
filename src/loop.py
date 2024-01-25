@@ -81,6 +81,7 @@ class Loop:
         self.strategy.update()
 
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        
         if not self.draw_uvf and self.world.FIRASim: 
             self.FIRASim.command.writeMulti(control_output)
         elif self.draw_uvf and self.world.FIRASim:
@@ -98,13 +99,10 @@ class Loop:
                 print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
                 contador+=1
                 
-        print(control_output)        
+        print("controle",control_output)        
                 
         # Controla o robo
-        if not self.draw_uvf: 
-            self.FIRASim.command.writeMulti(control_output)
-        else:
-            pass
+
 
         
         # Desenha no ALP-GUI
@@ -113,7 +111,7 @@ class Loop:
     def busyLoop(self):
         if(self.world.FIRASim):
             message = self.FIRASim.vision.read()
-            print("mensagem FIRASim", message)
+            #print("mensagem FIRASim", message)
 
             self.execute = True if message else False
             

@@ -22,8 +22,6 @@ class UVF(Field):
         # Constante da espiral únicas
         self.Kr_single = Kr_single
 
-        print("Pose da bola UNBRAIN", Pb)
-
 
     def F(self, P):
         return self.TUF(np.array(P), np.array(self.Pb))

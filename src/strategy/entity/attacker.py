@@ -51,7 +51,7 @@ class Attacker(Entity):
         
         self.lastChat = 0
 
-        self._control = UFC_Simple(self.world, enableInjection=False)
+        self._control = UFC_Simple(self.world, enableInjection=True)
     @property
     def control(self):
         return self._control
@@ -78,10 +78,8 @@ class Attacker(Entity):
                 
                 # Inverter a direção se o robô ficar preso em algo
                 elif not self.robot.isAlive() and self.robot.spin == 0:
-                    print("ESTAMOS NO IS ALIVE")
                     self.lastChat = time.time()
                     self.robot.direction *= -1
-            #print("robot is alive", self.robot.isAlive())
     
     def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange
@@ -103,7 +101,7 @@ class Attacker(Entity):
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]
-        #enemies = [robot for robot in self.world.enemies]
+        enemies = [robot for robot in self.world.enemies]
 
         # Atualiza histórico de velocidade do robô
         self.vravg = 0.995 * self.vravg + 0.005 * np.dot(vr, unit(ang(rr, rb)))
@@ -115,10 +113,10 @@ class Attacker(Entity):
         # else:
         #     self.robot.setSpin(0)
 
-        #if norm(rr, rb) < 0.085 and np.abs(rb[1]) > rl[1] and np.any([norm(rr, x.pos) < 0.20 for x in enemies]):
-         #   self.robot.setSpin(-np.sign(rr[1]), timeOut=1)
-        #else:
-         #   self.robot.setSpin(0)
+        if norm(rr, rb) < 0.085 and np.abs(rb[1]) > rl[1] and np.any([norm(rr, x.pos) < 0.20 for x in enemies]):
+            self.robot.setSpin(-np.sign(rr[1]), timeOut=1)
+        else:
+            self.robot.setSpin(0)
 
         # Define estado do movimento
         # Ir até a bola
@@ -130,7 +128,7 @@ class Attacker(Entity):
                 self.attackAngle = ang(rr, rg)
                 self.elapsed = time.time()
 
-            #    clientProvider().drawLine(self.robot.id, rr[0], rr[1], rg[0], rg[1])
+                clientProvider().drawLine(self.robot.id, rr[0], rr[1], rg[0], rg[1])
             # elif self.alignedToBall2(rb, rr):
             #     self.attackState = 2
             #     self.attackAngle =  self.robot.th if np.dot(unit(self.robot.th), rb- rr[:2]) > 0 else self.robot.th+np.pi #ang(rr, rb) # preciso melhorado
@@ -163,7 +161,7 @@ class Attacker(Entity):
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
-                #rps = np.array([r.pos for r in enemies+otherAllies])
+                rps = np.array([r.pos for r in enemies+otherAllies])
                 # Pbv = avoidObstacle(Pb, rr[:2], rl-[0.15,0], rps)
                 Pbv = Pb
 
@@ -198,15 +196,14 @@ class Attacker(Entity):
         #        if np.abs(ang(unit(angl(robot.pos-rr)), unit(self.robot.th))) < 30 * np.pi / 180:
         #         self.robot.field = AvoidanceField(self.robot.field, AvoidCircle(robot.pos, 0.08), borderSize=0.20)
 
-        # Campo repulsivo pro midfielder não atrapalhar o atacante
-        if self.slave and self.attackState == 0:
-            #print("I {0} am slave".format(self.robot.id))
-            for robot in [r for r in otherAllies if r.entity.__class__.__name__ ==  "Attacker"]:
-                self.robot.field = AvoidanceField(self.robot.field, AvoidCircle(robot.pos, 0.08), borderSize=0.20)
+        # if self.slave and self.attackState == 0:
+        #     print("I {0} am slave".format(self.robot.id))
+        #     for robot in [r for r in otherAllies if r.entity.__class__.__name__ ==  "Attacker"]:
+        #         self.robot.field = AvoidanceField(self.robot.field, AvoidCircle(robot.pos, 0.08), borderSize=0.20)
 
 
         # Campo para evitar outro robô, (só se não estiver alinhado)
-        # if self.attackState == 0:
+        #if self.attackState == 0:
         #    for robot in otherAllies + enemies:
         #        self.robot.field = AvoidanceField(self.robot.field, AvoidCircle(robot.pos, 0.08), borderSize=0.20)
 

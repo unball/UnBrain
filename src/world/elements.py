@@ -1,6 +1,6 @@
 import time
 from tools.interval import Interval
-from tools import adjustAngle, norml, derivative, angularDerivative, unit, angl, ang
+from tools import adjustAngle, norml, derivative, angularDerivative, unit, angl
 from control.UFC import UFC_Simple
 import numpy as np
 import math
@@ -26,10 +26,10 @@ class Element:
         self.angvel = 0
         self.interval = Interval(initial_dt=0.016)
 
-    def update(self, x, y, w=0):
+    def update(self, x, y, vx, vy, w=0):
         self.xvec.add(x)
         self.yvec.add(y)
-        self.linvel = (self.vx, self.vy)
+        self.linvel = (vx, vy)
         self.angvel = w
         self.interval.update()
 
@@ -47,7 +47,7 @@ class Element:
 
     @property
     def y(self):
-        return  self.world.field.side * self.y_raw
+        return self.y_raw
 
     @property
     def pos(self):
@@ -83,9 +83,9 @@ class Robot(Element):
         self.id = id
         self.thvec_raw = EntriesVec()
 
-    def update(self, x, y, th):
-        w = self.thvec_raw.add(th)
-        super().update(x,y,w)
+    def update(self, x, y, th, vx, vy, w):
+        self.thvec_raw.add(th)
+        super().update(x,y,vx,vy,w)
 
 class TeamRobot(Robot):
     def __init__(self, world, id, control=None, on=False):
@@ -123,7 +123,7 @@ class TeamRobot(Robot):
         self.field = field
 
     def stop(self):
-        self.radio.send([(0,0) for robot in self.world.team])
+        self.world.vss.command.write(self.id, 0, 0)
 
     def updateEntity(self, entityClass, forced_update=False, **kwargs):
         newEntity = entityClass(self.world, self, **kwargs)
@@ -136,9 +136,21 @@ class TeamRobot(Robot):
         if self.entity is None: return False
         else: return self.entity.isLocked()
 
+    # def setSpin(self, dir=1, timeout=0.25):
+    #     if dir != 0: 
+    #         # Atualiza a direção do spin
+    #         self.spin = dir
+
+    #         # Atualiza o tempo de início do spin, se for um spin
+    #         self.spinTime = time.time()
+
+    #         # Diz o tempo de duração do spin
+    #         self.spinTimeOut = timeout
+    #     else:
+    #         self.spin = 0
+
     @property
     def thvec(self):
-        # return [th+np.pi for th in self.thvec_raw.vec]
         return [th + (np.pi if self.direction == -1 else 0) for th in self.thvec_raw.vec]
 
     @property
@@ -147,7 +159,6 @@ class TeamRobot(Robot):
 
     @property
     def th(self):
-        # return self.th_raw
         return self.th_raw if self.world.field.side == 1 else adjustAngle(np.pi - self.th_raw)
 
     @property
@@ -161,11 +172,6 @@ class TeamRobot(Robot):
     @property
     def w(self):
         return self.world.field.side * self.w_raw
-    
-    @property
-    def v_signed(self):
-        direction = 1 if np.abs(ang(self.v, unit(self.th))) < np.pi/2 else -1
-        return self.velmod * direction
 
     def setSpin(self, dir=1, timeOut=0.25):
         if self.spin != 0:
@@ -184,24 +190,27 @@ class TeamRobot(Robot):
     
     def isAlive(self):
         """Verifica se o robô está vivo baseado na relação entre a velocidade enviada pelo controle e a velocidade medida pela visão"""
-        """ if not self.on:
+        # if time.time() - self.forcedAliveTime < self.forcedAliveTimeTimeOut:
+        #     return True
+
+        if not self.on:
             self.timeLastResponse = time.time()
             return True
 
         ctrlVel = np.abs(self.lastControlLinVel)
         
-        if ctrlVel < 0.01 or self.spin != 0: # or not self.world.running:
+        if ctrlVel < 0.01 or self.spin != 0:
             self.timeLastResponse = time.time()
             return True
         
         if self.velmod / ctrlVel < 0.1:
-            if self.timeLastResponse is not None and time.time()-self.timeLastResponse > 0.4:
-                # if self.timeLastResponse is not None and time.time()-self.timeLastResponse > 10:
-                #     print("***************DESLIGOU*****************")
-                #     self.turnOff()
-                return False
+            if self.timeLastResponse is not None:
+                dt = time.time() - self.timeLastResponse
+                if dt is not None and dt > 0.33:
+                    # self.keepAlive(3)
+                    return False
         else:
-            self.timeLastResponse = time.time() """
+            self.timeLastResponse = time.time()
         
         return True
 
@@ -213,16 +222,3 @@ class TeamRobot(Robot):
 class Ball(Element):
     def __init__(self, world):
         super().__init__(world)
-
-    # def setSpin(self, dir=1, timeout=0.25):
-    #     if dir != 0: 
-    #         # Atualiza a direção do spin
-    #         self.spin = dir
-
-    #         # Atualiza o tempo de início do spin, se for um spin
-    #         self.spinTime = time.time()
-
-    #         # Diz o tempo de duração do spin
-    #         self.spinTimeOut = timeout
-    #     else:
-    #         self.spin = 0

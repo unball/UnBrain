@@ -3,8 +3,7 @@ from .entity.attacker import Attacker
 from .entity.goalKeeper import GoalKeeper
 from .entity.defender import Defender
 from .entity.midfielder import Midfielder
-from .entity.controlTest import ControlTester
-from client.protobuf.vssref_common_pb2 import Foul, Quadrant
+from client.protobuf.vssref_common_pb2 import Foul
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
 from .movements import blockBallElipse
@@ -37,199 +36,44 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
-    def manageReferee(self, arp, command):
+    def manageReferee(self, rp, command):
+        if command is None: return
+        self.goalkeeperIndx = None
+        self.AttackerIdx = None
 
-        # Pegar apenas id que existe dos robos
-        robot_id = []
-        for robot in self.world.team:
-            robot_id.append(robot.id)
+        # Verifica gol
+        if command.foul == Foul.KICKOFF:
+            if RefereeCommands.color2side(command.teamcolor) == self.world.field.side:
+                self.world.addEnemyGoal()
+            elif RefereeCommands.color2side(command.teamcolor) == -self.world.field.side:
+                self.world.addAllyGoal()
 
-        if command is None: 
-            for robot in self.world.raw_team: 
-                robot.turnOff()
-        
+        elif command.foul == Foul.PENALTY_KICK:
+            if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
+                rg = -np.array(self.world.field.goalPos)
+                rg[0] += 0.18
+                positions = [(0, (rg[0], rg[1], 90))]
+                positions.append((1, (0,  0.30, 1.2*180)))
+                positions.append((2, (0, -0.30, 0.8*180)))
+                rp.send(positions)
+            else:
+                rg = -np.array(self.world.field.goalPos)
+                rg[0] += 0.18
+                positions = [(0, (rg[0], rg[1], 90))]
+                penaltiPos = np.array([0.360, 0])
+                ang = 15 
+                robotPos = penaltiPos  - 0.065 * unit(ang*np.pi/180)
+                positions.append((1, (robotPos[0],  robotPos[1], ang)))
+                positions.append((2, (0, -0.30, 3)))
+                rp.send(positions)
 
-        
-        else:
-            self.goalkeeperIndx = None
-            self.AttackerIdx = None
-            if command.foul == Foul.KICKOFF:
-                
-                if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
-                    if self.world.field.side == 1:
-                        rg = -np.array(self.world.field.goalPos)
-                        rg[0] += 0.18
-
-                        # posição do goleiro
-                        positions = [(robot_id[0], (rg[0], rg[1], 0))]
-                        positions.append((robot_id[1], (-0.3,  0, 0)))
-                        positions.append((robot_id[2], (-0.2, 0, 0)))
-                        arp.send(positions)
-                    
-                    else:
-                        rg = -np.array(self.world.field.goalPos)
-                        rg[0] += 0.18
-                        # posição do goleiro
-                        positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                        positions.append((robot_id[1], (0.3,  0, 180)))
-                        positions.append((robot_id[2], (0.2, 0, 180)))
-                        arp.send(positions)
-                else:
-                    if self.world.field.side == 1:
-                        rg = -np.array(self.world.field.goalPos)
-                        rg[0] += 0.18
-
-                        # posição do goleiro
-                        positions = [(robot_id[0], (rg[0], rg[1], 0))]
-                        positions.append((robot_id[1], (-0.3,  0, 0)))
-                        positions.append((robot_id[2], (-0.1, 0, 0)))
-                        arp.send(positions)
-                    
-                    else:
-                        rg = -np.array(self.world.field.goalPos)
-                        rg[0] += 0.18
-                        # posição do goleiro
-                        positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                        positions.append((robot_id[1], (0.3,  0, 180)))
-                        positions.append((robot_id[2], (0.1, 0, 180)))
-                        arp.send(positions)
-             # Pausa jogo
-            elif command.foul == Foul.STOP or command.foul == Foul.HALT:
-                
-                if(self.world.debug):
-                    print("COMANDO STOP OU HALT ENVIADO")
-                
-                for robot in self.world.raw_team: 
-                    robot.turnOff()
-                    
-            elif command.foul == Foul.PENALTY_KICK:
-                if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 90))]
-                    positions.append((robot_id[1], (0,  0.30, 1.2*180)))
-                    positions.append((robot_id[2], (0, -0.30, 0.8*180)))
-                    arp.send(positions)                   
-                else:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.2
-                    positions = [(robot_id[0], (rg[0], rg[1], 90))]
-                    penaltiPos = np.array([0.360, 0])
-                    ang = 15 
-                    robotPos = penaltiPos  - 0.065 * unit(ang*np.pi/180)
-                    positions.append((robot_id[1], (robotPos[0],  robotPos[1], ang)))
-                    positions.append((robot_id[2], (0, -0.30, 3)))
-                    arp.send(positions)
+        # Inicia jogo
+        elif command.foul == Foul.GAME_ON:
+            for robot in self.world.raw_team: robot.turnOn()
             
-            elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_1:
-                if(self.world.debug):
-                    print("FREE BALL Q1")
-                if self.world.field.side == 1:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
-                    positions.append((robot_id[1], (0.13, 0.4, 0)))
-                    positions.append((robot_id[2], (0.08, -0.2, -0.2*(180/np.pi))))
-                    arp.send(positions)
-                else: 
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                    positions.append(robot_id[1], (0.2, -0.16, 0 ))
-                    positions.append((robot_id[2], (0.5, 0.4, -3*(180/np.pi)) ) ) 
-                    arp.send(positions)
-            
-            elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_2:
-                
-                if(self.world.debug):
-                    print("FREE BALL Q2")
-
-                if self.world.field.side == 1:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
-                    positions.append((robot_id[1], (-0.6, 0.4, 0)))
-                    positions.append((robot_id[2], (-0.3, -0.15, -1.47*(180/np.pi)) ))
-                    arp.send(positions)
-                else: 
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                    positions.append(robot_id[1], (-0.2, -0.26, 1.46*(180/np.pi)) )
-                    positions.append((robot_id[2], (-0.18, 0.38, -3*(180/np.pi)) ) ) 
-                    arp.send(positions)  
-
-            elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_3:
-                
-                if(self.world.debug):
-                    print("FREE BALL Q2")
-                    
-                if self.world.field.side == 1:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
-
-                    positions.append((robot_id[1], (-0.56, -0.4, 0)))
-                    positions.append((robot_id[2], (-0.3 , 0.1 , -1.47*(180/np.pi)) ))
-                    arp.send(positions)
-                else: 
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 180))]
-
-                    positions.append(robot_id[1], (0.65 , 0.01 , 180 ) )
-                    positions.append((robot_id[2], (-0.16, -0.38 , -3*(180/np.pi)) ) ) 
-                    arp.send(positions)    
-
-            elif command.foul == Foul.FREE_BALL and command.foulQuadrant == Quadrant.QUADRANT_4:
-                
-                if(self.world.debug):
-                    print("FREE BALL Q4")
-                    
-                if self.world.field.side == 1:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
-
-                    positions.append((robot_id[1], ( 0.14 , -0.38 , 0)))
-                    positions.append((robot_id[2], ( 0.1 , 0.18 , -1.5*(180/np.pi)) ))
-                    
-                    arp.send(positions)
-                else: 
-                    
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 180))]
-
-                    positions.append(robot_id[1], ( 0.23 , 0.1 , -1.6*(180/np.pi)) ) 
-                    positions.append((robot_id[2], ( 0.57 , -0.37 , -3*(180/np.pi)) ) ) 
-                    
-                    arp.send(positions) 
-
-            elif command.foul == Foul.GOAL_KICK:
-                if RefereeCommands.color2side(command.teamcolor) != self.world.field.side:
-                    rg = -np.array(self.world.field.goalPos)
-                    rg[0] += 0.18
-                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
-
-                    positions.append((robot_id[1], (0.13,  -0.35 , -0.06*(180/np.pi)))) 
-                    positions.append((robot_id[2], (0.2 , 0.1, 0)))
-                    arp.send(positions)                   
-                else:
-                    positions.append((robot_id[0], ( 0.32 ,  -0.47 , -0.09*(180/np.pi)))) 
-                    positions.append((robot_id[1], ( 0.65 ,  0.28 , 2.25*(180/np.pi)))) 
-                    positions.append((robot_id[2], ( 0.45 , 0.27, -3*(180/np.pi))))
-                    arp.send(positions)                  
-                    
-            # Inicia jogo
-            elif command.foul == Foul.GAME_ON:
-                
-                if(self.world.debug):
-                    print("COMANDO START ENVIADO")
-                
-                for robot in self.world.raw_team: 
-                    robot.turnOn()
-    
+        # Pausa jogo
+        elif command.foul == Foul.STOP or command.foul == Foul.HALT:
+            for robot in self.world.raw_team: robot.turnOff()
     
     def nearestGoal(self, indexes):
         rg = np.array([-0.75, 0])
@@ -257,11 +101,10 @@ class MainStrategy(Strategy):
         return [0,1,2]
 
     def decideBestGoalKeeper(self, formation, toDecide):
-        # nearest = self.nearestGoal(toDecide)
-        # self.world.team[nearest].updateEntity(GoalKeeper)
-        self.world.team[1].updateEntity(GoalKeeper)
+        nearest = self.nearestGoal(toDecide)
+        self.world.team[nearest].updateEntity(GoalKeeper)
         
-        toDecide.remove(1)
+        toDecide.remove(nearest)
         formation.remove(GoalKeeper)
         
         return formation, toDecide
@@ -292,9 +135,10 @@ class MainStrategy(Strategy):
 
     def update(self):
         if self.static_entities:
-            self.world.team[2].updateEntity(GoalKeeper)
-            self.world.team[1].updateEntity(Defender)
             self.world.team[0].updateEntity(Attacker)
+            self.world.team[1].updateEntity(Defender)
+            self.world.team[2].updateEntity(GoalKeeper)
+
         else:
             formation = self.formationDecider()
             toDecide = self.availableRobotIndexes()
@@ -311,7 +155,7 @@ class MainStrategy(Strategy):
                 hasMaster = True
             
             if Attacker in formation:
-                self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.20 if hasMaster else 0, slave=True)
+                self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
 

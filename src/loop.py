@@ -3,6 +3,8 @@ from client.gui import clientProvider
 from strategy import MainStrategy
 from UVF_screen import UVFScreen
 from world import World
+
+# Importa interface com FiraSim
 from client import VSS
 
 import matplotlib.pyplot as plt
@@ -10,18 +12,33 @@ import numpy as np
 import logging
 import time
 import sys
+from vision.receiver import FiraClient
+
 
 class Loop:
-    def __init__(self, loop_freq=60, draw_uvf=False, team_yellow=True, team_side=1, immediate_start=False, static_entities=False):
+    def __init__(self,
+                loop_freq=60,
+                draw_uvf=False,
+                team_yellow=False,
+                team_side=1,
+                immediate_start=False,
+                static_entities=False,
+                firasim=False,
+                vssvision=False,
+                control=False,
+                debug =False,
+                mirror=False
+            ):
         # Instancia interface com o simulador
-        self.vss = VSS(team_yellow=team_yellow)
+        self.firasim = VSS(team_yellow=team_yellow)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
         self.rp = RefereePlacement(team_yellow=team_yellow)
 
         # Instancia o mundo e a estratégia
-        self.world = World(3, side=team_side, vss=self.vss, team_yellow=team_yellow, immediate_start=immediate_start)
+
+        self.world = World(3, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
@@ -43,31 +60,32 @@ class Loop:
         # Executa estratégia
         self.strategy.update()
 
+        control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+
         # Executa o controle
-        if not self.draw_uvf: 
-            self.vss.command.writeMulti([robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None])
-        else:
-            self.vss.command.writeMulti([(0,0) for robot in self.world.team])
+        if self.world.firasim: 
+            self.firasim.command.writeMulti(control_output)
 
         # Desenha no ALP-GUI
         self.draw()
 
     def busyLoop(self):
-        message = self.vss.vision.read()
-        if message is not None: self.world.update(message)
+        if(self.world.firasim):
+            message = self.firasim.vision.read()
+            if message is not None: print("mensagem FIRASim", message)
+            self.execute = True if message else False
+            if self.execute: self.world.FIRASim_update(message)
         
-        command = self.rc.receive()
-        if command is not None: self.strategy.manageReferee(self.rp, command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
 
-        for robot in self.world.enemies:
-            clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
+        # Plota inimigos no ALP-GUI
+        # for robot in self.world.enemies:
+        #     clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
-
     def run(self):
         t0 = 0
 

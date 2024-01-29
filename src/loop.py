@@ -72,7 +72,7 @@ class Loop:
     def busyLoop(self):
         if(self.world.firasim):
             message = self.firasim.vision.read()
-            if message is not None: print("mensagem FIRASim", message)
+            #if message is not None: print("mensagem FIRASim", message)
             self.execute = True if message else False
             if self.execute: self.world.FIRASim_update(message)
         
@@ -81,11 +81,11 @@ class Loop:
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
 
-        # Plota inimigos no ALP-GUI
-        # for robot in self.world.enemies:
-        #     clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
+        for robot in self.world.enemies:
+            clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
+
     def run(self):
         t0 = 0
 

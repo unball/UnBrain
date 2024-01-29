@@ -89,7 +89,6 @@ class World:
         self.updateCount += 1
         
     def FIRASim_update(self, message):
-        
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])
         # enemiesPos = zip(message["enemy_x"], message["enemy_y"], message["enemy_th"], message["enemy_vx"], message["enemy_vy"], message["enemy_w"])
 
@@ -114,6 +113,7 @@ class World:
         self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
 
         self.updateCount += 1
+
 
     def addAllyGoal(self):
         print("Gol aliado!")

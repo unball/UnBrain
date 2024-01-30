@@ -1,31 +1,31 @@
 import numpy as np
 
 # Constantes físicas do robô
-r = 0.016
-L = 0.075
-wheel_reduction = 1
-wheel_w_max = 110
-conversion = 127 / wheel_w_max
+wheel_reduction = 5
 
-def deadzone(vin, up, down):
-  if (vin!=0):
-    return vin+up if (vin > 0) else vin-abs(down)
-  return 0
+# Supostamente devia ser
+#r = 0.0325
+#L = 0.075
 
-def speeds2motors(v: float, w: float):
+# O que realmente é
+r = 0.02
+L = 0.080
+
+def speeds2motors(v: float, w: float) -> (int, int):
   """Recebe velocidade linear e angular e retorna velocidades para as duas rodas"""
 
   # Computa a velocidade angular de rotação de cada roda
-  vr = (v + (L/2)*w) / r
-  vl = (v - (L/2)*w) / r
+  vr = (v + (L/2)*w) / r#/ (2*np.pi*r) * wheel_reduction
+  vl = (v - (L/2)*w) / r#/ (2*np.pi*r) * wheel_reduction
+
+  #if fabs(vr) > max_motor_speed or fabs(vl) > max_motor_speed:
+  #  vr = max_motor_speed * vr / max(vr, vl)
+  #  vl = max_motor_speed * vl / max(vr, vl)
   
-  # vr = 3*int(sat(vr * conversion, 127))
-  # vl = 3*int(sat(vl * conversion, 127))
+  # vr *= convertion
+  # vl *= convertion
   
-  # vr = int(sat(vr, 127))
-  # vl = int(sat(vl, 127))
-  
-  return vr, vl
+  return vl, vr
 
 def motors2linvel(vl: float, vr: float) -> float:
   # Computa a velocidade angular de rotação de cada roda
@@ -127,11 +127,3 @@ def bestWithHyst(state: int, possibleStates: list, possibleStatesDistances: list
 
   best = np.argmin(distances)
   return possibleStates[best]
-
-""" Encode speeds from float to int, maximum linear velocity is 2 m/s and maximum angular speed is 64 rad/s """
-def encodeSpeeds(v: float, w: float) -> (int, int):
-  
-  venc = int(v/2 * 32767)
-  wenc = int(w/64 * 32767)
-
-  return (1 if venc >= 0 else -1) * (abs(venc) % 32767), (1 if wenc >= 0 else -1) * (abs(wenc) % 32767)

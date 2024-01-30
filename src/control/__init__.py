@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-from tools import speeds2motors, deadzone, sat
-import numpy as np
-import time
+from tools import speeds2motors
 
 class Control(ABC):
     def __init__(self, world):
@@ -14,20 +12,8 @@ class Control(ABC):
         pass
 
     def actuate(self, robot):
-        if not robot.on:
-            return (0, 0)
+        if not robot.on: return (0,0)
 
         v, w = self.output(robot)
-        
         robot.lastControlLinVel = v
-        
-        vr, vl = speeds2motors(v, w)
-
-        vr = int(deadzone(sat(vr, 223), 32, -32))
-        vl = int(deadzone(sat(vl, 223), 32, -32))
-
-        #print("VL", vl,"VR", vr)
-        
-        return vr, vl
-
-
+        return speeds2motors(v, self.world.field.side * w)

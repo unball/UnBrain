@@ -7,7 +7,7 @@ import time
 
 class DefenderControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=100, mu=0.5, vmax=1.0, L=0.075):
+  def __init__(self, world, kw=5, kp=100, mu=0.5, vmax=2, L=0.075):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -44,7 +44,7 @@ class DefenderControl(Control):
     w = dth + self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + self.kw/100.0 * self.ieth 
 
     # Velocidade limite de deslizamento
-    v1 = self.amax / np.abs(w) if np.abs(w) else self.amax
+    v1 = self.amax / np.abs(w)
 
     # Velocidade limite das rodas
     v2 = self.vmax - self.L * np.abs(w) / 2

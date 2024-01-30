@@ -1,31 +1,33 @@
 import socket
 import pathlib
-moduleFolder = str(pathlib.Path(__file__).parent.absolute())
+moduleFolder = str(pathlib.Path(__name__).parent.absolute())
 import sys
 sys.path.append(moduleFolder + '/protobuf/')
 import vssref_command_pb2
 import vssref_common_pb2
-import vssref_placement_pb2
+import vssref_placement_pb2 
 import constants
+import struct
 
-class RefereeCommands:
+class RefereeCommands():
     def __init__(self, host=constants.HOST_REFEREE, port=constants.PORT_REFEREE_COMMAND):
         self.host = host
         self.port = port
         self.socket = self.createSocket(host, port)
 
-    def createSocket(self, host, port, blocking = False):
-        # create UDP c  
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setblocking(blocking)
+    def createSocket(self, host, port):
+        # create UDP 
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32) 
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
         sock.bind((host, port))
-        
-        selfHost = socket.gethostbyname(socket.gethostname())
-        sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(selfHost))
-        sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(host) + socket.inet_aton(selfHost))
+
+        mreq = struct.pack(
+            "4sl",
+            socket.inet_aton(host),
+            socket.INADDR_ANY
+        )
+
+        #sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
         return sock
 
@@ -36,8 +38,8 @@ class RefereeCommands:
 
     def receive(self):
         try:
-            data = self.socket.recv(512)
-            
+            self.socket.setblocking(False)
+            data = self.socket.recv(1024)
             if len(data) > 0:
                 command = vssref_command_pb2.VSSRef_Command()
                 command.ParseFromString(data)
@@ -76,9 +78,9 @@ class RefereePlacement:
 
 
 if __name__ == "__main__":
-    rc = RefereeCommands('224.5.23.2', 10003)
-    rpb = RefereePlacement('224.5.23.2', 10004)
-    rpy = RefereePlacement('224.5.23.2', 10004, True)
+    rc = RefereeCommands(constants.HOST_REFEREE, constants.PORT_REFEREE_COMMAND)
+    rpb = RefereePlacement(constants.HOST_REFEREE, constants.PORT_REFEREE_BLUE)
+    rpy = RefereePlacement(constants.HOST_REFEREE, constants.PORT_REFEREE_BLUE, True)
 
     while True:
         command = rc.receive()

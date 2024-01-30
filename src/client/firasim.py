@@ -4,10 +4,10 @@ moduleFolder = str(pathlib.Path(__file__).parent.absolute())
 import sys
 sys.path.append(moduleFolder + '/protobuf/')
 sys.path.append(moduleFolder + '/../')
-import command_pb2
-import common_pb2
-import packet_pb2
-import replacement_pb2
+# import command_pb2
+# import common_pb2
+# import packet_pb2
+# import replacement_pb2
 import constants
 import numpy as np
 import time

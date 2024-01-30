@@ -39,6 +39,11 @@ def goToBall(rb, vb, rg, rr, rl, vravg, offset=0.015):
 
     return np.array([*target[:2], angle])
 
+# def goToBallTimed(rb, vb, rg, rr, rl, vravg, timeout = 5, offset=0.015):
+    
+#     if (bola nao mexeu em timeout segundos):
+#             goToBall(rb, vb, rg, rr, rl, vravg, offset)
+
 def avoidObstacle(rt, rr, rl, rps):
     obstacles = []
     
@@ -76,21 +81,23 @@ def avoidObstacle(rt, rr, rl, rps):
         return rt
 
 def goalkeep(rb, vb, rr, rg):
-    xGoal = rg[0] 
+    xGoal = rg[0]
 
     #projeta a velocidade da bola 
-    ytarget = projectLine(rb, vb, xGoal+0.05)
-    if ((vb[0]) < -0.03): #and  ((rb[0]) > .15) and np.abs(ytarget) < 0.2:
-        #verificar se a projeção está no gol
-        ytarget = sat(ytarget, 0.2)
+    # ytarget = projectLine(rb, vb, xGoal+0.05)
+    ytarget = projectLine(rb, vb, xGoal)
+    if ((vb[0]) < -0.1): #and  (rb[0]) > .15) and np.abs(ytarget) < 0.2: (verifica se a projeção está no gol)
+        ytarget = sat(ytarget, 0.17)
         angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
         return (xGoal, ytarget, angle)
 
     #Se não, acompanha o y
-    ytarget = sat(rb[1], 0.2 + 0.27 * (rb[0] < -0.6 and abs(rb[1]) < 0.37))
+    #xGoal = rg[0] - 0.175 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)
+    ytarget = sat(rb[1], 0.14 + 0.21 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)) #(permite que o goleiro avance na área do gol)
+    #ytarget = sat(rb[1], 0.17) #(permite que o goleiro avance na área do gol)
     angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
     return np.array([xGoal, ytarget, angle])
- 
+
 def blockBallElipse(rb, vb, rr, rm, a, b):
     e = np.array([1/a, 1/b])
     spin = 0
@@ -122,7 +129,21 @@ def blockBallElipse(rb, vb, rr, rm, a, b):
     # return (r[0], r[1], r_ort_angle)
     
 def spinGoalKeeper(rb, rr, rm):
-    if norm(rr, rb) < 0.08:
+    # print(f"norm:{norm(rr, rb)}" )
+    if norm(rr, rb) < 0.1:
+        spin = 1 if rr[1] > rb[1] else -1
+    else:
+        spin = 0
+
+    return spin
+
+def spinGetFreeGoalKeeper(rb, rr):
+    spin = 1 if rr[1] > rb[1] else -1
+    return spin
+
+
+def spinDefender(rb, rr, rm):
+    if norm(rb, rm) > norm(rr, rm) and norm(rr, rb) < 0.05:
         spin = 1 if rr[1] > rb[1] else -1
     else:
         spin = 0

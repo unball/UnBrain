@@ -32,13 +32,6 @@ class Element:
         self.linvel = (self.vx, self.vy)
         self.angvel = w
         self.interval.update()
-        
-    def update_element_FIRASim(self, x, y, vx, vy, w=0):
-        self.xvec.add(x)
-        self.yvec.add(y)
-        self.linvel = (vx, vy)
-        self.angvel = w
-        self.interval.update()
 
     @property
     def x_raw(self):
@@ -93,10 +86,6 @@ class Robot(Element):
     def update(self, x, y, th):
         w = self.thvec_raw.add(th)
         super().update(x,y,w)
-        
-    def update_FIRASim(self, x, y, th, vx, vy, w):
-        self.thvec_raw.add(th)
-        super().update_element_FIRASim(x,y,vx,vy,w)
 
 class TeamRobot(Robot):
     def __init__(self, world, id, control=None, on=False):

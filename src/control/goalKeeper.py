@@ -7,7 +7,7 @@ import time
 
 class GoalKeeperControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=100, mu=0.07, vmax=2, L=0.075):
+  def __init__(self, world, kw=3, kp=100, mu=0.7, vmax=0.5, L=0.075):
     Control.__init__(self, world)
 
     self.g = 9.8

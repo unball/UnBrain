@@ -14,6 +14,8 @@ import time
 import sys
 from vision.receiver import FiraClient
 
+import constants
+
 
 class Loop:
     def __init__(self,
@@ -62,6 +64,12 @@ class Loop:
 
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
 
+        if self.world.debug and constants.DEBUG_ACTUATE:
+            contador = 0
+            for vr, vl in control_output:
+                print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
+                contador+=1
+
         # Executa o controle
         if self.world.firasim: 
             self.firasim.command.writeMulti(control_output)
@@ -70,11 +78,24 @@ class Loop:
         self.draw()
 
     def busyLoop(self):
+        if((self.world.debug) and (self.world.firasim)):
+            print("_________________________")
+            print("Executando com firasim:")
+
         if(self.world.firasim):
             message = self.firasim.vision.read()
             #if message is not None: print("mensagem FIRASim", message)
             self.execute = True if message else False
             if self.execute: self.world.FIRASim_update(message)
+
+        if((self.world.debug) and (self.world.vssvision)):
+            print("_________________________")
+            print("Executando com vssvision:")
+        
+        elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
+            print("_________________________")
+            print("Executando sem pacote:")
+        
         
 
     def draw(self):

@@ -70,10 +70,14 @@ class MainStrategy(Strategy):
         # Inicia jogo
         elif command.foul == Foul.GAME_ON:
             for robot in self.world.raw_team: robot.turnOn()
-            
+            if(self.world.debug):
+                    print("COMANDO START ENVIADO")
+                    
         # Pausa jogo
         elif command.foul == Foul.STOP or command.foul == Foul.HALT:
             for robot in self.world.raw_team: robot.turnOff()
+            if(self.world.debug):
+                   print("COMANDO STOP OU HALT ENVIADO")
     
     def nearestGoal(self, indexes):
         rg = np.array([-0.75, 0])

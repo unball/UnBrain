@@ -3,6 +3,7 @@ from .entity.attacker import Attacker
 from .entity.goalKeeper import GoalKeeper
 from .entity.defender import Defender
 from .entity.midfielder import Midfielder
+from .entity.controlTest import ControlTester
 from client.protobuf.vssref_common_pb2 import Foul
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
@@ -137,11 +138,16 @@ class MainStrategy(Strategy):
 
         return formation, toDecide
 
-    def update(self):
-        if self.static_entities:
+    def update(self, world):
+        if self.static_entities and not world.control:
             self.world.team[0].updateEntity(Attacker)
             self.world.team[1].updateEntity(Defender)
             self.world.team[2].updateEntity(GoalKeeper)
+
+        elif world.control:
+            self.world.team[0].updateEntity(ControlTester, forced_update=True)
+            self.world.team[1].updateEntity(ControlTester, forced_update=True)
+            self.world.team[2].updateEntity(ControlTester, forced_update=True)
 
         else:
             formation = self.formationDecider()

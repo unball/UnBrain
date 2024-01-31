@@ -195,26 +195,30 @@ class TeamRobot(Robot):
     
     def isAlive(self):
         """Verifica se o robô está vivo baseado na relação entre a velocidade enviada pelo controle e a velocidade medida pela visão"""
-        """ if not self.on:
+        # if time.time() - self.forcedAliveTime < self.forcedAliveTimeTimeOut:
+        #     return True
+
+        if not self.on:
             self.timeLastResponse = time.time()
             return True
 
         ctrlVel = np.abs(self.lastControlLinVel)
         
-        if ctrlVel < 0.01 or self.spin != 0: # or not self.world.running:
+        if ctrlVel < 0.01 or self.spin != 0:
             self.timeLastResponse = time.time()
             return True
         
         if self.velmod / ctrlVel < 0.1:
-            if self.timeLastResponse is not None and time.time()-self.timeLastResponse > 0.4:
-                # if self.timeLastResponse is not None and time.time()-self.timeLastResponse > 10:
-                #     print("***************DESLIGOU*****************")
-                #     self.turnOff()
-                return False
+            if self.timeLastResponse is not None:
+                dt = time.time() - self.timeLastResponse
+                if dt is not None and dt > 0.33:
+                    # self.keepAlive(3)
+                    return False
         else:
-            self.timeLastResponse = time.time() """
+            self.timeLastResponse = time.time()
         
         return True
+
 
     def keepAlive(self, timeToKeepAlive):
         self.forcedAliveTime = time.time()

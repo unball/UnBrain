@@ -122,7 +122,7 @@ def blockBallElipse(rb, vb, rr, rm, a, b):
     # return (r[0], r[1], r_ort_angle)
     
 def spinGoalKeeper(rb, rr, rm):
-    if norm(rr, rb) < 0.08:
+    if norm(rr, rb) < 0.1:
         spin = 1 if rr[1] > rb[1] else -1
     else:
         spin = 0

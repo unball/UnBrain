@@ -39,6 +39,7 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         self.world = World(3, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
+        
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
@@ -58,13 +59,14 @@ class Loop:
         self.lastupdatecount = self.world.updateCount
 
         # Executa estratégia
-        self.strategy.update()
+        self.strategy.update(self.world)
 
         control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
 
         # Executa o controle
         if self.world.firasim: 
             self.firasim.command.writeMulti(control_output)
+            
 
         # Desenha no ALP-GUI
         self.draw()

@@ -29,7 +29,7 @@ parser.add_argument('--vssvision', dest='vssvision', action='store_const', const
                     default=False, help='If you are using vssvision for start.')
 
 parser.add_argument('--control', dest='control', action='store_const', const=True,
-                    default=False, help='If the firmware should control the output.')
+                    default=False, help='If you want to make all entities work as ControlTester.')
 
 parser.add_argument('--debug', dest='debug', action='store_const',
                     const=True, default=False, help='Set debug mode for vision.')

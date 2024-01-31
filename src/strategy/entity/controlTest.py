@@ -34,20 +34,21 @@ class ControlTester(Entity):
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
 
-            if abs(angError(ref_th, rob_th)) > 90 * np.pi / 180:
-                self.robot.direction *= -1
-                self.lastChat = time.time()
+            if time.time()-self.lastChat > 0.3:
+                if abs(angError(ref_th, rob_th)) > 90 * np.pi / 180:
+                    self.robot.direction *= -1
+                    self.lastChat = time.time()
 
-            # Inverter a direção se o robô ficar preso em algo
-            elif not self.robot.isAlive() and self.robot.spin == 0:
-                self.lastChat = time.time()
-                self.robot.direction *= -1
+                # Inverter a direção se o robô ficar preso em algo
+                elif not self.robot.isAlive() and self.robot.spin == 0:
+                    self.lastChat = time.time()
+                    self.robot.direction *= -1
 
     def fieldDecider(self):
         rr = np.array(self.robot.pos)
         
-        if rr[0] > 0.65:
-            self.robot.field = DirectionalField(np.pi, Pb=([-0.65,rr[1],np.pi]))
-        if  rr[0] < -0.65:
-            self.robot.field = DirectionalField(0, Pb=([0.65,rr[1],0]))
+        if rr[0] > 0.35: # quanto maior o número, maior a distância de controle percorrida pelo robô e menor a área inicializável
+            self.robot.field = DirectionalField(np.pi, Pb=(-0.65,rr[1],np.pi))
+        if  rr[0] < -0.35:
+            self.robot.field = DirectionalField(0, Pb=(0.65,rr[1],0))
 

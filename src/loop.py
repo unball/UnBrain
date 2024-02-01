@@ -12,12 +12,13 @@ import numpy as np
 import logging
 import time
 import sys
+import signal
 from vision.receiver import FiraClient
 
 import constants
 
-
 class Loop:
+
     def __init__(self,
                 loop_freq=60,
                 draw_uvf=False,
@@ -32,6 +33,9 @@ class Loop:
             ):
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
+
+        # Instancia de sinal caso haja interrupções no processo (ctrl + C)
+        signal.signal(signal.SIGINT, self.handle_SIGINT)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
@@ -57,10 +61,15 @@ class Loop:
             self.UVF_screen.initialiazeScreen()
             self.UVF_screen.initialiazeObjects()
 
+    # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
+    def handle_SIGINT(self, signum, frame):
+        self.firasim.command.writeMulti( (0,0) for robot in self.world.team)
+        sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
         self.lastupdatecount = self.world.updateCount
-
+        
         # Executa estratégia
         self.strategy.update(self.world)
 
@@ -74,16 +83,12 @@ class Loop:
 
         # Executa o controle
         if self.world.firasim: 
-            self.firasim.command.writeMulti(control_output)
-            
+            self.firasim.command.writeMulti(control_output)        
 
         # Desenha no ALP-GUI
         self.draw()
 
     def busyLoop(self):
-        if((self.world.debug) and (self.world.firasim)):
-            print("_________________________")
-            print("Executando com firasim:")
 
         if(self.world.firasim):
             message = self.firasim.vision.read()
@@ -98,9 +103,7 @@ class Loop:
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
             print("_________________________")
             print("Executando sem pacote:")
-        
-        
-
+           
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)

@@ -12,12 +12,14 @@ import numpy as np
 import logging
 import time
 import sys
+import signal
 from vision.receiver import FiraClient
 
 import constants
 
 
 class Loop:
+
     def __init__(self,
                 loop_freq=60,
                 draw_uvf=False,
@@ -33,6 +35,9 @@ class Loop:
             ):
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
+
+        # Instancia de sinal caso haja interrupções no processo (ctrl + C)
+        signal.signal(signal.SIGINT, self.handle_SIGINT)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
@@ -56,10 +61,15 @@ class Loop:
             self.UVF_screen.initialiazeScreen()
             self.UVF_screen.initialiazeObjects()
 
+    # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
+    def handle_SIGINT(self, signum, frame):
+        self.firasim.command.writeMulti( (0,0) for robot in self.world.team)
+        sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
         self.lastupdatecount = self.world.updateCount
-
+        
         # Executa estratégia
         self.strategy.update(self.world)
 

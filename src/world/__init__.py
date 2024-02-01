@@ -96,17 +96,15 @@ class World:
             yellow = self.team
         else:
             blue = self.team
+            
         if self.team_yellow:
-            robot_id = 0
-            for robot in message.frame.robots_yellow:
+            for id, robot in enumerate(message.frame.robots_yellow):
                 #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
-                yellow[robot_id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
-                robot_id += 1
+                yellow[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
         else:
-            robot_id = 0
-            for robot in message.frame.robots_blue:
-                blue[robot_id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
-                robot_id += 1
+            for id, robot in enumerate(message.frame.robots_blue):
+                blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)
         #self.ball.update(message["ball_x"], message["ball_y"], message["ball_vx"], message["ball_vy"])

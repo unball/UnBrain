@@ -34,27 +34,19 @@ class Element:
         self.interval.update()
         
     def update_element_FIRASim(self, x, y, vx, vy, w=0):
-        self.xvec.add(x)
+        self.xvec.add(self.world.field.side * x)
         self.yvec.add(y)
         self.linvel = (vx, vy)
         self.angvel = w
         self.interval.update()
 
     @property
-    def x_raw(self):
+    def x(self):
         return self.xvec.value
 
     @property
-    def x(self):
-        return self.world.field.side * self.x_raw
-
-    @property
-    def y_raw(self):
-        return self.yvec.value
-
-    @property
     def y(self):
-        return  self.world.field.side * self.y_raw
+        return  self.yvec.value
 
     @property
     def pos(self):

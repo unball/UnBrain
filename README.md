@@ -55,7 +55,7 @@ E atualize o sudo chmod em
 Por fim, podemos executar o sistema como segue:
 
 ```bash
-python3 src/main.py --team-color blue --team-side left
+python3 src/main.py --team-color blue
 ```
 
 ### Sobre os argumentos no terminal
@@ -63,15 +63,20 @@ python3 src/main.py --team-color blue --team-side left
 Podemos usar `python3 src/main.py --help` para saber mais sobre os argumentos que podemos
 passar pelo terminal, mas os principais são
 
-- cor do time `--team-color`` que pode ser yellow ou blue
-- lado aliado do campo `--team-side`` que pode ser right ou left, sendo que left é o padrão
+- cor do time `--team-color` que pode ser yellow ou blue
+- espelhar o lado `--mirror` que contém os seguintes casos:
+    - cor do time = blue e mirror desativado -> blue joga na esquerda
+    - cor do time = blue e mirror ativado -> blue joga na direita
+    - cor do time = yellow e mirror desativado -> yellow joga na direita
+    - cor do time = yellow e mirror ativado -> yellow joga na esquerda
 
-Esses são os dois argumentos obrigatórios quando for executar o sistema.
+`--team-color` é um argumento obrigatório quando for executar no sistema, enquanto `--mirror` deve ser escrito apenas quando deseja-se ativá-lo.
 
 Caso precise executar sem o referee, basta colar no terminal o seguinte comando
+(Referee não está sendo utilizado, então o argumento está com default=True)
 
 ```bash
-python3 src/main.py --team-color blue --team-side left --immediate-start
+python3 src/main.py --team-color blue --immediate-start
 ```
 
 ### Problemas que podem aparecer quando executar o sistema

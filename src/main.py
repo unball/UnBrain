@@ -10,11 +10,8 @@ parser = argparse.ArgumentParser(description='ALP-Winners system')
 parser.add_argument('--team-color', dest='team_color',
                     type=str, choices=['yellow', 'blue'], required=True, help='Team color.')
 
-parser.add_argument('--team-side', dest='team_side',
-                    type=str, choices=['left', 'right'], required=True, help='Team side.')
-
 parser.add_argument('--immediate-start', dest='immediate_start',
-                    action='store_const', const=True, default=False, help='If robots should start moving without VSSReferee telling so.')
+                    action='store_const', const=True, default=True, help='If robots should start moving without VSSReferee telling so.')
 
 parser.add_argument('--static-entities', dest='static_entities',
                     action='store_const', const=True, default=False, help='If strategy will keep robots with the same entities all the time.')
@@ -43,20 +40,24 @@ if args.disable_alp_gui:
     client.gui.disabled = True
 
 team_yellow = True if args.team_color == 'yellow' else False
-team_side = 1 if args.team_side == 'left' else -1
+
+if team_yellow:
+    mirror = False if args.mirror else True
+else:
+    mirror = args.mirror
+
 
 # Instancia o programa principal
 loop = Loop(
     draw_uvf=False, 
     team_yellow=team_yellow,
-    team_side=team_side,
     immediate_start=args.immediate_start,
     static_entities=args.static_entities,
     firasim=args.firasim,
     vssvision=args.vssvision,
     control=args.control,
     debug=args.debug,
-    mirror=args.mirror
+    mirror=mirror
 )
 
 loop.run()

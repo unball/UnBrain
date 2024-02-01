@@ -22,7 +22,6 @@ class Loop:
                 loop_freq=60,
                 draw_uvf=False,
                 team_yellow=False,
-                team_side=1,
                 immediate_start=False,
                 static_entities=False,
                 firasim=False,
@@ -40,6 +39,8 @@ class Loop:
 
         # Instancia o mundo e a estratégia
 
+        team_side = -1 if mirror else 1
+        
         self.world = World(3, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
         
         self.strategy = MainStrategy(self.world, static_entities=static_entities)

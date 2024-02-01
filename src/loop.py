@@ -17,7 +17,6 @@ from vision.receiver import FiraClient
 
 import constants
 
-
 class Loop:
 
     def __init__(self,
@@ -83,16 +82,12 @@ class Loop:
 
         # Executa o controle
         if self.world.firasim: 
-            self.firasim.command.writeMulti(control_output)
-            
+            self.firasim.command.writeMulti(control_output)        
 
         # Desenha no ALP-GUI
         self.draw()
 
     def busyLoop(self):
-        if((self.world.debug) and (self.world.firasim)):
-            print("_________________________")
-            print("Executando com firasim:")
 
         if(self.world.firasim):
             message = self.firasim.vision.read()
@@ -107,9 +102,7 @@ class Loop:
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
             print("_________________________")
             print("Executando sem pacote:")
-        
-        
-
+           
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)

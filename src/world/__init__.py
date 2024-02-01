@@ -67,7 +67,6 @@ class World:
     def update(self, message):
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])
         # enemiesPos = zip(message["enemy_x"], message["enemy_y"], message["enemy_th"], message["enemy_vx"], message["enemy_vy"], message["enemy_w"])
-
         if self.team_yellow: 
             yellow = self.team
             blue = self.enemies
@@ -91,6 +90,13 @@ class World:
     def FIRASim_update(self, message):
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])
         # enemiesPos = zip(message["enemy_x"], message["enemy_y"], message["enemy_th"], message["enemy_vx"], message["enemy_vy"], message["enemy_w"])
+        if self.debug:
+                print("-------------------------")
+                print("Executando com firasim:")
+                if self.mirror: 
+                    print("UTILIZANDO CAMPO INVERTIDO")
+                else:                   
+                    print("UTILIZANDO CAMPO SEM INVERSÃO")
 
         if self.team_yellow: 
             yellow = self.team
@@ -100,11 +106,15 @@ class World:
             robot_id = 0
             for robot in message.frame.robots_yellow:
                 #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
+                if self.debug:
+                    print(f"Yellow - {robot_id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
                 yellow[robot_id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
                 robot_id += 1
         else:
             robot_id = 0
             for robot in message.frame.robots_blue:
+                if self.debug:
+                    print(f"Blue - {robot_id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
                 blue[robot_id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
                 robot_id += 1
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
@@ -113,7 +123,6 @@ class World:
         self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
 
         self.updateCount += 1
-
 
     def addAllyGoal(self):
         print("Gol aliado!")

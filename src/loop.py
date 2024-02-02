@@ -2,6 +2,7 @@ from client.referee import RefereeCommands, RefereePlacement
 from client.gui import clientProvider
 from strategy import MainStrategy
 from UVF_screen import UVFScreen
+from communication.serialWifi import SerialRadio
 from world import World
 
 # Importa interface com FiraSim
@@ -40,7 +41,7 @@ class Loop:
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
         self.rp = RefereePlacement(team_yellow=team_yellow)
-
+        self.visionclient = FiraClient()
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
@@ -53,6 +54,8 @@ class Loop:
         self.loopTime = 1.0 / loop_freq
         self.running = True
         self.lastupdatecount = 0
+        self.radio = SerialRadio(control = control, debug = self.world.debug)
+
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -63,7 +66,11 @@ class Loop:
 
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
     def handle_SIGINT(self, signum, frame):
-        self.firasim.command.writeMulti( (0,0) for robot in self.world.team)
+        if self.world.firasim:
+            self.firasim.command.writeMulti( (0,0) for robot in self.world.team)
+        elif self.world.vssvision:
+            self.radio.send([(0,0) for robot in self.world.team])
+            for robot in self.world.raw_team: robot.turnOff()
         sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
@@ -94,11 +101,16 @@ class Loop:
             message = self.firasim.vision.read()
             #if message is not None: print("mensagem FIRASim", message)
             self.execute = True if message else False
-            if self.execute: self.world.FIRASim_update(message)
+            if self.execute: 
+                self.world.FIRASim_update(message)
 
-        if((self.world.debug) and (self.world.vssvision)):
-            print("_________________________")
-            print("Executando com vssvision:")
+        if(self.world.vssvision):
+            
+            # Atribuimos a mensagem que queremos passar para a função VSSVision_update
+            message = self.visionclient.receive_frame()
+            self.execute = True if message else False
+            if self.execute:
+                self.world.VSSVision_update(message.detection)
         
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
             print("_________________________")

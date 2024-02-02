@@ -64,28 +64,70 @@ class World:
         self.enemyGoals = 0
         self.updateCount = 0
 
-    def update(self, message):
-        # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])
-        # enemiesPos = zip(message["enemy_x"], message["enemy_y"], message["enemy_th"], message["enemy_vx"], message["enemy_vy"], message["enemy_w"])
-        if self.team_yellow: 
+    # segue explicação abaixo
+    def VSSVision_update(self, message):
+        if self.debug:
+            print("-------------------------")
+            print("Executando com VSSVision:")
+            if self.mirror: 
+                print("UTILIZANDO CAMPO INVERTIDO")
+            else:                   
+                print("UTILIZANDO CAMPO SEM INVERSÃO")
+
+        robot_id = 0
+        # Reconhecemos a cor do time dos nossos robôs
+        if self.team_yellow:
             yellow = self.team
-            blue = self.enemies
+            # blue = self.enemies
         else:
-            yellow = self.enemies
+            # yellow = self.enemies
             blue = self.team
+        
+        
+        if self.team_yellow:
+            
+            robot_id = 0
+            # Faremos isso para a visão dos robôs amarelos, caso for do nosso time
+            team = message.robots_yellow
+            
+            # Iteramos por cada robô
+            for _ in team:
 
-        for robot in message.frame.robots_blue:
-            blue[robot.robot_id].update(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                if self.debug:
+                    print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000):.2f} | y {(message.robots_yellow[robot_id].y) / (1000):.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
+                        
+                #Atualizaremos as coordenadas do robô selecionado (robot_id)
+                yellow[robot_id].update(
+                    message.robots_yellow[robot_id].x / (1000),
+                    message.robots_yellow[robot_id].y / (1000),
+                    message.robots_yellow[robot_id].orientation
+                )
+                
+                #passamos para o próximo robô
+                robot_id += 1
+                
 
-        for robot in message.frame.robots_yellow:
-            yellow[robot.robot_id].update(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+        else:
+            # O mesmo acima se aplica aqui, só que pra caso o nosso time seja o azul
+            robot_id = 0
 
-        # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
-        # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)
-        #self.ball.update(message["ball_x"], message["ball_y"], message["ball_vx"], message["ball_vy"])
-        self.ball.update(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
+            team = message.robots_blue
+    
+            for _ in team:
 
-        self.updateCount += 1
+                if self.debug:
+                        print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
+                        
+                blue[robot_id].update(
+                    message.robots_blue[robot_id].x / (1000),
+                    message.robots_blue[robot_id].y / (1000),
+                    message.robots_blue[robot_id].orientation
+                    )
+                    
+                robot_id+=1
+                #fim da função VSSVision_update
+
+                    
         
     def FIRASim_update(self, message):
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])

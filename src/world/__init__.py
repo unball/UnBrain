@@ -115,7 +115,7 @@ class World:
             for _ in team:
 
                 if self.debug:
-                        print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
+                    print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
                         
                 blue[robot_id].raw_update(
                     message.robots_blue[robot_id].x / (1000),
@@ -127,7 +127,7 @@ class World:
                 #fim da função VSSVision_update
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
-                print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+            print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         self.dt = time.time() - self._referenceTime
         self.calc_velocities(self.dt)
         self._referenceTime = time.time()

@@ -90,7 +90,11 @@ class Loop:
 
         # Executa o controle
         if self.world.firasim: 
-            self.firasim.command.writeMulti(control_output)        
+            self.firasim.command.writeMulti(control_output)
+        if self.world.vssvision:   
+            if self.execute:
+                for robot in self.world.raw_team: robot.turnOn()   
+                self.radio.send(control_output)
 
         # Desenha no ALP-GUI
         self.draw()

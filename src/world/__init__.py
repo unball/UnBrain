@@ -125,8 +125,8 @@ class World:
                     
                 robot_id+=1
                 #fim da função VSSVision_update
-            self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
-            if self.debug:
+        self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
+        if self.debug:
                 print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         self.dt = time.time() - self._referenceTime
         self.calc_velocities(self.dt)

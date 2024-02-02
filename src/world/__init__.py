@@ -79,9 +79,7 @@ class World:
         # Reconhecemos a cor do time dos nossos robôs
         if self.team_yellow:
             yellow = self.team
-            # blue = self.enemies
         else:
-            # yellow = self.enemies
             blue = self.team
         
         
@@ -98,7 +96,7 @@ class World:
                     print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000):.2f} | y {(message.robots_yellow[robot_id].y) / (1000):.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
                         
                 #Atualizaremos as coordenadas do robô selecionado (robot_id)
-                yellow[robot_id].ra_update(
+                yellow[robot_id].raw_update(
                     message.robots_yellow[robot_id].x / (1000),
                     message.robots_yellow[robot_id].y / (1000),
                     message.robots_yellow[robot_id].orientation
@@ -127,7 +125,9 @@ class World:
                     
                 robot_id+=1
                 #fim da função VSSVision_update
-        
+            self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
+            if self.debug:
+                print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         self.dt = time.time() - self._referenceTime
         self.calc_velocities(self.dt)
         self._referenceTime = time.time()

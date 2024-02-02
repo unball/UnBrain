@@ -57,6 +57,8 @@ class World:
         self.debug = debug
         self.mirror = mirror
         self.control =  control
+        self._referenceTime = 0
+        self.dt = 0
         
         self.team_yellow = team_yellow
 
@@ -74,7 +76,6 @@ class World:
             else:                   
                 print("UTILIZANDO CAMPO SEM INVERSÃO")
 
-        robot_id = 0
         # Reconhecemos a cor do time dos nossos robôs
         if self.team_yellow:
             yellow = self.team
@@ -97,7 +98,7 @@ class World:
                     print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000):.2f} | y {(message.robots_yellow[robot_id].y) / (1000):.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
                         
                 #Atualizaremos as coordenadas do robô selecionado (robot_id)
-                yellow[robot_id].update(
+                yellow[robot_id].ra_update(
                     message.robots_yellow[robot_id].x / (1000),
                     message.robots_yellow[robot_id].y / (1000),
                     message.robots_yellow[robot_id].orientation
@@ -118,7 +119,7 @@ class World:
                 if self.debug:
                         print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
                         
-                blue[robot_id].update(
+                blue[robot_id].raw_update(
                     message.robots_blue[robot_id].x / (1000),
                     message.robots_blue[robot_id].y / (1000),
                     message.robots_blue[robot_id].orientation
@@ -126,6 +127,10 @@ class World:
                     
                 robot_id+=1
                 #fim da função VSSVision_update
+        
+        self.dt = time.time() - self._referenceTime
+        self.calc_velocities(self.dt)
+        self._referenceTime = time.time()
 
                     
         

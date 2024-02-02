@@ -26,12 +26,73 @@ class Element:
         self.angvel = 0
         self.interval = Interval(initial_dt=0.016)
 
+        self.inst_x = 0
+        """Posição x atual"""
+        
+        self.inst_y = 0
+        """Posição y atual"""
+        
+        self.inst_th = 0
+        """Ângulo atual"""
+
+        self.prev_x = 0
+        """Posição x anterior"""
+        
+        self.prev_y = 0
+        """Posição y anterior"""
+        
+        self.prev_th = 0
+        """Ângulo anterior"""
+
+        self.dprev_x = 0
+        """Posição x anterior anterior"""
+        
+        self.dprev_y = 0
+        """Posição y anterior anterior"""
+        self.inst_vx = 0
+        """Estimativa da velocidade na direção x"""
+    
+        self.inst_vy = 0
+        """Estimativa da velocidade na direção y"""
+        
+        self.inst_w = 0
+        """Estimativa da velocidade angular"""
+        
+        self.vx_ant = [.0]*10
+        """Valores das últimas 10 velocidades na direção x"""
+
+        self.vy_ant = [.0]*10
+        """Valores das últimas 10 velocidades na direção y"""
+
+        self.inst_ax = 0
+        """Estimativa da aceleração na direção x"""
+        
+        self.inst_ay = 0
+        """Estimativa da aceleração na direção y"""
+        
+        self.ax_ant = [.0]*10
+        """Valores das últimas 10 acelerações na direção x"""
+
+        self.ay_ant = [.0]*10
+        """Valores das últimas 10 acelerações na direção y"""
+
     def update(self, x, y, w=0):
         self.xvec.add(x)
         self.yvec.add(y)
         self.linvel = (self.vx, self.vy)
         self.angvel = w
         self.interval.update()
+
+    def raw_update(self, x=0, y=0, th=0):
+        """Atualiza a posição do objeto, atualizando também o valor das posições anteriores."""
+        self.dprev_x = self.prev_x
+        self.dprev_y = self.prev_y
+        self.prev_x = self.inst_x
+        self.prev_y = self.inst_y
+        self.prev_th = self.inst_th
+        self.inst_x = x
+        self.inst_y = y
+        self.inst_th = th
         
     def update_element_FIRASim(self, x, y, vx, vy, w=0):
         self.xvec.add(self.world.field.side * x)
@@ -75,6 +136,33 @@ class Element:
     @property
     def velmod(self):
         return norml(self.v)
+    
+    def calc_velocities(self, dt):
+        """Estima a velocidade do objeto por meio do pose atual, pose anterior e o intervalo de tempo passado `dt`. A velocidade computada é suavizada por uma média exponencial: \\(v[k] = v_{\\text{estimado}} \\cdot \\alpha + v[k-1] \\cdot (1-\\alpha)\\) onde \\(v_{\\text{estimado}} = \\frac{r[k]-r[k-1]}{dt}\\)"""
+    
+        vx = (self.inst_x-self.prev_x) / dt
+        vy = (self.inst_y-self.prev_y) / dt
+
+        ax = (self.inst_x-2*self.prev_x+self.dprev_x) / dt**2
+        ay = (self.inst_y-2*self.prev_y+self.dprev_y) / dt**2
+
+        self.inst_vx = (vx + sum(self.vx_ant)) / 11.0
+        self.inst_vy = (vy + sum(self.vy_ant)) / 11.0
+
+        self.vx_ant = self.shift(vx, self.vx_ant)
+        self.vy_ant = self.shift(vy, self.vy_ant)
+
+        self.inst_ax = (ax + sum(self.ax_ant)) / 11.0
+        self.inst_ay = (ay + sum(self.ay_ant)) / 11.0
+
+        self.ax_ant = self.shift(ax, self.ax_ant)
+        self.ay_ant = self.shift(ay, self.ay_ant)
+
+        self.linvel = (vx, vy)
+
+    def shift(self, data, array):
+        return [data] + array[:-1]
+
 
 class Robot(Element):
     def __init__(self, world, id):

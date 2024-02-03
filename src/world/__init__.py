@@ -47,16 +47,18 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=5, side=1, team_yellow=False, immediate_start=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False):
+    def __init__(self, n_robots=5, side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
         self._team = [TeamRobot(self, i, on=immediate_start) for i in range(n_robots)]
         self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(n_robots)]
         self.ball = Ball(self)
         self.field = Field(side)
+        self.referee = referee
         self.firasim = firasim
         self.vssvision = vssvision
         self.debug = debug
         self.mirror = mirror
         self.control =  control
+        self.last_command = last_command
         self._referenceTime = 0
         self.dt = 0
         
@@ -173,6 +175,9 @@ class World:
         self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
 
         self.updateCount += 1
+
+    def setLastCommand(self, last_command):
+        self.last_command = last_command
 
     def addAllyGoal(self):
         print("Gol aliado!")

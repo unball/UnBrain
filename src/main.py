@@ -19,6 +19,9 @@ parser.add_argument('--static-entities', dest='static_entities',
 parser.add_argument('--disable-alp-gui', dest='disable_alp_gui',
                     action='store_const', const=True, default=False, help='If set, no communciation with ALP-GUI overhead will be added.')
 
+parser.add_argument('--referee', dest='referee', action='store_const', const=True,
+                    default=False, help='If you are using referee for start.')
+
 parser.add_argument('--firasim', dest='firasim', action='store_const', const=True,
                     default=False, help='If you are using FIRASim for start.')
 
@@ -53,6 +56,7 @@ loop = Loop(
     team_yellow=team_yellow,
     immediate_start=args.immediate_start,
     static_entities=args.static_entities,
+    referee=args.referee,
     firasim=args.firasim,
     vssvision=args.vssvision,
     control=args.control,

@@ -16,6 +16,8 @@ import sys
 import signal
 from vision.receiver import FiraClient
 
+from strategy.automaticReplacer import AutomaticReplacer
+
 import constants
 
 class Loop:
@@ -26,6 +28,7 @@ class Loop:
                 team_yellow=False,
                 immediate_start=False,
                 static_entities=False,
+                referee=False,
                 firasim=False,
                 vssvision=False,
                 control=False,
@@ -46,8 +49,9 @@ class Loop:
 
         team_side = -1 if mirror else 1
         
-        self.world = World(3, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
+        self.world = World(3, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
         
+        self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
@@ -119,6 +123,21 @@ class Loop:
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
             print("_________________________")
             print("Executando sem pacote:")
+        if self.world.referee:
+        
+            command = self.rc.receive()
+            
+            if self.world.debug and command is not None:
+                print(self.world.last_command)
+                print(command)
+            elif self.world.debug and command is None:
+                print("NENHUM PACOTE RECEBIDO AINDA")
+            
+            if command is not None:
+                self.world.setLastCommand(command) 
+                # obedece o comando e sai do busy loop
+            else:
+                self.strategy.manageReferee(self.arp, self.world.last_command)
            
     def draw(self):
         for robot in [r for r in self.world.team if r.entity is not None]:

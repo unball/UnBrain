@@ -141,7 +141,7 @@ class MainStrategy(Strategy):
     def update(self, world):
         if self.static_entities and not world.control:
             self.world.team[0].updateEntity(Attacker)
-            self.world.team[1].updateEntity(Defender)
+            self.world.team[1].updateEntity(Attacker)
             self.world.team[2].updateEntity(GoalKeeper)
 
         elif world.control:

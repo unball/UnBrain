@@ -230,10 +230,8 @@ class AutomaticReplacer():
                 if(not isOutside_rr2):
                     control_output.append((0,0))
             except:
-                print("oiiiiiiiiiiiiiiiiiii")
                 pass
             # Envia comando para robo
-            "print(control_output)"
             self.firasim.command.writeMulti(control_output)
         
             # Se todos os robôs chegaram na posição desejada
@@ -242,7 +240,6 @@ class AutomaticReplacer():
                 for robot in self.world.raw_team: robot.turnOff()
                 # self.world.initiated_once = False
                 self.world.last_command = None
-                print("cu")
                 break
 
             if(not isOutside_rr0 and not isOutside_rr1 and not isOutside_rr2):

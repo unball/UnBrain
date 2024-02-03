@@ -22,6 +22,7 @@ class Element:
         self.world = world
         self.xvec = EntriesVec()
         self.yvec = EntriesVec()
+        self.thvec_raw = EntriesVec()
         self.linvel = (0,0)
         self.angvel = 0
         self.interval = Interval(initial_dt=0.016)
@@ -89,10 +90,13 @@ class Element:
         self.dprev_y = self.prev_y
         self.prev_x = self.inst_x
         self.prev_y = self.inst_y
-        self.prev_th = self.inst_th
-        self.inst_x = x
-        self.inst_y = y
-        self.inst_th = th
+        self.prev_th = th
+        self.inst_x = self.x
+        self.inst_y = self.y
+        self.xvec.add(self.world.field.side * x)
+        self.yvec.add(y)
+        self.thvec_raw.add(th)
+    
         
     def update_element_FIRASim(self, x, y, vx, vy, w=0):
         self.xvec.add(self.world.field.side * x)
@@ -107,7 +111,7 @@ class Element:
 
     @property
     def y(self):
-        return  self.yvec.value
+        return self.yvec.value
 
     @property
     def pos(self):
@@ -119,7 +123,7 @@ class Element:
 
     @property
     def vx(self):
-        return self.world.field.side * self.vx_raw
+        return self.vx_raw
 
     @property
     def vy_raw(self):
@@ -168,7 +172,6 @@ class Robot(Element):
     def __init__(self, world, id):
         super().__init__(world)
         self.id = id
-        self.thvec_raw = EntriesVec()
 
     def update(self, x, y, th):
         w = self.thvec_raw.add(th)

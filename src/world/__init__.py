@@ -96,12 +96,14 @@ class World:
                     print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000):.2f} | y {(message.robots_yellow[robot_id].y) / (1000):.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
                         
                 #Atualizaremos as coordenadas do robô selecionado (robot_id)
+                self.dt = time.time() - self._referenceTime
                 yellow[robot_id].raw_update(
                     message.robots_yellow[robot_id].x / (1000),
                     message.robots_yellow[robot_id].y / (1000),
                     message.robots_yellow[robot_id].orientation
                 )
-                
+                yellow[robot_id].calc_velocities(self.dt)
+
                 #passamos para o próximo robô
                 robot_id += 1
                 
@@ -116,20 +118,21 @@ class World:
 
                 if self.debug:
                     print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
-                        
+                self.dt = time.time() - self._referenceTime
                 blue[robot_id].raw_update(
                     message.robots_blue[robot_id].x / (1000),
                     message.robots_blue[robot_id].y / (1000),
                     message.robots_blue[robot_id].orientation
                     )
-                    
+                blue[robot_id].calc_velocities(self.dt)
                 robot_id+=1
                 #fim da função VSSVision_update
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
             print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
+        self.ball.calc_velocities(self.dt)
+
         self.dt = time.time() - self._referenceTime
-        self.calc_velocities(self.dt)
         self._referenceTime = time.time()
 
                     

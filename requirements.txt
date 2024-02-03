@@ -5,14 +5,8 @@ serial
 pyserial
 matplotlib
 protobuf==3.20.0
-numpy
-pygame
 scipy
-protobuf
-matplotlib
 #dubins
 opencv-python
 #vext
 #vext.gi
-serial
-pygame

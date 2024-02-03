@@ -154,24 +154,31 @@ class World:
             blue = self.team
             
         if self.team_yellow:
+            self.dt = time.time() - self._referenceTime
             for id, robot in enumerate(message.frame.robots_yellow):
                 #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
                 if self.debug:
                     print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                yellow[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                yellow[id].raw_update(robot.x, robot.y, robot.orientation)
+                yellow[id].calc_velocities(self.dt)
 
         else:
+            self.dt = time.time() - self._referenceTime
             for id, robot in enumerate(message.frame.robots_blue):
-                blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                blue[id].raw_update(robot.x, robot.y, robot.orientation)
                 if self.debug:
                     print(f"Blue - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                blue[id].raw_update(robot.x, robot.y, robot.orientation)
+                blue[id].calc_velocities(self.dt)
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)
         #self.ball.update(message["ball_x"], message["ball_y"], message["ball_vx"], message["ball_vy"])
-        self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
+        self.ball.raw_update(message.frame.ball.x, message.frame.ball.y)
+        self.ball.calc_velocities(self.dt)
 
+        self.dt = time.time() - self._referenceTime
+        self._referenceTime = time.time()
         self.updateCount += 1
 
     def addAllyGoal(self):

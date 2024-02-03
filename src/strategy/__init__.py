@@ -4,7 +4,7 @@ from .entity.goalKeeper import GoalKeeper
 from .entity.defender import Defender
 from .entity.midfielder import Midfielder
 from .entity.controlTest import ControlTester
-from client.protobuf.vssref_common_pb2 import Foul
+from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
 from .movements import blockBallElipse
@@ -135,7 +135,7 @@ class MainStrategy(Strategy):
                     rg = -np.array(self.world.field.goalPos)
                     rg[0] += 0.18
                     positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                    positions.append(robot_id[1], (0.2, -0.16, 0 ))
+                    positions.append((robot_id[1], (0.2, -0.16, 0 )))
                     positions.append((robot_id[2], (0.5, 0.4, -3*(180/np.pi)) ) ) 
                     arp.send(positions)
             
@@ -155,7 +155,7 @@ class MainStrategy(Strategy):
                     rg = -np.array(self.world.field.goalPos)
                     rg[0] += 0.18
                     positions = [(robot_id[0], (rg[0], rg[1], 180))]
-                    positions.append(robot_id[1], (-0.2, -0.26, 1.46*(180/np.pi)) )
+                    positions.append((robot_id[1], (-0.2, -0.26, 1.46*(180/np.pi))) )
                     positions.append((robot_id[2], (-0.18, 0.38, -3*(180/np.pi)) ) ) 
                     arp.send(positions)  
 
@@ -177,7 +177,7 @@ class MainStrategy(Strategy):
                     rg[0] += 0.18
                     positions = [(robot_id[0], (rg[0], rg[1], 180))]
 
-                    positions.append(robot_id[1], (0.65 , 0.01 , 180 ) )
+                    positions.append((robot_id[1], (0.65 , 0.01 , 180 ) ))
                     positions.append((robot_id[2], (-0.16, -0.38 , -3*(180/np.pi)) ) ) 
                     arp.send(positions)    
 
@@ -201,7 +201,7 @@ class MainStrategy(Strategy):
                     rg[0] += 0.18
                     positions = [(robot_id[0], (rg[0], rg[1], 180))]
 
-                    positions.append(robot_id[1], ( 0.23 , 0.1 , -1.6*(180/np.pi)) ) 
+                    positions.append((robot_id[1], ( 0.23 , 0.1 , -1.6*(180/np.pi)) )) 
                     positions.append((robot_id[2], ( 0.57 , -0.37 , -3*(180/np.pi)) ) ) 
                     
                     arp.send(positions) 
@@ -216,6 +216,10 @@ class MainStrategy(Strategy):
                     positions.append((robot_id[2], (0.2 , 0.1, 0)))
                     arp.send(positions)                   
                 else:
+                    rg = -np.array(self.world.field.goalPos)
+                    rg[0] += 0.18
+                    positions = [(robot_id[0], (rg[0], rg[1], 0))]
+                    
                     positions.append((robot_id[0], ( 0.32 ,  -0.47 , -0.09*(180/np.pi)))) 
                     positions.append((robot_id[1], ( 0.65 ,  0.28 , 2.25*(180/np.pi)))) 
                     positions.append((robot_id[2], ( 0.45 , 0.27, -3*(180/np.pi))))

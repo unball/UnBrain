@@ -12,7 +12,7 @@ class Drawer:
         self.drawingArea = drawingArea
         self.worldProvider = worldProvider
 
-        self.fieldSurface = cairo.ImageSurface.create_from_png("src/assets/campo.png")
+        self.fieldSurface = cairo.ImageSurface.create_from_png("ALP-GUI/src/assets/campo.png")
 
         drawingArea.connect("draw", self.onDraw)
         self.drawTimeSheduler()

@@ -6,7 +6,7 @@ pyserial
 matplotlib
 protobuf==3.20.0
 scipy
-#dubins
+dubins
 opencv-python
-#vext
-#vext.gi
+vext
+pycairo PyGObject

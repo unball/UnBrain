@@ -73,7 +73,7 @@ class World:
         if self.debug:
             print("-------------------------")
             print("Executando com VSSVision:")
-            if self.mirror: 
+            if not self.mirror and self.team_yellow or self.mirror and not self.team_yellow: 
                 print("UTILIZANDO CAMPO INVERTIDO")
             else:                   
                 print("UTILIZANDO CAMPO SEM INVERSÃO")
@@ -86,47 +86,46 @@ class World:
         
         
         if self.team_yellow:
-            
+            self.dt = time.time() - self._referenceTime
             robot_id = 0
             # Faremos isso para a visão dos robôs amarelos, caso for do nosso time
             team = message.robots_yellow
             
             # Iteramos por cada robô
-            for _ in team:
+            for robot in team:
 
                 if self.debug:
-                    print(f"Yellow - {robot_id} | x {(message.robots_yellow[robot_id].x) / (1000):.2f} | y {(message.robots_yellow[robot_id].y) / (1000):.2f} | th {(message.robots_yellow[robot_id].orientation):.2f}")
+                    print(f"Yellow - {robot_id} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
                         
                 #Atualizaremos as coordenadas do robô selecionado (robot_id)
-                self.dt = time.time() - self._referenceTime
                 yellow[robot_id].raw_update(
-                    message.robots_yellow[robot_id].x / (1000),
-                    message.robots_yellow[robot_id].y / (1000),
-                    message.robots_yellow[robot_id].orientation
+                    robot.x / (1000),
+                    robot.y / (1000),
+                    robot.orientation
                 )
-                yellow[robot_id].calc_velocities(self.dt)
+                yellow.calc_velocities(self.dt)
 
                 #passamos para o próximo robô
                 robot_id += 1
                 
 
         else:
+            self.dt = time.time() - self._referenceTime
             # O mesmo acima se aplica aqui, só que pra caso o nosso time seja o azul
             robot_id = 0
 
             team = message.robots_blue
     
-            for _ in team:
+            for robot in team:
 
                 if self.debug:
-                    print(f"Blue - {robot_id} | x {(message.robots_blue[robot_id].x) / (1000):.2f} | y {(message.robots_blue[robot_id].y) / (1000):.2f} | th {(message.robots_blue[robot_id].orientation):.2f}")
-                self.dt = time.time() - self._referenceTime
-                blue[robot_id].raw_update(
-                    message.robots_blue[robot_id].x / (1000),
-                    message.robots_blue[robot_id].y / (1000),
-                    message.robots_blue[robot_id].orientation
+                    print(f"Blue - {robot_id} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
+                blue.raw_update(
+                    robot.x / (1000),
+                    robot.y / (1000),
+                    robot.orientation
                     )
-                blue[robot_id].calc_velocities(self.dt)
+                blue.calc_velocities(self.dt)
                 robot_id+=1
                 #fim da função VSSVision_update
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
@@ -136,6 +135,7 @@ class World:
 
         self.dt = time.time() - self._referenceTime
         self._referenceTime = time.time()
+        self.updateCount += 1
 
                     
         
@@ -172,6 +172,8 @@ class World:
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)
         #self.ball.update(message["ball_x"], message["ball_y"], message["ball_vx"], message["ball_vy"])
+        if self.debug:
+            print(f"BALL | x {(message.frame.ball.x):.2f} | y {(message.frame.ball.y):.2f}")
         self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
 
         self.updateCount += 1

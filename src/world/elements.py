@@ -8,7 +8,7 @@ import math
 class EntriesVec:
     def __init__(self, past=20):
         self.past = 20
-        self.vec = [0] * self.past
+        self.vec = [0.0] * self.past
 
     def add(self, value):
         self.vec = [value] + self.vec[0:self.past-1]

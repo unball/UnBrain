@@ -103,7 +103,7 @@ class World:
                     robot.y / (1000),
                     robot.orientation
                 )
-                yellow.calc_velocities(self.dt)
+                yellow[robot_id].calc_velocities(self.dt)
 
                 #passamos para o próximo robô
                 robot_id += 1
@@ -120,12 +120,12 @@ class World:
 
                 if self.debug:
                     print(f"Blue - {robot_id} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
-                blue.raw_update(
+                blue[robot_id].raw_update(
                     robot.x / (1000),
                     robot.y / (1000),
                     robot.orientation
                     )
-                blue.calc_velocities(self.dt)
+                blue[robot_id].calc_velocities(self.dt)
                 robot_id+=1
                 #fim da função VSSVision_update
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)

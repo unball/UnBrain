@@ -16,7 +16,7 @@ conversion = 127 / wheel_w_max
 
 def deadzone(vin, up, down):
   if (vin!=0):
-    return vin+up if (vin > 0) else vin-down
+    return vin+up if (vin > 0) else vin-abs(down)
   return 0
 
 def speeds2motors(v: float, w: float) -> (int, int):

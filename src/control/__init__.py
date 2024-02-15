@@ -26,8 +26,8 @@ class Control(ABC):
         
         vr, vl = speeds2motors(v, self.world.field.side * w)
 
-        vr = int(deadzone(sat(vr, 223), 20, -20))
-        vl = int(deadzone(sat(vl, 223), 20, -20))
+        vr = int(deadzone(sat(vr, 223), 32, -32))
+        vl = int(deadzone(sat(vl, 223), 32, -32))
 
         #print("VL", vl,"VR", vr)
         

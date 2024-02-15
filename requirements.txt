@@ -9,4 +9,5 @@ scipy
 dubins
 opencv-python
 vext
-pycairo PyGObject
+pycairo 
+PyGObject

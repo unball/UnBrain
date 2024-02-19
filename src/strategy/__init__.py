@@ -103,7 +103,7 @@ class MainStrategy(Strategy):
             return [GoalKeeper, Attacker, Attacker]
 
     def availableRobotIndexes(self):
-        return np.arange(self.world.n_robots)
+        return list(range(self.world.n_robots))
 
     def decideBestGoalKeeper(self, formation, toDecide):
         nearest = self.nearestGoal(toDecide)

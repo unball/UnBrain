@@ -77,12 +77,6 @@ class Element:
         self.ay_ant = [.0]*10
         """Valores das últimas 10 acelerações na direção y"""
 
-    def update(self, x, y, w=0):
-        self.xvec.add(x)
-        self.yvec.add(y)
-        self.linvel = (self.vx, self.vy)
-        self.angvel = w
-        self.interval.update()
 
     def raw_update(self, x=0, y=0, th=0):
         """Atualiza a posição do objeto, atualizando também o valor das posições anteriores."""

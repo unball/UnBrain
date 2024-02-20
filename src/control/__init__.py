@@ -32,3 +32,9 @@ class Control(ABC):
         #print("VL", vl,"VR", vr)
         
         return vr, vl
+    def actuateSimu(self, robot):
+        if not robot.on: return (0,0)
+
+        v, w = self.output(robot)
+        robot.lastControlLinVel = v
+        return speeds2motors(v, self.world.field.side * w)

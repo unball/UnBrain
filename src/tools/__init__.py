@@ -33,7 +33,7 @@ def speeds2motors(v: float, w: float) -> (int, int):
   # vr *= convertion
   # vl *= convertion
   
-  return vl, vr
+  return vr, vl
 
 def motors2linvel(vl: float, vr: float) -> float:
   # Computa a velocidade angular de rotação de cada roda

@@ -47,9 +47,10 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=5, side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
-        self._team = [TeamRobot(self, i, on=immediate_start) for i in range(n_robots)]
-        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(n_robots)]
+    def __init__(self, n_robots=3, side=1, team_yellow=False, immediate_start=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False):
+        self.n_robots = n_robots
+        self._team = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
+        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
         self.ball = Ball(self)
         self.field = Field(side)
         self.referee = referee
@@ -158,17 +159,18 @@ class World:
             
         if self.team_yellow:
             for id, robot in enumerate(message.frame.robots_yellow):
-                #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
-                if self.debug:
-                    print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                yellow[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                if id < self.n_robots:
+                    #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
+                    if self.debug:
+                        print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                    yellow[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         else:
             for id, robot in enumerate(message.frame.robots_blue):
-                blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
-                if self.debug:
-                    print(f"Blue - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                if id < self.n_robots:
+                    if self.debug:
+                        print(f"Blue - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                    blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)

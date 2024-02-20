@@ -36,6 +36,8 @@ parser.add_argument('--debug', dest='debug', action='store_const',
 
 parser.add_argument('--mirror', dest='mirror', action='store_const',
                     const=True, default=False, help='If vision is mirrored or not. Affects angles.')
+parser.add_argument('--n_robots', dest='n_robots', type=int, default=3, help='Number of robots for each time in the match.')
+
 
 args = parser.parse_args()
 
@@ -61,7 +63,8 @@ loop = Loop(
     vssvision=args.vssvision,
     control=args.control,
     debug=args.debug,
-    mirror=mirror
+    n_robots=args.n_robots,
+    mirror=mirror, 
 )
 
 loop.run()

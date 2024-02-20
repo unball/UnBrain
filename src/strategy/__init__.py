@@ -256,8 +256,9 @@ class MainStrategy(Strategy):
         else:
             return [GoalKeeper, Attacker, Attacker]
 
+    #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
-        return [0,1,2]
+        return list(range(self.world.n_robots))
 
     def decideBestGoalKeeper(self, formation, toDecide):
         nearest = self.nearestGoal(toDecide)
@@ -293,15 +294,25 @@ class MainStrategy(Strategy):
         return formation, toDecide
 
     def update(self, world):
-        if self.static_entities and not world.control:
-            self.world.team[0].updateEntity(Attacker)
-            self.world.team[1].updateEntity(Defender)
-            self.world.team[2].updateEntity(GoalKeeper)
 
+        #Como estamos trabalhando a partir de um número dado de quantos robôs temos, é melhor tratar esses updates em um ciclo
+        #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
+        #obs: (ficará comentado o que era antes)
+        if self.static_entities and not world.control:
+            roles=[GoalKeeper,Attacker,Defender]
+            for robo in range(self.world.n_robots):
+                self.world.team[robo].updateEntity(roles[robo])
+            #self.world.team[0].updateEntity(Attacker)
+            #self.world.team[1].updateEntity(Defender)
+            #self.world.team[2].updateEntity(GoalKeeper)
+
+        #mesma coisa aqui só que sem o static-entities
         elif world.control:
-            self.world.team[0].updateEntity(ControlTester, forced_update=True)
-            self.world.team[1].updateEntity(ControlTester, forced_update=True)
-            self.world.team[2].updateEntity(ControlTester, forced_update=True)
+            for i in range(self.world.n_robots):
+                self.world.team[i].updateEntity(ControlTester, forced_update=True)
+            #self.world.team[0].updateEntity(ControlTester, forced_update=True)
+            #self.world.team[1].updateEntity(ControlTester, forced_update=True)
+            #self.world.team[2].updateEntity(ControlTester, forced_update=True)
 
         else:
             formation = self.formationDecider()
@@ -318,7 +329,8 @@ class MainStrategy(Strategy):
                 formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
                 hasMaster = True
             
-            if Attacker in formation:
+            if Attacker in formation and len(toDecide) >= 1:
+                #possível erro na mudança de role abaixo, checar mais tarde
                 self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)

@@ -84,7 +84,8 @@ class Loop:
         # Executa estratégia
         self.strategy.update(self.world)
 
-        control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
+        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot.entity is not None]
 
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0

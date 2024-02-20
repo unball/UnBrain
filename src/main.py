@@ -64,7 +64,7 @@ loop = Loop(
     control=args.control,
     debug=args.debug,
     n_robots=args.n_robots,
-    mirror=mirror, 
+    mirror=mirror
 )
 
 loop.run()

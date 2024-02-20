@@ -2,17 +2,17 @@ from .elements import *
 
 class Field:
     def __init__(self, side):
-        self.width = 1.75
-        self.height = 1.35
-        self.goalAreaWidth = 0.15
-        self.goalAreaHeight = 0.70
+        self.width = 1.5
+        self.height = 1.3
+        self.goalAreaWidth = 0.10
+        self.goalAreaHeight = 0.40
 
         self.xmargin = 0.30
         self.ymargin = 0.18
         self.side = side
 
-        self.areaEllipseSize = (0.35, 0.50)
-        self.areaEllipseCenter = (-self.maxX + 0.10, 0)
+        self.areaEllipseSize = (0.27, 0.45)
+        self.areaEllipseCenter = (-self.maxX + 0.07, 0)
 
     @property
     def maxX(self):
@@ -136,6 +136,7 @@ class World:
         self.dt = time.time() - self._referenceTime
         self._referenceTime = time.time()
         self.updateCount += 1
+        
 
                     
         

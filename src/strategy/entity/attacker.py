@@ -41,6 +41,7 @@ class Attacker(Entity):
         self.ballOffset = ballOffset
         self.ballShift = ballShift
         self.slave = slave
+        self.elapsed = 0
 
         # States
         self.lastDirectionChange = 0
@@ -97,7 +98,7 @@ class Attacker(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = np.array(self.world.field.goalPos)
-        rl = np.array(self.world.field.size) - np.array([0, 0.12])
+        rl = np.array(self.world.field.size) - np.array([0, 0.1])
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]
@@ -180,7 +181,7 @@ class Attacker(Entity):
 
             clientProvider().drawTarget(self.robot.id, rg[0], rg[1], angle)
         
-        if self.attackState==0: self.elapsed = math.inf
+        #if self.attackState==0: self.elapsed = math.inf
 
         # # Campo para evitar área aliada
         # a, b = self.world.field.areaEllipseSize

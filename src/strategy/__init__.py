@@ -251,7 +251,7 @@ class MainStrategy(Strategy):
         return pose[:2]
 
     def formationDecider(self):
-        if self.world.ball.pos[0] < -0.45:
+        if self.world.ball.pos[0] < -0.39:
             return [GoalKeeper, Attacker, Defender]
         else:
             return [GoalKeeper, Attacker, Attacker]
@@ -299,7 +299,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities and not world.control:
-            roles=[GoalKeeper,Attacker,Defender]
+            roles=[Attacker,Attacker,Attacker]
             for robo in range(self.world.n_robots):
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
@@ -321,7 +321,7 @@ class MainStrategy(Strategy):
             if GoalKeeper in formation:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
 
-            if Defender in formation:
+            if Defender in formation and len(toDecide) >= 1:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             hasMaster = False

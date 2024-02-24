@@ -90,6 +90,7 @@ class Element:
         self.xvec.add(self.world.field.side * x)
         self.yvec.add(y)
         self.thvec_raw.add(th)
+        self.interval.update()
     
         
     def update_element_FIRASim(self, x, y, vx, vy, w=0):

@@ -56,6 +56,7 @@ class Loop:
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
+        self.t0 = time.time()
         self.loopTime = 1.0 / loop_freq
         self.running = True
         self.lastupdatecount = 0
@@ -80,6 +81,9 @@ class Loop:
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
+        # print("loop ALP:",(time.time()-self.t0)*1000)
+
+        self.t0 = time.time()
         self.lastupdatecount = self.world.updateCount
         
         # Executa estratégia

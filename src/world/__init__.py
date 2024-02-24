@@ -4,12 +4,14 @@ class Field:
     def __init__(self, side):
         self.width = 1.5
         self.height = 1.3
-        self.goalAreaWidth = 0.10
-        self.goalAreaHeight = 0.40
+        self.goalAreaWidth = 0.15
+        self.goalAreaHeight = 0.7
 
         self.xmargin = 0.30
         self.ymargin = 0.18
         self.side = side
+
+        self.goalDepth = 0.1
 
         self.areaEllipseSize = (0.27, 0.45)
         self.areaEllipseCenter = (-self.maxX + 0.07, 0)

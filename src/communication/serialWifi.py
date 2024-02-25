@@ -35,7 +35,8 @@ class SerialRadio():
       return
 
     # Início da mensagem
-    message = bytes("BBB", encoding='ascii')
+    if self.control: message = bytes("CCC", encoding='ascii')
+    else : message = bytes("BBB", encoding='ascii')
 
     # Checksum
     checksum = 0

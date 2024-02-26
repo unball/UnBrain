@@ -24,13 +24,6 @@ class Control(ABC):
         
         robot.lastControlLinVel = v
         
-        # vr, vl = speeds2motors(v, self.world.field.side * w)
-
-        # vr = int(deadzone(sat(vr, 223), 32, -32))
-        # vl = int(deadzone(sat(vl, 223), 32, -32))
-
-        #print("VL", vl,"VR", vr)
-        
         return v, w
     
     def actuateSimu(self, robot):

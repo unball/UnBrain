@@ -46,11 +46,11 @@ class SerialRadio():
 
     # Adiciona as velocidades ao vetor de dados
 
-    for i,m in enumerate(msg):
+    for i,(v,w) in enumerate(msg):
       if(self.debug and self.serial is not None):
-        print(f"ROBO {i} | v {m.v} | w {m.w}")
+        print(f"ROBO {i} | v {v} | w {w}")
       
-      v,w = encodeSpeeds(m.v, m.w)
+      v,w = encodeSpeeds(v, w)
       data[i] = v
       data[i+3] = w
 

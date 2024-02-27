@@ -98,7 +98,7 @@ class Attacker(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = np.array(self.world.field.goalPos)
-        rl = np.array(self.world.field.size) - np.array([0, 0.1])
+        rl = np.array(self.world.field.size) - np.array([0, 0.12])
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]

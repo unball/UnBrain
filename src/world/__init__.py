@@ -49,10 +49,12 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=3, side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
         self.n_robots = n_robots
-        self._team = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
-        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in range(self.n_robots)]
+        self._team = [None,None,None]
+        for i in self.n_robots:
+            self._team[i] = TeamRobot(self, i, on=immediate_start)
+        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in self.n_robots)]
         self.ball = Ball(self)
         self.field = Field(side)
         self.referee = referee
@@ -90,47 +92,37 @@ class World:
         
         if self.team_yellow:
             self.dt = time.time() - self._referenceTime
-            robot_id = 0
             # Faremos isso para a visão dos robôs amarelos, caso for do nosso time
-            team = message.robots_yellow
-            
             # Iteramos por cada robô
-            for robot in team:
-
-                if self.debug:
-                    print(f"Yellow - {robot_id} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
-                        
-                #Atualizaremos as coordenadas do robô selecionado (robot_id)
-                yellow[robot_id].raw_update(
-                    robot.x / (1000),
-                    robot.y / (1000),
-                    robot.orientation
-                )
-                yellow[robot_id].calc_velocities(self.dt)
-
-                #passamos para o próximo robô
-                robot_id += 1
+            for i, robot in enumerate(message.robots_yellow):
+                if i < len(self.n_robots):
+                    if self.debug:
+                        print(f"Yellow - {self.n_robots[i]} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
+                            
+                    #Atualizaremos as coordenadas do robô selecionado (robot_id)
+                    yellow[self.n_robots[i]].raw_update(
+                        robot.x / (1000),
+                        robot.y / (1000),
+                        robot.orientation
+                    )
+                    yellow[self.n_robots[i]].calc_velocities(self.dt)
                 
 
         else:
             self.dt = time.time() - self._referenceTime
             # O mesmo acima se aplica aqui, só que pra caso o nosso time seja o azul
-            robot_id = 0
-
-            team = message.robots_blue
     
-            for robot in team:
-
-                if self.debug:
-                    print(f"Blue - {robot_id} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
-                blue[robot_id].raw_update(
-                    robot.x / (1000),
-                    robot.y / (1000),
-                    robot.orientation
-                    )
-                blue[robot_id].calc_velocities(self.dt)
-                robot_id+=1
-                #fim da função VSSVision_update
+            for i, robot in enumerate(message.robots_blue):
+                if i < len(self.n_robots):
+                    if self.debug:
+                        print(f"Blue - {self.n_robots[i]} | x {(robot.x) / (1000):.2f} | y {(robot.y) / (1000):.2f} | th {(robot.orientation):.2f}")
+                    blue[self.n_robots[i]].raw_update(
+                        robot.x / (1000),
+                        robot.y / (1000),
+                        robot.orientation
+                        )
+                    blue[self.n_robots[i]].calc_velocities(self.dt)
+                    #fim da função VSSVision_update
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
             print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
@@ -160,19 +152,19 @@ class World:
             blue = self.team
             
         if self.team_yellow:
-            for id, robot in enumerate(message.frame.robots_yellow):
-                if id < self.n_robots:
+            for i, robot in enumerate(message.frame.robots_yellow):
+                if i < len(self.n_robots):
                     #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
                     if self.debug:
                         print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                    yellow[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                    yellow[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         else:
-            for id, robot in enumerate(message.frame.robots_blue):
-                if id < self.n_robots:
+            for i, robot in enumerate(message.frame.robots_blue):
+                if i < len(self.n_robots):
                     if self.debug:
-                        print(f"Blue - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
-                    blue[id].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                        print(f"Blue - {self.n_robots[i]} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                    blue[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)

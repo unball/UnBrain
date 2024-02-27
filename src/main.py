@@ -36,7 +36,7 @@ parser.add_argument('--debug', dest='debug', action='store_const',
 
 parser.add_argument('--mirror', dest='mirror', action='store_const',
                     const=True, default=False, help='If vision is mirrored or not. Affects angles.')
-parser.add_argument('--n_robots', dest='n_robots', type=int, default=3, help='Number of robots for each time in the match.')
+parser.add_argument('--n_robots', dest='n_robots', type=str, default="0,1,2" , help='Number of robots for each time in the match.')
 
 
 args = parser.parse_args()
@@ -51,6 +51,9 @@ if team_yellow:
 else:
     mirror = args.mirror
 
+args.n_robots = [int(e) for e in args.n_robots.split(",")]
+
+print(args.n_robots)
 
 # Instancia o programa principal
 loop = Loop(

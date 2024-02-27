@@ -18,7 +18,7 @@ class SerialRadio():
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
 
-  def send(self, msg, waitack=True):
+  def send(self, n_robots, msg, waitack=True):
     """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
     try:
       if self.serial is None:
@@ -48,8 +48,9 @@ class SerialRadio():
     for i,(vr,vl) in enumerate(msg):
       if(self.debug and self.serial is not None):
         print(f"ROBO {i} | VL {vl} | VR {vr}")
-      data[i] = vl
-      data[i+3] = vr
+      if i < len(n_robots):
+        data[n_robots[i]] = vl
+        data[n_robots[i]+3] = vr
 
       # Computa o checksum
       checksum += vl+vr

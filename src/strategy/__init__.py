@@ -251,14 +251,14 @@ class MainStrategy(Strategy):
         return pose[:2]
 
     def formationDecider(self):
-        if self.world.ball.pos[0] < -0.39:
+        if self.world.ball.pos[0] < -0.35:
             return [GoalKeeper, Attacker, Defender]
         else:
             return [GoalKeeper, Attacker, Attacker]
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
-        return list(range(self.world.n_robots))
+        return self.world.n_robots.copy()
 
     def decideBestGoalKeeper(self, formation, toDecide):
         nearest = self.nearestGoal(toDecide)
@@ -300,7 +300,7 @@ class MainStrategy(Strategy):
         #obs: (ficará comentado o que era antes)
         if self.static_entities and not world.control:
             roles=[Attacker,Attacker,Attacker]
-            for robo in range(self.world.n_robots):
+            for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
             #self.world.team[1].updateEntity(Defender)
@@ -308,7 +308,7 @@ class MainStrategy(Strategy):
 
         #mesma coisa aqui só que sem o static-entities
         elif world.control:
-            for i in range(self.world.n_robots):
+            for i in self.world.n_robots:
                 self.world.team[i].updateEntity(ControlTester, forced_update=True)
             #self.world.team[0].updateEntity(ControlTester, forced_update=True)
             #self.world.team[1].updateEntity(ControlTester, forced_update=True)
@@ -337,7 +337,8 @@ class MainStrategy(Strategy):
 
 
         for robot in self.world.team:
-            robot.updateSpin()
-            if robot.entity is not None:
-                robot.entity.fieldDecider()
-                robot.entity.directionDecider()
+            if robot is not None:
+                robot.updateSpin()
+                if robot.entity is not None:
+                    robot.entity.fieldDecider()
+                    robot.entity.directionDecider()

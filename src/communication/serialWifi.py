@@ -35,7 +35,8 @@ class SerialRadio():
       return
 
     # Início da mensagem
-    message = bytes("BBB", encoding='ascii')
+    if self.control: message = bytes("CCC", encoding='ascii')
+    else : message = bytes("BBB", encoding='ascii')
 
     # Checksum
     checksum = 0
@@ -45,15 +46,16 @@ class SerialRadio():
 
     # Adiciona as velocidades ao vetor de dados
 
-    for i,(vr,vl) in enumerate(msg):
+    for i,(v,w) in enumerate(msg):
       if(self.debug and self.serial is not None):
-        print(f"ROBO {i} | VL {vl} | VR {vr}")
+        print(f"ROBO {i} | v {v} | w {w}")
       if i < len(n_robots):
-        data[n_robots[i]] = vl
-        data[n_robots[i]+3] = vr
+        v,w = encodeSpeeds(v, w)
+        data[n_robots[i]] = v
+        data[n_robots[i]+3] = w
 
       # Computa o checksum
-      checksum += vl+vr
+      checksum += v+w
 
     # Concatena o vetor de dados à mensagem
     for v in data: message += (v).to_bytes(2,byteorder='little', signed=True)

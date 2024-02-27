@@ -34,7 +34,7 @@ class Loop:
                 control=False,
                 debug =False,
                 mirror=False, 
-                n_robots=3
+                n_robots=[0,1,2]
             ):
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
@@ -73,10 +73,15 @@ class Loop:
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
     def handle_SIGINT(self, signum, frame):
         if self.world.firasim:
-            self.firasim.command.writeMulti( (0,0) for robot in self.world.team)
+            for i, id in enumerate(self.world.n_robots):
+                print (i, id)
+                self.firasim.command.write(id, 0, 0)
+            for robot in self.world.raw_team: 
+                if robot is not None: robot.turnOff()
         elif self.world.vssvision:
-            self.radio.send([(0,0) for robot in self.world.team])
-            for robot in self.world.raw_team: robot.turnOff()
+            self.radio.send(self.world.n_robots, [(0,0) for robot in self.world.team])
+            for robot in self.world.raw_team: 
+                if robot is not None: robot.turnOff()
         sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
@@ -89,8 +94,8 @@ class Loop:
         # Executa estratégia
         self.strategy.update(self.world)
 
-        if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot.entity is not None]
-        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot.entity is not None]
+        if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
+        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0
@@ -99,12 +104,17 @@ class Loop:
                 contador+=1
 
         # Executa o controle
-        if self.world.firasim: 
-            self.firasim.command.writeMulti(control_output)
+        if self.world.firasim:
+            for robot in self.world.raw_team: 
+                if robot is not None: robot.turnOn()
+            for i, id in enumerate(self.world.n_robots):
+                print (i, id)
+                self.firasim.command.write(id, control_output[i][0], control_output[i][1])
         if self.world.vssvision:   
             if self.execute:
-                for robot in self.world.raw_team: robot.turnOn()   
-                self.radio.send(control_output)
+                for robot in self.world.raw_team: 
+                    if robot is not None: robot.turnOn()   
+                self.radio.send(self.world.n_robots, control_output)
 
         # Desenha no ALP-GUI
         self.draw()
@@ -146,7 +156,7 @@ class Loop:
                 self.strategy.manageReferee(self.arp, self.world.last_command)
            
     def draw(self):
-        for robot in [r for r in self.world.team if r.entity is not None]:
+        for robot in [r for r in self.world.team if r is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
 
         for robot in self.world.enemies:

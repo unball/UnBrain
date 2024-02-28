@@ -76,18 +76,20 @@ def avoidObstacle(rt, rr, rl, rps):
         return rt
 
 def goalkeep(rb, vb, rr, rg):
-    xGoal = rg[0] 
+    xGoal = rg[0]
 
     #projeta a velocidade da bola 
-    ytarget = projectLine(rb, vb, xGoal+0.05)
-    if ((vb[0]) < -0.03): #and  ((rb[0]) > .15) and np.abs(ytarget) < 0.2:
-        #verificar se a projeção está no gol
-        ytarget = sat(ytarget, 0.2)
+    # ytarget = projectLine(rb, vb, xGoal+0.05)
+    ytarget = projectLine(rb, vb, xGoal)
+    if ((vb[0]) < -0.1): #and  (rb[0]) > .15) and np.abs(ytarget) < 0.2: (verifica se a projeção está no gol)
+        ytarget = sat(ytarget, 0.17)
         angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
         return (xGoal, ytarget, angle)
 
     #Se não, acompanha o y
-    ytarget = sat(rb[1], 0.2 + 0.27 * (rb[0] < -0.6 and abs(rb[1]) < 0.37))
+    #xGoal = rg[0] - 0.175 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)
+    ytarget = sat(rb[1], 0.14 + 0.21 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)) #(permite que o goleiro avance na área do gol)
+    #ytarget = sat(rb[1], 0.17) #(permite que o goleiro avance na área do gol)
     angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
     return np.array([xGoal, ytarget, angle])
  

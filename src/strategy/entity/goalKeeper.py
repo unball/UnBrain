@@ -62,7 +62,7 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.05
+        rg[0] += 0.06
     
          # Aplica o movimento
         self.robot.vref = 0.2
@@ -72,16 +72,33 @@ class GoalKeeper(Entity):
         Pb = goalkeep(rb, vb, rr, rg)
 
         if self.state == "Stable":
-            if np.abs(rr[0]-rg[0]) > 0.03:
+            """if self.robot.field is not None:
+                ref_th = self.robot.field.F(self.robot.pose)
+                rob_th = self.robot.th
+                if abs(angError(ref_th, rob_th)) > 45 * np.pi / 180:
+                    print('unstable ANG')
+                    self.robot.setSpin(1, timeOut = 0.13)"""
+            if np.abs(rr[0]-rg[0]) > 0.03: #or abs(angError(self.robot.th, ang(rr, rg))) > 40 * np.pi / 180:
+                print(np.abs(rr[0]-rg[0]) > 0.03)
+                print('unstable')
                 self.state = "Unstable"
+                """if self.robot.field is not None:
+                    ref_th = self.robot.field.F(self.robot.pose)
+                    rob_th = self.robot.th
+                    if abs(angError(ref_th, rob_th)) > 45 * np.pi / 180:
+                        print('unstable ANG')
+                        self.robot.setSpin(1, timeOut = 0.05)"""
         elif self.state == "Unstable":
             if rr[0] > 0:
+                print("Attacker Control acessado")
                 self.setAttackerControl()
                 self.state = "Far"
             elif np.abs(rr[0]-rg[0]) < 0.015:
                 self.state = "Stable"
         else:
+            print('else')
             if np.abs(rr[0]-rg[0]) < 0.015:
+                print("IF")
                 self.state = "Stable"
                 self.setGoalKeeperControl()
 
@@ -89,10 +106,14 @@ class GoalKeeper(Entity):
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb) if np.abs(rr[0]-Pb[0]) < 0.07 else UVF(Pb, spiral=0.01)
 
         if self.state == "Stable":
+            print("entrou no stable")
             self.robot.field = DirectionalField(Pb[2], Pb=(rr[0], Pb[1], Pb[2]))
         elif self.state == "Unstable":
+            print("entrou no unstable")
             #self.robot.field = UVF(Pb, radius=0.02)
+            #self.robot.field = GoalKeeperField(Pb, rg[0]-0.02)
             self.robot.field = AttractiveField((rg[0]-0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
+            print("entrou no far")
             self.robot.field = UVF(Pb, radius=0.04)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

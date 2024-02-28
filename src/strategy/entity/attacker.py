@@ -162,7 +162,6 @@ class Attacker(Entity):
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
-                rps = np.array([r.pos for r in enemies+otherAllies])
                 # Pbv = avoidObstacle(Pb, rr[:2], rl-[0.15,0], rps)
                 Pbv = Pb
 

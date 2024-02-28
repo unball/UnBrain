@@ -298,7 +298,7 @@ class MainStrategy(Strategy):
         #Como estamos trabalhando a partir de um número dado de quantos robôs temos, é melhor tratar esses updates em um ciclo
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
-        if self.static_entities and not world.control:
+        if self.static_entities:
             roles=[Attacker,Attacker,Attacker]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
@@ -307,12 +307,12 @@ class MainStrategy(Strategy):
             #self.world.team[2].updateEntity(GoalKeeper)
 
         #mesma coisa aqui só que sem o static-entities
-        elif world.control:
-            for i in self.world.n_robots:
-                self.world.team[i].updateEntity(ControlTester, forced_update=True)
-            #self.world.team[0].updateEntity(ControlTester, forced_update=True)
-            #self.world.team[1].updateEntity(ControlTester, forced_update=True)
-            #self.world.team[2].updateEntity(ControlTester, forced_update=True)
+        # elif world.control:
+        #     for i in self.world.n_robots:
+        #         self.world.team[i].updateEntity(ControlTester, forced_update=True)
+        #     #self.world.team[0].updateEntity(ControlTester, forced_update=True)
+        #     #self.world.team[1].updateEntity(ControlTester, forced_update=True)
+        #     #self.world.team[2].updateEntity(ControlTester, forced_update=True)
 
         else:
             formation = self.formationDecider()

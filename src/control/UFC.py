@@ -49,11 +49,11 @@ class UFC_Simple(Control):
       omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
 
       # Velocidade limite de deslizamento
-      if phi != 0: v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
+      if phi != 0: v1 = (-self.kw * np.sqrt(np.abs(eth))  + np.sqrt(self.kw**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
       if phi == 0: v1 = self.amax / np.abs(omega)
 
       # Velocidade limite das rodas
-      v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
+      v2 = (2*self.vmax - self.L * self.kw * np.sqrt(np.abs(eth))) / (2 + self.L * np.abs(phi))
 
       # Velocidade limite de aproximação
       v3 = self.kp * norm(robot.pos, robot.field.Pb) ** 2 + robot.vref

@@ -261,7 +261,7 @@ class MainStrategy(Strategy):
         return self.world.n_robots.copy()
 
     def decideBestGoalKeeper(self, formation, toDecide):
-        nearest = self.nearestGoal(toDecide)
+        nearest = 1
         self.world.team[nearest].updateEntity(GoalKeeper)
         
         toDecide.remove(nearest)

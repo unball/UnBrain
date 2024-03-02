@@ -30,7 +30,7 @@ class ClientClass:
         if not disabled: self.__send__(str.encode(json.dumps(data)))
 
     def robotPallete(self):
-        return {0: (0.5, 0.5, 1), 1: (0.5, 1, 0.5), 2: (1, 0.5, 0.5)}
+        return {0: (0.5, 0.5, 0.5, 0.5, 1), 1: (0.5, 0.5, 0.5, 1, 0.5), 2: (0.5, 0.5, 1, 0.5, 0.5), 3: (0.5, 1, 0.5, 0.5, 0.5), 4: (1, 0.5, 0.5, 0.5, 0.5)}
     
     def drawBall(self, id, x, y, radius=0.01, color=None):
         self.drawEllipse(id, x, y, radius, radius, 0, 2*np.pi, color if color else (1,0,0), True)

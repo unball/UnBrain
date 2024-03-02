@@ -36,7 +36,8 @@ class RefereeCommands:
 
     def receive(self):
         try:
-            data = self.socket.recv(512)
+            #para 5v5
+            data = self.socket.recv(1024)
             
             if len(data) > 0:
                 command = vssref_command_pb2.VSSRef_Command()

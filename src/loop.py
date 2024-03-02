@@ -34,10 +34,10 @@ class Loop:
                 control=False,
                 debug =False,
                 mirror=False, 
-                n_robots=[0,1,2]
+                n_robots=[0,1,2,3,4]
             ):
         # Instancia interface com o simulador
-        self.firasim = VSS(team_yellow=team_yellow)
+        self.firasim = VSS(len(n_robots),team_yellow=team_yellow)
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
         signal.signal(signal.SIGINT, self.handle_SIGINT)
@@ -74,7 +74,7 @@ class Loop:
     def handle_SIGINT(self, signum, frame):
         if self.world.firasim:
             for i, id in enumerate(self.world.n_robots):
-                print (i, id)
+                print ("oiiiii",i, id)
                 self.firasim.command.write(id, 0, 0)
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
@@ -87,7 +87,7 @@ class Loop:
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
         # print("loop ALP:",(time.time()-self.t0)*1000)
-
+        
         self.t0 = time.time()
         self.lastupdatecount = self.world.updateCount
         
@@ -115,17 +115,16 @@ class Loop:
                 for robot in self.world.raw_team: 
                     if robot is not None: robot.turnOn()   
                 self.radio.send(self.world.n_robots, control_output)
-
-        # Desenha no ALP-GUI
-        self.draw()
-
+            
     def busyLoop(self):
 
         if(self.world.firasim):
             message = self.firasim.vision.read()
             #if message is not None: print("mensagem FIRASim", message)
             self.execute = True if message else False
-            if self.execute: 
+            
+            if self.execute:
+                print(message)
                 self.world.FIRASim_update(message)
 
         if(self.world.vssvision):

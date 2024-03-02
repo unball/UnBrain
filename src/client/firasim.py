@@ -13,12 +13,14 @@ import numpy as np
 import time
 import threading
 import copy
+import world
 
 class FIRASimVision:
-    def __init__(self, host=constants.HOST_FIRASIM_VISION, port=constants.PORT_FIRASIM_VISION):
+    def __init__(self, n_robots, host=constants.HOST_FIRASIM_VISION, port=constants.PORT_FIRASIM_VISION):
         self.host = host
         self.port = port
         self.socket = self.createSocket(host, port)
+        self.n_robots = n_robots
 
         # self._receiveThread = threading.Thread(target=self.loop)
         # self._lock = threading.Lock()
@@ -42,7 +44,10 @@ class FIRASimVision:
 
     def read(self):
         try:
-            data = self.socket.recv(512)
+            if self.n_robots <= 3:
+                data = self.socket.recv(512)
+            else:
+                data = self.socket.recv(1024)
             
             if len(data) > 0:
                 environment = packet_pb2.Environment()

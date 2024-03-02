@@ -2,19 +2,20 @@ from .elements import *
 
 class Field:
     def __init__(self, side):
-        self.width = 1.5
-        self.height = 1.3
-        self.goalAreaWidth = 0.15
-        self.goalAreaHeight = 0.7
+        self.width = 2.2
+        self.height = 1.8
+        self.goalAreaWidth = 0.5
+        self.goalAreaHeight = 0.05
 
         self.xmargin = 0.30
         self.ymargin = 0.18
         self.side = side
 
-        self.goalDepth = 0.1
+        self.goalDepth = 0.15
 
-        self.areaEllipseSize = (0.27, 0.45)
-        self.areaEllipseCenter = (-self.maxX + 0.07, 0)
+
+        self.areaEllipseSize = (0.55, 0.65)
+        self.areaEllipseCenter = (-self.maxX + 0.1, 0)
 
     @property
     def maxX(self):
@@ -49,15 +50,15 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2,3,4], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None, i = False):
         self.n_robots = n_robots
-        self._team = [None,None,None]
+        self._team = [None,None,None,None,None]
+        self.enemies = [None,None,None,None,None]
+        self.staticen = False
         for i in self.n_robots:
             self._team[i] = TeamRobot(self, i, on=immediate_start)
-        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in self.n_robots]
-        for robot in self.enemies:
-            if robot is not None:
-                robot.xvec.add(1000000000000000)
+        for i in self.n_robots:
+            self.enemies[i] = TeamRobot(self, i, on=immediate_start)
         self.ball = Ball(self)
         self.field = Field(side)
         self.referee = referee
@@ -151,8 +152,10 @@ class World:
 
         if self.team_yellow: 
             yellow = self.team
+            blue = self.enemies
         else:
             blue = self.team
+            yellow = self.enemies
             
         if self.team_yellow:
             for i, robot in enumerate(message.frame.robots_yellow):
@@ -161,6 +164,13 @@ class World:
                     if self.debug:
                         print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
                     yellow[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+            for i, robot in enumerate(message.frame.robots_blue):
+                if i < len(self.n_robots):
+                    #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
+                    if self.debug:
+                        print(f"Blue - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                    blue[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+
 
         else:
             for i, robot in enumerate(message.frame.robots_blue):
@@ -168,6 +178,12 @@ class World:
                     if self.debug:
                         print(f"Blue - {self.n_robots[i]} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
                     blue[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+            for i, robot in enumerate(message.frame.robots_yellow):
+                if i < len(self.n_robots):
+                        #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
+                        if self.debug:
+                            print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                        yellow[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)
         # for robot, pos in zip(self.enemies, enemiesPos): robot.update(*pos)

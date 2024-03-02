@@ -82,7 +82,7 @@ class Attacker(Entity):
                     self.lastChat = time.time()
                     self.robot.direction *= -1
     
-    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
+    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=1.1):
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange
 
     def alignedToGoal(self, rb, rr, rg):

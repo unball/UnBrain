@@ -42,11 +42,16 @@ class MainStrategy(Strategy):
         # Pegar apenas id que existe dos robos
         robot_id = []
         for robot in self.world.team:
-            robot_id.append(robot.id)
+            if robot is None:
+                return
+        for robot in self.world.team:
+            if robot is not None:
+                robot_id.append(robot.id)
 
         if command is None: 
             for robot in self.world.raw_team: 
-                robot.turnOff()
+                if robot is not None:
+                    robot.turnOff()
         
 
         
@@ -231,11 +236,12 @@ class MainStrategy(Strategy):
                 if(self.world.debug):
                     print("COMANDO START ENVIADO")
                 
-                for robot in self.world.raw_team: 
-                    robot.turnOn()
+                for robot in self.world.raw_team:
+                    if robot is not None:
+                        robot.turnOn()
     
     def nearestGoal(self, indexes):
-        rg = np.array([-0.75, 0])
+        rg = np.array([-1.1, 0])
         rrs = np.array([self.world.team[i].pos for i in indexes])
         nearest = indexes[np.argmin(np.linalg.norm(rrs-rg, axis=1))]
 
@@ -252,9 +258,9 @@ class MainStrategy(Strategy):
 
     def formationDecider(self):
         if self.world.ball.pos[0] < -0.35:
-            return [GoalKeeper, Attacker, Defender]
+            return [GoalKeeper, Defender, Defender, Midfielder, Attacker]
         else:
-            return [GoalKeeper, Attacker, Attacker]
+            return [GoalKeeper,Defender, Midfielder, Attacker, Attacker]
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
@@ -299,9 +305,11 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[Attacker,Attacker,Attacker]
-            for robo in self.world.n_robots:
-                self.world.team[robo].updateEntity(roles[robo])
+            roles=[Attacker, GoalKeeper, Midfielder, Midfielder, Attacker]
+            if self.world.staticen is False:
+                for robo in self.world.n_robots:
+                    self.world.team[int(robo)].updateEntity(roles[int(robo)])
+                    self.world.staticen = True
             #self.world.team[0].updateEntity(Attacker)
             #self.world.team[1].updateEntity(Defender)
             #self.world.team[2].updateEntity(GoalKeeper)
@@ -318,8 +326,11 @@ class MainStrategy(Strategy):
             formation = self.formationDecider()
             toDecide = self.availableRobotIndexes()
 
-            if GoalKeeper in formation:
+            if GoalKeeper in formation and len(toDecide) >= 5:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
+
+            if Defender in formation and len(toDecide) >= 1:
+                formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             if Defender in formation and len(toDecide) >= 1:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
@@ -334,7 +345,10 @@ class MainStrategy(Strategy):
                 self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
-
+            if Midfielder in formation and len(toDecide) >= 1:
+                self.world.team[toDecide[0]].updateEntity(Midfielder)
+                toDecide.remove(toDecide[0])
+                formation.remove(Midfielder)
 
         for robot in self.world.team:
             if robot is not None:

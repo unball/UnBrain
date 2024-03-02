@@ -129,7 +129,7 @@ def perpl(r):
   
 def bestWithHyst(state: int, possibleStates: list, possibleStatesDistances: list, hyst: float):
   if state in possibleStates:
-    distances = np.array(possibleStatesDistances) + [hyst for s in possibleStates if s != state]
+    distances = [0,1]
     
   else:
     distances = np.array(possibleStatesDistances)

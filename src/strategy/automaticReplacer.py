@@ -11,15 +11,16 @@ class AutomaticReplacer():
     def __init__(self, world):
         super().__init__()
         self.world = world
-        self.firasim = VSS(team_yellow=world.team_yellow)
+        self.firasim = VSS(len(self.world.n_robots),team_yellow=world.team_yellow)
         self.radio = SerialRadio()
         
 
     def send(self, position):
-        
+        return
         # Para parar todos os robos quando receber foul
 
-        for robot in self.world.raw_team: robot.turnOff()
+        for robot in self.world.raw_team: 
+            if robot is not None: robot.turnOff()
         
 
         # Pega pose e id do robo dada por position de manageReferee para enviar comandos depois
@@ -41,8 +42,9 @@ class AutomaticReplacer():
         #TODO: Enviar posição desejada para robô que estiver mais próxima dela
         i = 0
         for robot in self.world.team:
-            robot.entity = AutomaticPlacement(self.world, robot, robot_pose[i])
-            i += 1
+            if robot.entity is not None:
+                robot.entity = AutomaticPlacement(self.world, robot, robot_pose[i])
+                i += 1
 
         # Para terminar de atualizar entidade precisamos delimitar seu campo e sua direção 
         for robot in self.world.team:
@@ -133,6 +135,7 @@ class AutomaticReplacer():
                 self.world.last_command = None 
                 break
     def writeMulti(self, position):
+        return
         # Para parar todos os robos quando receber foul
 
         for robot in self.world.raw_team: robot.turnOff()

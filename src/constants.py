@@ -13,6 +13,9 @@ PORT_REFEREE_YELLOW = 1004
 CAMISA_1 = 0 #0 no alp 
 CAMISA_2 = 2 #1 no alp
 CAMISA_3 = 3 #2 no alp
+#adicionado agora
+CAMISA_4=4
+CAMISA_5=5
 
 #TRANSMISSION DEBUG VARIABLES
 DEBUG_WIFI = False #Variable that verifies if the sendWifi is working correctly

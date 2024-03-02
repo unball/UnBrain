@@ -5,6 +5,7 @@ import constants
 import client.firasim
 import signal
 import sys
+import world
 
 # class VisionMessage(Structure):
 #     MAX_ROBOTS = 5
@@ -124,6 +125,7 @@ import sys
 class VSS:
     def __init__(
         self, 
+        n_robots,
         hostVision=constants.HOST_FIRASIM_VISION, 
         portVision=constants.PORT_FIRASIM_VISION, 
         hostCommand=constants.HOST_FIRASIM_COMMAND, 
@@ -133,7 +135,7 @@ class VSS:
         #self.lib = CDLL("./lib/vss.so")
         #self.vision = Vision(self, hostVision, portVision, team_yellow)
         #self.command = Command(self, hostCommand, portCommand, team_yellow)
-        self.vision = firasim.FIRASimVision()
+        self.vision = firasim.FIRASimVision(n_robots)
         self.command = firasim.FIRASimCommand(team_yellow=team_yellow)
 
         #self.vision.start()

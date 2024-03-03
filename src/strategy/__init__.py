@@ -264,7 +264,7 @@ class MainStrategy(Strategy):
             if Defender in formation and len(toDecide) >= 3:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
-            if Defender in formation and len(toDecide) >= :
+            if Defender in formation and len(toDecide) >= 3:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             hasMaster = False

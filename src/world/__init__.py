@@ -14,7 +14,7 @@ class Field:
         self.goalDepth = 0.15
 
 
-        self.areaEllipseSize = (0.55, 0.65)
+        self.areaEllipseSize = (0.28, 0.35)
         self.areaEllipseCenter = (-self.maxX + 0.1, 0)
 
     @property

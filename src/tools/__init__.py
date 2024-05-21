@@ -143,3 +143,13 @@ def encodeSpeeds(v: float, w: float) -> (int, int):
   wenc = int(w/64 * 32767)
 
   return (1 if venc >= 0 else -1) * (abs(venc) % 32767), (1 if wenc >= 0 else -1) * (abs(wenc) % 32767)
+def RangeKutta(pos, vel, w, th, T, delta_t):
+
+  #Calcula o ângulo futuro que o robô vai estar baseado no seu ângulo atual e sua velocidade angular.
+  new_th = th * T + delta_t * w * T
+
+  #Calcula a posição futura usando a média entre o ângulo atual e o futuro, a posição atual e a velocidade na coordenada
+  new_x = pos[0] + delta_t * np.cos( (th * T + new_th)/2 ) * vel[0]
+  new_y = pos[1] + delta_t * np.cos( (th * T + new_th)/2 ) * vel[1]
+
+  return(np.array(new_x, new_y, new_th))

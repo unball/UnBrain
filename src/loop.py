@@ -61,7 +61,6 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
-        self.delay_camera = 0
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -137,13 +136,6 @@ class Loop:
             self.execute = True if message else False
             if self.execute:
                 self.world.VSSVision_update(message.detection)
-
-                # Finaliza contagem do delay
-                self.delay_camera -= time.time()
-                print("------------------------------------------------\n")
-                print(f'Delay da camera: {self.delay_camera} segundos\n')
-                print("------------------------------------------------\n")
-
         
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
             print("_________________________")

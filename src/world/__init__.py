@@ -148,10 +148,13 @@ class World:
                 vr = np.array(robot.v)
                 w = robot.angvel
                 th = robot.th_raw
-                delta_t = (time.time() - self.dt)
-                T = self.dt
+                delta_t = self.dt #É isso mesmo?
+                T = self._referenceTime #É isso mesmo?
                 
                 new_pose = RangeKutta(rr,vr,w,th,T,delta_t)
+                robot.xvec.add(self.field.side * new_pose[0])
+                robot.yvec.add(new_pose[1])
+                robot.thvec_raw.add(new_pose[2])
 
 
         self._referenceTime = time.time()    

@@ -152,4 +152,4 @@ def RangeKutta(pos, vel, w, th, T, delta_t):
   new_x = pos[0] + delta_t * np.cos( (th * T + new_th)/2 ) * vel[0]
   new_y = pos[1] + delta_t * np.cos( (th * T + new_th)/2 ) * vel[1]
 
-  return(np.array(new_x, new_y, new_th))
+  return((new_x, new_y, new_th))

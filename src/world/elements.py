@@ -84,8 +84,7 @@ class Element:
         self.dprev_y = self.prev_y
         self.prev_x = self.inst_x
         self.prev_y = self.inst_y
-        self.prev_th = self.inst_th
-        self.inst_th = th
+        self.prev_th = th
         self.inst_x = self.x
         self.inst_y = self.y
         self.xvec.add(self.world.field.side * x)

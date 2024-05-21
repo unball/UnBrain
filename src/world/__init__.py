@@ -1,5 +1,5 @@
 from .elements import *
-
+from tools import RangeKutta
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -69,6 +69,7 @@ class World:
         self.last_command = last_command
         self._referenceTime = 0
         self.dt = 0
+        self.delay_camera = 0
         
         self.team_yellow = team_yellow
 
@@ -108,7 +109,6 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                     )
-                    yellow[self.n_robots[i]].calc_velocities(self.dt)
                 
 
         else:
@@ -124,15 +124,38 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                         )
-                    blue[self.n_robots[i]].calc_velocities(self.dt)
                     #fim da função VSSVision_update
+        #Cálculo das Velocidades
+        if self.team_yellow:
+            for i in self.n_robots:
+                yellow[i].calc_velocities(self.dt)
+        else:
+            for i in self.n_robots:
+                blue[i].calc_velocities(self.dt)
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
             print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         self.ball.calc_velocities(self.dt)
 
+        #Cálculo delay Cam
+        self.delay_camera -= time.time()
+        print("------------------------------------------------\n")
+        print(f'Delay da camera: {self.delay_camera} segundos\n')
+        print("------------------------------------------------\n")
+        if self.delay_camera > 0.09:
+            for robot in self.raw_team:
+                rr = np.array(robot.pos)
+                vr = np.array(robot.v)
+                w = robot.angvel
+                th = robot.th_raw
+                delta_t = (time.time() - self.dt)
+                T = self.dt
+                
+                new_pose = RangeKutta(rr,vr,w,th,T,delta_t)
+
+
+        self._referenceTime = time.time()    
         self.dt = time.time() - self._referenceTime
-        self._referenceTime = time.time()
         self.updateCount += 1
         
 

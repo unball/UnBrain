@@ -56,7 +56,6 @@ class Loop:
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
-        self.t0 = time.time()
         self.loopTime = 1.0 / loop_freq
         self.running = True
         self.lastupdatecount = 0
@@ -176,6 +175,7 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
+            self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop
             t0 = time.time()

@@ -23,7 +23,7 @@ class Control(ABC):
         v, w = self.output(robot)
         
         robot.lastControlLinVel = v
-        
+        w = self.world.field.side * w * -1
         
         return v, w
     

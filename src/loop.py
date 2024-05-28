@@ -8,6 +8,7 @@ from world import World
 # Importa interface com FiraSim
 from client import VSS
 
+import robosim
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
@@ -23,7 +24,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=90,
+                loop_freq=60,
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=False,
@@ -39,6 +40,32 @@ class Loop:
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
 
+
+        field_type = 0  # 0 for Division B, 1 for Division A
+        n_robots_blue = 3  # number of blue robots
+        n_robots_yellow = 0  # number of yellow robots
+        time_step_ms = 25 # time step in milliseconds
+        # ball initial position [x, y, v_x, v_y] in meters and meter/s
+        ball_pos = [0.0, 0.0, 0.0, 0.0]
+
+        # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
+        # Units are meters and degrees
+        blue_robots_pos = [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]]
+        yellow_robots_pos = []
+        
+        self.simulado = robosim.VSS(
+            field_type,
+            n_robots_blue,
+            n_robots_yellow,
+            time_step_ms,
+            ball_pos,
+            blue_robots_pos,
+            yellow_robots_pos
+        )
+
+        field_params = self.simulado.get_field_params()
+        print(f"estado do campo:{self.simulado.get_state()}")
+
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
         signal.signal(signal.SIGINT, self.handle_SIGINT)
 
@@ -49,7 +76,6 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
-        
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start,referee=referee, firasim=firasim, vssvision=vssvision, control=control, debug=debug, mirror=mirror)
         
         self.arp = AutomaticReplacer(self.world)
@@ -96,6 +122,7 @@ class Loop:
 
         if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
+        control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0
@@ -116,6 +143,12 @@ class Loop:
                     if robot is not None: robot.turnOn()   
                 self.radio.send(self.world.n_robots, control_output)
 
+        robos = control_output
+        # for i, id in enumerate(self.world.n_robots):
+        #         robos[i] = (list(control_output[i]))
+        print(robos)
+        self.simulado.step(robos)
+                
         # Desenha no ALP-GUI
         self.draw()
 
@@ -135,10 +168,18 @@ class Loop:
             self.execute = True if message else False
             if self.execute:
                 self.world.VSSVision_update(message.detection)
+
         
-        elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
-            print("_________________________")
+        elif((False) and not (self.world.vssvision) and not (self.world.firasim)):
+            print("_________")
             print("Executando sem pacote:")
+        
+        if True:
+            message = self.simulado.get_state()
+            self.execute = True if message else False
+            if self.execute:
+                self.world.update(message)
+
         if self.world.referee:
         
             command = self.rc.receive()

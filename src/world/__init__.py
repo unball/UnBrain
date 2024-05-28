@@ -76,6 +76,50 @@ class World:
         self.enemyGoals = 0
         self.updateCount = 0
 
+
+     
+    def update(self, message):
+        if self.team_yellow: 
+            yellow = self.team
+            blue = self.enemies
+        else:
+            yellow = self.enemies
+            blue = self.team
+
+        robot_id = 0
+        for robot in self.n_robots:
+            if self.team_yellow: 
+                self.dt = time.time() - self._referenceTime
+                yellow[robot_id].raw_update(
+                    message[23+(6*robot_id)], 
+                    message[24+(6*robot_id)], 
+                    message[25+(6*robot_id)]*np.pi/180
+                )
+                
+                yellow[robot_id].calc_velocities(self.dt)
+
+            else:
+                self.dt = time.time() - self._referenceTime
+                blue[robot_id].raw_update(
+                    message[5+(6*robot_id)], 
+                    message[6+(6*robot_id)], 
+                    message[7+(6*robot_id)]*np.pi/180
+                )
+                
+                blue[robot_id].calc_velocities(self.dt)
+            
+            robot_id+=1
+        self.ball.raw_update(message[0], message[1])
+        
+        self.ball.calc_velocities(self.dt)
+        self.dt = time.time() - self._referenceTime
+        self._referenceTime = time.time()
+        self.updateCount += 1
+
+
+
+
+
     # segue explicação abaixo
     def VSSVision_update(self, message):
         if self.debug:

@@ -86,9 +86,8 @@ def fixAngle(angle: float):
   else:
     return angle
 
-def derivative(vs, dt, order=1):
-    if order == 1: return (vs[0] - vs[1]) / dt
-    elif order == 2: return (vs[0] - 2*vs[1] + vs[2]) / dt**2
+def derivative(F, x, d=0.00001, *args):
+  return (F(x+d, *args) - F(x, *args)) / d
 
 def angularDerivative(vs, dt, order=1):
     if order == 1: return adjustAngle(vs[0] - vs[1]) / dt
@@ -99,6 +98,9 @@ def howFrontBall(rb, rr, rg):
 
 def howPerpBall(rb, rr, rg):
     return np.dot(rr[:2]-rb, unit(angl(rg-rb)+np.pi/2))
+
+def insideRect(r, rm, s):
+  return np.all(r-rm < s)
 
 def projectLine(r, v, xline):
   return ((xline-r[0])/v[0])*v[1] + r[1] if v[0] != 0 else 0

@@ -46,8 +46,6 @@ class GoalKeeperControl(Control):
     # Computa phi
     phi = robot.field.phi(robot.pose)
 
-    # Computa gamma
-    gamma = robot.field.gamma(dth, robot.velmod, phi)
 
     # Computa omega
     omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth))

@@ -43,7 +43,7 @@ class UFC_Simple(Control):
       phi = robot.field.phi(robot.pose)
 
       # Computa gamma
-      gamma = robot.field.gamma(dth, robot.velmod, phi)
+      gamma = robot.field.gamma(robot.pose, (0,0,0))
 
       # Computa omega
       omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma

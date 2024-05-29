@@ -75,7 +75,12 @@ class Attacker(Entity):
             if time.time()-self.lastChat > 0.5:
                 if abs(angError(ref_th, rob_th)) > 120 * np.pi / 180:
                     self.robot.direction *= -1
-                    
+                    self.lastChat = time.time()
+                
+                # Inverter a direção se o robô ficar preso em algo
+                elif not self.robot.isAlive() and self.robot.spin == 0:
+                    self.lastChat = time.time()
+                    self.robot.direction *= -1
 
                     
     

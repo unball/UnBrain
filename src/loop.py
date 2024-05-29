@@ -146,7 +146,7 @@ class Loop:
         robos = control_output
         # for i, id in enumerate(self.world.n_robots):
         #         robos[i] = (list(control_output[i]))
-        print(robos)
+        print(f"Control Output:{robos}")
         self.simulado.step(robos)
                 
         # Desenha no ALP-GUI

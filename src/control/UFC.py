@@ -38,7 +38,7 @@ class UFC_Simple(Control):
 
       # Derivada da referência
       dth = sat(angError(th, self.lastth) / dt, 15)
-
+      
       # Computa phi
       phi = robot.field.phi(robot.pose)
 
@@ -49,8 +49,10 @@ class UFC_Simple(Control):
       omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
 
       # Velocidade limite de deslizamento
-      if phi != 0: v1 = (-self.kw * np.sqrt(np.abs(eth))  + np.sqrt(self.kw**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
-      if phi == 0: v1 = self.amax / np.abs(omega)
+      if phi != 0:
+        v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
+      if phi == 0:
+        v1 = self.amax / np.abs(omega)      
 
       # Velocidade limite das rodas
       v2 = (2*self.vmax - self.L * self.kw * np.sqrt(np.abs(eth))) / (2 + self.L * np.abs(phi))
@@ -65,14 +67,11 @@ class UFC_Simple(Control):
       # Lei de controle da velocidade angular
       w = v * phi + omega
 
-      if robot.id == 0:
-        print("v escolhido: v",(np.argmin(vels)+1))
-      #   print(f"ref(th): {(th * 180 / np.pi):.0f}º")
-      #   print(f"erro(th): {(eth * 180 / np.pi):.0f}º")
-        print(f"vref: {v:.2f}")
-      #   print(f", wref: {w:.2f}")
-      #   print(f"v: {robot.velmod:.2f}", end='')
-      #   print(f", w: {robot.w:.2f}")
+      # Considera resposta lenta
+      #if tau != 0: w = (w - w0 * tau/dt * (1-np.exp(-dt/tau))) / (1-tau/dt * (1-np.exp(-dt/tau)))
+      
+      # Satura w caso ultrapasse a mudança máxima permitida
+      #w  = lastspeed.w + sat(w-lastspeed.w, motorangaccelmax * r * interval / L)
       
       # Atualiza a última referência
       self.lastth = th

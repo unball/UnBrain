@@ -1,6 +1,6 @@
 
 import numpy as np
-from tools import angl, unit, norml, angError, filt, sat
+from tools import ang, unit, angl, angError, norml, norm, sat, filt
 from . import Field
 
 class UVF(Field):
@@ -23,22 +23,6 @@ class UVF(Field):
         self.Kr_single = Kr_single
 
         self.singleObstacle = singleObstacle
-
-    def th_one(self, P, Pb):
-        tuf = self.TUF_one(P, Pb=Pb)
-
-        # # Cria obstáculo pontual
-        if self.singleObstacle:
-            auf, R = self.AUF(P, self.Pr, self.Vr, self.Po, self.Vo)
-
-            if R <= self.dmin:
-                uvf = auf
-            else:
-                uvf = auf * self.G(R-self.dmin, self.delta) + tuf * (1-self.G(R-self.dmin, self.delta))    
-        else:
-            uvf = tuf
-
-        return uvf
 
     def TUF(self, P, Pb=None):
         P = P.copy()
@@ -113,6 +97,65 @@ class UVF(Field):
             return angl(self.M_one(Pl, +1, self.r, self.Kr_single)) + Pb[2]
         else:
             return angl(self.M_one(Pr, -1, self.r, self.Kr_single)) + Pb[2]
+        
+    def AUF(self, P, Pr, Vr, Po, Vo):
+        # Vetor de deslocamento
+        s = self.Ko * (Vo-Vr)
+
+        # Obstáculo virtual
+        d = norm(Pr, Po)
+        if d >= norml(s):
+            Pvo = Po[:2] + s
+        else:
+            Pvo = Po[:2] + (d / norml(s)) * s
+
+        return ang(Pvo, P), norm(Pvo, P)
+
+    def F(self, P, Pb=None, retnparray=False):
+        if len(P.shape) == 1: return self.th_one(P, Pb)
+
+        uvf = self.th(P, Pb)
+
+        if uvf.size == 1 and not(retnparray): return uvf[0]
+        return uvf
+
+    def th(self, P, Pb):
+        tuf = self.TUF(P, Pb=Pb)
+
+        # Cria obstáculo pontual
+        if self.singleObstacle:
+            auf, R = self.AUF(P, self.Pr, self.Vr, self.Po, self.Vo)
+
+            c1 = R <= self.dmin
+            c2 = np.bitwise_not(c1)
+
+            uvf = np.zeros_like(P[0])
+            uvf[c1] = auf[c1]
+            uvf[c2] = auf[c2] * self.G(R[c2]-self.dmin, self.delta) + tuf[c2] * (1-self.G(R[c2]-self.dmin, self.delta))
+        
+        else:
+            uvf = tuf
+    
+        return uvf
+
+    def th_one(self, P, Pb):
+        tuf = self.TUF_one(P, Pb=Pb)
+
+        # # Cria obstáculo pontual
+        if self.singleObstacle:
+            auf, R = self.AUF(P, self.Pr, self.Vr, self.Po, self.Vo)
+
+            if R <= self.dmin:
+                uvf = auf
+            else:
+                uvf = auf * self.G(R-self.dmin, self.delta) + tuf * (1-self.G(R-self.dmin, self.delta))    
+        else:
+            uvf = tuf
+        return uvf
+    
+    def G(self, x, delta):
+        return np.exp(-(x/delta)**2/2) 
+    
     def F(self, P, Pb=None, retnparray=False):
         P = np.array(P)
         if len(P.shape) == 1: return self.th_one(P, Pb)

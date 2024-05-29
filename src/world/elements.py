@@ -190,6 +190,8 @@ class TeamRobot(Robot):
         self.timeLastResponse = None
         self.lastControlLinVel = 0
         self.direction = 1
+
+        self.gammavels = (0,0,0)
         
         self.spinTime = 0
         self.spinTimeOut = 0.05

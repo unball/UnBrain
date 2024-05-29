@@ -7,8 +7,8 @@ class Field:
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 
-        self.xmargin = 0.30
-        self.ymargin = 0.18
+        self.xmargin =  0.10
+        self.ymargin = 0.20
         self.side = side
 
         self.goalDepth = 0.1
@@ -69,6 +69,7 @@ class World:
         self.last_command = last_command
         self._referenceTime = 0
         self.dt = 0
+        self.marginPos = self.field.marginPos
         
         self.team_yellow = team_yellow
 

@@ -28,6 +28,9 @@ parser.add_argument('--firasim', dest='firasim', action='store_const', const=Tru
 parser.add_argument('--vssvision', dest='vssvision', action='store_const', const=True,
                     default=False, help='If you are using vssvision for start.')
 
+parser.add_argument('--simulado', dest='simulado', action='store_const', const=True,
+                    default=False, help='If you are using simulado for start.')
+
 parser.add_argument('--control', dest='control', action='store_const', const=True,
                     default=False, help='If you want to make all entities work as ControlTester.')
 
@@ -64,6 +67,7 @@ loop = Loop(
     referee=args.referee,
     firasim=args.firasim,
     vssvision=args.vssvision,
+    simulado=args.simulado,
     control=args.control,
     debug=args.debug,
     n_robots=args.n_robots,

@@ -51,7 +51,7 @@ class Loop:
                 yellow_robots_pos += [pos[i]]
             n_robots_blue = 0 
         else:
-            n_robots_blue = 1
+            n_robots_blue = len(n_robots)
             for i in n_robots:
                 blue_robots_pos += [pos[i]]
             n_robots_yellow = 0 

@@ -55,9 +55,9 @@ class Loop:
             for i in n_robots:
                 blue_robots_pos += [pos[i]]
             n_robots_yellow = 0 
-        time_step_ms = 25 # time step in milliseconds
+        time_step_ms = 16 # time step in milliseconds
         # ball initial position [x, y, v_x, v_y] in meters and meter/s
-        ball_pos = [0.0, 0.0, 0.0, 0.0]
+        ball_pos = [0.0, 0.3, 0.0, 0.0]
 
         # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
         # Units are meters and degrees

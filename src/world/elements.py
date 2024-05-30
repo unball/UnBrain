@@ -1,6 +1,6 @@
 import time
 from tools.interval import Interval
-from tools import adjustAngle, norml, derivative, angularDerivative, unit, angl, ang
+from tools import adjustAngle, norml, derivative, angularDerivative, unit, angl, ang, insideRect, angError
 from control.UFC import UFC_Simple
 import numpy as np
 import math
@@ -110,7 +110,7 @@ class Element:
 
     @property
     def pos(self):
-        return (self.x, self.y)
+        return [self.x, self.y]
 
     @property
     def vx_raw(self):
@@ -127,10 +127,16 @@ class Element:
     @property
     def vy(self):
         return self.vy_raw
+    
+    @property
+    def th(self):
+        """Retorna o ângulo do objeto"""
+        return self.th_raw if self.world.field.side == 1 else adjustAngle(np.pi - self.th_raw)
+
 
     @property
     def v(self):
-        return (self.vx, self.vy)
+        return [self.vx, self.vy]
 
     @property
     def velmod(self):
@@ -157,7 +163,7 @@ class Element:
         self.ax_ant = self.shift(ax, self.ax_ant)
         self.ay_ant = self.shift(ay, self.ay_ant)
 
-        self.linvel = (vx, vy)
+        self.linvel = [vx, vy]
 
     def shift(self, data, array):
         return [data] + array[:-1]
@@ -175,7 +181,7 @@ class Robot(Element):
     def update_FIRASim(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
         super().update_element_FIRASim(x,y,vx,vy,w)
-
+    
 class TeamRobot(Robot):
     def __init__(self, world, id, control=None, on=False):
         super().__init__(world, id)
@@ -190,6 +196,11 @@ class TeamRobot(Robot):
         self.timeLastResponse = None
         self.lastControlLinVel = 0
         self.direction = 1
+
+        self.gammavels = (0,0,0)
+        self.movState = 0
+        self.ref = (0,0,0)
+        self.lastAngError = 0
         
         self.spinTime = 0
         self.spinTimeOut = 0.05
@@ -234,14 +245,11 @@ class TeamRobot(Robot):
     def th_raw(self):
         return self.thvec[0]
 
-    @property
-    def th(self):
-        # return self.th_raw
-        return self.th_raw if self.world.field.side == 1 else adjustAngle(np.pi - self.th_raw)
 
     @property
     def pose(self):
-        return (self.x, self.y, self.th)
+        return np.array([self.x, self.y, self.th])
+    
 
     @property
     def w_raw(self):
@@ -306,6 +314,16 @@ class TeamRobot(Robot):
 class Ball(Element):
     def __init__(self, world):
         super().__init__(world)
+
+    def insideGoalArea(self):
+        """Retorna se a bola está na área do gol aliado ou não"""
+        return insideRect(self.pos, self.world.allyGoalPos, self.world.goalAreaSize)
+    
+    @property
+    def pos(self, step=3):
+        """Retorna a posição \\([x,y]\\) do objeto como uma lista."""
+        vx, vy = self.v
+        return [self.x+vx*self.world.dt*step, self.y+vy*self.world.dt*step]
 
     # def setSpin(self, dir=1, timeout=0.25):
     #     if dir != 0: 

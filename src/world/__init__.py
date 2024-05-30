@@ -7,8 +7,8 @@ class Field:
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 
-        self.xmargin = 0.30
-        self.ymargin = 0.18
+        self.xmargin =  0.10
+        self.ymargin = 0.20
         self.side = side
 
         self.goalDepth = 0.1
@@ -45,6 +45,10 @@ class Field:
         return (self.maxX, 0)
 
     @property
+    def allyGoalPos(self):
+        return np.array([-self.maxX, 0])
+   
+    @property
     def goalAreaSize(self):
         return (self.goalAreaWidth, self.goalAreaHeight)
 
@@ -70,6 +74,9 @@ class World:
         self.last_command = last_command
         self._referenceTime = 0
         self.dt = 0
+        self.marginPos = self.field.marginPos
+        self.allyGoalPos = self.field.allyGoalPos
+        self.goalAreaSize = self.field.goalAreaSize
         
         self.team_yellow = team_yellow
 

@@ -24,3 +24,6 @@ class GoalKeeperField(Field):
 
     if uvf.size == 1 and not(retnparray): return uvf[0]
     return uvf
+  
+  def gamma(self, P: tuple, v: tuple, d=0.0001):
+    return 0

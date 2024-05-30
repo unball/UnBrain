@@ -1,43 +1,23 @@
 import numpy as np
 import scipy
-from tools import unit, angl, ang, norm, sat, howFrontBall, norml, projectLine, insideEllipse, howPerpBall, perpl
+from tools import unit, angl, ang, norm, sat, howFrontBall, norml, projectLine, insideEllipse, howPerpBall, perpl, angError, derivative
 import math
 
-def goToBall(rb, vb, rg, rr, rl, vravg, offset=0.015):
-    rb = rb.copy()
-    #rbp = rb + vb * norm(rb, rr) / (vravg + 0.00001)
-
-    u = np.roots([norml(vb) ** 2 - (max(vravg-0.05, 0.3))**2, 2 * np.dot(rb-rr[:2], vb), norml(rr[:2]-rb)**2])
-    u = [x for x in u if x >= 0 and not(np.iscomplex(x))]
-
-    if len(u) == 0 or norm(rb, rr) < 0.1:
-        rbp = rb
+def goToBall(rb, rg, vb, rl):
+    # Acrescenta um offset
+    if any(np.abs(rb) > rl):
+        offset = 0
     else:
-        rbp = rb + u * vb
-        
-    #rbp = rb
+        offset = -0 * unit(angl(rg-rb)) #+ 0.015 * unit(angl(rg-rb) + np.pi/2)
 
-    # Não precisa ir para o futuro se já está atras da bola indo para tras ou na frente da bola indo para frente
-    if howFrontBall(rr, rb, rg) < 0 and howFrontBall(rbp, rb, rg) < 0 or howFrontBall(rr, rb, rg) > 0 and howFrontBall(rbp, rb, rg) > 0:
-        rbp = rb
-
-    #rbp[0] = max(rbp[0], -rl[0])
-    rbp[0] = sat(rbp[0], rl[0])
-    rbp[1] = sat(rbp[1], rl[1])
-    offsetVector = offset * unit(angl(rg-rbp))#+ 0.015 * unit(angl(rg-rb) + np.pi/2)
-
-    # Limita x da bola no nosso lado
-    rbp[0] = max(rbp[0], -0.20)
-
-    target = rbp + offsetVector
-    target[0] = sat(target[0], rl[0])
-    target[1] = sat(target[1], rl[1])
+    rb = rb + offset
     
     # Ângulo da bola até o gol
-    if abs(rbp[1]) >= rl[1]: angle = 0
-    else: angle = ang(target, rg)
+    angle = ang(rb, rg)
 
-    return np.array([*target[:2], angle])
+    dth = derivative(lambda x : ang((x, rb[1]), rg), rb[0]) * vb[0] + derivative(lambda y : ang((rb[0], y), rg), rb[1]) * vb[1]
+    v = (*vb, dth)
+    return np.array([*rb[:2], angle]), v
 
 def avoidObstacle(rt, rr, rl, rps):
     obstacles = []
@@ -74,6 +54,13 @@ def avoidObstacle(rt, rr, rl, rps):
         return np.array([*rtv2, ang(rr, rt)])
     else:
         return rt
+
+def goToGoal(rg, rr, vr):
+    # Ponto de destino é a posição do gol com o ângulo do robô até o gol
+    angle = ang(rr, rg)
+    dth = derivative(lambda x : ang((x, rr[1]), rg), rr[0]) * vr[0] + derivative(lambda y : ang((rr[0], y), rg), rr[1]) * vr[1]
+
+    return np.array([*rg[:2], angle]), (0,0,-dth)
 
 def goalkeep(rb, vb, rr, rg):
     xGoal = rg[0]
@@ -158,6 +145,23 @@ def intercept(rr, rb, direction, rg, vb, vrref=0.5, arref=1.4):
             return False
     except:
         return False
+
+def spinDefender(rb, rr, rm):
+    if norm(rb, rm) > norm(rr, rm) and norm(rr, rb) < 0.12:
+        spin = 1 if rr[1] > rb[1] else -1
+    else:
+        spin = 0
+
+    return spin
+
+def mirrorPosition(rr, vr, rb, rg):
+    angle = -1 * ang(rb, rg)
+
+    dx = vr[0]
+    dy = -vr[1]
+    dth = 0
+
+    return (rr[0]-.1, -1 * rr[1], angle), (dx, dy, dth)
 
     # r1 = rr - rb
     # r2 = vb - unit(ang(rr, rg)) * vrref

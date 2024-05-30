@@ -147,7 +147,6 @@ class Loop:
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOn()
             for i, id in enumerate(self.world.n_robots):
-                print (i, id)
                 self.firasim.command.write(id, control_output[i][0], control_output[i][1])
         if self.world.vssvision:   
             if self.execute:
@@ -169,7 +168,6 @@ class Loop:
             message = self.firasim.vision.read()
             #if message is not None: print("mensagem FIRASim", message)
             self.execute = True if message else False
-            if self.execute: print(message)
             if self.execute: 
                 self.world.FIRASim_update(message)
 

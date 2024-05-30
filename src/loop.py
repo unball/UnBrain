@@ -183,7 +183,6 @@ class Loop:
         if self.world.simulado:
             message = self.simulado.get_state()
             self.execute = True if message else False
-            if self.execute: print(message)
             if self.execute:
                 self.world.update(message)
         

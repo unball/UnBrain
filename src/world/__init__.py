@@ -99,9 +99,9 @@ class World:
         for robot in self.n_robots:
             if self.team_yellow:
                 yellow[robot].raw_update(
-                    message[23+(6*robot_id)], 
-                    message[24+(6*robot_id)], 
-                    message[25+(6*robot_id)]*np.pi/180
+                    message[5+(6*robot_id)], 
+                    message[6+(6*robot_id)], 
+                    message[7+(6*robot_id)]*np.pi/180
                 )
                 
                 yellow[robot].calc_velocities(self.dt)

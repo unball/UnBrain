@@ -126,8 +126,11 @@ class Loop:
 
         if self.world.debug and constants.DEBUG_ACTUATE:
             contador = 0
-            for vr, vl in control_output:
-                print(f"ACTUATE DO ROBO {contador} | VR", vl, "| VL", vr)
+            for v1, v2 in control_output:
+                if(self.world.firasim):
+                    print(f"ACTUATE DO ROBO {contador} | VL", v1, "| W", v2)
+                else:
+                    print(f"ACTUATE DO ROBO {contador} | V", v1, "| W", v2)
                 contador+=1
 
         # Executa o controle

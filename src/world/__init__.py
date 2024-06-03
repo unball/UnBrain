@@ -53,7 +53,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, debug=False, mirror=False, control=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, simulado=False, debug=False, mirror=False, control=False, last_command=None):
         self.n_robots = n_robots
         self._team = [None,None,None]
         for i in self.n_robots:
@@ -67,6 +67,7 @@ class World:
         self.referee = referee
         self.firasim = firasim
         self.vssvision = vssvision
+        self.simulado = simulado
         self.debug = debug
         self.mirror = mirror
         self.control =  control
@@ -93,28 +94,26 @@ class World:
             yellow = self.enemies
             blue = self.team
 
+        self.dt = time.time() - self._referenceTime
         robot_id = 0
         for robot in self.n_robots:
-            if self.team_yellow: 
-                self.dt = time.time() - self._referenceTime
-                yellow[robot_id].raw_update(
-                    message[23+(6*robot_id)], 
-                    message[24+(6*robot_id)], 
-                    message[25+(6*robot_id)]*np.pi/180
-                )
-                
-                yellow[robot_id].calc_velocities(self.dt)
-
-            else:
-                self.dt = time.time() - self._referenceTime
-                blue[robot_id].raw_update(
+            if self.team_yellow:
+                yellow[robot].raw_update(
                     message[5+(6*robot_id)], 
                     message[6+(6*robot_id)], 
                     message[7+(6*robot_id)]*np.pi/180
                 )
                 
-                blue[robot_id].calc_velocities(self.dt)
-            
+                yellow[robot].calc_velocities(self.dt)
+
+            else:
+                blue[robot].raw_update(
+                    message[5+(6*robot_id)], 
+                    message[6+(6*robot_id)], 
+                    message[7+(6*robot_id)]*np.pi/180
+                )
+
+                blue[robot].calc_velocities(self.dt)
             robot_id+=1
         self.ball.raw_update(message[0], message[1])
         

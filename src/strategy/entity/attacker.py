@@ -74,6 +74,7 @@ class Attacker(Entity):
 
             if time.time()-self.lastChat > 0.5:
                 if abs(angError(ref_th, rob_th)) > 120 * np.pi / 180:
+                    print('ENTREI')
                     self.robot.direction *= -1
                     self.lastChat = time.time()
                 
@@ -96,17 +97,13 @@ class Attacker(Entity):
     def fieldDecider(self):
         # Variáveis úteis
         rr = np.array(self.robot.pose)
-        vr = np.array(self.robot.v)
         rb = np.array(self.world.ball.pos.copy())
         vb = np.array(self.world.ball.v.copy())
         rg = np.array(self.world.field.goalPos)
         vr = np.array(self.robot.lastControlLinVel * unit(self.robot.th))
         oneSpiralMargin = (self.world.marginPos[0]-0.15, self.world.marginPos[1])
 
-        if not self.robot.isAlive():
-            self.robot.setSpin(-np.sign(rr[0]) if rr[1] > 0 else np.sign(rr[0]))
-            return
-        
+
         # Ângulo do robô até a bola
         robotBallAngle = ang(rr, rb)
 

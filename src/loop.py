@@ -91,12 +91,10 @@ class Loop:
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
-        self.t0 = time.time()
         self.loopTime = 1.0 / loop_freq
         self.running = True
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
-
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -175,6 +173,8 @@ class Loop:
                 self.world.FIRASim_update(message)
 
         if self.world.vssvision:
+            # Inicia contagem do delay
+            self.delay_camera = time.time()
             # Atribuimos a mensagem que queremos passar para a função VSSVision_update
             message = self.visionclient.receive_frame()
             self.execute = True if message else False
@@ -228,6 +228,7 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
+            self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop
             t0 = time.time()

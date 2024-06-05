@@ -1,5 +1,5 @@
 from .elements import *
-
+from tools import RangeKutta
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -77,6 +77,10 @@ class World:
         self.marginPos = self.field.marginPos
         self.allyGoalPos = self.field.allyGoalPos
         self.goalAreaSize = self.field.goalAreaSize
+        self.delay_camera = 0
+        self.t0 = time.time()
+        self.execTime = 0
+
         
         self.team_yellow = team_yellow
 
@@ -158,7 +162,6 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                     )
-                    yellow[self.n_robots[i]].calc_velocities(self.dt)
                 
 
         else:
@@ -174,14 +177,41 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                         )
-                    blue[self.n_robots[i]].calc_velocities(self.dt)
                     #fim da função VSSVision_update
+        #Cálculo das Velocidades
+        if self.team_yellow:
+            for i in self.n_robots:
+                yellow[i].calc_velocities(self.dt)
+        else:
+            for i in self.n_robots:
+                blue[i].calc_velocities(self.dt)
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
             print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
         self.ball.calc_velocities(self.dt)
 
-        self.dt = time.time() - self._referenceTime
+        #Cálculo delay Cam
+        self.delay_camera = time.time() - self.delay_camera
+        print("------------------------------------------------\n")
+        print(f'Delay da camera: {self.delay_camera} segundos\n')
+        print("------------------------------------------------\n")
+        if self.delay_camera > 0.104:
+            for robot in self.raw_team:
+                if robot is not None:
+                    rr = np.array(robot.pos)
+                    vr = np.array(robot.v)
+                    w = robot.angvel
+                    th = robot.th
+                    print(time.time() - self.t0)
+                    delta_t = self.delay_camera
+                    T = self.execTime
+                    
+                    new_pose = RangeKutta(rr,vr,w,th,T,delta_t)
+                    robot.xvec.add(new_pose[0])
+                    robot.yvec.add(new_pose[1])
+                    robot.thvec_raw.add(new_pose[2])
+
+        self.delay_camera = time.time()
         self._referenceTime = time.time()
         self.updateCount += 1
         

@@ -84,7 +84,8 @@ class Element:
         self.dprev_y = self.prev_y
         self.prev_x = self.inst_x
         self.prev_y = self.inst_y
-        self.prev_th = th
+        self.prev_th = self.inst_th
+        self.inst_th = th
         self.inst_x = self.x
         self.inst_y = self.y
         self.xvec.add(self.world.field.side * x)
@@ -142,7 +143,7 @@ class Element:
     def velmod(self):
         return norml(self.v)
     
-    def calc_velocities(self, dt):
+    def calc_velocities(self, dt, dtalpha=0.5, thalpha=0.8, accalpha=0.2):
         """Estima a velocidade do objeto por meio do pose atual, pose anterior e o intervalo de tempo passado `dt`. A velocidade computada é suavizada por uma média exponencial: \\(v[k] = v_{\\text{estimado}} \\cdot \\alpha + v[k-1] \\cdot (1-\\alpha)\\) onde \\(v_{\\text{estimado}} = \\frac{r[k]-r[k-1]}{dt}\\)"""
     
         vx = (self.inst_x-self.prev_x) / dt
@@ -164,6 +165,7 @@ class Element:
         self.ay_ant = self.shift(ay, self.ay_ant)
 
         self.linvel = [vx, vy]
+        self.angvel = (angError(self.inst_th, self.prev_th)/dt)*thalpha + (self.inst_w)*(1-thalpha)
 
     def shift(self, data, array):
         return [data] + array[:-1]

@@ -99,7 +99,7 @@ class Attacker(Entity):
         rb = np.array(self.world.ball.pos.copy())
         vb = np.array(self.world.ball.v.copy())
         rg = np.array(self.world.field.goalPos)
-        vr = np.array(self.robot.lastControlLinVel * unit(self.robot.th))
+        vr = np.array(self.robot.v.copy())
         oneSpiralMargin = (self.world.marginPos[0]-0.15, self.world.marginPos[1])
 
 

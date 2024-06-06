@@ -307,9 +307,9 @@ class MainStrategy(Strategy):
             #self.world.team[2].updateEntity(GoalKeeper)
 
         #mesma coisa aqui só que sem o static-entities
-        # elif world.control:
-        #     for i in self.world.n_robots:
-        #         self.world.team[i].updateEntity(ControlTester, forced_update=True)
+        elif world.control:
+            for i in self.world.n_robots:
+                self.world.team[i].updateEntity(ControlTester)
         #     #self.world.team[0].updateEntity(ControlTester, forced_update=True)
         #     #self.world.team[1].updateEntity(ControlTester, forced_update=True)
         #     #self.world.team[2].updateEntity(ControlTester, forced_update=True)

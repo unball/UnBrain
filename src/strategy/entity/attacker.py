@@ -9,6 +9,7 @@ from strategy.movements import goToBall, goToGoal, howFrontBall, howPerpBall, go
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, angl, unit, projectLine
 from tools.interval import Interval
 from control.UFC import UFC_Simple
+from control.PD import PD
 from client.gui import clientProvider
 import numpy as np
 import math
@@ -52,7 +53,7 @@ class Attacker(Entity):
         
         self.lastChat = 0
 
-        self._control = UFC_Simple(self.world, enableInjection=True)
+        self._control = UFC_Simple(self.world)
     @property
     def control(self):
         return self._control
@@ -146,6 +147,7 @@ class Attacker(Entity):
             #if howFrontBall(rb, rr, rg) > 0: radius = 0
             #else: radius = None
             self.robot.field = UVFDefault(self.world, pose, rr, direction=0, Kr=Kr, singleObstacle=singleObstacle, Vr=vr)
+            print(self.robot.field)
 
 
 

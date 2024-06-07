@@ -141,7 +141,7 @@ class Attacker(Entity):
         if any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
-            self.robot.field = UVFDefault(self.world, (*pose[:2], angle), rr, direction=-np.sign(rb[1]), Kr=Kr, singleObstacle=singleObstacle, Vr=vr, radius=0.07)
+            self.robot.field = UVFDefault(self.world, (*pose[:2], angle), rr, direction=-np.sign(rb[1]), Kr=Kr, singleObstacle=singleObstacle, Vr=vr, radius=0.1)
         else: 
             #if howFrontBall(rb, rr, rg) > 0: radius = 0
             #else: radius = None

@@ -8,7 +8,7 @@ wheel_reduction = 1
 #L = 0.075
 
 # O que realmente é
-r = 0.0305
+r = 0.01525
 L = 0.0605
 wheel_reduction = 1
 wheel_w_max = 110

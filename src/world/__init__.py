@@ -195,21 +195,27 @@ class World:
         print("------------------------------------------------\n")
         print(f'Delay da camera: {self.delay_camera} segundos\n')
         print("------------------------------------------------\n")
-        if self.delay_camera > 0.104:
+        if self.delay_camera > 0.09:
             for robot in self.raw_team:
                 if robot is not None:
                     rr = np.array(robot.pos)
                     vr = np.array(robot.v)
-                    w = robot.angvel
+                    w = robot.w
                     th = robot.th
                     print(time.time() - self.t0)
                     delta_t = self.delay_camera
                     T = self.execTime
                     
-                    new_pose = RangeKutta(rr,vr,w,th,T,delta_t)
-                    robot.xvec.add(new_pose[0])
-                    robot.yvec.add(new_pose[1])
-                    robot.thvec_raw.add(new_pose[2])
+                    new_pose = RangeKutta(rr,vr,th,T,delta_t,w)
+                    robot.raw_update(self.field.side * new_pose[0],new_pose[1],new_pose[2])
+                    robot.calc_velocities(delta_t)
+            rb = np.array(self.ball.pos)
+            vb = np.array(self.ball.v)
+            new_pose = RangeKutta(rb,vb,th,T,delta_t)
+            self.ball.raw_update(self.field.side * new_pose[0],new_pose[1])
+            self.ball.calc_velocities(delta_t)
+
+
 
         self.delay_camera = time.time()
         self._referenceTime = time.time()
@@ -239,7 +245,7 @@ class World:
                 if i < len(self.n_robots):
                     #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
                     if self.debug:
-                        print(f"Yellow - {id} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
+                        print(f"Yellow - {self.n_robots[i]} | x {robot.x} | y {robot.y} | th {robot.orientation} | vx {robot.vx} | vy {robot.vy} | vorientation {robot.vorientation}")
                     yellow[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
         else:

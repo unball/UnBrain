@@ -138,7 +138,7 @@ class Loop:
             contador = 0
             for v1, v2 in control_output:
                 if(self.world.firasim):
-                    print(f"ACTUATE DO ROBO {contador} | VL", v1, "| W", v2)
+                    print(f"ACTUATE DO ROBO {contador} | V", v1, "| W", v2)
                 else:
                     print(f"ACTUATE DO ROBO {contador} | V", v1, "| W", v2)
                 contador+=1

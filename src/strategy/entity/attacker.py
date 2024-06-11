@@ -6,7 +6,7 @@ from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
 from strategy.field.areaAvoidance.avoidRect import AvoidRect
 from strategy.field.areaAvoidance.avoidEllipse import AvoidEllipse
 from strategy.movements import goToBall, goToGoal, howFrontBall, howPerpBall, goalkeep, blockBallElipse, mirrorPosition, spinDefender, spinGoalKeeper
-from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, unit, angl, unit, projectLine
+from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, angl, unit, projectLine
 from tools.interval import Interval
 from control.UFC import UFC_Simple
 from client.gui import clientProvider
@@ -52,7 +52,7 @@ class Attacker(Entity):
         
         self.lastChat = 0
 
-        self._control = UFC_Simple(self.world, enableInjection=True)
+        self._control = UFC_Simple(self.world)
     @property
     def control(self):
         return self._control
@@ -72,7 +72,7 @@ class Attacker(Entity):
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
 
-            if time.time()-self.lastChat > 0.5:
+            if time.time()-self.lastChat > 0.3:
                 if abs(angError(ref_th, rob_th)) > 120 * np.pi / 180:
                     self.robot.direction *= -1
                     self.lastChat = time.time()
@@ -96,11 +96,11 @@ class Attacker(Entity):
     def fieldDecider(self):
         # Variáveis úteis
         rr = np.array(self.robot.pose)
-        rb = np.array(self.world.ball.pos.copy())
-        vb = np.array(self.world.ball.v.copy())
+        rb = np.array(self.world.ball.pos)
+        vb = np.array(self.world.ball.v)
         rg = np.array(self.world.field.goalPos)
-        vr = np.array(self.robot.v.copy())
-        oneSpiralMargin = (self.world.marginPos[0]-0.15, self.world.marginPos[1])
+        vr = np.array(self.robot.v)
+        oneSpiralMargin = (self.world.marginPos[0], self.world.marginPos[1])
 
 
         # Ângulo do robô até a bola

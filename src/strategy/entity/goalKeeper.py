@@ -64,12 +64,12 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.06
+        rg[0] += 0.05
     
          # Aplica o movimento
         self.robot.vref = 0
 
-        self.robot.setSpin(spinGoalKeeper(rb, rr, rg), timeOut = 0.1)
+        self.robot.setSpin(spinGoalKeeper(rb, rr, rg), timeOut = 0.13)
 
         Pb = goalkeep(rb, vb, rr, rg)
         # print(Pb)
@@ -77,7 +77,7 @@ class GoalKeeper(Entity):
         # print(f"angulo: {thr}")
         if self.state == "Stable":
             # if np.abs(rr[0]-rg[0]) > 0.05 or (np.abs(thr-1.5) > 2 or np.abs(thr-4.7) > 2):
-            if np.abs(rr[0]-rg[0]) > 0.07:
+            if np.abs(rr[0]-rg[0]) > 0.03:
                 self.state = "Unstable"
                 self.setGoalKeeperControl()
         elif self.state == "Unstable":
@@ -87,12 +87,12 @@ class GoalKeeper(Entity):
                 # SETAR INSTABILIDADE CASO O ROBO ESTEJA VIRADO E FRENTE PRO GOL
                 
             # elif (np.abs(rr[0]-rg[0]) < 0.05) and (np.abs(thr-1.5) < 2 or np.abs(thr-4.7) < 2):
-            elif (np.abs(rr[0]-rg[0]) < 0.05):
+            elif (np.abs(rr[0]-rg[0]) < 0.03):
                 self.state = "Stable"
                 self.setGoalKeeperControl()
         else:
             # if (np.abs(rr[0]-rg[0]) < 0.05) and (np.abs(thr-1.5) < 2 or np.abs(thr-4.7) < 2):
-            if (np.abs(rr[0]-rg[0]) < 0.05):
+            if (np.abs(rr[0]-rg[0]) < 0.03):
                 self.state = "Stable"
                 self.setGoalKeeperControl()
 
@@ -103,7 +103,7 @@ class GoalKeeper(Entity):
             self.robot.field = DirectionalField(Pb[2], Pb=(rr[0], Pb[1], Pb[2]))
         elif self.state == "Unstable":
             # self.robot.field = UVF(Pb, radius=0.02)
-            self.robot.field = AttractiveField((rg[0], Pb[1], Pb[2]))
+            self.robot.field = AttractiveField((rg[0]-0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
-            self.robot.field = UVFDefault(self.world,  Pb, rr, 0)
+            self.robot.field = UVFDefault(self.world, Pb , rr, direction=0, radius = 0.04, spiral = False, Kr = 0.03)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

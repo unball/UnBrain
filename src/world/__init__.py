@@ -103,18 +103,19 @@ class World:
         for robot in self.n_robots:
             if self.team_yellow:
                 yellow[robot].raw_update(
-                    message[5+(6*robot_id)], 
-                    message[6+(6*robot_id)], 
-                    message[7+(6*robot_id)]*np.pi/180
+                    message[5+(6*robot)], 
+                    message[6+(6*robot)], 
+                    message[7+(6*robot)]*np.pi/180
                 )
                 
                 yellow[robot].calc_velocities(self.dt)
 
             else:
+                print(message[7+(6*robot_id)]*np.pi/180)
                 blue[robot].raw_update(
-                    message[5+(6*robot_id)], 
-                    message[6+(6*robot_id)], 
-                    message[7+(6*robot_id)]*np.pi/180
+                    message[5+(6*robot)], 
+                    message[6+(6*robot)], 
+                    message[7+(6*robot)]*np.pi/180
                 )
 
                 blue[robot].calc_velocities(self.dt)

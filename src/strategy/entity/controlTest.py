@@ -8,6 +8,7 @@ from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, angl, i
 from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
 from control.UFC import UFC_Simple
+from control.SecAttacker import SecAttackerControl
 import numpy as np
 import math
 import time
@@ -18,6 +19,7 @@ class ControlTester(Entity):
 
         self._control = UFC_Simple(self.world)
         self.lastChat = 0
+        self.x = 1
 
     @property
     def control(self):
@@ -54,11 +56,49 @@ class ControlTester(Entity):
         
         robotBallAngle = ang(rr, rb)
 
+        #Quad 1: X = -0.375 Y = +0.430
+        #Quad 2: X = +0.375 Y = +0.430
+        #Quad 3: X = +0.375 Y = -0.430
+        #Quad 4: X = -0.375 Y = -0.430
+
         #Andar para frente e para trás
-        if rr[0] > 0.35: # quanto maior o número, maior a distância de controle percorrida pelo robô e menor a área inicializável
-            self.robot.field = DirectionalField(np.pi, Pb=(-0.65,rr[1],np.pi))
-        if  rr[0] < -0.35:
-            self.robot.field = DirectionalField(0, Pb=(0.65,rr[1],0))
+        if self.x == 1:
+            while not -0.425 < rr[0] < -0.350 or not 0.405 < rr[1] < 0.455: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[-0.375,0.430]), Pb=(-0.375,0.430,np.pi))
+                print(self.x)
+                return
+            self.x = 2
+        if self.x == 2:
+            while not +0.425 > rr[0] > +0.350 or not 0.405 < rr[1] < 0.455: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.375,0.430]), Pb=(0.375,0.430, np.pi))
+                print(self.x)
+                return
+            self.x = 3
+        if self.x == 3:
+            while not +0.425 > rr[0] > +0.350 or not -0.405 > rr[1] > -0.455: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.375,-0.430]), Pb=(0.375,-0.430, np.pi))
+                print(self.x)
+                return
+            self.x = 4
+        if self.x ==4:
+            while not -0.425 < rr[0] < -0.350 or not -0.405 > rr[1] > -0.455: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[-0.375,-0.430]), Pb=(-0.375,-0.430, np.pi))
+                print(self.x)
+                return
+            self.x = 1
+
+        # if rr[0] == 0.375 and rr[1] == 0.430:
+        #     self.robot.field = DirectionalField(np.pi, Pb=(0.375,-0.430,np.pi))
+        # if rr[0] == 0.375 and rr[1] == -0.430:
+        #     self.robot.field = DirectionalField(np.pi, Pb=(-0.375,-0.430,1,5*np.pi))
+        # if rr[0] == -0.375 and rr[1] == -0.430 :
+        #     self.robot.field = DirectionalField(np.pi, Pb=(-0.375, 0.430,np.pi))
+        # else:
+        #     self.robot.field = DirectionalField(ang(rr,[-0.375,0.43]), Pb=(-0.375,0.430,np.pi))
+        
+        if self.robot.field is not None:
+            print(f'Pb do robô: {self.robot.field.Pb}')
+            print(rr[2])
         
         # if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) + 0.10*self.robot.movState and (self.robot.movState == 1 or abs(howPerpBall(rb, rr, rg)) < 0.1) and abs(angError(robotBallAngle, rr[2])) < (20+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.22 + self.robot.movState*0.4:
         #     #if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) and abs(angError(robotBallAngle, rr[2])) < (30+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.25:

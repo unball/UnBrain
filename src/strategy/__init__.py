@@ -4,6 +4,7 @@ from .entity.goalKeeper import GoalKeeper
 from .entity.defender import Defender
 from .entity.midfielder import Midfielder
 from .entity.controlTest import ControlTester
+from .entity.SecAttacker import SecAttacker
 from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
@@ -299,7 +300,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[Attacker,Attacker,Attacker]
+            roles=[SecAttacker,Attacker,SecAttacker]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)

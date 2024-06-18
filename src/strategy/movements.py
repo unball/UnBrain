@@ -3,6 +3,42 @@ import scipy
 from tools import unit, angl, ang, norm, sat, howFrontBall, norml, projectLine, insideEllipse, howPerpBall, perpl, angError, derivative
 import math
 
+def goToBallSec(rb, vb, rg, rr, rl, vravg, offset=0.015):
+    rb = rb.copy()
+    #rbp = rb + vb * norm(rb, rr) / (vravg + 0.00001)
+
+    u = np.roots([norml(vb) ** 2 - (max(vravg-0.05, 0.3))**2, 2 * np.dot(rb-rr[:2], vb), norml(rr[:2]-rb)**2])
+    u = [x for x in u if x >= 0 and not(np.iscomplex(x))]
+
+    if len(u) == 0 or norm(rb, rr) < 0.1:
+        rbp = rb
+    else:
+        rbp = rb + u * vb
+        
+    #rbp = rb
+
+    # Não precisa ir para o futuro se já está atras da bola indo para tras ou na frente da bola indo para frente
+    if howFrontBall(rr, rb, rg) < 0 and howFrontBall(rbp, rb, rg) < 0 or howFrontBall(rr, rb, rg) > 0 and howFrontBall(rbp, rb, rg) > 0:
+        rbp = rb
+
+    #rbp[0] = max(rbp[0], -rl[0])
+    rbp[0] = sat(rbp[0], rl[0])
+    rbp[1] = sat(rbp[1], rl[1])
+    offsetVector = offset * unit(angl(rg-rbp))#+ 0.015 * unit(angl(rg-rb) + np.pi/2)
+
+    # Limita x da bola no nosso lado
+    rbp[0] = max(rbp[0], -0.20)
+
+    target = rbp + offsetVector
+    target[0] = sat(target[0], rl[0])
+    target[1] = sat(target[1], rl[1])
+    
+    # Ângulo da bola até o gol
+    if abs(rbp[1]) >= rl[1]: angle = 0
+    else: angle = ang(target, rg)
+
+    return np.array([*target[:2], angle])
+
 def goToBall(rb, rg, vb, rl):
     # Acrescenta um offset
     if any(np.abs(rb) > rl):

@@ -7,7 +7,7 @@ import time
 
 class UFC_Simple(Control):
     """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-    def __init__(self, world, kw=8, kp=800, mu=0.95, vmax=0.7, L=L, enableInjection=False):
+    def __init__(self, world, kw=4, kp=80, mu=0.3, vmax=1.0, L=L, enableInjection=False):
       Control.__init__(self, world)
 
       self.g = 9.8
@@ -62,6 +62,13 @@ class UFC_Simple(Control):
 
       # Velocidade linear é menor de todas
       v  = max(min(v1, v2, v3), 0)
+      if v == v1:
+          print('velocidade é v1')
+      elif v == v2:
+          print('velocidade é v2')
+      elif v == v3:
+          print('velocidade é v3')
+    
 
       # Lei de controle da velocidade angular
       w = v * phi + omega

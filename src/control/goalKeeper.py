@@ -1,4 +1,4 @@
-from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt
+from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, L
 from tools.interval import Interval
 from control import Control
 import numpy as np
@@ -7,7 +7,7 @@ import time
 
 class GoalKeeperControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=3, kp=70, mu=0.9, vmax=1.0, L=0.605):
+  def __init__(self, world, kw= 4, kp=80, mu=0.15, vmax=0.8, L=L, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -17,17 +17,11 @@ class GoalKeeperControl(Control):
     self.amax = self.mu * self.g
     self.vmax = vmax
     self.L = L
-
-    self.lastth = 0
     self.ieth = 0
     self.iep = 0
-    self.interval = Interval(filter=True, initial_dt=0.016)
 
-    self.eth = 0
-
-  @property
-  def error(self):
-    return self.eth
+    self.lastth = 0
+    self.interval = Interval(filter=False, initial_dt=0.016)
 
   def output(self, robot):
     if robot.field is None: return 0,0
@@ -58,7 +52,13 @@ class GoalKeeperControl(Control):
     v3 = self.kp * e + self.kp/80 * self.iep  + robot.vref if dTarget > 0.015 else 0
 
     # Velocidade linear é menor de todas
-    v  = max(min(v1, v2, v3), 0)
+    v  = max(min(v1,v2, v3), 0)
+    if v == v1:
+        print('velocidade é v1')
+    elif v == v2:
+        print('velocidade é v2')
+    elif v == v3:
+        print('velocidade é v3')
     
     # Atualiza a última referência
     self.lastth = th

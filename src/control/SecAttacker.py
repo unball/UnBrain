@@ -9,7 +9,7 @@ import time
 
 class SecAttackerControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=4, kp=20, mu=0.75, vmax=1.5, L=0.605, enableInjection=False):
+  def __init__(self, world, kw=5, kp=40, mu=0.75, vbias=0.1, vmax=1.2, L=0.0605, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -20,7 +20,7 @@ class SecAttackerControl(Control):
     self.vmax = vmax
     self.L = L
     self.kv = 10
-    self.vbias = 0.2
+    self.vbias = vbias
 
     self.sd_min = 1e-4
     self.sd_max = 0.5
@@ -136,6 +136,12 @@ class SecAttackerControl(Control):
 
     v5 = self.vbias + (self.vmax-self.vbias) * self.controlLine(np.log(sd), np.log(self.sd_max), np.log(self.sd_min))
     v  = min(v5, v3) + sat(injection, 1)
+
+    if v == v3:
+      print('velocidade = v3')
+    elif v == v5:
+      print('velocidade = v5')
+
     #print(vtarget)
     #v  = max(min(self.vbias + (self.vmax-self.vbias) * np.exp(-self.kapd * sd), v3), self.loadedInjection * vtarget)#max(min(v1, v2, v3, v4), 0)
     #ev = self.lastvref - robot.velmod

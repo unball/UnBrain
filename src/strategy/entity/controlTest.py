@@ -69,20 +69,20 @@ class ControlTester(Entity):
                 return
             self.x = 2
         if self.x == 2:
-            while not +0.410 > rr[0] > +0.310 or not 0.350 < rr[1] < 0.450: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.360,0.400]), Pb=(0.360,0.400, np.pi))
+            while not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.360,0.380]), Pb=(0.370,0.380, np.pi))
                 print(self.x)
                 return
             self.x = 3
         if self.x == 3:
-            while not +0.400 > rr[0] > +0.300 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.350,-0.430]), Pb=(0.350,-0.380, np.pi))
+            while not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.380,-0.380]), Pb=(0.380,-0.380, np.pi))
                 print(self.x)
                 return
             self.x = 4
         if self.x ==4:
-            while not -0.430 < rr[0] < -0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[-0.380,-0.380]), Pb=(-0.380,-0.380, np.pi))
+            while not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[-0.360,-0.380]), Pb=(-0.360,-0.380, np.pi))
                 print(self.x)
                 return
             self.x = 1

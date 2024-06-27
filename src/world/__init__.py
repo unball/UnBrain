@@ -2,8 +2,8 @@ from .elements import *
 from tools import RangeKutta
 class Field:
     def __init__(self, side):
-        self.width = 1.5
-        self.height = 1.3
+        self.width = 1.67
+        self.height = 1.23
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 

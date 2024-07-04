@@ -7,7 +7,9 @@ from strategy.movements import goalkeep, spinGoalKeeper, goToBall, goToGoal, how
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, angl, insideEllipse, angl, unit, projectLine
 from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
+from control.defender import DefenderControl
 from control.UFC import UFC_Simple
+from control.UFC_modified import UFC_New
 from control.SecAttacker import SecAttackerControl
 import numpy as np
 import math
@@ -36,15 +38,15 @@ class ControlTester(Entity):
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
 
-            if time.time()-self.lastChat > 0.3:
+            if time.time()-self.lastChat > 0.5:
                 if abs(angError(ref_th, rob_th)) > 90 * np.pi / 180:
                     self.robot.direction *= -1
                     self.lastChat = time.time()
 
-                # Inverter a direção se o robô ficar preso em algo
-                elif not self.robot.isAlive() and self.robot.spin == 0:
-                    self.lastChat = time.time()
-                    self.robot.direction *= -1
+            # Inverter a direção se o robô ficar preso em algo
+            elif not self.robot.isAlive() and self.robot.spin == 0:
+                self.lastChat = time.time()
+                self.robot.direction *= -1    
 
     def fieldDecider(self):
         rr = np.array(self.robot.pose)
@@ -55,6 +57,8 @@ class ControlTester(Entity):
         oneSpiralMargin = (self.world.marginPos[0]-0.15, self.world.marginPos[1])
         
         robotBallAngle = ang(rr, rb)
+        
+        self.robot.vref = 0
 
         #Quad 1: X = -0.375 Y = +0.430
         #Quad 2: X = +0.375 Y = +0.430
@@ -63,26 +67,74 @@ class ControlTester(Entity):
 
         #Andar para frente e para trás
         if self.x == 1:
-            while not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[-0.360,0.380]), Pb=(-0.360,0.380,np.pi))
+            if not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[-0.360,0.380]), Pb=(-0.360,0.380,1.5*np.pi))
                 print(self.x)
                 return
             self.x = 2
         if self.x == 2:
-            while not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.360,0.380]), Pb=(0.370,0.380, np.pi))
+            if not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.370,0.380]), Pb=(0.370,0.380, np.pi))
                 print(self.x)
                 return
             self.x = 3
         if self.x == 3:
-            while not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.380,-0.380]), Pb=(0.380,-0.380, np.pi))
+            if not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = DirectionalField(ang(rr,[0.380,-0.380]), Pb=(0.380,-0.380, 1,5*np.pi))
                 print(self.x)
                 return
             self.x = 4
-        if self.x ==4:
-            while not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+        if self.x == 4:
+            if not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
                 self.robot.field = DirectionalField(ang(rr,[-0.360,-0.380]), Pb=(-0.360,-0.380, np.pi))
+                print(self.x)
+                return
+            self.x = 5
+        if self.x == 5:
+            if not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = AttractiveField(Pb=(-0.360,0.380,np.pi))
+                print(self.x)
+                return
+            self.x = 6
+        if self.x == 6:
+            if not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = AttractiveField(Pb=(0.370,0.380, np.pi))
+                print(self.x)
+                return
+            self.x = 7
+        if self.x == 7:
+            if not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = AttractiveField(Pb=(0.380,-0.380, np.pi))
+                print(self.x)
+                return
+            self.x = 8
+        if self.x == 8:
+            if not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = AttractiveField(Pb=(-0.360,-0.380, np.pi))
+                print(self.x)
+                return
+            self.x = 9
+        if self.x == 9:
+            if not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = UVFDefault(self.world, (-0.360,0.380,1.5*np.pi), rr, direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
+                print(self.x)
+                return
+            self.x = 10
+        if self.x == 10:
+            if not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
+                self.robot.field = UVFDefault(self.world, (0.370,0.380, np.pi), rr, direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
+                print(self.x)
+                return
+            self.x = 11
+        if self.x == 11:
+            if not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = UVFDefault(self.world, (0.380,-0.380, 1,5*np.pi), rr, direction=0)
+                print(self.x)
+                return
+            self.x = 12
+        if self.x == 12:
+            if not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
+                self.robot.field = UVFDefault(self.world, (-0.360,-0.380, np.pi), rr, direction=0)
                 print(self.x)
                 return
             self.x = 1
@@ -95,10 +147,6 @@ class ControlTester(Entity):
         #     self.robot.field = DirectionalField(np.pi, Pb=(-0.375, 0.430,np.pi))
         # else:
         #     self.robot.field = DirectionalField(ang(rr,[-0.375,0.43]), Pb=(-0.375,0.430,np.pi))
-        
-        if self.robot.field is not None:
-            print(f'Pb do robô: {self.robot.field.Pb}')
-            print(rr[2])
         
         # if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) + 0.10*self.robot.movState and (self.robot.movState == 1 or abs(howPerpBall(rb, rr, rg)) < 0.1) and abs(angError(robotBallAngle, rr[2])) < (20+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.22 + self.robot.movState*0.4:
         #     #if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) and abs(angError(robotBallAngle, rr[2])) < (30+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.25:

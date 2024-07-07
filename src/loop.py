@@ -20,6 +20,7 @@ from vision.receiver import FiraClient
 from strategy.automaticReplacer import AutomaticReplacer
 
 import constants
+import threading
 
 class Loop:
 
@@ -104,7 +105,10 @@ class Loop:
             self.UVF_screen.initialiazeObjects()
 
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
-    def handle_SIGINT(self, signum, frame):
+    def handle_SIGINT(self, signum, frame, shut_down):
+        if shut_down:
+            self.running = False
+
         if self.world.firasim:
             for i, id in enumerate(self.world.n_robots):
                 self.firasim.command.write(id, 0, 0)
@@ -118,7 +122,7 @@ class Loop:
             self.simulado.step([(0,0) for robot in self.world.team])
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
-        sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+        #sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return

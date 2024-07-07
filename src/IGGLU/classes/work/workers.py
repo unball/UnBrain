@@ -3,12 +3,22 @@ import pygame as pg
 from pygame import Vector2, Rect
 from classes.construction.blocks import *
 from color_constants import *
+import threading
+import sys
+import os
+dir_atual = os.path.dirname(os.path.abspath(__file__))
+dir_src = os.path.abspath(os.path.join(dir_atual, "../../.."))
+sys.path.append(dir_src)
+from loop import Loop
+import loop
 
 class GUI:
     """General class for the graphic interface"""
     def __init__(self) -> None:
         # Initialize the pygame application
         pg.init()
+
+        self.unbrain_loop = None
 
         # Create a window 
         windowSize = Vector2(1366,768)
@@ -1059,6 +1069,10 @@ class GUI:
 
         def closeWindow(self):
             """Instance method of closeButton to make the application stop running and close the window"""
+            if self.gui.unbrain_loop is not None:
+                self.gui.unbrain_loop.handle_SIGINT(None, None, shut_down=True)
+                self.gui.unbrain_loop = None
+                print("UnBrain stopped")
             self.gui.running = False
 
         def minimizeWindow(self):
@@ -1531,6 +1545,86 @@ class GUI:
             self.screen.buttons[robotIDCommunicationComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDCommunicationComboBox.name].setOptionsVisibility(False)
         
+
+
+
+
+
+
+
+
+        def play(self):
+            if self.gui.unbrain_loop is None:
+                teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].getText() == "Azul" else True
+
+                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and not self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
+
+                numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].getText().split(", ")]
+
+                entitiesType = self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].getText()
+                if entitiesType == "Entidades estáticas":
+                    self.gui.unbrain_loop = Loop(team_yellow=teamColor, mirror=mirror, n_robots=numRobots, static_entities=True, firasim=True)
+
+                elif entitiesType == "Control Tester":
+                    self.gui.unbrain_loop = Loop(team_yellow=teamColor, mirror=mirror, n_robots=numRobots, control=True, firasim=True)
+                    
+                else:
+                    self.gui.unbrain_loop = Loop(team_yellow=teamColor, mirror=mirror, n_robots=numRobots, firasim=True)
+                
+                self.gui.unbrain_thread = threading.Thread(target=self.gui.unbrain_loop.run)
+                self.gui.unbrain_thread.daemon = True
+                self.gui.unbrain_thread.start()
+
+            # elif loop.unbrain_paused:
+            #     loop.unbrain_paused = False
+            #     print("UnBrain resumed")
+
+            else:
+                print("Nothing happened")
+
+        self.navigationScreen.menuBar.buttons[playButton.name].actionAssign(play)
+
+
+        def pause(self):
+            # if self.gui.unbrain_loop is not None and not loop.unbrain_paused:
+            #     loop.unbrain_paused = True
+            #     print("UnBrain paused")
+            # else:
+            #     print("Nothing happened")
+            if self.gui.unbrain_loop is not None:
+                self.gui.unbrain_loop.handle_SIGINT(None, None, shut_down=True)
+                self.gui.unbrain_loop = None
+                print("UnBrain stopped")
+            else:
+                print("Nothing happened")
+
+        self.navigationScreen.menuBar.buttons[pauseButton.name].actionAssign(pause)
+
+
+        def stop(self):
+            if self.gui.unbrain_loop is not None:
+                self.gui.unbrain_loop.handle_SIGINT(None, None, shut_down=True)
+                self.gui.unbrain_loop = None
+                print("UnBrain stopped")
+            else:
+                print("Nothing happened")
+
+        self.navigationScreen.menuBar.buttons[stopButton.name].actionAssign(stop)
+
+
+        def play_firasim(self):
+            pass
+
+        self.navigationScreen.menuBar.buttons[configButton.name].actionAssign(play_firasim)
+
+
+
+
+
+
+
+
+
         # Assigns the buttons with the changeScreen function
         self.navigationScreen.menuBar.buttons[navegacaoButton.name].actionAssign(changeToNavigationScreen)
         self.movementScreen.menuBar.buttons[movimentacaoButton.name].actionAssign(changeToMovementScreen)

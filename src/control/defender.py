@@ -7,7 +7,7 @@ import time
 
 class DefenderControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=90, mu=0.15, vmax=0.7, L=L, enableInjection=False):
+  def __init__(self, world, kw=9, kp=80, mu=0.75, vmax=1.2, L=L, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -49,16 +49,17 @@ class DefenderControl(Control):
     omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
 
     # Velocidade limite de deslizamento
-    if phi != 0:
+    if phi > 0:
+      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
       v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
-    if phi == 0:
+    else:
       v1 = self.amax / np.abs(omega)      
 
     # Velocidade limite das rodas
     v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
 
     # Velocidade limite de aproximação
-    v3 = self.kp * norm(robot.pose, robot.field.Pb) ** 2
+    v3 = self.kp * norm(robot.pose, robot.field.Pb) **2
 
     # Velocidade linear é menor de todas
     v  = max(min(v1, v2, v3), 0)

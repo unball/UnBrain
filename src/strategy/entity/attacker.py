@@ -9,6 +9,8 @@ from strategy.movements import goToBall, goToGoal, howFrontBall, howPerpBall, go
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, angl, unit, projectLine
 from tools.interval import Interval
 from control.UFC import UFC_Simple
+from control.goalKeeper import GoalKeeperControl
+from control.UFC_modified import UFC_New
 from client.gui import clientProvider
 import numpy as np
 import math
@@ -72,13 +74,13 @@ class Attacker(Entity):
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
 
-            if time.time()-self.lastChat > 0.3:
+            if time.time()-self.lastChat > 0.5:
                 if abs(angError(ref_th, rob_th)) > 120 * np.pi / 180:
                     self.robot.direction *= -1
                     self.lastChat = time.time()
                 
                 # Inverter a direção se o robô ficar preso em algo
-                elif not self.robot.isAlive() and self.robot.spin == 0:
+                if not self.robot.isAlive() and self.robot.spin == 0:
                     self.lastChat = time.time()
                     self.robot.direction *= -1
 
@@ -101,6 +103,8 @@ class Attacker(Entity):
         rg = np.array(self.world.field.goalPos)
         vr = np.array(self.robot.v)
         oneSpiralMargin = (self.world.marginPos[0], self.world.marginPos[1])
+
+        self.robot.vref = 999
 
 
         # Ângulo do robô até a bola

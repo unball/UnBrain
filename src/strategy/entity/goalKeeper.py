@@ -17,7 +17,7 @@ class GoalKeeper(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = GoalKeeperControl(world)
+        self._control = GoalKeeperControl(self.world)
         self.lastChat = 0
         self.state = "Stable"
 
@@ -51,7 +51,7 @@ class GoalKeeper(Entity):
                 self.lastChat = time.time()
             
             # Inverter a direção se o robô ficar preso em algo
-            elif not self.robot.isAlive() and self.robot.spin == 0:
+            if not self.robot.isAlive() and self.robot.spin == 0:
                 if time.time()-self.lastChat > .3:
                     self.lastChat = time.time()
                     self.robot.direction *= -1
@@ -64,7 +64,7 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.05
+        rg[0] += 0.12
     
          # Aplica o movimento
         self.robot.vref = 0
@@ -103,7 +103,9 @@ class GoalKeeper(Entity):
             self.robot.field = DirectionalField(Pb[2], Pb=(rr[0], Pb[1], Pb[2]))
         elif self.state == "Unstable":
             # self.robot.field = UVF(Pb, radius=0.02)
-            self.robot.field = AttractiveField((rg[0]-0.02, Pb[1], Pb[2]))
+            self.robot.field = AttractiveField((rg[0]+0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
             self.robot.field = UVFDefault(self.world, Pb , rr, direction=0, radius = 0.04, spiral = False, Kr = 0.03)
+        print(self.state)
+        print(self.robot.field)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

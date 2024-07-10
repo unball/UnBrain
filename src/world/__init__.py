@@ -163,6 +163,7 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                     )
+                    yellow[self.n_robots[i]].calc_velocities(self.dt)
                 
 
         else:
@@ -178,6 +179,7 @@ class World:
                         robot.y / (1000),
                         robot.orientation
                         )
+                    blue[self.n_robots[i]].calc_velocities(self.dt)
                     #fim da função VSSVision_update
         #Cálculo das Velocidades
         if self.team_yellow:

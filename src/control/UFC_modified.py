@@ -5,9 +5,9 @@ import numpy as np
 import math
 import time 
 
-class UFC_Simple(Control):
+class UFC_New(Control):
     """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-    def __init__(self, world, kw=10, kp=70, mu=0.95, vmax=0.9, L=L, enableInjection=False):
+    def __init__(self, world, kw=12, kp=40, mu=0.95, vmax=1.5, L=L, enableInjection=False):
       Control.__init__(self, world)
 
       self.g = 9.8
@@ -46,33 +46,25 @@ class UFC_Simple(Control):
       gamma = robot.field.gamma(dth, robot.velmod, phi)
 
       # Computa omega
-      omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
+      omega = self.kw * np.sqrt(np.abs(eth))
 
       # Velocidade limite de deslizamento
       if phi != 0:
-        v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
+        v1 = (-omega + np.sqrt(self.kw**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
       if phi == 0:
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         v1 = self.amax / np.abs(omega)      
 
       # Velocidade limite das rodas
       v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
 
       # Velocidade limite de aproximação
-      v3 = self.kp * norm(robot.pose, robot.field.Pb) ** 2 
+      v3 = self.kp * norm(robot.pose, robot.field.Pb) ** 2 + robot.vref
 
       # Velocidade linear é menor de todas
-      v  = max(min(v1,v2,v3), 0)
-      if v == v1:
-          print('velocidade é v1')
-      elif v == v2:
-          print('velocidade é v2')
-      elif v == v3:
-          print('velocidade é v3')
-    
+      v  = min(v1, v2, v3)
 
       # Lei de controle da velocidade angular
-      w = v * phi + omega
+      w = v * phi + omega * np.sign(eth)
 
       # Considera resposta lenta
       #if tau != 0: w = (w - w0 * tau/dt * (1-np.exp(-dt/tau))) / (1-tau/dt * (1-np.exp(-dt/tau)))
@@ -83,6 +75,16 @@ class UFC_Simple(Control):
       # Atualiza a última referência
       self.lastth = th
       robot.lastControlLinVel = v
+
+      print("w:", w)
+      print("v:", v)
+
+      if v == v1:
+        print('velocidade é v1')
+      elif v == v2:
+        print('velocidade é v2')
+      elif v == v3:
+        print('velocidade é v3')
 
       if robot.spin == 0: return (v * robot.direction, w)
       else: return (0, 60 * robot.spin)

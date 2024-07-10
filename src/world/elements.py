@@ -177,8 +177,8 @@ class Robot(Element):
         self.id = id
 
     def update(self, x, y, th):
-        w = self.thvec_raw.add(th)
-        super().update(x,y,w)
+        self.thvec_raw.add(th)
+        super().update(x,y)
         
     def update_FIRASim(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
@@ -189,7 +189,7 @@ class TeamRobot(Robot):
         super().__init__(world, id)
 
         self.field = None
-        self.vref = math.inf
+        self.vref = 0
         self._on = on
         self.spin = 0
         self.spinTime = 0

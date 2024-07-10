@@ -216,10 +216,10 @@ class Loop:
            
     def draw(self):
         for robot in [r for r in self.world.team if r is not None]:
-            clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.thvec_raw.vec[0], robot.direction)
+            clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.th, robot.direction)
 
         for robot in self.world.enemies:
-            clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.thvec_raw.vec[0], 1, (0.6, 0.6, 0.6))
+            clientProvider().drawRobot(robot.id+3, robot.x, robot.y, robot.th, 1, (0.6, 0.6, 0.6))
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
 

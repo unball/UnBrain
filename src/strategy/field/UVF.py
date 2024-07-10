@@ -211,7 +211,7 @@ class UVF(Field):
 class UVFDefault(UVF):
   def __init__(self, world, pose, robotPose, direction, radius=None, spiral=True, singleObstacle=False, Vr=np.array([0,0]), Po=np.array([0,0]), Vo=np.array([0,0]), Kr=None):
     if radius is None: radius = 0.07
-    if Kr is None: Kr = 15
+    if Kr is None: Kr = 0.04
     
     super().__init__(pose, robotPose,
       radius=radius,

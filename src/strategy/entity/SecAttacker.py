@@ -8,6 +8,7 @@ from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, angl, i
 from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
 from control.SecAttacker import SecAttackerControl
+from control.UFC import UFC_Simple
 from client.gui import clientProvider
 import numpy as np
 import math
@@ -72,7 +73,7 @@ class SecAttacker(Entity):
                     self.lastChat = time.time()
 
                 # Inverter a direção se o robô ficar preso em algo
-                elif not self.robot.isAlive() and self.robot.spin == 0:
+                if not self.robot.isAlive() and self.robot.spin == 0:
                     self.lastChat = time.time()
                     self.robot.direction *= -1
 

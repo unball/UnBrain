@@ -1092,6 +1092,10 @@ class GUI:
         
         def chooseOptionColorComboBox(self):
             """Instance method to choose the option in chooseColorComboBox"""
+            if self.getText() == "Azul" and self.screen.buttons[inversaoToggleButton.name].isOn():
+                self.screen.buttons[inversaoToggleButton.name].action()
+            elif self.getText() == "Amarelo" and not self.screen.buttons[inversaoToggleButton.name].isOn():
+                self.screen.buttons[inversaoToggleButton.name].action()
             self.screen.buttons[chooseColorComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[chooseColorComboBox.name].setOptionsVisibility(False)
 
@@ -1557,7 +1561,7 @@ class GUI:
             if self.gui.unbrain_loop is None:
                 teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].getText() == "Azul" else True
 
-                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and not self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
+                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
 
                 numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].getText().split(", ")]
 
@@ -1611,7 +1615,7 @@ class GUI:
             if self.gui.unbrain_loop is None:
                 teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].getText() == "Azul" else True
 
-                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and not self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
+                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
 
                 numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].getText().split(", ")]
 

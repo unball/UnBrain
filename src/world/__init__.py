@@ -181,13 +181,6 @@ class World:
                         )
                     blue[self.n_robots[i]].calc_velocities(self.dt)
                     #fim da função VSSVision_update
-        #Cálculo das Velocidades
-        if self.team_yellow:
-            for i in self.n_robots:
-                yellow[i].calc_velocities(self.dt)
-        else:
-            for i in self.n_robots:
-                blue[i].calc_velocities(self.dt)
         self.ball.raw_update((message.balls[0].x) /1000, (message.balls[0].y) / 1000)
         if self.debug:
             print(f"BALL {(message.balls[0].x/1000):.2f} {(message.balls[0].y / 1000):.2f}")
@@ -195,9 +188,7 @@ class World:
 
         #Cálculo delay Cam
         self.delay_camera = time.time() - self.delay_camera
-        print("------------------------------------------------\n")
-        print(f'Delay da camera: {self.delay_camera} segundos\n')
-        print("------------------------------------------------\n")
+        print(f'Delay da camera: {self.delay_camera} segundos', end='\r', flush=True)
         if self.delay_camera > 0.09:
             for robot in self.raw_team:
                 if robot is not None:

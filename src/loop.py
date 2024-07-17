@@ -16,6 +16,8 @@ import time
 import sys
 import signal
 from vision.receiver import FiraClient
+from client.client_pickle import ClientPickle
+
 
 from strategy.automaticReplacer import AutomaticReplacer
 
@@ -32,9 +34,11 @@ class Loop:
                 referee=False,
                 firasim=False,
                 vssvision=False,
+                mainvision=False,
                 simulado=False,
                 control=False,
                 debug =False,
+                port=5002,
                 mirror=False, 
                 n_robots=[0,1,2]
             ):
@@ -85,7 +89,7 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start,referee=referee, firasim=firasim, vssvision=vssvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
+        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start,referee=referee, firasim=firasim, vssvision=vssvision, mainvision = mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
         
         self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
@@ -95,6 +99,7 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
+        self.pclient = ClientPickle(port)
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -111,6 +116,10 @@ class Loop:
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
         elif self.world.vssvision:
+            self.radio.send(self.world.n_robots, [(0,0) for robot in self.world.team])
+            for robot in self.world.raw_team: 
+                if robot is not None: robot.turnOff()
+        elif self.world.mainvision:
             self.radio.send(self.world.n_robots, [(0,0) for robot in self.world.team])
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
@@ -131,6 +140,7 @@ class Loop:
         self.strategy.update(self.world)
 
         if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
+        if self.world.mainvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
         if self.world.simulado: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
@@ -150,6 +160,11 @@ class Loop:
             for i, id in enumerate(self.world.n_robots):
                 self.firasim.command.write(id, control_output[i][0], control_output[i][1])
         if self.world.vssvision:   
+            if self.execute:
+                for robot in self.world.raw_team: 
+                    if robot is not None: robot.turnOn()   
+                self.radio.send(self.world.n_robots, control_output)
+        if self.world.mainvision:   
             if self.execute:
                 for robot in self.world.raw_team: 
                     if robot is not None: robot.turnOn()   
@@ -180,6 +195,12 @@ class Loop:
             self.execute = True if message else False
             if self.execute:
                 self.world.VSSVision_update(message.detection)
+        if self.world.mainvision:
+            # Atribuimos a mensagem que queremos passar para a função update_main_vision
+            message = self.pclient.receive()
+            self.execute = message["running"]
+            if message is not None: 
+                self.world.update_main_vision(message)
 
         if self.world.simulado:
             message = self.simulado.get_state()
@@ -187,7 +208,7 @@ class Loop:
             if self.execute:
                 self.world.update(message)
         
-        elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim)):
+        elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim) and not self.world.mainvision and not self.world.simulado):
             print("_________")
             print("Executando sem pacote:")
         

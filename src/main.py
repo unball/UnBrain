@@ -28,6 +28,9 @@ parser.add_argument('--firasim', dest='firasim', action='store_const', const=Tru
 parser.add_argument('--vssvision', dest='vssvision', action='store_const', const=True,
                     default=False, help='If you are using vssvision for start.')
 
+parser.add_argument('--mainvision', dest='mainvision', action='store_const', const=True,
+                    default=False, help='If you are using main-vision for start.')
+
 parser.add_argument('--simulado', dest='simulado', action='store_const', const=True,
                     default=False, help='If you are using simulado for start.')
 
@@ -37,8 +40,11 @@ parser.add_argument('--control', dest='control', action='store_const', const=Tru
 parser.add_argument('--debug', dest='debug', action='store_const',
                     const=True, default=False, help='Set debug mode for vision.')
 
+parser.add_argument('--port', dest='port', type=int, default=5001, help='Port number to bind the pickle socket.')
+
 parser.add_argument('--mirror', dest='mirror', action='store_const',
                     const=True, default=False, help='If vision is mirrored or not. Affects angles.')
+                    
 parser.add_argument('--n_robots', dest='n_robots', type=str, default="0,1,2" , help='Number of robots for each time in the match.')
 
 
@@ -67,9 +73,11 @@ loop = Loop(
     referee=args.referee,
     firasim=args.firasim,
     vssvision=args.vssvision,
+    mainvision=args.mainvision,
     simulado=args.simulado,
     control=args.control,
     debug=args.debug,
+    port=args.port,
     n_robots=args.n_robots,
     mirror=mirror
 )

@@ -94,7 +94,7 @@ class Element:
         self.interval.update()
     
         
-    def update_element_FIRASim(self, x, y, vx, vy, w=0):
+    def update_element(self, x, y, vx, vy, w=0):
         self.xvec.add(self.world.field.side * x)
         self.yvec.add(y)
         self.linvel = (vx, vy)
@@ -176,13 +176,13 @@ class Robot(Element):
         super().__init__(world)
         self.id = id
 
-    def update(self, x, y, th):
+    def update(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
-        super().update(x,y)
+        super().update_element(x,y,vx,vy,w)
         
     def update_FIRASim(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
-        super().update_element_FIRASim(x,y,vx,vy,w)
+        super().update_element(x,y,vx,vy,w)
     
 class TeamRobot(Robot):
     def __init__(self, world, id, control=None, on=False):

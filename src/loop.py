@@ -89,7 +89,7 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start,referee=referee, firasim=firasim, vssvision=vssvision, mainvision = mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
+        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
         
         self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
@@ -99,7 +99,9 @@ class Loop:
         self.running = True
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
-        self.pclient = ClientPickle(port)
+
+        if self.world.mainvision:
+            self.pclient = ClientPickle(port)
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf

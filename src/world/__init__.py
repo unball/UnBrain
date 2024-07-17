@@ -53,7 +53,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, simulado=False, debug=False, mirror=False, control=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, last_command=None):
         self.n_robots = n_robots
         self._team = [None,None,None]
         for i in self.n_robots:
@@ -67,6 +67,7 @@ class World:
         self.referee = referee
         self.firasim = firasim
         self.vssvision = vssvision
+        self.mainvision = mainvision
         self.simulado = simulado
         self.debug = debug
         self.mirror = mirror

@@ -89,7 +89,42 @@ class World:
         self.enemyGoals = 0
         self.updateCount = 0
 
+    def update_main_vision(self, message):
+        if self.team_yellow: 
+            yellow = self.team
+            blue = self.enemies
+        else:
+            yellow = self.enemies
+            blue = self.team
 
+        robot_id = 0
+        for robot in range(message["n_robots"]):
+            if self.team_yellow: 
+                yellow[robot_id].update(
+                    message["robots"][robot_id]["pos_x"], 
+                    message["robots"][robot_id]["pos_y"], 
+                    message["robots"][robot_id]["th"], 
+                    message["robots"][robot_id]["vel_x"], 
+                    message["robots"][robot_id]["vel_y"], 
+                    message["robots"][robot_id]["w"]
+                )
+            else:
+                blue[robot_id].update(
+                    message["robots"][robot_id]["pos_x"], 
+                    message["robots"][robot_id]["pos_y"], 
+                    message["robots"][robot_id]["th"], 
+                    message["robots"][robot_id]["vel_x"], 
+                    message["robots"][robot_id]["vel_y"], 
+                    message["robots"][robot_id]["w"]
+                )
+            robot_id+=1
+       
+        self.ball.update_element(message["ball"]["pos_x"], message["ball"]["pos_y"], message["ball"]["vel_x"], message["ball"]["vel_y"])
+        self.checkBatteries = message["check_batteries"]
+        self.manualControlSpeedV = message["manualControlSpeedV"]
+        self.manualControlSpeedW = message["manualControlSpeedW"]
+
+        self.updateCount += 1
      
     def update(self, message):
         if self.team_yellow: 
@@ -255,7 +290,7 @@ class World:
         #self.ball.update(message["ball_x"], message["ball_y"], message["ball_vx"], message["ball_vy"])
         if self.debug:
             print(f"BALL | x {(message.frame.ball.x):.2f} | y {(message.frame.ball.y):.2f}")
-        self.ball.update_element_FIRASim(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
+        self.ball.update_element(message.frame.ball.x, message.frame.ball.y, message.frame.ball.vx, message.frame.ball.vy)
 
         self.updateCount += 1
 

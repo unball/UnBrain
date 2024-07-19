@@ -10,7 +10,7 @@ from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideE
 from tools.interval import Interval
 from control.UFC import UFC_Simple
 from control.goalKeeper import GoalKeeperControl
-from control.UFC_modified import UFC_New
+from control.PIDController import PIDController
 from client.gui import clientProvider
 import numpy as np
 import math

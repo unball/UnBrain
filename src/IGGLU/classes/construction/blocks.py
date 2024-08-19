@@ -477,6 +477,13 @@ class Slider(Button):
         super().draw()
 
 
+class Label(Block):
+    """Block that contains a plain text with its size defined by the size of the text"""
+    def __init__(self, name: str, sizeY: int, posX: int, posY: int, color: Color, window, gui, text: str, textColor: Color=LIGHT_GRAY_LABEL, fontSize: int=24, border: bool=False, shape="RECT", preference: bool=True) -> None:
+        super().__init__(name, 0, sizeY, posX, posY, color, window, gui, border, shape, preference)
+        self.setText(text, textColor, fontSize=fontSize, center=False)
+
+
 class LabelArea(Block):
     """Area that contains a list of labels"""
     def __init__(self, name: str, sizeX: int, sizeY: int, posX: int, posY: int, color: Color, window, gui, border: bool=True, shape="RECT", preference: bool=True) -> None:

@@ -112,39 +112,33 @@ class GUI:
         arrow.setImage("images/arrow.png")
         self.navigationScreen.addBlock(arrow)
 
-        lblLadoEsquerdo = Block("lblLadoEsquerdo", 110, 30, 35, windowSize.y/3+186, BACKGROUND_COLOR, window, self)
-        lblLadoEsquerdo.setText("Lado aliado", LIGHT_GRAY_LABEL, center=False)
+        lblLadoEsquerdo = Label("lblLadoEsquerdo", 30, 35, windowSize.y/3+186, BACKGROUND_COLOR, window, self, "Lado aliado")
         self.navigationScreen.addBlock(lblLadoEsquerdo)
 
-        lblLadoDireito = Block("lblLadoDireito", 110, 30, 165 + windowSize.x*0.25 + 20, lblLadoEsquerdo.pos.y, BACKGROUND_COLOR, window, self)
-        lblLadoDireito.setText("Lado inimigo", LIGHT_GRAY_LABEL, center=False)
+        lblLadoDireito = Label("lblLadoDireito", 30, 165 + windowSize.x*0.25 + 20, lblLadoEsquerdo.pos.y, BACKGROUND_COLOR, window, self, "Lado inimigo")
         self.navigationScreen.addBlock(lblLadoDireito)
 
-        lblInfoBola = Block("lblInfoBola", 200, 30, gameMiniMap.pos.x+4, gameMiniMap.pos.y+gameMiniMap.size.y+60, BACKGROUND_COLOR, window, self)
-        lblInfoBola.setText("Informações sobre a bola", BLACK_LABEL, 26, center=False)
+        lblInfoBola = Label("lblInfoBola", 30, gameMiniMap.pos.x+4, gameMiniMap.pos.y+gameMiniMap.size.y+60, BACKGROUND_COLOR, window, self, "Informações sobre a bola", BLACK_LABEL, 26)
         self.navigationScreen.addBlock(lblInfoBola)
 
         boxInfoBola = Block("boxInfoBola", gameMiniMap.size.x, gameMiniMap.size.y*0.6, gameMiniMap.pos.x, lblInfoBola.pos.y+40, BACKGROUND_COLOR, window, self, border=True)
         self.navigationScreen.addBlock(boxInfoBola)
 
-        lblPosicao = Block("lblPosicao", 80, 30, boxInfoBola.pos.x + 20, boxInfoBola.pos.y + 20, BACKGROUND_COLOR, window, self)
-        lblPosicao.setText("Posição", GRAY_LABEL, center=False)
+        lblPosicao = Label("lblPosicao", 30, boxInfoBola.pos.x + 20, boxInfoBola.pos.y + 20, BACKGROUND_COLOR, window, self, "Posição", GRAY_LABEL)
         self.navigationScreen.addBlock(lblPosicao)
 
         boxPosicao = Block("boxPosicao", 180, lblPosicao.size.y + 10, lblPosicao.pos.x, lblPosicao.pos.y + lblPosicao.size.y, BACKGROUND_COLOR, window, self, border=True)
         boxPosicao.setText("x: 0.045m   y: 1.674m", LIGHT_GRAY_LABEL, center=True)
         self.navigationScreen.addBlock(boxPosicao)
 
-        lblAceleracao = Block("lblAceleracao", lblPosicao.size.x, lblPosicao.size.y, lblPosicao.pos.x, boxPosicao.pos.y + boxPosicao.size.y + 25, BACKGROUND_COLOR, window, self)
-        lblAceleracao.setText("Aceleração", GRAY_LABEL, center=False)
+        lblAceleracao = Label("lblAceleracao", lblPosicao.size.y, lblPosicao.pos.x, boxPosicao.pos.y + boxPosicao.size.y + 25, BACKGROUND_COLOR, window, self, "Aceleração", GRAY_LABEL)
         self.navigationScreen.addBlock(lblAceleracao)
 
         boxAceleracao = Block("boxAceleracao", boxPosicao.size.x, boxPosicao.size.y, lblAceleracao.pos.x, lblAceleracao.pos.y + lblAceleracao.size.y, BACKGROUND_COLOR, window, self, border=True)
         boxAceleracao.setText("3 m/s\u00B2", LIGHT_GRAY_LABEL, center=True)
         self.navigationScreen.addBlock(boxAceleracao)
 
-        lblVelocidade = Block("lblVelocidade", lblPosicao.size.x, lblPosicao.size.y, boxInfoBola.size.x/2 + 80, lblPosicao.pos.y, BACKGROUND_COLOR, window, self)
-        lblVelocidade.setText("Velocidade", GRAY_LABEL, center=False)
+        lblVelocidade = Label("lblVelocidade", lblPosicao.size.y, boxInfoBola.size.x/2 + 80, lblPosicao.pos.y, BACKGROUND_COLOR, window, self, "Velocidade", GRAY_LABEL)
         self.navigationScreen.addBlock(lblVelocidade)
 
         boxVelocidade = Block("boxVelocidade", boxAceleracao.size.x, boxAceleracao.size.y, lblVelocidade.pos.x, lblVelocidade.pos.y + lblVelocidade.size.y, BACKGROUND_COLOR, window, self, border=True)
@@ -156,20 +150,16 @@ class GUI:
         self.navigationScreen.addScrollingBackground(navigationScrollPanel)
 
         # blocks of navigationScrollPanel
-        lblCorTime = Block("lblCorTime", lblInfoBola.size.x-40, lblInfoBola.size.y, navigationScrollPanel.pos.x+30, navigationScrollPanel.pos.y+30, BACKGROUND_COLOR, window, self)
-        lblCorTime.setText("Cor do time", BLACK_LABEL, 28, center=False)
+        lblCorTime = Label("lblCorTime", lblInfoBola.size.y, navigationScrollPanel.pos.x+30, navigationScrollPanel.pos.y+30, BACKGROUND_COLOR, window, self, "Cor do time", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblCorTime)
 
-        lblSelecionaCorTime = Block("lblSelecionaCorTime", lblCorTime.size.x, lblCorTime.size.y, lblCorTime.pos.x + 30, lblCorTime.pos.y+lblCorTime.size.y-5, BACKGROUND_COLOR, window, self)
-        lblSelecionaCorTime.setText("Seleciona a cor do time", center=False)
+        lblSelecionaCorTime = Label("lblSelecionaCorTime", lblCorTime.size.y, lblCorTime.pos.x + 30, lblCorTime.pos.y+lblCorTime.size.y-5, BACKGROUND_COLOR, window, self, "Seleciona a cor do time")
         navigationScrollPanel.addBlock(lblSelecionaCorTime)
 
-        lblInversaoCampo = Block("lblInversaoCampo", lblCorTime.size.x+75, lblCorTime.size.y, lblCorTime.pos.x, lblSelecionaCorTime.pos.y+lblCorTime.size.y*2, BACKGROUND_COLOR, window, self)
+        lblInversaoCampo = Label("lblInversaoCampo", lblCorTime.size.y, lblCorTime.pos.x, lblSelecionaCorTime.pos.y+lblCorTime.size.y*2, BACKGROUND_COLOR, window, self, "Inversão de campo", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblInversaoCampo)
-        lblInversaoCampo.setText("Inversão de campo", BLACK_LABEL, 28, center=False)
 
-        lblInverteCampoAliado = Block("lblInverteCampoAliado", lblSelecionaCorTime.size.x, lblSelecionaCorTime.size.y, lblSelecionaCorTime.pos.x, lblInversaoCampo.pos.y+lblInversaoCampo.size.y-5, BACKGROUND_COLOR, window, self)
-        lblInverteCampoAliado.setText("Inverte o lado do campo aliado", center=False)
+        lblInverteCampoAliado = Label("lblInverteCampoAliado", lblSelecionaCorTime.size.y, lblSelecionaCorTime.pos.x, lblInversaoCampo.pos.y+lblInversaoCampo.size.y-5, BACKGROUND_COLOR, window, self, "Inverte o lado do campo aliado")
         navigationScrollPanel.addBlock(lblInverteCampoAliado)
 
         inversaoToggleButton = ToggleButton("inversaoToggleButton", 70, 50, lblCorTime.pos.x + 400, lblInversaoCampo.pos.y, BACKGROUND_COLOR, window, self, border=True)
@@ -180,28 +170,22 @@ class GUI:
         navigationScrollPanel.addButton(chooseColorComboBox)
         chooseColorComboBox.addOptions(["Azul", "Amarelo"])
 
-        lblDireitoOuEsquerdo = Block("lblDireitoOuEsquerdo", lblCorTime.size.x-50, lblCorTime.size.y, inversaoToggleButton.pos.x+inversaoToggleButton.size.x+15, inversaoToggleButton.pos.y+12, BACKGROUND_COLOR, window, self)
-        lblDireitoOuEsquerdo.setText("Esquerdo", center=False)
+        lblDireitoOuEsquerdo = Label("lblDireitoOuEsquerdo", lblCorTime.size.y, inversaoToggleButton.pos.x+inversaoToggleButton.size.x+15, inversaoToggleButton.pos.y+12, BACKGROUND_COLOR, window, self, "Esquerdo")
         navigationScrollPanel.addBlock(lblDireitoOuEsquerdo)
 
-        lblFormacaoEntidades = Block("lblFormacaoEntidades", lblInversaoCampo.size.x, lblInversaoCampo.size.y, lblInversaoCampo.pos.x, lblInverteCampoAliado.pos.y+lblInversaoCampo.size.y*2, BACKGROUND_COLOR, window, self)
-        lblFormacaoEntidades.setText("Formação das entidades", BLACK_LABEL, 28, center=False)
+        lblFormacaoEntidades = Label("lblFormacaoEntidades", lblInversaoCampo.size.y, lblInversaoCampo.pos.x, lblInverteCampoAliado.pos.y+lblInversaoCampo.size.y*2, BACKGROUND_COLOR, window, self, "Formação das entidades", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblFormacaoEntidades)
 
-        lblSelecioneTipoFormacao = Block("lblSelecioneTipoFormacao", lblInverteCampoAliado.size.x+5, lblInverteCampoAliado.size.y, lblInverteCampoAliado.pos.x, lblFormacaoEntidades.pos.y+lblFormacaoEntidades.size.y/2+10, BACKGROUND_COLOR, window, self)
-        lblSelecioneTipoFormacao.setText("Selecione o tipo de formação", center=False)
+        lblSelecioneTipoFormacao = Label("lblSelecioneTipoFormacao", lblInverteCampoAliado.size.y, lblInverteCampoAliado.pos.x, lblFormacaoEntidades.pos.y+lblFormacaoEntidades.size.y/2+10, BACKGROUND_COLOR, window, self, "Selecione o tipo de formação")
         navigationScrollPanel.addBlock(lblSelecioneTipoFormacao)
 
-        lblNumRobots = Block("lblNumRobots", lblInversaoCampo.size.x, lblInversaoCampo.size.y, lblInversaoCampo.pos.x, lblSelecioneTipoFormacao.pos.y+lblInversaoCampo.size.y*2, BACKGROUND_COLOR, window, self)
-        lblNumRobots.setText("Número de robôs", BLACK_LABEL, 28, center=False)
+        lblNumRobots = Label("lblNumRobots", lblInversaoCampo.size.y, lblInversaoCampo.pos.x, lblSelecioneTipoFormacao.pos.y+lblInversaoCampo.size.y*2, BACKGROUND_COLOR, window, self, "Número de robôs", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblNumRobots)
 
-        lblSelecioneNumRobos = Block("lblSelecioneNumRobos", lblInverteCampoAliado.size.x+5, lblInverteCampoAliado.size.y, lblInverteCampoAliado.pos.x, lblNumRobots.pos.y+lblNumRobots.size.y/2+10, BACKGROUND_COLOR, window, self)
-        lblSelecioneNumRobos.setText("Selecione o número de robôs e seus IDs", center=False)
+        lblSelecioneNumRobos = Label("lblSelecioneNumRobos", lblInverteCampoAliado.size.y, lblInverteCampoAliado.pos.x, lblNumRobots.pos.y+lblNumRobots.size.y/2+10, BACKGROUND_COLOR, window, self, "Selecione o número de robôs e seus IDs")
         navigationScrollPanel.addBlock(lblSelecioneNumRobos)
 
-        lblConfigRobos = Block("lblConfigRobos", lblNumRobots.size.x, lblNumRobots.size.y, lblNumRobots.pos.x, lblSelecioneNumRobos.pos.y+lblNumRobots.size.y*2, BACKGROUND_COLOR, window, self)
-        lblConfigRobos.setText("Configuração dos robôs", BLACK_LABEL, 28, center=False)
+        lblConfigRobos = Label("lblConfigRobos", lblNumRobots.size.y, lblNumRobots.pos.x, lblSelecioneNumRobos.pos.y+lblNumRobots.size.y*2, BACKGROUND_COLOR, window, self, "Configuração dos robôs", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblConfigRobos)
 
         boxConfigRobos = Block("boxConfigRobos", screenDivisionRightMargin.size.x-60, 250, lblConfigRobos.pos.x, lblConfigRobos.pos.y+lblConfigRobos.size.y+5, BACKGROUND_COLOR, window, self, border=True)
@@ -219,13 +203,11 @@ class GUI:
         navigationScrollPanel.addButton(chooseEntityTypeComboBox)
         chooseEntityTypeComboBox.addOptions(["Entidades dinâmicas", "Entidades estáticas", "Control Tester"])
         
-        lblBateria = Block("lblBateria", lblDireitoOuEsquerdo.size.x-50, lblDireitoOuEsquerdo.size.y, boxConfigRobos.pos.x+40, robotIDComboBox.pos.y+robotIDComboBox.size.y+25, BACKGROUND_COLOR, window, self)
-        lblBateria.setText("Bateria:", BLACK_LABEL, center=False)
+        lblBateria = Label("lblBateria", lblDireitoOuEsquerdo.size.y, boxConfigRobos.pos.x+40, robotIDComboBox.pos.y+robotIDComboBox.size.y+25, BACKGROUND_COLOR, window, self, "Bateria:", BLACK_LABEL)
         navigationScrollPanel.addBlock(lblBateria)
 
-        percentBattery = Block("percentBattery", lblBateria.size.x, lblBateria.size.y, lblBateria.pos.x+lblBateria.size.x+5, lblBateria.pos.y, BACKGROUND_COLOR, window, self)
-        percentBattery.setText("100%", center=False)
-        navigationScrollPanel.addBlock(percentBattery)
+        lblpercentBattery = Label("lblpercentBattery", lblBateria.size.y, lblBateria.pos.x+lblBateria.size.x+5, lblBateria.pos.y, BACKGROUND_COLOR, window, self, "100%")
+        navigationScrollPanel.addBlock(lblpercentBattery)
 
         cor1Robot = Block("cor1Robot", lblBateria.size.x*2, lblBateria.size.x, lblBateria.pos.x, lblBateria.pos.y+lblBateria.size.y+5, RED, window, self)
         navigationScrollPanel.addBlock(cor1Robot)
@@ -233,59 +215,51 @@ class GUI:
         cor2Robot = Block("cor2Robot", cor1Robot.size.x, cor1Robot.size.y, cor1Robot.pos.x, cor1Robot.pos.y+cor1Robot.size.y, LIGHT_BLUE, window, self)
         navigationScrollPanel.addBlock(cor2Robot)
 
-        lblPosicaoConfig = Block("lblPosicaoConfig", lblBateria.size.x, lblBateria.size.y, cor1Robot.pos.x+cor1Robot.size.x+60, cor1Robot.pos.y-5, BACKGROUND_COLOR, window, self)
-        lblPosicaoConfig.setText("Posição", BLACK_LABEL, center=False)
+        lblPosicaoConfig = Label("lblPosicaoConfig", lblBateria.size.y, cor1Robot.pos.x+cor1Robot.size.x+60, cor1Robot.pos.y-5, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         navigationScrollPanel.addBlock(lblPosicaoConfig)
 
         boxPosicaoConfig = Block("boxPosicaoConfig", lblPosicaoConfig.size.x*3, lblPosicaoConfig.size.y, lblPosicaoConfig.pos.x+lblPosicaoConfig.size.x, lblPosicaoConfig.pos.y, BACKGROUND_COLOR, window, self)
         boxPosicaoConfig.setText("x: 0.0m   y: 0.0m", center=True)
         navigationScrollPanel.addBlock(boxPosicaoConfig)
 
-        lblOrientacaoConfig = Block("lblOrientacaoConfig", lblPosicaoConfig.size.x+26, lblPosicaoConfig.size.y, lblPosicaoConfig.pos.x, lblPosicaoConfig.pos.y+lblPosicaoConfig.size.y+5, BACKGROUND_COLOR, window, self)
-        lblOrientacaoConfig.setText("Orientação", BLACK_LABEL, center=False)
+        lblOrientacaoConfig = Label("lblOrientacaoConfig", lblPosicaoConfig.size.y, lblPosicaoConfig.pos.x, lblPosicaoConfig.pos.y+lblPosicaoConfig.size.y+5, BACKGROUND_COLOR, window, self, "Orientação", BLACK_LABEL)
         navigationScrollPanel.addBlock(lblOrientacaoConfig)
 
         boxOrientacaoConfig = Block("boxOrientacaoConfig", boxPosicaoConfig.size.x-30, boxPosicaoConfig.size.y, lblOrientacaoConfig.pos.x+lblOrientacaoConfig.size.x, lblOrientacaoConfig.pos.y, BACKGROUND_COLOR, window, self)
         boxOrientacaoConfig.setText("th: 0.0 graus", center=True)
         navigationScrollPanel.addBlock(boxOrientacaoConfig)
 
-        lblVelocidadeConfig = Block("lblVelocidadeConfig", lblOrientacaoConfig.size.x+5, lblOrientacaoConfig.size.y, lblOrientacaoConfig.pos.x, lblOrientacaoConfig.pos.y+lblOrientacaoConfig.size.y+5, BACKGROUND_COLOR, window, self)
-        lblVelocidadeConfig.setText("Velocidade", BLACK_LABEL, center=False)
+        lblVelocidadeConfig = Label("lblVelocidadeConfig", lblOrientacaoConfig.size.y, lblOrientacaoConfig.pos.x, lblOrientacaoConfig.pos.y+lblOrientacaoConfig.size.y+5, BACKGROUND_COLOR, window, self, "Velocidade", BLACK_LABEL)
         navigationScrollPanel.addBlock(lblVelocidadeConfig)
 
         boxVelocidadeConfig = Block("boxVelocidadeConfig", boxPosicaoConfig.size.x+30, boxOrientacaoConfig.size.y, lblVelocidadeConfig.pos.x+lblVelocidadeConfig.size.x, lblVelocidadeConfig.pos.y, BACKGROUND_COLOR, window, self)
         boxVelocidadeConfig.setText("v: 0.0m/s   w: 0.0rad/s", center=True)
         navigationScrollPanel.addBlock(boxVelocidadeConfig)
 
-        lblPosicionamento = Block("lblPosicionamento", lblInversaoCampo.size.x-15, lblInversaoCampo.size.y, lblInversaoCampo.pos.x, boxConfigRobos.pos.y+boxConfigRobos.size.y+15, BACKGROUND_COLOR, window, self)
-        lblPosicionamento.setText("Posicionamento", BLACK_LABEL, 28, center=False)
+        lblPosicionamento = Label("lblPosicionamento", lblInversaoCampo.size.y, lblInversaoCampo.pos.x, boxConfigRobos.pos.y+boxConfigRobos.size.y+15, BACKGROUND_COLOR, window, self, "Posicionamento", BLACK_LABEL, 28)
         navigationScrollPanel.addBlock(lblPosicionamento)
 
         boxPosicionamento = Block("boxPosicionamento", boxConfigRobos.size.x, boxConfigRobos.size.y-50, boxConfigRobos.pos.x, lblPosicionamento.pos.y+lblPosicionamento.size.y+5, BACKGROUND_COLOR, window, self, border=True)
         navigationScrollPanel.addBlock(boxPosicionamento)
 
-        lblPosJuizVirtual = Block("lblPosJuizVirtual", boxPosicionamento.size.x/2-30, lblPosicionamento.size.y, lblBateria.pos.x, boxPosicionamento.pos.y+25, BACKGROUND_COLOR, window, self)
-        lblPosJuizVirtual.setText("Usar posicionamento do juiz virtual", center=False)
+        lblPosJuizVirtual = Label("lblPosJuizVirtual", lblPosicionamento.size.y, lblBateria.pos.x, boxPosicionamento.pos.y+25, BACKGROUND_COLOR, window, self, "Usar posicionamento do juiz virtual")
         navigationScrollPanel.addBlock(lblPosJuizVirtual)
 
         virtualJudgeToggleButton = ToggleButton("virtualJudgeToggleButton", inversaoToggleButton.size.x, inversaoToggleButton.size.y, lblPosJuizVirtual.pos.x+lblPosJuizVirtual.size.x+170, lblPosJuizVirtual.pos.y-12, BACKGROUND_COLOR, window, self)
         virtualJudgeToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
         navigationScrollPanel.addButton(virtualJudgeToggleButton)
 
-        lblSelecionarPosicionamento = Block("lblSelecionarPosicionamento", lblPosJuizVirtual.size.x-60, lblPosJuizVirtual.size.y, lblPosJuizVirtual.pos.x, lblPosJuizVirtual.pos.y+lblPosJuizVirtual.size.y+30, BACKGROUND_COLOR, window, self)
-        lblSelecionarPosicionamento.setText("Selecionar posicionamento", center=False)
+        lblSelecionarPosicionamento = Label("lblSelecionarPosicionamento", lblPosJuizVirtual.size.y, lblPosJuizVirtual.pos.x, lblPosJuizVirtual.pos.y+lblPosJuizVirtual.size.y+30, BACKGROUND_COLOR, window, self, "Selecionar posicionamento")
         navigationScrollPanel.addBlock(lblSelecionarPosicionamento)
 
         positioningComboBox = ComboBox("positioningComboBox", lblSelecionarPosicionamento.size.x-30, lblSelecionarPosicionamento.size.y, lblSelecionarPosicionamento.pos.x+lblSelecionarPosicionamento.size.x+130, lblSelecionarPosicionamento.pos.y, WHITE, window, self, "FreeBall")
         navigationScrollPanel.addButton(positioningComboBox)
         positioningComboBox.addOptions(["FreeBall"])
 
-        lblTempoPosicionar = Block("lblTempoPosicionamento", lblPosJuizVirtual.size.x-32, lblPosJuizVirtual.size.y, lblSelecionarPosicionamento.pos.x, lblSelecionarPosicionamento.pos.y+lblSelecionarPosicionamento.size.y+30, BACKGROUND_COLOR, window, self)
-        lblTempoPosicionar.setText("Tempo tentando se posicionar:", center=False)
+        lblTempoPosicionar = Label("lblTempoPosicionamento", lblPosJuizVirtual.size.y, lblSelecionarPosicionamento.pos.x, lblSelecionarPosicionamento.pos.y+lblSelecionarPosicionamento.size.y+30, BACKGROUND_COLOR, window, self, "Tempo tentando se posicionar:")
         navigationScrollPanel.addBlock(lblTempoPosicionar)
 
-        tempoPosicionar = Block("tempoPosicionar", 35, lblTempoPosicionar.size.y, lblTempoPosicionar.pos.x+lblTempoPosicionar.size.x+20, lblTempoPosicionar.pos.y, BACKGROUND_COLOR, window, self)
-        tempoPosicionar.setText("8s", center=False)
+        tempoPosicionar = Label("tempoPosicionar", lblTempoPosicionar.size.y, lblTempoPosicionar.pos.x+lblTempoPosicionar.size.x+20, lblTempoPosicionar.pos.y, BACKGROUND_COLOR, window, self, "8s")
         navigationScrollPanel.addBlock(tempoPosicionar)
 
 
@@ -302,72 +276,62 @@ class GUI:
         UVFScreen.addButton(robotIDUVFComboBox)
         robotIDUVFComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblVisualizarCampoUVF = Block("lblVisualizarCampoUVF", robotIDUVFComboBox.size.x-50, robotIDUVFComboBox.size.y, robotIDUVFComboBox.pos.x, robotIDUVFComboBox.pos.y+robotIDUVFComboBox.size.y+50, BACKGROUND_COLOR, window, self)
-        lblVisualizarCampoUVF.setText("Visualizar campo UVF", center=False)
+        lblVisualizarCampoUVF = Label("lblVisualizarCampoUVF", robotIDUVFComboBox.size.y, robotIDUVFComboBox.pos.x, robotIDUVFComboBox.pos.y+robotIDUVFComboBox.size.y+50, BACKGROUND_COLOR, window, self, "Visualizar campo UVF")
         UVFScreen.addBlock(lblVisualizarCampoUVF)
 
         spinnerQuantPontos = Spinner("spinnerQuantPontos", 2*(inversaoToggleButton.size.x-20), 30, lblVisualizarCampoUVF.pos.x+lblVisualizarCampoUVF.size.x+210-2*(inversaoToggleButton.size.x-20)+3, lblVisualizarCampoUVF.pos.y, WHITE, window, self)
         spinnerQuantPontos.setText("10", center=True)
         UVFScreen.addButton(spinnerQuantPontos)
 
-        lblQuantPontos = Block("lblQuantPontos", spinnerQuantPontos.size.x+spinnerQuantPontos.increaseButton.size.x+spinnerQuantPontos.decreaseButton.size.x-6, lblVisualizarCampoUVF.size.y-7, spinnerQuantPontos.pos.x, spinnerQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self)
-        lblQuantPontos.setText("Quantidade de pontos", fontSize=21, center=True)
+        lblQuantPontos = Label("lblQuantPontos", lblVisualizarCampoUVF.size.y-7, spinnerQuantPontos.pos.x, spinnerQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self, "Quantidade de pontos", fontSize=21)
         UVFScreen.addBlock(lblQuantPontos)
 
         viewCampoUVF = Button("viewCampoUVF", inversaoToggleButton.size.x/2, inversaoToggleButton.size.y/2, spinnerQuantPontos.increaseButton.pos.x+spinnerQuantPontos.increaseButton.size.x+30, spinnerQuantPontos.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
         viewCampoUVF.setImage("images/visualize.png")
         UVFScreen.addButton(viewCampoUVF)
 
-        lblSelecionarCampo = Block("lblSelecionarCampo", lblVisualizarCampoUVF.size.x-30, lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y*2.5, BACKGROUND_COLOR, window, self)
-        lblSelecionarCampo.setText("Selecionar campo", center=False)
+        lblSelecionarCampo = Label("lblSelecionarCampo", lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y*2.5, BACKGROUND_COLOR, window, self, "Selecionar campo")
         UVFScreen.addBlock(lblSelecionarCampo)
 
         selectFieldComboBox = ComboBox("selectFieldComboBox", chooseColorComboBox.size.x+16, lblSelecionarCampo.size.y, spinnerQuantPontos.pos.x+spinnerQuantPontos.size.x/2, lblSelecionarCampo.pos.y, WHITE, window, self, "Nenhum")
         UVFScreen.addButton(selectFieldComboBox)
         selectFieldComboBox.addOptions(["Nenhum"])
 
-        lblPontoFinalSelec = Block("lblPontoFinalSelec", lblVisualizarCampoUVF.size.x+20, lblVisualizarCampoUVF.size.y, lblSelecionarCampo.pos.x, lblSelecionarCampo.pos.y+lblSelecionarCampo.size.y*2.5, BACKGROUND_COLOR, window, self)
-        lblPontoFinalSelec.setText("Ponto final selecionável", center=False)
+        lblPontoFinalSelec = Label("lblPontoFinalSelec", lblVisualizarCampoUVF.size.y, lblSelecionarCampo.pos.x, lblSelecionarCampo.pos.y+lblSelecionarCampo.size.y*2.5, BACKGROUND_COLOR, window, self, "Ponto final selecionável")
         UVFScreen.addBlock(lblPontoFinalSelec)
 
-        lblHabilitaPontoFinal = Block("lblHabilitaPontoFinal", lblVisualizarCampoUVF.size.x*2.5, lblPontoFinalSelec.size.y-5, lblPontoFinalSelec.pos.x+30, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y-6, BACKGROUND_COLOR, window, self)
-        lblHabilitaPontoFinal.setText("Habilita a seleção manual de ponto final das trajetórias", fontSize=21, center=False)
+        lblHabilitaPontoFinal = Label("lblHabilitaPontoFinal", lblPontoFinalSelec.size.y-5, lblPontoFinalSelec.pos.x+30, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y-6, BACKGROUND_COLOR, window, self, "Habilita a seleção manual de ponto final das trajetórias", fontSize=21)
         UVFScreen.addBlock(lblHabilitaPontoFinal)
 
         pontoFinalSelecToggleButton = ToggleButton("pontoFinalSelecComboBox", inversaoToggleButton.size.x, inversaoToggleButton.size.y, lblHabilitaPontoFinal.pos.x+lblHabilitaPontoFinal.size.x+50, lblPontoFinalSelec.pos.y, BACKGROUND_COLOR, window, self)
         pontoFinalSelecToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
         UVFScreen.addButton(pontoFinalSelecToggleButton)
 
-        lblRaio = Block("lblRaio", lblSelecionarCampo.size.x/2-24, lblSelecionarCampo.size.y, lblPontoFinalSelec.pos.x, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y*2.5, BACKGROUND_COLOR, window, self)
-        lblRaio.setText("Raio:", center=False)
+        lblRaio = Label("lblRaio", lblSelecionarCampo.size.y, lblPontoFinalSelec.pos.x, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y*2.5, BACKGROUND_COLOR, window, self, "Raio:")
         UVFScreen.addBlock(lblRaio)
 
         spinnerRaio = Spinner("spinnerRaio", spinnerQuantPontos.size.x, spinnerQuantPontos.size.y, lblRaio.pos.x+1, lblRaio.pos.y+lblRaio.size.y-5, WHITE, window, self)
         spinnerRaio.setText("10", center=True)
         UVFScreen.addButton(spinnerRaio)
 
-        lblConstSuavizacao = Block("lblConstSuavizacao", lblPontoFinalSelec.size.x+14, lblRaio.size.y, lblRaio.pos.x, spinnerRaio.pos.y+spinnerRaio.size.y+10, BACKGROUND_COLOR, window, self)
-        lblConstSuavizacao.setText("Constante de suavização:", center=False)
+        lblConstSuavizacao = Label("lblConstSuavizacao", lblRaio.size.y, lblRaio.pos.x, spinnerRaio.pos.y+spinnerRaio.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização:")
         UVFScreen.addBlock(lblConstSuavizacao)
 
         spinnerConstSuav = Spinner("spinnerConstSuav", spinnerRaio.size.x, spinnerRaio.size.y, spinnerRaio.pos.x, lblConstSuavizacao.pos.y+lblConstSuavizacao.size.y-5, WHITE, window, self)
         spinnerConstSuav.setText("10", center=True)
         UVFScreen.addButton(spinnerConstSuav)
 
-        lblConstSuavUnidir = Block("lblConstSuavUnidir", lblSelecionarCampo.size.x*2+16, lblConstSuavizacao.size.y, lblConstSuavizacao.pos.x, spinnerConstSuav.pos.y+spinnerConstSuav.size.y+10, BACKGROUND_COLOR, window, self)
-        lblConstSuavUnidir.setText("Constante de suavização unidirecional:", center=False)
+        lblConstSuavUnidir = Label("lblConstSuavUnidir", lblConstSuavizacao.size.y, lblConstSuavizacao.pos.x, spinnerConstSuav.pos.y+spinnerConstSuav.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização unidirecional:")
         UVFScreen.addBlock(lblConstSuavUnidir)
 
         spinnerConstSuavUnidir = Spinner("spinnerConstSuavUnidir", spinnerConstSuav.size.x, spinnerConstSuav.size.y, spinnerConstSuav.pos.x, lblConstSuavUnidir.pos.y+lblConstSuavUnidir.size.y-5, WHITE, window, self)
         spinnerConstSuavUnidir.setText("10", center=True)
         UVFScreen.addButton(spinnerConstSuavUnidir)
 
-        lblVisualizarTodosCamposUVF = Block("lblVisualizarTodosCamposUVF", lblConstSuavUnidir.size.x-50, lblConstSuavUnidir.size.y, lblConstSuavUnidir.pos.x, spinnerConstSuavUnidir.pos.y+spinnerConstSuavUnidir.size.y+70, BACKGROUND_COLOR, window, self)
-        lblVisualizarTodosCamposUVF.setText("Visualizar todos os campos UVF", center=False)
+        lblVisualizarTodosCamposUVF = Label("lblVisualizarTodosCamposUVF", lblConstSuavUnidir.size.y, lblConstSuavUnidir.pos.x, spinnerConstSuavUnidir.pos.y+spinnerConstSuavUnidir.size.y+70, BACKGROUND_COLOR, window, self, "Visualizar todos os campos UVF")
         UVFScreen.addBlock(lblVisualizarTodosCamposUVF)
 
-        lblHabilitaVisualizacaoCampos = Block("lblHabilitaVisualizacaoCampos", lblVisualizarTodosCamposUVF.size.x+105, lblHabilitaPontoFinal.size.y, lblVisualizarTodosCamposUVF.pos.x+30, lblVisualizarTodosCamposUVF.pos.y+lblVisualizarTodosCamposUVF.size.y-6, BACKGROUND_COLOR, window, self)
-        lblHabilitaVisualizacaoCampos.setText("Habilita visualização dos campos de todos os robôs", fontSize=21, center=False)
+        lblHabilitaVisualizacaoCampos = Label("lblHabilitaVisualizacaoCampos", lblHabilitaPontoFinal.size.y, lblVisualizarTodosCamposUVF.pos.x+30, lblVisualizarTodosCamposUVF.pos.y+lblVisualizarTodosCamposUVF.size.y-6, BACKGROUND_COLOR, window, self, "Habilita visualização dos campos de todos os robôs", fontSize=21)
         UVFScreen.addBlock(lblHabilitaVisualizacaoCampos)
 
         visualizarTodosCamposToggleButton = ToggleButton("visualizarTodosCamposToggleButton", inversaoToggleButton.size.x, inversaoToggleButton.size.y, pontoFinalSelecToggleButton.pos.x, lblVisualizarTodosCamposUVF.pos.y, BACKGROUND_COLOR, window, self)
@@ -389,8 +353,7 @@ class GUI:
         projecoesScreen.addButton(robotIDProjecoesComboBox)
         robotIDProjecoesComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])        
 
-        lblAtacanteGolBola = Block("lblAtacanteGolBola", lblVisualizarCampoUVF.size.x-44, lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y+50, BACKGROUND_COLOR, window, self)
-        lblAtacanteGolBola.setText("Atacante gol bola", center=False)
+        lblAtacanteGolBola = Label("lblAtacanteGolBola", lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y+50, BACKGROUND_COLOR, window, self, "Atacante gol bola")
         projecoesScreen.addBlock(lblAtacanteGolBola)
 
         spinnerAtacGolBola = Spinner("spinnerAtacGolBola", spinnerQuantPontos.size.x, spinnerQuantPontos.size.y, spinnerQuantPontos.pos.x, lblAtacanteGolBola.pos.y, WHITE, window, self)
@@ -405,8 +368,7 @@ class GUI:
         viewAtacGolBola.setImage("images/visualize.png")
         projecoesScreen.addButton(viewAtacGolBola)
 
-        lblZagueiroAreaAliada = Block("lblZagueiroAreaAliada", lblAtacanteGolBola.size.x+23, lblAtacanteGolBola.size.y, lblAtacanteGolBola.pos.x, lblAtacanteGolBola.pos.y+lblAtacanteGolBola.size.y*2.5, BACKGROUND_COLOR, window, self)
-        lblZagueiroAreaAliada.setText("Zagueiro área aliada", center=False)
+        lblZagueiroAreaAliada = Label("lblZagueiroAreaAliada", lblAtacanteGolBola.size.y, lblAtacanteGolBola.pos.x, lblAtacanteGolBola.pos.y+lblAtacanteGolBola.size.y*2.5, BACKGROUND_COLOR, window, self, "Zagueiro área aliada")
         projecoesScreen.addBlock(lblZagueiroAreaAliada)
 
         spinnerZagAreaAliada = Spinner("spinnerZagAreaAliada", spinnerAtacGolBola.size.x, spinnerAtacGolBola.size.y, spinnerAtacGolBola.pos.x, lblZagueiroAreaAliada.pos.y, WHITE, window, self)
@@ -462,38 +424,33 @@ class GUI:
         graficosControleScreen.addButton(robotIDGraficosControleComboBox)
         robotIDGraficosControleComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblPosicaoGraficosControle = Block("lblPosicaoGraficosControle", lblPosicao.size.x-14, lblPosicao.size.y, robotIDGraficosControleComboBox.pos.x, robotIDGraficosControleComboBox.pos.y+robotIDGraficosControleComboBox.size.y+20, BACKGROUND_COLOR, window, self)
-        lblPosicaoGraficosControle.setText("Posição", BLACK_LABEL, center=False)
+        lblPosicaoGraficosControle = Label("lblPosicaoGraficosControle", lblPosicao.size.y, robotIDGraficosControleComboBox.pos.x, robotIDGraficosControleComboBox.pos.y+robotIDGraficosControleComboBox.size.y+20, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         graficosControleScreen.addBlock(lblPosicaoGraficosControle)
 
         boxPosicaoGraficosControle = Block("boxPosicaoGraficosControle", boxPosicao.size.x, boxPosicao.size.y, lblPosicaoGraficosControle.pos.x, lblPosicaoGraficosControle.pos.y+lblPosicaoGraficosControle.size.y, BACKGROUND_COLOR, window, self, border=True)
         boxPosicaoGraficosControle.setText("x: 0.0m   y: 0.0m", center=True)
         graficosControleScreen.addBlock(boxPosicaoGraficosControle)
 
-        lblBateriaGraficosControle = Block("lblBateriaGraficosControle", lblBateria.size.x, lblBateria.size.y, boxPosicaoGraficosControle.pos.x+boxPosicaoGraficosControle.size.x+60, lblPosicaoGraficosControle.pos.y, BACKGROUND_COLOR, window, self)
-        lblBateriaGraficosControle.setText("Bateria", BLACK_LABEL, center=False)
+        lblBateriaGraficosControle = Label("lblBateriaGraficosControle", lblBateria.size.y, boxPosicaoGraficosControle.pos.x+boxPosicaoGraficosControle.size.x+60, lblPosicaoGraficosControle.pos.y, BACKGROUND_COLOR, window, self, "Bateria", BLACK_LABEL)
         graficosControleScreen.addBlock(lblBateriaGraficosControle)
 
         boxBateriaGraficosControle = Block("boxBateriaGraficosControle", boxPosicaoGraficosControle.size.x, boxPosicaoGraficosControle.size.y, lblBateriaGraficosControle.pos.x, boxPosicaoGraficosControle.pos.y, BACKGROUND_COLOR, window, self, border=True)
         boxBateriaGraficosControle.setText("100%", center=True)
         graficosControleScreen.addBlock(boxBateriaGraficosControle)
 
-        lblVelocidadeLinearGraficosControle = Block("lblVelocidadeLinearGraficosControle", lblPosicaoGraficosControle.size.x*2+8, lblPosicaoGraficosControle.size.y, lblPosicaoGraficosControle.pos.x, boxPosicaoGraficosControle.pos.y+boxPosicaoGraficosControle.size.y+20, BACKGROUND_COLOR, window, self)
-        lblVelocidadeLinearGraficosControle.setText("Velocidade linear", BLACK_LABEL, center=False)
+        lblVelocidadeLinearGraficosControle = Label("lblVelocidadeLinearGraficosControle", lblPosicaoGraficosControle.size.y, lblPosicaoGraficosControle.pos.x, boxPosicaoGraficosControle.pos.y+boxPosicaoGraficosControle.size.y+20, BACKGROUND_COLOR, window, self, "Velocidade linear", BLACK_LABEL)
         graficosControleScreen.addBlock(lblVelocidadeLinearGraficosControle)
 
         boxVelocidadeLinearGraficosControle = Block("boxVelocidadeLinearGraficosControle", graficosControleScreen.size.x-40, boxPosicaoGraficosControle.size.y*4, boxPosicaoGraficosControle.pos.x, lblVelocidadeLinearGraficosControle.pos.y+lblVelocidadeLinearGraficosControle.size.y, BACKGROUND_COLOR, window, self, border=True)
         graficosControleScreen.addBlock(boxVelocidadeLinearGraficosControle)
 
-        lblVelocidadeAngularGraficosControle = Block("lblVelocidadeAngularGraficosControle", lblVelocidadeLinearGraficosControle.size.x+18, lblVelocidadeLinearGraficosControle.size.y, lblVelocidadeLinearGraficosControle.pos.x, boxVelocidadeLinearGraficosControle.pos.y+boxVelocidadeLinearGraficosControle.size.y+10, BACKGROUND_COLOR, window, self)
-        lblVelocidadeAngularGraficosControle.setText("Velocidade angular", BLACK_LABEL, center=False)
+        lblVelocidadeAngularGraficosControle = Label("lblVelocidadeAngularGraficosControle", lblVelocidadeLinearGraficosControle.size.y, lblVelocidadeLinearGraficosControle.pos.x, boxVelocidadeLinearGraficosControle.pos.y+boxVelocidadeLinearGraficosControle.size.y+10, BACKGROUND_COLOR, window, self, "Velocidade angular", BLACK_LABEL)
         graficosControleScreen.addBlock(lblVelocidadeAngularGraficosControle)
 
         boxVelocidadeAngularGraficosControle = Block("boxVelocidadeAngularGraficosControle", boxVelocidadeLinearGraficosControle.size.x, boxVelocidadeLinearGraficosControle.size.y, boxVelocidadeLinearGraficosControle.pos.x, lblVelocidadeAngularGraficosControle.pos.y+lblVelocidadeAngularGraficosControle.size.y, BACKGROUND_COLOR, window, self, border=True)
         graficosControleScreen.addBlock(boxVelocidadeAngularGraficosControle)
 
-        lblAceleracaoGraficosControle = Block("lblAceleracaoGraficosControle", lblVelocidadeAngularGraficosControle.size.x/2+14, lblVelocidadeAngularGraficosControle.size.y, lblVelocidadeAngularGraficosControle.pos.x, boxVelocidadeAngularGraficosControle.pos.y+boxVelocidadeAngularGraficosControle.size.y+10, BACKGROUND_COLOR, window, self)
-        lblAceleracaoGraficosControle.setText("Aceleração", BLACK_LABEL, center=False)
+        lblAceleracaoGraficosControle = Label("lblAceleracaoGraficosControle", lblVelocidadeAngularGraficosControle.size.y, lblVelocidadeAngularGraficosControle.pos.x, boxVelocidadeAngularGraficosControle.pos.y+boxVelocidadeAngularGraficosControle.size.y+10, BACKGROUND_COLOR, window, self, "Aceleração", BLACK_LABEL)
         graficosControleScreen.addBlock(lblAceleracaoGraficosControle)
 
         boxAceleracaoGraficosControle = Block("boxAceleracaoGraficosControle", boxVelocidadeAngularGraficosControle.size.x, boxVelocidadeAngularGraficosControle.size.y, boxVelocidadeAngularGraficosControle.pos.x, lblAceleracaoGraficosControle.pos.y+lblAceleracaoGraficosControle.size.y, BACKGROUND_COLOR, window, self, border=True)
@@ -513,8 +470,7 @@ class GUI:
         controleManualScreen.addButton(robotIDControleManualComboBox)
         robotIDControleManualComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblHabilitarJoystick = Block("lblHabilitarJoystick", robotIDControleManualComboBox.size.x, lblVelocidadeLinearGraficosControle.size.y, robotIDControleManualComboBox.pos.x, robotIDControleManualComboBox.pos.y+robotIDControleManualComboBox.size.y+60, BACKGROUND_COLOR, window, self)
-        lblHabilitarJoystick.setText("Habilitar joystick", center=False)
+        lblHabilitarJoystick = Label("lblHabilitarJoystick", lblVelocidadeLinearGraficosControle.size.y, robotIDControleManualComboBox.pos.x, robotIDControleManualComboBox.pos.y+robotIDControleManualComboBox.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar joystick")
         controleManualScreen.addBlock(lblHabilitarJoystick)
 
         enableJoystickToggleButton = ToggleButton("enableJoystickToggleButton", virtualJudgeToggleButton.size.x, virtualJudgeToggleButton.size.y, virtualJudgeToggleButton.pos.x, lblHabilitarJoystick.pos.y-12, BACKGROUND_COLOR, window, self)
@@ -529,8 +485,7 @@ class GUI:
         enableDirectionToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
         controleManualScreen.addButton(enableDirectionToggleButton)
 
-        lblHabilitarControleManual = Block("lblHabilitarControleManual", robotIDControleManualComboBox.size.x, lblHabilitarJoystick.size.y, lblHabilitarJoystick.pos.x, directionComboBox.pos.y+directionComboBox.size.y+60, BACKGROUND_COLOR, window, self)
-        lblHabilitarControleManual.setText("Habilitar controle manual", center=False)
+        lblHabilitarControleManual = Label("lblHabilitarControleManual", lblHabilitarJoystick.size.y, lblHabilitarJoystick.pos.x, directionComboBox.pos.y+directionComboBox.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar controle manual")
         controleManualScreen.addBlock(lblHabilitarControleManual)
 
         enableControleManualToggleButton = ToggleButton("enableControleManualToggleButton", enableDirectionToggleButton.size.x, enableDirectionToggleButton.size.y, enableDirectionToggleButton.pos.x, lblHabilitarControleManual.pos.y-12, BACKGROUND_COLOR, window, self)
@@ -584,84 +539,73 @@ class GUI:
         controleUVFScreen.addButton(robotIDControleUVFComboBox)
         robotIDControleUVFComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblVisualizarCampoControleUVF = Block("lblVisualizarCampoControleUVF", lblVisualizarCampoUVF.size.x-36, lblVisualizarCampoUVF.size.y, robotIDControleUVFComboBox.pos.x, robotIDControleUVFComboBox.pos.y+robotIDControleUVFComboBox.size.y+30, BACKGROUND_COLOR, window, self)
-        lblVisualizarCampoControleUVF.setText("Visualizar campo", center=False)
+        lblVisualizarCampoControleUVF = Label("lblVisualizarCampoControleUVF", lblVisualizarCampoUVF.size.y, robotIDControleUVFComboBox.pos.x, robotIDControleUVFComboBox.pos.y+robotIDControleUVFComboBox.size.y+30, BACKGROUND_COLOR, window, self, "Visualizar campo")
         controleUVFScreen.addBlock(lblVisualizarCampoControleUVF)
 
-        lblHabilitaVisualizacaoCamposControleUVF = Block("lblHabilitaVisualizacaoCamposControleUVF", lblHabilitaVisualizacaoCampos.size.x, lblHabilitaVisualizacaoCampos.size.y, lblVisualizarCampoControleUVF.pos.x+30, lblVisualizarCampoControleUVF.pos.y+lblVisualizarCampoControleUVF.size.y-6, BACKGROUND_COLOR, window, self)
-        lblHabilitaVisualizacaoCamposControleUVF.setText("Habilita a visualização do campo UVF do robô", fontSize=21, center=False)
+        lblHabilitaVisualizacaoCamposControleUVF = Label("lblHabilitaVisualizacaoCamposControleUVF", lblHabilitaVisualizacaoCampos.size.y, lblVisualizarCampoControleUVF.pos.x+30, lblVisualizarCampoControleUVF.pos.y+lblVisualizarCampoControleUVF.size.y-6, BACKGROUND_COLOR, window, self, "Habilita a visualização do campo UVF do robô", fontSize=21)
         controleUVFScreen.addBlock(lblHabilitaVisualizacaoCamposControleUVF)
 
         viewCampoControleUVF = Button("viewCampoControleUVF", viewCampoUVF.size.x, viewCampoUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x+lblHabilitaVisualizacaoCamposControleUVF.size.x+100, lblVisualizarCampoControleUVF.pos.y+10, BACKGROUND_COLOR, window, self)
         viewCampoControleUVF.setImage("images/visualize.png")
         controleUVFScreen.addButton(viewCampoControleUVF)
 
-        lblKw = Block("lblKw", 28, lblVisualizarCampoControleUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x-5, lblHabilitaVisualizacaoCamposControleUVF.pos.y+lblHabilitaVisualizacaoCamposControleUVF.size.y+50, BACKGROUND_COLOR, window, self)
-        lblKw.setText("kw", center=False)
+        lblKw = Label("lblKw", lblVisualizarCampoControleUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x-5, lblHabilitaVisualizacaoCamposControleUVF.pos.y+lblHabilitaVisualizacaoCamposControleUVF.size.y+50, BACKGROUND_COLOR, window, self, "kw")
         controleUVFScreen.addBlock(lblKw)
 
         spinnerKw = Spinner("spinnerKw", spinnerRaio.size.x, spinnerRaio.size.y, lblKw.pos.x, lblKw.pos.y+lblKw.size.y-5, WHITE, window, self)
         spinnerKw.setText("10", center=True)
         controleUVFScreen.addButton(spinnerKw)
 
-        lblKp = Block("lblKp", lblKw.size.x, lblKw.size.y, spinnerKw.increaseButton.pos.x+spinnerKw.increaseButton.size.x*3, lblKw.pos.y, BACKGROUND_COLOR, window, self)
-        lblKp.setText("kp", center=False)
+        lblKp = Label("lblKp", lblKw.size.y, spinnerKw.increaseButton.pos.x+spinnerKw.increaseButton.size.x*3, lblKw.pos.y, BACKGROUND_COLOR, window, self, "kp")
         controleUVFScreen.addBlock(lblKp)
 
         spinnerKp = Spinner("spinnerKp", spinnerKw.size.x, spinnerKw.size.y, lblKp.pos.x, lblKp.pos.y+lblKp.size.y-5, WHITE, window, self)
         spinnerKp.setText("10", center=True)
         controleUVFScreen.addButton(spinnerKp)
 
-        lblL = Block("lblL", lblKw.size.x/2, lblKw.size.y, lblKw.pos.x, spinnerKw.pos.y+spinnerKw.size.y*1.5, BACKGROUND_COLOR, window, self)
-        lblL.setText("L", center=False)
+        lblL = Label("lblL", lblKw.size.y, lblKw.pos.x, spinnerKw.pos.y+spinnerKw.size.y*1.5, BACKGROUND_COLOR, window, self, "L")
         controleUVFScreen.addBlock(lblL)
 
         spinnerL = Spinner("spinnerL", spinnerKw.size.x, spinnerKw.size.y, spinnerKw.pos.x, lblL.pos.y+lblL.size.y-5, WHITE, window, self)
         spinnerL.setText("10", center=True)
         controleUVFScreen.addButton(spinnerL)
 
-        lblVmax = Block("lblVmax", lblKp.size.x*2-6, lblKp.size.y, lblKp.pos.x, lblL.pos.y, BACKGROUND_COLOR, window, self)
-        lblVmax.setText("vmax", center=False)
+        lblVmax = Label("lblVmax", lblKp.size.y, lblKp.pos.x, lblL.pos.y, BACKGROUND_COLOR, window, self, "vmax")
         controleUVFScreen.addBlock(lblVmax)
 
         spinnerVmax = Spinner("spinnerVmax", spinnerKp.size.x, spinnerKp.size.y, spinnerKp.pos.x, spinnerL.decreaseButton.pos.y, WHITE, window, self)
         spinnerVmax.setText("10", center=True)
         controleUVFScreen.addButton(spinnerVmax)
 
-        lblMu = Block("lblMu", lblKw.size.x, lblL.size.y, lblL.pos.x, spinnerL.pos.y+spinnerL.size.y*1.5, BACKGROUND_COLOR, window, self)
-        lblMu.setText("mu", center=False)
+        lblMu = Label("lblMu", lblL.size.y, lblL.pos.x, spinnerL.pos.y+spinnerL.size.y*1.5, BACKGROUND_COLOR, window, self, "mu")
         controleUVFScreen.addBlock(lblMu)
 
         spinnerMu = Spinner("spinnerMu", spinnerL.size.x, spinnerL.size.y, spinnerL.pos.x, lblMu.pos.y+lblMu.size.y-5, WHITE, window, self)
         spinnerMu.setText("10", center=True)
         controleUVFScreen.addButton(spinnerMu)
         
-        lblVref = Block("lblVref", lblKp.size.x+12, lblVmax.size.y, lblVmax.pos.x, lblMu.pos.y, BACKGROUND_COLOR, window, self)
-        lblVref.setText("vref", center=False)
+        lblVref = Label("lblVref", lblVmax.size.y, lblVmax.pos.x, lblMu.pos.y, BACKGROUND_COLOR, window, self, "vref")
         controleUVFScreen.addBlock(lblVref)
 
         spinnerVref = Spinner("spinnerVref", spinnerVmax.size.x, spinnerVmax.size.y, spinnerVmax.pos.x, spinnerMu.decreaseButton.pos.y, WHITE, window, self)
         spinnerVref.setText("10", center=True)
         controleUVFScreen.addButton(spinnerVref)
 
-        lblR = Block("lblR", lblL.size.x, lblL.size.y, lblMu.pos.x, spinnerMu.pos.y+spinnerMu.size.y*1.5, BACKGROUND_COLOR, window, self)
-        lblR.setText("r", center=False)
+        lblR = Label("lblR", lblL.size.y, lblMu.pos.x, spinnerMu.pos.y+spinnerMu.size.y*1.5, BACKGROUND_COLOR, window, self, "r")
         controleUVFScreen.addBlock(lblR)
 
         spinnerR = Spinner("spinnerR", spinnerMu.size.x, spinnerMu.size.y, spinnerMu.pos.x, lblR.pos.y+lblR.size.y-5, WHITE, window, self)
         spinnerR.setText("10", center=True)
         controleUVFScreen.addButton(spinnerR)
 
-        lblMaxAngError = Block("lblMaxAngError", lblVmax.size.x*2+8, lblVref.size.y, lblVref.pos.x, lblR.pos.y, BACKGROUND_COLOR, window, self)
-        lblMaxAngError.setText("maxangerror", center=False)
+        lblMaxAngError = Label("lblMaxAngError", lblVref.size.y, lblVref.pos.x, lblR.pos.y, BACKGROUND_COLOR, window, self, "maxangerror")
         controleUVFScreen.addBlock(lblMaxAngError)
 
         spinnerMaxAngError = Spinner("spinnerMaxAngError", spinnerVref.size.x, spinnerVref.size.y, spinnerVref.pos.x, spinnerR.decreaseButton.pos.y, WHITE, window, self)
         spinnerMaxAngError.setText("10", center=True)
         controleUVFScreen.addButton(spinnerMaxAngError)
 
-        lblTau = Block("lblTau", lblKp.size.x, lblR.size.y, lblR.pos.x, spinnerR.pos.y+spinnerR.size.y*1.5, BACKGROUND_COLOR, window, self)
-        lblTau.setText("tau", center=False)
+        lblTau = Label("lblTau", lblR.size.y, lblR.pos.x, spinnerR.pos.y+spinnerR.size.y*1.5, BACKGROUND_COLOR, window, self, "tau")
         controleUVFScreen.addBlock(lblTau)
 
         spinnerTau = Spinner("spinnerTau", spinnerR.size.x, spinnerR.size.y, spinnerR.pos.x, lblTau.pos.y+lblTau.size.y-5, WHITE, window, self)
@@ -700,8 +644,7 @@ class GUI:
         linhaCimaBoxErrosWarnings = Block("linhaCimaBoxErrosWarnings", boxErrosWarnings.size.x, 2, boxErrosWarnings.pos.x, boxErrosWarnings.pos.y, BORDER_COLOR, window, self)
         self.communicationScreen.addBlock(linhaCimaBoxErrosWarnings)
 
-        lblErrosWarnings = Block("lblErrosWarnings", gameMiniMap.size.x/4-14, lblInfoBola.size.y, gameMiniMap.pos.x, gameMiniMap.pos.y+gameMiniMap.size.y+20, BACKGROUND_COLOR, window, self)
-        lblErrosWarnings.setText("Erros e Warnings", BLACK_LABEL, 26, center=False)
+        lblErrosWarnings = Label("lblErrosWarnings", lblInfoBola.size.y, gameMiniMap.pos.x, gameMiniMap.pos.y+gameMiniMap.size.y+20, BACKGROUND_COLOR, window, self, "Erros e Warnings", BLACK_LABEL, 26)
         self.communicationScreen.addBlock(lblErrosWarnings)
         
         errosWarningsLabelArea = LabelArea("errosWarningsLabelArea", boxErrosWarnings.size.x-30, 0, boxErrosWarnings.pos.x+15, boxErrosWarnings.pos.y+20, BACKGROUND_COLOR, window, self)
@@ -715,8 +658,7 @@ class GUI:
         faixaBackgroundBoxErrosWarningsEnd = Block("faixaBackgroundBoxErrosWarningsEnd", faixaBackgroundGameMiniMapErrosWarnings.size.x, faixaBackgroundGameMiniMapErrosWarnings.size.y, 0, boxErrosWarnings.pos.y+boxErrosWarnings.size.y, BACKGROUND_COLOR, window, self)
         self.communicationScreen.addBlock(faixaBackgroundBoxErrosWarningsEnd)
 
-        lblWireless = Block("lblWireless", 86, lblCorTime.size.y, screenDivisionRightMargin.pos.x+24, gameMiniMap.pos.y, BACKGROUND_COLOR, window, self)
-        lblWireless.setText("Wireless", BLACK_LABEL, 28, center=False)
+        lblWireless = Label("lblWireless", lblCorTime.size.y, screenDivisionRightMargin.pos.x+24, gameMiniMap.pos.y, BACKGROUND_COLOR, window, self, "Wireless", BLACK_LABEL, 28)
         self.communicationScreen.addBlock(lblWireless)
 
         boxWireless = Block("boxWireless", boxErrosWarnings.size.x-16, boxErrosWarnings.size.y-35, lblWireless.pos.x, lblWireless.pos.y+lblWireless.size.y, BACKGROUND_COLOR, window, self, border=True)
@@ -726,37 +668,29 @@ class GUI:
         self.communicationScreen.addButton(robotIDCommunicationComboBox)
         robotIDCommunicationComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblBateriaCommunication = Block("lblBateriaCommunication", lblBateria.size.x+6, lblBateria.size.y, robotIDCommunicationComboBox.pos.x+4, robotIDCommunicationComboBox.pos.y+robotIDCommunicationComboBox.size.y+20, BACKGROUND_COLOR, window, self)
-        lblBateriaCommunication.setText("Bateria:", BLACK_LABEL, center=False)
+        lblBateriaCommunication = Label("lblBateriaCommunication", lblBateria.size.y, robotIDCommunicationComboBox.pos.x+4, robotIDCommunicationComboBox.pos.y+robotIDCommunicationComboBox.size.y+20, BACKGROUND_COLOR, window, self, "Bateria:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblBateriaCommunication)
 
-        percentBatteryCommunication = Block("percentBatteryCommunication", lblBateriaCommunication.size.x, lblBateriaCommunication.size.y, lblBateriaCommunication.pos.x+lblBateriaCommunication.size.x+5, lblBateriaCommunication.pos.y, BACKGROUND_COLOR, window, self)
-        percentBatteryCommunication.setText("100%", center=False)
-        self.communicationScreen.addBlock(percentBatteryCommunication)
+        lblpercentBatteryCommunication = Label("lblpercentBatteryCommunication", lblBateriaCommunication.size.y, lblBateriaCommunication.pos.x+lblBateriaCommunication.size.x+5, lblBateriaCommunication.pos.y, BACKGROUND_COLOR, window, self, "100%")
+        self.communicationScreen.addBlock(lblpercentBatteryCommunication)
 
-        lblStatusWireless = Block("lblStatusWireless", lblBateriaCommunication.size.x, lblBateriaCommunication.size.y, percentBatteryCommunication.pos.x+340, lblBateriaCommunication.pos.y, BACKGROUND_COLOR, window, self)
-        lblStatusWireless.setText("Status:", BLACK_LABEL, center=False)
+        lblStatusWireless = Label("lblStatusWireless", lblBateriaCommunication.size.y, lblpercentBatteryCommunication.pos.x+340, lblBateriaCommunication.pos.y, BACKGROUND_COLOR, window, self, "Status:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblStatusWireless)
 
-        valueStatusWireless = Block("valueStatusWireless", lblStatusWireless.size.x+50, lblStatusWireless.size.y, lblStatusWireless.pos.x+lblStatusWireless.size.x+10, lblStatusWireless.pos.y, BACKGROUND_COLOR, window, self)
-        valueStatusWireless.setText("Conectado", center=False)
-        self.communicationScreen.addBlock(valueStatusWireless)
+        lblValueStatusWireless = Label("lblValueStatusWireless", lblStatusWireless.size.y, lblStatusWireless.pos.x+lblStatusWireless.size.x+10, lblStatusWireless.pos.y, BACKGROUND_COLOR, window, self, "Conectado")
+        self.communicationScreen.addBlock(lblValueStatusWireless)
 
-        lblVelocidadeEnviada = Block("lblVelocidadeEnviada", lblBateriaCommunication.size.x*2.5-4, lblBateriaCommunication.size.y, lblBateriaCommunication.pos.x, lblBateriaCommunication.pos.y+lblBateriaCommunication.size.y+10, BACKGROUND_COLOR, window, self)
-        lblVelocidadeEnviada.setText("Velocidade enviada", BLACK_LABEL, center=False)
+        lblVelocidadeEnviada = Label("lblVelocidadeEnviada", lblBateriaCommunication.size.y, lblBateriaCommunication.pos.x, lblBateriaCommunication.pos.y+lblBateriaCommunication.size.y+10, BACKGROUND_COLOR, window, self, "Velocidade enviada", BLACK_LABEL)
         self.communicationScreen.addBlock(lblVelocidadeEnviada)
 
-        valueVelocidadeEnviada = Block("valueVelocidadeEnviada", lblBateriaCommunication.size.x*2.5, lblVelocidadeEnviada.size.y, lblVelocidadeEnviada.pos.x+lblVelocidadeEnviada.size.x+30, lblVelocidadeEnviada.pos.y, BACKGROUND_COLOR, window, self)
-        valueVelocidadeEnviada.setText("v: 0.0   w: 0.0", center=False)
-        self.communicationScreen.addBlock(valueVelocidadeEnviada)
+        lblValueVelocidadeEnviada = Label("lblValueVelocidadeEnviada", lblVelocidadeEnviada.size.y, lblVelocidadeEnviada.pos.x+lblVelocidadeEnviada.size.x+30, lblVelocidadeEnviada.pos.y, BACKGROUND_COLOR, window, self, "v: 0.0   w: 0.0")
+        self.communicationScreen.addBlock(lblValueVelocidadeEnviada)
 
-        lblFrequenciaEnvio = Block("lblFrequenciaEnvio", lblVelocidadeEnviada.size.x+4, lblVelocidadeEnviada.size.y, lblVelocidadeEnviada.pos.x, lblVelocidadeEnviada.pos.y+lblVelocidadeEnviada.size.y+10, BACKGROUND_COLOR, window, self)
-        lblFrequenciaEnvio.setText("Frequência de envio", BLACK_LABEL, center=False)
+        lblFrequenciaEnvio = Label("lblFrequenciaEnvio", lblVelocidadeEnviada.size.y, lblVelocidadeEnviada.pos.x, lblVelocidadeEnviada.pos.y+lblVelocidadeEnviada.size.y+10, BACKGROUND_COLOR, window, self, "Frequência de envio", BLACK_LABEL)
         self.communicationScreen.addBlock(lblFrequenciaEnvio)
 
-        valueFrequenciaEnvio = Block("valueFrequenciaEnvio", percentBatteryCommunication.size.x+44, percentBatteryCommunication.size.y, valueVelocidadeEnviada.pos.x, lblFrequenciaEnvio.pos.y, BACKGROUND_COLOR, window, self)
-        valueFrequenciaEnvio.setText("2 MHz", center=False)
-        self.communicationScreen.addBlock(valueFrequenciaEnvio)
+        lblValueFrequenciaEnvio = Label("lblValueFrequenciaEnvio", lblpercentBatteryCommunication.size.y, lblValueVelocidadeEnviada.pos.x, lblFrequenciaEnvio.pos.y, BACKGROUND_COLOR, window, self, "2 MHz")
+        self.communicationScreen.addBlock(lblValueFrequenciaEnvio)
 
         linhaBaixoBoxWireless = Block("linhaBaixoBoxWireless", boxWireless.size.x, 2, boxWireless.pos.x, boxWireless.pos.y+boxWireless.size.y, BORDER_COLOR, window, self)
         self.communicationScreen.addBlock(linhaBaixoBoxWireless)
@@ -764,8 +698,7 @@ class GUI:
         faixaBackgroundWirelessReferee = Block("faixaBackgroundWirelessReferee", screenDivisionRightMargin.size.x, 50, screenDivisionRightMargin.pos.x, boxWireless.pos.y+boxWireless.size.y, BACKGROUND_COLOR, window, self)
         self.communicationScreen.addBlock(faixaBackgroundWirelessReferee)
 
-        lblReferee = Block("lblReferee", lblWireless.size.x-10, lblWireless.size.y, lblWireless.pos.x, boxWireless.pos.y+boxWireless.size.y+20, BACKGROUND_COLOR, window, self)
-        lblReferee.setText("Referee", BLACK_LABEL, 28, center=False)
+        lblReferee = Label("lblReferee", lblWireless.size.y, lblWireless.pos.x, boxWireless.pos.y+boxWireless.size.y+20, BACKGROUND_COLOR, window, self, "Referee", BLACK_LABEL, 28)
         self.communicationScreen.addBlock(lblReferee)
 
         boxReferee = Block("boxReferee", boxWireless.size.x, boxWireless.size.y*0.7, boxWireless.pos.x, lblReferee.pos.y+lblReferee.size.y, BACKGROUND_COLOR, window, self, border=True)
@@ -774,37 +707,29 @@ class GUI:
         linhaCimaBoxReferee = Block("linhaCimaBoxReferee", boxReferee.size.x, 2, boxReferee.pos.x, boxReferee.pos.y, BORDER_COLOR, window, self)
         self.communicationScreen.addBlock(linhaCimaBoxReferee)
 
-        lblComandoRecebido = Block("lblComandoRecebido", lblFrequenciaEnvio.size.x-6, lblFrequenciaEnvio.size.y, boxReferee.pos.x+20, boxReferee.pos.y+20, BACKGROUND_COLOR, window, self)
-        lblComandoRecebido.setText("Comando recebido:", BLACK_LABEL, center=False)
+        lblComandoRecebido = Label("lblComandoRecebido", lblFrequenciaEnvio.size.y, boxReferee.pos.x+20, boxReferee.pos.y+20, BACKGROUND_COLOR, window, self, "Comando recebido:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblComandoRecebido)
 
-        valueComandoRecebido = Block("valueComandoRecebido", valueVelocidadeEnviada.size.x-10, valueVelocidadeEnviada.size.y, lblComandoRecebido.pos.x+lblComandoRecebido.size.x+40, lblComandoRecebido.pos.y, BACKGROUND_COLOR, window, self)
-        valueComandoRecebido.setText("HALT", center=False)
-        self.communicationScreen.addBlock(valueComandoRecebido)
+        lblValueComandoRecebido = Label("lblValueComandoRecebido", lblValueVelocidadeEnviada.size.y, lblComandoRecebido.pos.x+lblComandoRecebido.size.x+40, lblComandoRecebido.pos.y, BACKGROUND_COLOR, window, self, "HALT")
+        self.communicationScreen.addBlock(lblValueComandoRecebido)
 
-        lblStatusReferee = Block("lblStatusReferee", lblStatusWireless.size.x, lblStatusWireless.size.y, lblStatusWireless.pos.x, lblComandoRecebido.pos.y, BACKGROUND_COLOR, window, self)
-        lblStatusReferee.setText("Status:", BLACK_LABEL, center=False)
+        lblStatusReferee = Label("lblStatusReferee", lblStatusWireless.size.y, lblStatusWireless.pos.x, lblComandoRecebido.pos.y, BACKGROUND_COLOR, window, self, "Status:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblStatusReferee)
 
-        valueStatusReferee = Block("valueStatusReferee", valueStatusWireless.size.x, valueStatusWireless.size.y, valueStatusWireless.pos.x, lblStatusReferee.pos.y, BACKGROUND_COLOR, window, self)
-        valueStatusReferee.setText("Desconectado", center=False)
-        self.communicationScreen.addBlock(valueStatusReferee)
+        lblValueStatusReferee = Label("lblValueStatusReferee", lblValueStatusWireless.size.y, lblValueStatusWireless.pos.x, lblStatusReferee.pos.y, BACKGROUND_COLOR, window, self, "Desconectado")
+        self.communicationScreen.addBlock(lblValueStatusReferee)
 
-        lblLadoCampoReferee = Block("lblLadoCampoReferee", lblComandoRecebido.size.x-26, lblComandoRecebido.size.y, lblComandoRecebido.pos.x, lblComandoRecebido.pos.y+lblComandoRecebido.size.y+10, BACKGROUND_COLOR, window, self)
-        lblLadoCampoReferee.setText("Lado do campo:", BLACK_LABEL, center=False)
+        lblLadoCampoReferee = Label("lblLadoCampoReferee", lblComandoRecebido.size.y, lblComandoRecebido.pos.x, lblComandoRecebido.pos.y+lblComandoRecebido.size.y+10, BACKGROUND_COLOR, window, self, "Lado do campo:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblLadoCampoReferee)
 
-        valueLadoCampoReferee = Block("valueLadoCampoReferee", valueStatusReferee.size.x, valueStatusReferee.size.y, valueComandoRecebido.pos.x, lblLadoCampoReferee.pos.y, BACKGROUND_COLOR, window, self)
-        valueLadoCampoReferee.setText("Esquerdo", center=False)
-        self.communicationScreen.addBlock(valueLadoCampoReferee)
+        lblValueLadoCampoReferee = Label("lblValueLadoCampoReferee", lblValueStatusReferee.size.y, lblValueComandoRecebido.pos.x, lblLadoCampoReferee.pos.y, BACKGROUND_COLOR, window, self, "Esquerdo")
+        self.communicationScreen.addBlock(lblValueLadoCampoReferee)
 
-        lblCorTimeReferee = Block("lblCorTimeReferee", lblLadoCampoReferee.size.x-36, lblLadoCampoReferee.size.y, lblLadoCampoReferee.pos.x, lblLadoCampoReferee.pos.y+lblLadoCampoReferee.size.y+10, BACKGROUND_COLOR, window, self)
-        lblCorTimeReferee.setText("Cor do time:", BLACK_LABEL, center=False)
+        lblCorTimeReferee = Label("lblCorTimeReferee", lblLadoCampoReferee.size.y, lblLadoCampoReferee.pos.x, lblLadoCampoReferee.pos.y+lblLadoCampoReferee.size.y+10, BACKGROUND_COLOR, window, self, "Cor do time:", BLACK_LABEL)
         self.communicationScreen.addBlock(lblCorTimeReferee)
 
-        valueCorTimeReferee = Block("valueCorTimeReferee", 0, lblCorTimeReferee.size.y, valueLadoCampoReferee.pos.x, lblCorTimeReferee.pos.y, BACKGROUND_COLOR, window, self)
-        valueCorTimeReferee.setText("Amarelo", center=False)
-        self.communicationScreen.addBlock(valueCorTimeReferee)
+        lblValueCorTimeReferee = Label("lblValueCorTimeReferee", lblCorTimeReferee.size.y, lblValueLadoCampoReferee.pos.x, lblCorTimeReferee.pos.y, BACKGROUND_COLOR, window, self, "Amarelo")
+        self.communicationScreen.addBlock(lblValueCorTimeReferee)
 
         linhaBaixoBoxReferee = Block("linhaBaixoBoxReferee", boxReferee.size.x, 2, boxReferee.pos.x, boxReferee.pos.y+boxReferee.size.y, BORDER_COLOR, window, self)
         self.communicationScreen.addBlock(linhaBaixoBoxReferee)
@@ -812,8 +737,7 @@ class GUI:
         faixaBackgroundRefereeVSSVision = Block("faixaBackgroundRefereeVSSVision", screenDivisionRightMargin.size.x, 50, screenDivisionRightMargin.pos.x, boxReferee.pos.y+boxReferee.size.y, BACKGROUND_COLOR, window, self)
         self.communicationScreen.addBlock(faixaBackgroundRefereeVSSVision)
 
-        lblVSSVision = Block("lblVSSVision", lblReferee.size.x, lblReferee.size.y, lblReferee.pos.x, boxReferee.pos.y+boxReferee.size.y+20, BACKGROUND_COLOR, window, self)
-        lblVSSVision.setText("VSS-VISION", BLACK_LABEL, 28, center=False)
+        lblVSSVision = Label("lblVSSVision", lblReferee.size.y, lblReferee.pos.x, boxReferee.pos.y+boxReferee.size.y+20, BACKGROUND_COLOR, window, self, "VSS-VISION", BLACK_LABEL, 28)
         self.communicationScreen.addBlock(lblVSSVision)
 
         boxVSSVision = Block("boxVSSVision", boxReferee.size.x, boxWireless.size.y, boxReferee.pos.x, lblVSSVision.pos.y+lblVSSVision.size.y, BACKGROUND_COLOR, window, self, border=True, preference=False)
@@ -825,77 +749,59 @@ class GUI:
         vssVisionScrollPanel = ScrollingBackground("vssVisionScrollPanel", boxVSSVision.size.x-4, boxVSSVision.size.y*1.9, boxVSSVision.pos.x+2, boxVSSVision.pos.y+2, BACKGROUND_COLOR, window, self, boxVSSVision.size.y, boxVSSVision.pos.y+2, preference=False)
         self.communicationScreen.addScrollingBackground(vssVisionScrollPanel)
 
-        lblCorTimeVSSVision = Block("lblCorTimeVSSVision", lblCorTimeReferee.size.x, lblCorTimeReferee.size.y, lblCorTimeReferee.pos.x, boxVSSVision.pos.y+20, BACKGROUND_COLOR, window, self)
-        lblCorTimeVSSVision.setText("Time Azul", BLACK_LABEL, center=False)
+        lblCorTimeVSSVision = Label("lblCorTimeVSSVision", lblCorTimeReferee.size.y, lblCorTimeReferee.pos.x, boxVSSVision.pos.y+20, BACKGROUND_COLOR, window, self, "Time Azul", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblCorTimeVSSVision)
 
-        lblID0VSSVision = Block("lblID0VSSVision", lblCorTimeVSSVision.size.x, lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblCorTimeVSSVision.pos.y+lblCorTimeVSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblID0VSSVision.setText("ID 0", BLACK_LABEL, center=False)
+        lblID0VSSVision = Label("lblID0VSSVision", lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblCorTimeVSSVision.pos.y+lblCorTimeVSSVision.size.y, BACKGROUND_COLOR, window, self, "ID 0", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblID0VSSVision)
 
-        lblStatusVSSVision = Block("lblStatusVSSVision", lblStatusReferee.size.x, lblStatusReferee.size.y, lblStatusReferee.pos.x, lblCorTimeVSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        lblStatusVSSVision.setText("Status:", BLACK_LABEL, center=False)
+        lblStatusVSSVision = Label("lblStatusVSSVision", lblStatusReferee.size.y, lblStatusReferee.pos.x, lblCorTimeVSSVision.pos.y, BACKGROUND_COLOR, window, self, "Status:", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblStatusVSSVision)
         
-        valueStatusVSSVision = Block("valueStatusVSSVision", valueStatusReferee.size.x, valueStatusReferee.size.y, valueStatusReferee.pos.x, lblStatusVSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valueStatusVSSVision.setText("Conectado", center=False)
-        vssVisionScrollPanel.addBlock(valueStatusVSSVision)
+        lblValueStatusVSSVision = Label("lblValueStatusVSSVision", lblValueStatusReferee.size.y, lblValueStatusReferee.pos.x, lblStatusVSSVision.pos.y, BACKGROUND_COLOR, window, self, "Conectado")
+        vssVisionScrollPanel.addBlock(lblValueStatusVSSVision)
 
-        lblPosicaoID0VSSVision = Block("lblPosicaoID0VSSVision", lblID0VSSVision.size.x, lblID0VSSVision.size.y, lblID0VSSVision.pos.x+10, lblID0VSSVision.pos.y+lblID0VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblPosicaoID0VSSVision.setText("Posição", BLACK_LABEL, center=False)
+        lblPosicaoID0VSSVision = Label("lblPosicaoID0VSSVision", lblID0VSSVision.size.y, lblID0VSSVision.pos.x+10, lblID0VSSVision.pos.y+lblID0VSSVision.size.y, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblPosicaoID0VSSVision)
 
-        valuePosicaoID0VSSVision = Block("valuePosicaoID0VSSVision", lblPosicaoID0VSSVision.size.x*2, lblPosicaoID0VSSVision.size.y, valueComandoRecebido.pos.x-10, lblPosicaoID0VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valuePosicaoID0VSSVision.setText("x: 0.0  y: 0.0  z: 0.0 th: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valuePosicaoID0VSSVision)
+        lblValuePosicaoID0VSSVision = Label("lblValuePosicaoID0VSSVision", lblPosicaoID0VSSVision.size.y, lblValueComandoRecebido.pos.x-10, lblPosicaoID0VSSVision.pos.y, BACKGROUND_COLOR, window, self, "x: 0.0  y: 0.0  z: 0.0 th: 0.0")
+        vssVisionScrollPanel.addBlock(lblValuePosicaoID0VSSVision)
 
-        lblVelocidadeID0VSSVision = Block("lblVelocidadeID0VSSVision", lblPosicaoID0VSSVision.size.x, lblPosicaoID0VSSVision.size.y, lblPosicaoID0VSSVision.pos.x, lblPosicaoID0VSSVision.pos.y+lblPosicaoID0VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblVelocidadeID0VSSVision.setText("Velocidade", BLACK_LABEL, center=False)
+        lblVelocidadeID0VSSVision = Label("lblVelocidadeID0VSSVision", lblPosicaoID0VSSVision.size.y, lblPosicaoID0VSSVision.pos.x, lblPosicaoID0VSSVision.pos.y+lblPosicaoID0VSSVision.size.y, BACKGROUND_COLOR, window, self, "Velocidade", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblVelocidadeID0VSSVision)
 
-        valueVelocidadeID0VSSVision = Block("valueVelocidadeID0VSSVision", valuePosicaoID0VSSVision.size.x, valuePosicaoID0VSSVision.size.y, valuePosicaoID0VSSVision.pos.x, lblVelocidadeID0VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valueVelocidadeID0VSSVision.setText("v: 0.0  w: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valueVelocidadeID0VSSVision)
+        lblValueVelocidadeID0VSSVision = Label("lblValueVelocidadeID0VSSVision", lblValuePosicaoID0VSSVision.size.y, lblValuePosicaoID0VSSVision.pos.x, lblVelocidadeID0VSSVision.pos.y, BACKGROUND_COLOR, window, self, "v: 0.0  w: 0.0")
+        vssVisionScrollPanel.addBlock(lblValueVelocidadeID0VSSVision)
 
-        lblID1VSSVision = Block("lblID1VSSVision", lblCorTimeVSSVision.size.x, lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblVelocidadeID0VSSVision.pos.y+lblVelocidadeID0VSSVision.size.y+20, BACKGROUND_COLOR, window, self)
-        lblID1VSSVision.setText("ID 1", BLACK_LABEL, center=False)
+        lblID1VSSVision = Label("lblID1VSSVision", lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblVelocidadeID0VSSVision.pos.y+lblVelocidadeID0VSSVision.size.y+20, BACKGROUND_COLOR, window, self, "ID 1", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblID1VSSVision)
 
-        lblPosicaoID1VSSVision = Block("lblPosicaoID1VSSVision", lblID1VSSVision.size.x, lblID1VSSVision.size.y, lblID1VSSVision.pos.x+10, lblID1VSSVision.pos.y+lblID1VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblPosicaoID1VSSVision.setText("Posição", BLACK_LABEL, center=False)
+        lblPosicaoID1VSSVision = Label("lblPosicaoID1VSSVision", lblID1VSSVision.size.y, lblID1VSSVision.pos.x+10, lblID1VSSVision.pos.y+lblID1VSSVision.size.y, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblPosicaoID1VSSVision)
 
-        valuePosicaoID1VSSVision = Block("valuePosicaoID1VSSVision", lblPosicaoID1VSSVision.size.x*2, lblPosicaoID1VSSVision.size.y, valueComandoRecebido.pos.x-10, lblPosicaoID1VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valuePosicaoID1VSSVision.setText("x: 0.0  y: 0.0  z: 0.0 th: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valuePosicaoID1VSSVision)
+        lblValuePosicaoID1VSSVision = Label("lblValuePosicaoID1VSSVision", lblPosicaoID1VSSVision.size.y, lblValueComandoRecebido.pos.x-10, lblPosicaoID1VSSVision.pos.y, BACKGROUND_COLOR, window, self, "x: 0.0  y: 0.0  z: 0.0 th: 0.0")
+        vssVisionScrollPanel.addBlock(lblValuePosicaoID1VSSVision)
 
-        lblVelocidadeID1VSSVision = Block("lblVelocidadeID1VSSVision", lblPosicaoID1VSSVision.size.x, lblPosicaoID1VSSVision.size.y, lblPosicaoID1VSSVision.pos.x, lblPosicaoID1VSSVision.pos.y+lblPosicaoID1VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblVelocidadeID1VSSVision.setText("Velocidade", BLACK_LABEL, center=False)
+        lblVelocidadeID1VSSVision = Label("lblVelocidadeID1VSSVision", lblPosicaoID1VSSVision.size.y, lblPosicaoID1VSSVision.pos.x, lblPosicaoID1VSSVision.pos.y+lblPosicaoID1VSSVision.size.y, BACKGROUND_COLOR, window, self, "Velocidade", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblVelocidadeID1VSSVision)
 
-        valueVelocidadeID1VSSVision = Block("valueVelocidadeID1VSSVision", valuePosicaoID1VSSVision.size.x, valuePosicaoID1VSSVision.size.y, valuePosicaoID1VSSVision.pos.x, lblVelocidadeID1VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valueVelocidadeID1VSSVision.setText("v: 0.0  w: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valueVelocidadeID1VSSVision)
+        lblValueVelocidadeID1VSSVision = Label("lblValueVelocidadeID1VSSVision", lblValuePosicaoID1VSSVision.size.y, lblValuePosicaoID1VSSVision.pos.x, lblVelocidadeID1VSSVision.pos.y, BACKGROUND_COLOR, window, self, "v: 0.0  w: 0.0")
+        vssVisionScrollPanel.addBlock(lblValueVelocidadeID1VSSVision)
 
-        lblID2VSSVision = Block("lblID2VSSVision", lblCorTimeVSSVision.size.x, lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblVelocidadeID1VSSVision.pos.y+lblVelocidadeID1VSSVision.size.y+20, BACKGROUND_COLOR, window, self)
-        lblID2VSSVision.setText("ID 2", BLACK_LABEL, center=False)
+        lblID2VSSVision = Label("lblID2VSSVision", lblCorTimeVSSVision.size.y, lblCorTimeVSSVision.pos.x, lblVelocidadeID1VSSVision.pos.y+lblVelocidadeID1VSSVision.size.y+20, BACKGROUND_COLOR, window, self, "ID 2", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblID2VSSVision)
 
-        lblPosicaoID2VSSVision = Block("lblPosicaoID2VSSVision", lblID2VSSVision.size.x, lblID2VSSVision.size.y, lblID2VSSVision.pos.x+10, lblID2VSSVision.pos.y+lblID2VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblPosicaoID2VSSVision.setText("Posição", BLACK_LABEL, center=False)
+        lblPosicaoID2VSSVision = Label("lblPosicaoID2VSSVision", lblID2VSSVision.size.y, lblID2VSSVision.pos.x+10, lblID2VSSVision.pos.y+lblID2VSSVision.size.y, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblPosicaoID2VSSVision)
 
-        valuePosicaoID2VSSVision = Block("valuePosicaoID2VSSVision", lblPosicaoID2VSSVision.size.x*2, lblPosicaoID2VSSVision.size.y, valueComandoRecebido.pos.x-10, lblPosicaoID2VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valuePosicaoID2VSSVision.setText("x: 0.0  y: 0.0  z: 0.0 th: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valuePosicaoID2VSSVision)
+        lblValuePosicaoID2VSSVision = Label("lblValuePosicaoID2VSSVision", lblPosicaoID2VSSVision.size.y, lblValueComandoRecebido.pos.x-10, lblPosicaoID2VSSVision.pos.y, BACKGROUND_COLOR, window, self, "x: 0.0  y: 0.0  z: 0.0 th: 0.0")
+        vssVisionScrollPanel.addBlock(lblValuePosicaoID2VSSVision)
 
-        lblVelocidadeID2VSSVision = Block("lblVelocidadeID2VSSVision", lblPosicaoID2VSSVision.size.x, lblPosicaoID2VSSVision.size.y, lblPosicaoID2VSSVision.pos.x, lblPosicaoID2VSSVision.pos.y+lblPosicaoID2VSSVision.size.y, BACKGROUND_COLOR, window, self)
-        lblVelocidadeID2VSSVision.setText("Velocidade", BLACK_LABEL, center=False)
+        lblVelocidadeID2VSSVision = Label("lblVelocidadeID2VSSVision", lblPosicaoID2VSSVision.size.y, lblPosicaoID2VSSVision.pos.x, lblPosicaoID2VSSVision.pos.y+lblPosicaoID2VSSVision.size.y, BACKGROUND_COLOR, window, self, "Velocidade", BLACK_LABEL)
         vssVisionScrollPanel.addBlock(lblVelocidadeID2VSSVision)
 
-        valueVelocidadeID2VSSVision = Block("valueVelocidadeID2VSSVision", valuePosicaoID2VSSVision.size.x, valuePosicaoID2VSSVision.size.y, valuePosicaoID2VSSVision.pos.x, lblVelocidadeID2VSSVision.pos.y, BACKGROUND_COLOR, window, self)
-        valueVelocidadeID2VSSVision.setText("v: 0.0  w: 0.0", center=False)
-        vssVisionScrollPanel.addBlock(valueVelocidadeID2VSSVision)
+        lblValueVelocidadeID2VSSVision = Label("lblValueVelocidadeID2VSSVision", lblValuePosicaoID2VSSVision.size.y, lblValuePosicaoID2VSSVision.pos.x, lblVelocidadeID2VSSVision.pos.y, BACKGROUND_COLOR, window, self, "v: 0.0  w: 0.0")
+        vssVisionScrollPanel.addBlock(lblValueVelocidadeID2VSSVision)
 
         faixaBackgroundBoxVSSVisionEnd = Block("faixaBackgroundBoxVSSVisionEnd", screenDivisionRightMargin.size.x, 50, screenDivisionRightMargin.pos.x, boxVSSVision.pos.y+boxVSSVision.size.y, BACKGROUND_COLOR, window, self)
         self.communicationScreen.addBlock(faixaBackgroundBoxVSSVisionEnd)

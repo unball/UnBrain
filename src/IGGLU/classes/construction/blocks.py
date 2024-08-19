@@ -260,6 +260,7 @@ class Button(Block):
         super().__init__(name, sizeX, sizeY, posX, posY, color, window, gui, border, shape, preference)
         self.action = None
         self.comboBox = None
+        self.spinner = None
 
     def draw(self) -> None:
         """Draws the button on the screen"""
@@ -416,11 +417,26 @@ class Spinner(TextField):
         super().__init__(name, sizeX, sizeY, posX, posY, color, window, gui, border, shape, preference, downLimit, upLimit)
         self.decreaseButton = Button(f"decreaseButton{self.name}", self.size.x//2, self.size.y, self.pos.x+self.size.x-3, self.pos.y, self.color, self.window, self.gui)
         self.decreaseButton.setText("-", center=True)
-
+        self.decreaseButton.spinner = self
         self.increaseButton = Button(f"increaseButton{self.name}", self.size.x//2, self.size.y, self.decreaseButton.pos.x+self.decreaseButton.size.x-3, self.pos.y, self.color, self.window, self.gui)
         self.increaseButton.setText("+", center=True)
+        self.increaseButton.spinner = self
 
-        # TODO: considerar uma inner class pros botões de incremento e decremento
+        def edit(self):
+            self.setActive(not self.isActive())
+            self.calcLimit()
+        self.actionAssign(edit)
+
+        def increment(self):
+            self.spinner.setText(str(int(self.spinner.getText())+1), center=True)
+            self.spinner.calcLimit()
+        self.increaseButton.actionAssign(increment)
+
+        def decrement(self):
+            self.spinner.setText(str(int(self.spinner.getText())-1), center=True)
+            self.spinner.calcLimit()
+        self.decreaseButton.actionAssign(decrement)
+
     
 
 class Slider(Button):

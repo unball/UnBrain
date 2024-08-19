@@ -306,23 +306,15 @@ class GUI:
         lblVisualizarCampoUVF.setText("Visualizar campo UVF", center=False)
         UVFScreen.addBlock(lblVisualizarCampoUVF)
 
-        decreaseQuantPontos = Button("decreaseQuantPontos", inversaoToggleButton.size.x-20, lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x+lblVisualizarCampoUVF.size.x+210, lblVisualizarCampoUVF.pos.y, WHITE, window, self)
-        decreaseQuantPontos.setText("-", center=True)
-        UVFScreen.addButton(decreaseQuantPontos)
+        spinnerQuantPontos = Spinner("spinnerQuantPontos", 2*(inversaoToggleButton.size.x-20), 30, lblVisualizarCampoUVF.pos.x+lblVisualizarCampoUVF.size.x+210-2*(inversaoToggleButton.size.x-20)+3, lblVisualizarCampoUVF.pos.y, WHITE, window, self)
+        spinnerQuantPontos.setText("10", center=True)
+        UVFScreen.addButton(spinnerQuantPontos)
 
-        increaseQuantPontos = Button("increaseQuantPontos", decreaseQuantPontos.size.x, decreaseQuantPontos.size.y, decreaseQuantPontos.pos.x+decreaseQuantPontos.size.x-3, decreaseQuantPontos.pos.y, WHITE, window, self)
-        increaseQuantPontos.setText("+", center=True)
-        UVFScreen.addButton(increaseQuantPontos)
-
-        txtQuantPontos = TextField("txtQuantPontos", decreaseQuantPontos.size.x+increaseQuantPontos.size.x, decreaseQuantPontos.size.y, decreaseQuantPontos.pos.x-(decreaseQuantPontos.size.x+increaseQuantPontos.size.x)+3, decreaseQuantPontos.pos.y, WHITE, window, self)
-        txtQuantPontos.setText("10", center=True)
-        UVFScreen.addButton(txtQuantPontos)
-
-        lblQuantPontos = Block("lblQuantPontos", txtQuantPontos.size.x+increaseQuantPontos.size.x+decreaseQuantPontos.size.x-6, lblVisualizarCampoUVF.size.y-7, txtQuantPontos.pos.x, txtQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self)
+        lblQuantPontos = Block("lblQuantPontos", spinnerQuantPontos.size.x+spinnerQuantPontos.increaseButton.size.x+spinnerQuantPontos.decreaseButton.size.x-6, lblVisualizarCampoUVF.size.y-7, spinnerQuantPontos.pos.x, spinnerQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self)
         lblQuantPontos.setText("Quantidade de pontos", fontSize=21, center=True)
         UVFScreen.addBlock(lblQuantPontos)
 
-        viewCampoUVF = Button("viewCampoUVF", inversaoToggleButton.size.x/2, inversaoToggleButton.size.y/2, increaseQuantPontos.pos.x+increaseQuantPontos.size.x+30, increaseQuantPontos.pos.y, BACKGROUND_COLOR, window, self)
+        viewCampoUVF = Button("viewCampoUVF", inversaoToggleButton.size.x/2, inversaoToggleButton.size.y/2, spinnerQuantPontos.increaseButton.pos.x+spinnerQuantPontos.increaseButton.size.x+30, spinnerQuantPontos.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
         viewCampoUVF.setImage("images/visualize.png")
         UVFScreen.addButton(viewCampoUVF)
 
@@ -330,7 +322,7 @@ class GUI:
         lblSelecionarCampo.setText("Selecionar campo", center=False)
         UVFScreen.addBlock(lblSelecionarCampo)
 
-        selectFieldComboBox = ComboBox("selectFieldComboBox", chooseColorComboBox.size.x+16, lblSelecionarCampo.size.y, txtQuantPontos.pos.x+txtQuantPontos.size.x/2, lblSelecionarCampo.pos.y, WHITE, window, self, "Nenhum")
+        selectFieldComboBox = ComboBox("selectFieldComboBox", chooseColorComboBox.size.x+16, lblSelecionarCampo.size.y, spinnerQuantPontos.pos.x+spinnerQuantPontos.size.x/2, lblSelecionarCampo.pos.y, WHITE, window, self, "Nenhum")
         UVFScreen.addButton(selectFieldComboBox)
         selectFieldComboBox.addOptions(["Nenhum"])
 
@@ -350,7 +342,7 @@ class GUI:
         lblRaio.setText("Raio:", center=False)
         UVFScreen.addBlock(lblRaio)
 
-        decreaseRaio = Button("decreaseRaio", decreaseQuantPontos.size.x, decreaseQuantPontos.size.y, lblRaio.pos.x+txtQuantPontos.size.x-5, lblRaio.pos.y+lblRaio.size.y-5, WHITE, window, self)
+        decreaseRaio = Button("decreaseRaio", spinnerQuantPontos.decreaseButton.size.x, spinnerQuantPontos.decreaseButton.size.y, lblRaio.pos.x+spinnerQuantPontos.size.x-5, lblRaio.pos.y+lblRaio.size.y-5, WHITE, window, self)
         decreaseRaio.setText("-", center=True)
         UVFScreen.addButton(decreaseRaio)
 
@@ -358,7 +350,7 @@ class GUI:
         increaseRaio.setText("+", center=True)
         UVFScreen.addButton(increaseRaio)
 
-        txtRaio = TextField("txtRaio", increaseRaio.size.x*2, increaseRaio.size.y, decreaseRaio.pos.x-txtQuantPontos.size.x+6, increaseRaio.pos.y, WHITE, window, self)
+        txtRaio = TextField("txtRaio", increaseRaio.size.x*2, increaseRaio.size.y, decreaseRaio.pos.x-spinnerQuantPontos.size.x+6, increaseRaio.pos.y, WHITE, window, self)
         txtRaio.setText("10", center=True)
         UVFScreen.addButton(txtRaio)
 
@@ -370,7 +362,7 @@ class GUI:
         decreaseConstSuav.setText("-", center=True)
         UVFScreen.addButton(decreaseConstSuav)
 
-        increaseConstSuav = Button("increaseConstSuav", increaseQuantPontos.size.x, increaseQuantPontos.size.y, decreaseConstSuav.pos.x+decreaseConstSuav.size.x-3, decreaseConstSuav.pos.y, WHITE, window, self)
+        increaseConstSuav = Button("increaseConstSuav", spinnerQuantPontos.increaseButton.size.x, spinnerQuantPontos.increaseButton.size.y, decreaseConstSuav.pos.x+decreaseConstSuav.size.x-3, decreaseConstSuav.pos.y, WHITE, window, self)
         increaseConstSuav.setText("+", center=True)
         UVFScreen.addButton(increaseConstSuav)
 
@@ -425,15 +417,15 @@ class GUI:
         lblAtacanteGolBola.setText("Atacante gol bola", center=False)
         projecoesScreen.addBlock(lblAtacanteGolBola)
 
-        decreaseAtacGolBola = Button("decreaseAtacGolBola", decreaseQuantPontos.size.x, decreaseQuantPontos.size.y, decreaseQuantPontos.pos.x, lblAtacanteGolBola.pos.y, WHITE, window, self)
+        decreaseAtacGolBola = Button("decreaseAtacGolBola", spinnerQuantPontos.decreaseButton.size.x, spinnerQuantPontos.decreaseButton.size.y, spinnerQuantPontos.decreaseButton.pos.x, lblAtacanteGolBola.pos.y, WHITE, window, self)
         decreaseAtacGolBola.setText("-", center=True)
         projecoesScreen.addButton(decreaseAtacGolBola)
 
-        increaseAtacGolBola = Button("increaseAtacGolBola", increaseQuantPontos.size.x, increaseQuantPontos.size.y, increaseQuantPontos.pos.x, decreaseAtacGolBola.pos.y, WHITE, window, self)
+        increaseAtacGolBola = Button("increaseAtacGolBola", spinnerQuantPontos.increaseButton.size.x, spinnerQuantPontos.increaseButton.size.y, spinnerQuantPontos.increaseButton.pos.x, decreaseAtacGolBola.pos.y, WHITE, window, self)
         increaseAtacGolBola.setText("+", center=True)
         projecoesScreen.addButton(increaseAtacGolBola)
 
-        txtAtacGolBola = TextField("txtAtacGolBola", txtQuantPontos.size.x, txtQuantPontos.size.y, txtQuantPontos.pos.x, increaseAtacGolBola.pos.y, WHITE, window, self)
+        txtAtacGolBola = TextField("txtAtacGolBola", spinnerQuantPontos.size.x, spinnerQuantPontos.size.y, spinnerQuantPontos.pos.x, increaseAtacGolBola.pos.y, WHITE, window, self)
         txtAtacGolBola.setText("10", center=True)
         projecoesScreen.addButton(txtAtacGolBola)
 
@@ -1185,19 +1177,20 @@ class GUI:
             self.screen.buttons[robotIDUVFComboBox.name].setOptionsVisibility(False)
 
         def editScoreQuant(self):
-            """Instance method to edit the number in txtQuantPontos TextField"""
+            """Instance method to edit the number in spinnerQuantPontos"""
             self.setActive(not self.isActive())
-            self.screen.buttons[txtQuantPontos.name].calcLimit()
+            self.screen.buttons[spinnerQuantPontos.name].calcLimit()
 
         def increaseScoreQuant(self):
-            """Instance method to increase the number in quantPontos TextField"""
-            self.screen.buttons[txtQuantPontos.name].setText(str(int(self.screen.buttons[txtQuantPontos.name].getText())+1), center=True)
-            self.screen.buttons[txtQuantPontos.name].calcLimit()
+            """Instance method to increase the number in spinnerQuantPontos"""
+            self.screen.buttons[spinnerQuantPontos.name].setText(str(int(self.screen.buttons[spinnerQuantPontos.name].getText())+1), center=True)
+            self.screen.buttons[spinnerQuantPontos.name].calcLimit()
 
         def decreaseScoreQuant(self):
-            """Instance method to decrease the number in quantPontos TextField"""
-            self.screen.buttons[txtQuantPontos.name].setText(str(int(self.screen.buttons[txtQuantPontos.name].getText())-1), center=True)
-            self.screen.buttons[txtQuantPontos.name].calcLimit()
+            """Instance method to decrease the number in spinnerQuantPontos"""
+            print(self.screen.buttons)
+            self.screen.buttons[spinnerQuantPontos.name].setText(str(int(self.screen.buttons[spinnerQuantPontos.name].getText())-1), center=True)
+            self.screen.buttons[spinnerQuantPontos.name].calcLimit()
 
         def showFieldComboBox(self):
             """Instance method to show the field options in selectFieldComboBox"""
@@ -1690,9 +1683,9 @@ class GUI:
         for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].options:
             button.actionAssign(chooseOptionRobotIDUVFComboBox)
         
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[txtQuantPontos.name].actionAssign(editScoreQuant)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[increaseQuantPontos.name].actionAssign(increaseScoreQuant)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[decreaseQuantPontos.name].actionAssign(decreaseScoreQuant)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[spinnerQuantPontos.name].actionAssign(editScoreQuant)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[spinnerQuantPontos.increaseButton.name].actionAssign(increaseScoreQuant)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[spinnerQuantPontos.decreaseButton.name].actionAssign(decreaseScoreQuant)
 
         self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].actionAssign(showFieldComboBox)
         for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].options:

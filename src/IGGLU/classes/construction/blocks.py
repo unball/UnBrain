@@ -48,6 +48,11 @@ class Screen:
     def addButton(self, button) -> None:
         """Adds a button to the screen"""
         if button.name not in self.buttons:
+            if isinstance(button, Spinner):
+                self.buttons[button.decreaseButton.name] = button.decreaseButton
+                button.decreaseButton.setScreen(self)
+                self.buttons[button.increaseButton.name] = button.increaseButton
+                button.increaseButton.setScreen(self)
             self.buttons[button.name] = button
             button.setScreen(self)
         else:
@@ -403,7 +408,20 @@ class TextField(Button):
     def draw(self) -> None:
         """Draws the TextField on the screen"""
         super().draw()
+        
 
+class Spinner(TextField):
+    """Group of buttons that allow user to increase or decrease a value in a TextField"""
+    def __init__(self, name: str, sizeX: int, sizeY: int, posX: int, posY: int, color: Color, window, gui, border: bool=True, shape="RECT", preference: bool=True, downLimit: int=0, upLimit: int=100) -> None:
+        super().__init__(name, sizeX, sizeY, posX, posY, color, window, gui, border, shape, preference, downLimit, upLimit)
+        self.decreaseButton = Button(f"decreaseButton{self.name}", self.size.x//2, self.size.y, self.pos.x+self.size.x-3, self.pos.y, self.color, self.window, self.gui)
+        self.decreaseButton.setText("-", center=True)
+
+        self.increaseButton = Button(f"increaseButton{self.name}", self.size.x//2, self.size.y, self.decreaseButton.pos.x+self.decreaseButton.size.x-3, self.pos.y, self.color, self.window, self.gui)
+        self.increaseButton.setText("+", center=True)
+
+        # TODO: considerar uma inner class pros botões de incremento e decremento
+    
 
 class Slider(Button):
     """Button that can slide over a block"""

@@ -52,57 +52,57 @@ class GUI:
         self.navigationScreen.addBlock(screenDivisionRightMargin)
 
 
-        playButton = Button("playButton", 30, 30, 20, 13, BACKGROUND_COLOR, window, self, border=False)
-        playButton.setImage("images/play_button.png")
-        self.navigationScreen.menuBar.addButton(playButton)
+        btnPlay = Button("btnPlay", 30, 30, 20, 13, BACKGROUND_COLOR, window, self, border=False)
+        btnPlay.setImage("images/play_button.png")
+        self.navigationScreen.menuBar.addButton(btnPlay)
 
-        pauseButton = Button("pauseButton", 30, 30, playButton.pos.x + 50, playButton.pos.y, BACKGROUND_COLOR, window, self, border=False)
-        pauseButton.setImage("images/pause_button.png")
-        self.navigationScreen.menuBar.addButton(pauseButton)
+        btnPause = Button("btnPause", 30, 30, btnPlay.pos.x + 50, btnPlay.pos.y, BACKGROUND_COLOR, window, self, border=False)
+        btnPause.setImage("images/pause_button.png")
+        self.navigationScreen.menuBar.addButton(btnPause)
 
-        stopButton = Button("stopButton", 30, 30, pauseButton.pos.x + 50, playButton.pos.y, BACKGROUND_COLOR, window, self, border=False)
-        stopButton.setImage("images/stop_button.png")
-        self.navigationScreen.menuBar.addButton(stopButton)
+        btnStop = Button("btnStop", 30, 30, btnPause.pos.x + 50, btnPlay.pos.y, BACKGROUND_COLOR, window, self, border=False)
+        btnStop.setImage("images/stop_button.png")
+        self.navigationScreen.menuBar.addButton(btnStop)
 
-        recordButton = Button("recordButton", 30, 30, stopButton.pos.x + 50, playButton.pos.y, BACKGROUND_COLOR, window, self, border=False)
-        recordButton.setImage("images/record_button.png")
-        self.navigationScreen.menuBar.addButton(recordButton)
+        btnRecord = Button("btnRecord", 30, 30, btnStop.pos.x + 50, btnPlay.pos.y, BACKGROUND_COLOR, window, self, border=False)
+        btnRecord.setImage("images/record_button.png")
+        self.navigationScreen.menuBar.addButton(btnRecord)
 
-        configButton = Button("configButton", 30, 30, recordButton.pos.x + 50, playButton.pos.y, BACKGROUND_COLOR, window, self, border=False)
-        configButton.setImage("images/config_button.png")
-        self.navigationScreen.menuBar.addButton(configButton)
+        btnConfig = Button("btnConfig", 30, 30, btnRecord.pos.x + 50, btnPlay.pos.y, BACKGROUND_COLOR, window, self, border=False)
+        btnConfig.setImage("images/config_button.png")
+        self.navigationScreen.menuBar.addButton(btnConfig)
 
-        navegacaoButton = Button("navegacaoButton", 160, 40, configButton.pos.x + 130, playButton.pos.y -3, BORDER_COLOR, window, self)
-        navegacaoButton.setText("Navegação", GRAY_LABEL, 27, center=True)
-        self.navigationScreen.menuBar.addButton(navegacaoButton)
+        btnNavegacao = Button("btnNavegacao", 160, 40, btnConfig.pos.x + 130, btnPlay.pos.y -3, BORDER_COLOR, window, self)
+        btnNavegacao.setText("Navegação", GRAY_LABEL, 27, center=True)
+        self.navigationScreen.menuBar.addButton(btnNavegacao)
 
-        movimentacaoButton = Button("movimentacaoButton", navegacaoButton.size.x, navegacaoButton.size.y, navegacaoButton.pos.x + navegacaoButton.size.x-2, navegacaoButton.pos.y, BACKGROUND_COLOR, window, self)
-        movimentacaoButton.setText("Movimentação", GRAY_LABEL, 27, center=True)
-        self.navigationScreen.menuBar.addButton(movimentacaoButton)
+        btnMovimentacao = Button("btnMovimentacao", btnNavegacao.size.x, btnNavegacao.size.y, btnNavegacao.pos.x + btnNavegacao.size.x-2, btnNavegacao.pos.y, BACKGROUND_COLOR, window, self)
+        btnMovimentacao.setText("Movimentação", GRAY_LABEL, 27, center=True)
+        self.navigationScreen.menuBar.addButton(btnMovimentacao)
 
-        comunicacaoButton = Button("comunicacaoButton", movimentacaoButton.size.x, movimentacaoButton.size.y, movimentacaoButton.pos.x + movimentacaoButton.size.x-2, movimentacaoButton.pos.y, BACKGROUND_COLOR, window, self)
-        comunicacaoButton.setText("Comunicação", GRAY_LABEL, 27, center=True)
-        self.navigationScreen.menuBar.addButton(comunicacaoButton)
+        btnComunicacao = Button("btnComunicacao", btnMovimentacao.size.x, btnMovimentacao.size.y, btnMovimentacao.pos.x + btnMovimentacao.size.x-2, btnMovimentacao.pos.y, BACKGROUND_COLOR, window, self)
+        btnComunicacao.setText("Comunicação", GRAY_LABEL, 27, center=True)
+        self.navigationScreen.menuBar.addButton(btnComunicacao)
 
-        vsssButton = Button("vsssButton", navegacaoButton.size.x-70, 30, comunicacaoButton.pos.x + comunicacaoButton.size.x + 90, comunicacaoButton.pos.y + 5, BORDER_COLOR, window, self)
-        vsssButton.setText("VSSS", GRAY_LABEL, center=True)
-        self.navigationScreen.menuBar.addButton(vsssButton)
+        btnVsss = Button("btnVsss", btnNavegacao.size.x-70, 30, btnComunicacao.pos.x + btnComunicacao.size.x + 90, btnComunicacao.pos.y + 5, BORDER_COLOR, window, self)
+        btnVsss.setText("VSSS", GRAY_LABEL, center=True)
+        self.navigationScreen.menuBar.addButton(btnVsss)
 
-        sslButton = Button("sslButton", vsssButton.size.x, vsssButton.size.y, vsssButton.pos.x + vsssButton.size.x-2, vsssButton.pos.y, BACKGROUND_COLOR, window, self)
-        sslButton.setText("SSL", GRAY_LABEL, center=True)
-        self.navigationScreen.menuBar.addButton(sslButton)
+        btnSsl = Button("btnSsl", btnVsss.size.x, btnVsss.size.y, btnVsss.pos.x + btnVsss.size.x-2, btnVsss.pos.y, BACKGROUND_COLOR, window, self)
+        btnSsl.setText("SSL", GRAY_LABEL, center=True)
+        self.navigationScreen.menuBar.addButton(btnSsl)
 
-        minimizeButton = Button("minimizeButton", configButton.size.x+7, configButton.size.y+7, sslButton.pos.x + sslButton.size.x + 90, configButton.pos.y, BACKGROUND_COLOR, window, self)
-        minimizeButton.setImage("images/minimize_button.png")
-        self.navigationScreen.menuBar.addButton(minimizeButton)
+        btnMinimize = Button("btnMinimize", btnConfig.size.x+7, btnConfig.size.y+7, btnSsl.pos.x + btnSsl.size.x + 90, btnConfig.pos.y, BACKGROUND_COLOR, window, self)
+        btnMinimize.setImage("images/minimize_button.png")
+        self.navigationScreen.menuBar.addButton(btnMinimize)
 
-        maximizeButton = Button("maximizeButton", minimizeButton.size.x, minimizeButton.size.y, minimizeButton.pos.x + minimizeButton.size.x + 20, minimizeButton.pos.y, BACKGROUND_COLOR, window, self)
-        maximizeButton.setImage("images/save_button.png")
-        self.navigationScreen.menuBar.addButton(maximizeButton)
+        btnMaximize = Button("btnMaximize", btnMinimize.size.x, btnMinimize.size.y, btnMinimize.pos.x + btnMinimize.size.x + 20, btnMinimize.pos.y, BACKGROUND_COLOR, window, self)
+        btnMaximize.setImage("images/save_button.png")
+        self.navigationScreen.menuBar.addButton(btnMaximize)
 
-        closeButton = Button("closeButton", minimizeButton.size.x, minimizeButton.size.y, maximizeButton.pos.x + maximizeButton.size.x + 20, maximizeButton.pos.y, BACKGROUND_COLOR, window, self)
-        closeButton.setImage("images/close_button.png")
-        self.navigationScreen.menuBar.addButton(closeButton)
+        btnClose = Button("btnClose", btnMinimize.size.x, btnMinimize.size.y, btnMaximize.pos.x + btnMaximize.size.x + 20, btnMaximize.pos.y, BACKGROUND_COLOR, window, self)
+        btnClose.setImage("images/close_button.png")
+        self.navigationScreen.menuBar.addButton(btnClose)
 
 
         gameMiniMap = Block("gameMiniMap", windowSize.x/2-30, windowSize.y/3+100, 15, 80, BLACK, window, self)
@@ -162,15 +162,15 @@ class GUI:
         lblInverteCampoAliado = Label("lblInverteCampoAliado", lblSelecionaCorTime.size.y, lblSelecionaCorTime.pos.x, lblInversaoCampo.pos.y+lblInversaoCampo.size.y-5, BACKGROUND_COLOR, window, self, "Inverte o lado do campo aliado")
         navigationScrollPanel.addBlock(lblInverteCampoAliado)
 
-        inversaoToggleButton = ToggleButton("inversaoToggleButton", 70, 50, lblCorTime.pos.x + 400, lblInversaoCampo.pos.y, BACKGROUND_COLOR, window, self, border=True)
-        inversaoToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        navigationScrollPanel.addButton(inversaoToggleButton)
+        tglInversao = ToggleButton("tglInversao", 70, 50, lblCorTime.pos.x + 400, lblInversaoCampo.pos.y, BACKGROUND_COLOR, window, self, border=True)
+        tglInversao.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        navigationScrollPanel.addButton(tglInversao)
 
-        chooseColorComboBox = ComboBox("chooseColorComboBox", lblCorTime.size.x-30, lblCorTime.size.y, lblCorTime.pos.x + 400, lblCorTime.pos.y+lblCorTime.size.y/2, WHITE, window, self, "Azul", BACKGROUND_COLOR)
-        navigationScrollPanel.addButton(chooseColorComboBox)
-        chooseColorComboBox.addOptions(["Azul", "Amarelo"])
+        cmbChooseColor = ComboBox("cmbChooseColor", lblCorTime.size.x-30, lblCorTime.size.y, lblCorTime.pos.x + 400, lblCorTime.pos.y+lblCorTime.size.y/2, WHITE, window, self, "Azul", BACKGROUND_COLOR)
+        navigationScrollPanel.addButton(cmbChooseColor)
+        cmbChooseColor.addOptions(["Azul", "Amarelo"])
 
-        lblDireitoOuEsquerdo = Label("lblDireitoOuEsquerdo", lblCorTime.size.y, inversaoToggleButton.pos.x+inversaoToggleButton.size.x+15, inversaoToggleButton.pos.y+12, BACKGROUND_COLOR, window, self, "Esquerdo")
+        lblDireitoOuEsquerdo = Label("lblDireitoOuEsquerdo", lblCorTime.size.y, tglInversao.pos.x+tglInversao.size.x+15, tglInversao.pos.y+12, BACKGROUND_COLOR, window, self, "Esquerdo")
         navigationScrollPanel.addBlock(lblDireitoOuEsquerdo)
 
         lblFormacaoEntidades = Label("lblFormacaoEntidades", lblInversaoCampo.size.y, lblInversaoCampo.pos.x, lblInverteCampoAliado.pos.y+lblInversaoCampo.size.y*2, BACKGROUND_COLOR, window, self, "Formação das entidades", BLACK_LABEL, 28)
@@ -191,19 +191,19 @@ class GUI:
         boxConfigRobos = Block("boxConfigRobos", screenDivisionRightMargin.size.x-60, 250, lblConfigRobos.pos.x, lblConfigRobos.pos.y+lblConfigRobos.size.y+5, BACKGROUND_COLOR, window, self, border=True)
         navigationScrollPanel.addBlock(boxConfigRobos)
 
-        robotIDComboBox = ComboBox("robotIDComboBox", lblFormacaoEntidades.size.x, chooseColorComboBox.size.y, boxConfigRobos.pos.x+boxConfigRobos.size.x/2-lblFormacaoEntidades.size.x/2, boxConfigRobos.pos.y+10, WHITE, window, self, "Robô ID")
-        navigationScrollPanel.addButton(robotIDComboBox)
-        robotIDComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
+        cmbRobotID = ComboBox("cmbRobotID", lblFormacaoEntidades.size.x, cmbChooseColor.size.y, boxConfigRobos.pos.x+boxConfigRobos.size.x/2-lblFormacaoEntidades.size.x/2, boxConfigRobos.pos.y+10, WHITE, window, self, "Robô ID")
+        navigationScrollPanel.addButton(cmbRobotID)
+        cmbRobotID.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        chooseNumRobotsComboBox = ComboBox("chooseNumRobotsComboBox", chooseColorComboBox.size.x, chooseColorComboBox.size.y, chooseColorComboBox.pos.x, lblNumRobots.pos.y+lblFormacaoEntidades.size.y/2-5, WHITE, window, self, "0, 1, 2", BACKGROUND_COLOR)
-        navigationScrollPanel.addButton(chooseNumRobotsComboBox)
-        chooseNumRobotsComboBox.addOptions(["0", "1", "2", "0, 1", "0, 2", "1, 2", "0, 1, 2"])
+        cmbChooseNumRobots = ComboBox("cmbChooseNumRobots", cmbChooseColor.size.x, cmbChooseColor.size.y, cmbChooseColor.pos.x, lblNumRobots.pos.y+lblFormacaoEntidades.size.y/2-5, WHITE, window, self, "0, 1, 2", BACKGROUND_COLOR)
+        navigationScrollPanel.addButton(cmbChooseNumRobots)
+        cmbChooseNumRobots.addOptions(["0", "1", "2", "0, 1", "0, 2", "1, 2", "0, 1, 2"])
 
-        chooseEntityTypeComboBox = ComboBox("chooseEntityTypeComboBox", lblFormacaoEntidades.size.x, chooseColorComboBox.size.y, lblFormacaoEntidades.pos.x+lblFormacaoEntidades.size.x+90, lblFormacaoEntidades.pos.y+lblFormacaoEntidades.size.y/2-5, WHITE, window, self, "Entidades dinâmicas", BACKGROUND_COLOR)
-        navigationScrollPanel.addButton(chooseEntityTypeComboBox)
-        chooseEntityTypeComboBox.addOptions(["Entidades dinâmicas", "Entidades estáticas", "Control Tester"])
+        cmbChooseEntityType = ComboBox("cmbChooseEntityType", lblFormacaoEntidades.size.x, cmbChooseColor.size.y, lblFormacaoEntidades.pos.x+lblFormacaoEntidades.size.x+90, lblFormacaoEntidades.pos.y+lblFormacaoEntidades.size.y/2-5, WHITE, window, self, "Entidades dinâmicas", BACKGROUND_COLOR)
+        navigationScrollPanel.addButton(cmbChooseEntityType)
+        cmbChooseEntityType.addOptions(["Entidades dinâmicas", "Entidades estáticas", "Control Tester"])
         
-        lblBateria = Label("lblBateria", lblDireitoOuEsquerdo.size.y, boxConfigRobos.pos.x+40, robotIDComboBox.pos.y+robotIDComboBox.size.y+25, BACKGROUND_COLOR, window, self, "Bateria:", BLACK_LABEL)
+        lblBateria = Label("lblBateria", lblDireitoOuEsquerdo.size.y, boxConfigRobos.pos.x+40, cmbRobotID.pos.y+cmbRobotID.size.y+25, BACKGROUND_COLOR, window, self, "Bateria:", BLACK_LABEL)
         navigationScrollPanel.addBlock(lblBateria)
 
         lblpercentBattery = Label("lblpercentBattery", lblBateria.size.y, lblBateria.pos.x+lblBateria.size.x+5, lblBateria.pos.y, BACKGROUND_COLOR, window, self, "100%")
@@ -245,16 +245,16 @@ class GUI:
         lblPosJuizVirtual = Label("lblPosJuizVirtual", lblPosicionamento.size.y, lblBateria.pos.x, boxPosicionamento.pos.y+25, BACKGROUND_COLOR, window, self, "Usar posicionamento do juiz virtual")
         navigationScrollPanel.addBlock(lblPosJuizVirtual)
 
-        virtualJudgeToggleButton = ToggleButton("virtualJudgeToggleButton", inversaoToggleButton.size.x, inversaoToggleButton.size.y, lblPosJuizVirtual.pos.x+lblPosJuizVirtual.size.x+170, lblPosJuizVirtual.pos.y-12, BACKGROUND_COLOR, window, self)
-        virtualJudgeToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        navigationScrollPanel.addButton(virtualJudgeToggleButton)
+        tglVirtualJudge = ToggleButton("tglVirtualJudge", tglInversao.size.x, tglInversao.size.y, lblPosJuizVirtual.pos.x+lblPosJuizVirtual.size.x+170, lblPosJuizVirtual.pos.y-12, BACKGROUND_COLOR, window, self)
+        tglVirtualJudge.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        navigationScrollPanel.addButton(tglVirtualJudge)
 
         lblSelecionarPosicionamento = Label("lblSelecionarPosicionamento", lblPosJuizVirtual.size.y, lblPosJuizVirtual.pos.x, lblPosJuizVirtual.pos.y+lblPosJuizVirtual.size.y+30, BACKGROUND_COLOR, window, self, "Selecionar posicionamento")
         navigationScrollPanel.addBlock(lblSelecionarPosicionamento)
 
-        positioningComboBox = ComboBox("positioningComboBox", lblSelecionarPosicionamento.size.x-30, lblSelecionarPosicionamento.size.y, lblSelecionarPosicionamento.pos.x+lblSelecionarPosicionamento.size.x+130, lblSelecionarPosicionamento.pos.y, WHITE, window, self, "FreeBall")
-        navigationScrollPanel.addButton(positioningComboBox)
-        positioningComboBox.addOptions(["FreeBall"])
+        cmbPositioning = ComboBox("cmbPositioning", lblSelecionarPosicionamento.size.x-30, lblSelecionarPosicionamento.size.y, lblSelecionarPosicionamento.pos.x+lblSelecionarPosicionamento.size.x+130, lblSelecionarPosicionamento.pos.y, WHITE, window, self, "FreeBall")
+        navigationScrollPanel.addButton(cmbPositioning)
+        cmbPositioning.addOptions(["FreeBall"])
 
         lblTempoPosicionar = Label("lblTempoPosicionamento", lblPosJuizVirtual.size.y, lblSelecionarPosicionamento.pos.x, lblSelecionarPosicionamento.pos.y+lblSelecionarPosicionamento.size.y+30, BACKGROUND_COLOR, window, self, "Tempo tentando se posicionar:")
         navigationScrollPanel.addBlock(lblTempoPosicionar)
@@ -264,38 +264,38 @@ class GUI:
 
 
 
-        UVFButton = ToggleButton("UVFButton", boxPosicionamento.size.x, menuBar.size.y-3, boxPosicionamento.pos.x, boxPosicionamento.pos.y+boxPosicionamento.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
-        UVFButton.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
-        UVFButton.setText("UVF", BLACK_LABEL, 32, center=True)
-        navigationScrollPanel.addButton(UVFButton)
+        btnUVF = ToggleButton("btnUVF", boxPosicionamento.size.x, menuBar.size.y-3, boxPosicionamento.pos.x, boxPosicionamento.pos.y+boxPosicionamento.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
+        btnUVF.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
+        btnUVF.setText("UVF", BLACK_LABEL, 32, center=True)
+        navigationScrollPanel.addButton(btnUVF)
 
-        UVFScreen = ScrollingBackground("UVFScreen", UVFButton.size.x, windowSize.y, UVFButton.pos.x, UVFButton.pos.y+UVFButton.size.y+5, BACKGROUND_COLOR, window, self, UVFButton.size.x, windowSize.y, border=True)
+        UVFScreen = ScrollingBackground("UVFScreen", btnUVF.size.x, windowSize.y, btnUVF.pos.x, btnUVF.pos.y+btnUVF.size.y+5, BACKGROUND_COLOR, window, self, btnUVF.size.x, windowSize.y, border=True)
         navigationScrollPanel.addScrollingBackground(UVFScreen)
 
-        robotIDUVFComboBox = ComboBox("robotIDUVFComboBox", robotIDComboBox.size.x, robotIDComboBox.size.y, UVFScreen.pos.x+30, UVFScreen.pos.y+20, WHITE, window, self, "Robô ID")
-        UVFScreen.addButton(robotIDUVFComboBox)
-        robotIDUVFComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
+        cmbRobotIDUVF = ComboBox("cmbRobotIDUVF", cmbRobotID.size.x, cmbRobotID.size.y, UVFScreen.pos.x+30, UVFScreen.pos.y+20, WHITE, window, self, "Robô ID")
+        UVFScreen.addButton(cmbRobotIDUVF)
+        cmbRobotIDUVF.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblVisualizarCampoUVF = Label("lblVisualizarCampoUVF", robotIDUVFComboBox.size.y, robotIDUVFComboBox.pos.x, robotIDUVFComboBox.pos.y+robotIDUVFComboBox.size.y+50, BACKGROUND_COLOR, window, self, "Visualizar campo UVF")
+        lblVisualizarCampoUVF = Label("lblVisualizarCampoUVF", cmbRobotIDUVF.size.y, cmbRobotIDUVF.pos.x, cmbRobotIDUVF.pos.y+cmbRobotIDUVF.size.y+50, BACKGROUND_COLOR, window, self, "Visualizar campo UVF")
         UVFScreen.addBlock(lblVisualizarCampoUVF)
 
-        spinnerQuantPontos = Spinner("spinnerQuantPontos", 2*(inversaoToggleButton.size.x-20), 30, lblVisualizarCampoUVF.pos.x+lblVisualizarCampoUVF.size.x+210-2*(inversaoToggleButton.size.x-20)+3, lblVisualizarCampoUVF.pos.y, WHITE, window, self)
-        spinnerQuantPontos.setText("10", center=True)
-        UVFScreen.addButton(spinnerQuantPontos)
+        spnQuantPontos = Spinner("spnQuantPontos", 2*(tglInversao.size.x-20), 30, lblVisualizarCampoUVF.pos.x+lblVisualizarCampoUVF.size.x+210-2*(tglInversao.size.x-20)+3, lblVisualizarCampoUVF.pos.y, WHITE, window, self)
+        spnQuantPontos.setText("10", center=True)
+        UVFScreen.addButton(spnQuantPontos)
 
-        lblQuantPontos = Label("lblQuantPontos", lblVisualizarCampoUVF.size.y-7, spinnerQuantPontos.pos.x, spinnerQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self, "Quantidade de pontos", fontSize=21)
+        lblQuantPontos = Label("lblQuantPontos", lblVisualizarCampoUVF.size.y-7, spnQuantPontos.pos.x, spnQuantPontos.pos.y-lblVisualizarCampoUVF.size.y+10, BACKGROUND_COLOR, window, self, "Quantidade de pontos", fontSize=21)
         UVFScreen.addBlock(lblQuantPontos)
 
-        viewCampoUVF = Button("viewCampoUVF", inversaoToggleButton.size.x/2, inversaoToggleButton.size.y/2, spinnerQuantPontos.increaseButton.pos.x+spinnerQuantPontos.increaseButton.size.x+30, spinnerQuantPontos.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
-        viewCampoUVF.setImage("images/visualize.png")
-        UVFScreen.addButton(viewCampoUVF)
+        btnViewCampoUVF = Button("btnViewCampoUVF", tglInversao.size.x/2, tglInversao.size.y/2, spnQuantPontos.increaseButton.pos.x+spnQuantPontos.increaseButton.size.x+30, spnQuantPontos.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
+        btnViewCampoUVF.setImage("images/visualize.png")
+        UVFScreen.addButton(btnViewCampoUVF)
 
         lblSelecionarCampo = Label("lblSelecionarCampo", lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y*2.5, BACKGROUND_COLOR, window, self, "Selecionar campo")
         UVFScreen.addBlock(lblSelecionarCampo)
 
-        selectFieldComboBox = ComboBox("selectFieldComboBox", chooseColorComboBox.size.x+16, lblSelecionarCampo.size.y, spinnerQuantPontos.pos.x+spinnerQuantPontos.size.x/2, lblSelecionarCampo.pos.y, WHITE, window, self, "Nenhum")
-        UVFScreen.addButton(selectFieldComboBox)
-        selectFieldComboBox.addOptions(["Nenhum"])
+        cmbSelectField = ComboBox("cmbSelectField", cmbChooseColor.size.x+16, lblSelecionarCampo.size.y, spnQuantPontos.pos.x+spnQuantPontos.size.x/2, lblSelecionarCampo.pos.y, WHITE, window, self, "Nenhum")
+        UVFScreen.addButton(cmbSelectField)
+        cmbSelectField.addOptions(["Nenhum"])
 
         lblPontoFinalSelec = Label("lblPontoFinalSelec", lblVisualizarCampoUVF.size.y, lblSelecionarCampo.pos.x, lblSelecionarCampo.pos.y+lblSelecionarCampo.size.y*2.5, BACKGROUND_COLOR, window, self, "Ponto final selecionável")
         UVFScreen.addBlock(lblPontoFinalSelec)
@@ -303,85 +303,85 @@ class GUI:
         lblHabilitaPontoFinal = Label("lblHabilitaPontoFinal", lblPontoFinalSelec.size.y-5, lblPontoFinalSelec.pos.x+30, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y-6, BACKGROUND_COLOR, window, self, "Habilita a seleção manual de ponto final das trajetórias", fontSize=21)
         UVFScreen.addBlock(lblHabilitaPontoFinal)
 
-        pontoFinalSelecToggleButton = ToggleButton("pontoFinalSelecComboBox", inversaoToggleButton.size.x, inversaoToggleButton.size.y, lblHabilitaPontoFinal.pos.x+lblHabilitaPontoFinal.size.x+50, lblPontoFinalSelec.pos.y, BACKGROUND_COLOR, window, self)
-        pontoFinalSelecToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        UVFScreen.addButton(pontoFinalSelecToggleButton)
+        tglPontoFinalSelec = ToggleButton("pontoFinalSelecComboBox", tglInversao.size.x, tglInversao.size.y, lblHabilitaPontoFinal.pos.x+lblHabilitaPontoFinal.size.x+50, lblPontoFinalSelec.pos.y, BACKGROUND_COLOR, window, self)
+        tglPontoFinalSelec.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        UVFScreen.addButton(tglPontoFinalSelec)
 
         lblRaio = Label("lblRaio", lblSelecionarCampo.size.y, lblPontoFinalSelec.pos.x, lblPontoFinalSelec.pos.y+lblPontoFinalSelec.size.y*2.5, BACKGROUND_COLOR, window, self, "Raio:")
         UVFScreen.addBlock(lblRaio)
 
-        spinnerRaio = Spinner("spinnerRaio", spinnerQuantPontos.size.x, spinnerQuantPontos.size.y, lblRaio.pos.x+1, lblRaio.pos.y+lblRaio.size.y-5, WHITE, window, self)
-        spinnerRaio.setText("10", center=True)
-        UVFScreen.addButton(spinnerRaio)
+        spnRaio = Spinner("spnRaio", spnQuantPontos.size.x, spnQuantPontos.size.y, lblRaio.pos.x+1, lblRaio.pos.y+lblRaio.size.y-5, WHITE, window, self)
+        spnRaio.setText("10", center=True)
+        UVFScreen.addButton(spnRaio)
 
-        lblConstSuavizacao = Label("lblConstSuavizacao", lblRaio.size.y, lblRaio.pos.x, spinnerRaio.pos.y+spinnerRaio.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização:")
+        lblConstSuavizacao = Label("lblConstSuavizacao", lblRaio.size.y, lblRaio.pos.x, spnRaio.pos.y+spnRaio.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização:")
         UVFScreen.addBlock(lblConstSuavizacao)
 
-        spinnerConstSuav = Spinner("spinnerConstSuav", spinnerRaio.size.x, spinnerRaio.size.y, spinnerRaio.pos.x, lblConstSuavizacao.pos.y+lblConstSuavizacao.size.y-5, WHITE, window, self)
-        spinnerConstSuav.setText("10", center=True)
-        UVFScreen.addButton(spinnerConstSuav)
+        spnConstSuav = Spinner("spnConstSuav", spnRaio.size.x, spnRaio.size.y, spnRaio.pos.x, lblConstSuavizacao.pos.y+lblConstSuavizacao.size.y-5, WHITE, window, self)
+        spnConstSuav.setText("10", center=True)
+        UVFScreen.addButton(spnConstSuav)
 
-        lblConstSuavUnidir = Label("lblConstSuavUnidir", lblConstSuavizacao.size.y, lblConstSuavizacao.pos.x, spinnerConstSuav.pos.y+spinnerConstSuav.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização unidirecional:")
+        lblConstSuavUnidir = Label("lblConstSuavUnidir", lblConstSuavizacao.size.y, lblConstSuavizacao.pos.x, spnConstSuav.pos.y+spnConstSuav.size.y+10, BACKGROUND_COLOR, window, self, "Constante de suavização unidirecional:")
         UVFScreen.addBlock(lblConstSuavUnidir)
 
-        spinnerConstSuavUnidir = Spinner("spinnerConstSuavUnidir", spinnerConstSuav.size.x, spinnerConstSuav.size.y, spinnerConstSuav.pos.x, lblConstSuavUnidir.pos.y+lblConstSuavUnidir.size.y-5, WHITE, window, self)
-        spinnerConstSuavUnidir.setText("10", center=True)
-        UVFScreen.addButton(spinnerConstSuavUnidir)
+        spnConstSuavUnidir = Spinner("spnConstSuavUnidir", spnConstSuav.size.x, spnConstSuav.size.y, spnConstSuav.pos.x, lblConstSuavUnidir.pos.y+lblConstSuavUnidir.size.y-5, WHITE, window, self)
+        spnConstSuavUnidir.setText("10", center=True)
+        UVFScreen.addButton(spnConstSuavUnidir)
 
-        lblVisualizarTodosCamposUVF = Label("lblVisualizarTodosCamposUVF", lblConstSuavUnidir.size.y, lblConstSuavUnidir.pos.x, spinnerConstSuavUnidir.pos.y+spinnerConstSuavUnidir.size.y+70, BACKGROUND_COLOR, window, self, "Visualizar todos os campos UVF")
+        lblVisualizarTodosCamposUVF = Label("lblVisualizarTodosCamposUVF", lblConstSuavUnidir.size.y, lblConstSuavUnidir.pos.x, spnConstSuavUnidir.pos.y+spnConstSuavUnidir.size.y+70, BACKGROUND_COLOR, window, self, "Visualizar todos os campos UVF")
         UVFScreen.addBlock(lblVisualizarTodosCamposUVF)
 
         lblHabilitaVisualizacaoCampos = Label("lblHabilitaVisualizacaoCampos", lblHabilitaPontoFinal.size.y, lblVisualizarTodosCamposUVF.pos.x+30, lblVisualizarTodosCamposUVF.pos.y+lblVisualizarTodosCamposUVF.size.y-6, BACKGROUND_COLOR, window, self, "Habilita visualização dos campos de todos os robôs", fontSize=21)
         UVFScreen.addBlock(lblHabilitaVisualizacaoCampos)
 
-        visualizarTodosCamposToggleButton = ToggleButton("visualizarTodosCamposToggleButton", inversaoToggleButton.size.x, inversaoToggleButton.size.y, pontoFinalSelecToggleButton.pos.x, lblVisualizarTodosCamposUVF.pos.y, BACKGROUND_COLOR, window, self)
-        visualizarTodosCamposToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        UVFScreen.addButton(visualizarTodosCamposToggleButton)
+        tglVisualizarTodosCampos = ToggleButton("tglVisualizarTodosCampos", tglInversao.size.x, tglInversao.size.y, tglPontoFinalSelec.pos.x, lblVisualizarTodosCamposUVF.pos.y, BACKGROUND_COLOR, window, self)
+        tglVisualizarTodosCampos.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        UVFScreen.addButton(tglVisualizarTodosCampos)
 
         UVFScreen.setVisible(False)
 
 
-        projecoesButton = ToggleButton("projecoesButton", UVFButton.size.x, UVFButton.size.y, UVFButton.pos.x, UVFButton.pos.y+UVFButton.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
-        projecoesButton.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
-        projecoesButton.setText("Projeções", BLACK_LABEL, 32, center=True)
-        navigationScrollPanel.addButton(projecoesButton)
+        tglProjecoes = ToggleButton("tglProjecoes", btnUVF.size.x, btnUVF.size.y, btnUVF.pos.x, btnUVF.pos.y+btnUVF.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
+        tglProjecoes.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
+        tglProjecoes.setText("Projeções", BLACK_LABEL, 32, center=True)
+        navigationScrollPanel.addButton(tglProjecoes)
 
-        projecoesScreen = ScrollingBackground("projecoesScreen", UVFScreen.size.x, boxConfigRobos.size.y, UVFScreen.pos.x, projecoesButton.pos.y+projecoesButton.size.y+5, BACKGROUND_COLOR, window, self, boxConfigRobos.size.y, projecoesButton.pos.y+projecoesButton.size.y+5, border=True)
+        projecoesScreen = ScrollingBackground("projecoesScreen", UVFScreen.size.x, boxConfigRobos.size.y, UVFScreen.pos.x, tglProjecoes.pos.y+tglProjecoes.size.y+5, BACKGROUND_COLOR, window, self, boxConfigRobos.size.y, tglProjecoes.pos.y+tglProjecoes.size.y+5, border=True)
         navigationScrollPanel.addScrollingBackground(projecoesScreen)
 
-        robotIDProjecoesComboBox = ComboBox("robotIDProjecoesComboBox", robotIDUVFComboBox.size.x, robotIDUVFComboBox.size.y, robotIDUVFComboBox.pos.x, projecoesScreen.pos.y+20, WHITE, window, self, "Robô ID")
-        projecoesScreen.addButton(robotIDProjecoesComboBox)
-        robotIDProjecoesComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])        
+        cmbRobotIDProjecoes = ComboBox("cmbRobotIDProjecoes", cmbRobotIDUVF.size.x, cmbRobotIDUVF.size.y, cmbRobotIDUVF.pos.x, projecoesScreen.pos.y+20, WHITE, window, self, "Robô ID")
+        projecoesScreen.addButton(cmbRobotIDProjecoes)
+        cmbRobotIDProjecoes.addOptions(["Robô 00", "Robô 01", "Robô 02"])        
 
         lblAtacanteGolBola = Label("lblAtacanteGolBola", lblVisualizarCampoUVF.size.y, lblVisualizarCampoUVF.pos.x, lblVisualizarCampoUVF.pos.y+lblVisualizarCampoUVF.size.y+50, BACKGROUND_COLOR, window, self, "Atacante gol bola")
         projecoesScreen.addBlock(lblAtacanteGolBola)
 
-        spinnerAtacGolBola = Spinner("spinnerAtacGolBola", spinnerQuantPontos.size.x, spinnerQuantPontos.size.y, spinnerQuantPontos.pos.x, lblAtacanteGolBola.pos.y, WHITE, window, self)
-        spinnerAtacGolBola.setText("10", center=True)
-        projecoesScreen.addButton(spinnerAtacGolBola)
+        spnAtacGolBola = Spinner("spnAtacGolBola", spnQuantPontos.size.x, spnQuantPontos.size.y, spnQuantPontos.pos.x, lblAtacanteGolBola.pos.y, WHITE, window, self)
+        spnAtacGolBola.setText("10", center=True)
+        projecoesScreen.addButton(spnAtacGolBola)
 
-        lblQuantPontosAtacGolBola = Block("lblQuantPontosAtacGolBola", spinnerAtacGolBola.size.x+spinnerAtacGolBola.increaseButton.size.x+spinnerAtacGolBola.decreaseButton.size.x-6, lblAtacanteGolBola.size.y-7, spinnerAtacGolBola.pos.x, spinnerAtacGolBola.pos.y-lblAtacanteGolBola.size.y+10, BACKGROUND_COLOR, window, self)
+        lblQuantPontosAtacGolBola = Block("lblQuantPontosAtacGolBola", spnAtacGolBola.size.x+spnAtacGolBola.increaseButton.size.x+spnAtacGolBola.decreaseButton.size.x-6, lblAtacanteGolBola.size.y-7, spnAtacGolBola.pos.x, spnAtacGolBola.pos.y-lblAtacanteGolBola.size.y+10, BACKGROUND_COLOR, window, self)
         lblQuantPontosAtacGolBola.setText("Quantidade de pontos", fontSize=21, center=True)
         projecoesScreen.addBlock(lblQuantPontosAtacGolBola)
 
-        viewAtacGolBola = Button("viewAtacGolBola", viewCampoUVF.size.x, viewCampoUVF.size.y, spinnerAtacGolBola.increaseButton.pos.x+spinnerAtacGolBola.increaseButton.size.x+30, spinnerAtacGolBola.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
-        viewAtacGolBola.setImage("images/visualize.png")
-        projecoesScreen.addButton(viewAtacGolBola)
+        btnViewAtacGolBola = Button("btnViewAtacGolBola", btnViewCampoUVF.size.x, btnViewCampoUVF.size.y, spnAtacGolBola.increaseButton.pos.x+spnAtacGolBola.increaseButton.size.x+30, spnAtacGolBola.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
+        btnViewAtacGolBola.setImage("images/visualize.png")
+        projecoesScreen.addButton(btnViewAtacGolBola)
 
         lblZagueiroAreaAliada = Label("lblZagueiroAreaAliada", lblAtacanteGolBola.size.y, lblAtacanteGolBola.pos.x, lblAtacanteGolBola.pos.y+lblAtacanteGolBola.size.y*2.5, BACKGROUND_COLOR, window, self, "Zagueiro área aliada")
         projecoesScreen.addBlock(lblZagueiroAreaAliada)
 
-        spinnerZagAreaAliada = Spinner("spinnerZagAreaAliada", spinnerAtacGolBola.size.x, spinnerAtacGolBola.size.y, spinnerAtacGolBola.pos.x, lblZagueiroAreaAliada.pos.y, WHITE, window, self)
-        spinnerZagAreaAliada.setText("10", center=True)
-        projecoesScreen.addButton(spinnerZagAreaAliada)
+        spnZagAreaAliada = Spinner("spnZagAreaAliada", spnAtacGolBola.size.x, spnAtacGolBola.size.y, spnAtacGolBola.pos.x, lblZagueiroAreaAliada.pos.y, WHITE, window, self)
+        spnZagAreaAliada.setText("10", center=True)
+        projecoesScreen.addButton(spnZagAreaAliada)
 
-        lblQuantPontosZagAreaAliada = Block("lblQuantPontosZagAreaAliada", spinnerZagAreaAliada.size.x+spinnerZagAreaAliada.increaseButton.size.x+spinnerZagAreaAliada.decreaseButton.size.x-6, lblZagueiroAreaAliada.size.y-7, spinnerZagAreaAliada.pos.x, spinnerZagAreaAliada.pos.y-lblZagueiroAreaAliada.size.y+10, BACKGROUND_COLOR, window, self)
+        lblQuantPontosZagAreaAliada = Block("lblQuantPontosZagAreaAliada", spnZagAreaAliada.size.x+spnZagAreaAliada.increaseButton.size.x+spnZagAreaAliada.decreaseButton.size.x-6, lblZagueiroAreaAliada.size.y-7, spnZagAreaAliada.pos.x, spnZagAreaAliada.pos.y-lblZagueiroAreaAliada.size.y+10, BACKGROUND_COLOR, window, self)
         lblQuantPontosZagAreaAliada.setText("Quantidade de pontos", fontSize=21, center=True)
         projecoesScreen.addBlock(lblQuantPontosZagAreaAliada)
 
-        viewZagAreaAliada = Button("viewZagAreaAliada", viewCampoUVF.size.x, viewCampoUVF.size.y, spinnerZagAreaAliada.increaseButton.pos.x+spinnerZagAreaAliada.increaseButton.size.x+30, spinnerZagAreaAliada.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
-        viewZagAreaAliada.setImage("images/visualize.png")
-        projecoesScreen.addButton(viewZagAreaAliada)
+        btnViewZagAreaAliada = Button("btnViewZagAreaAliada", btnViewCampoUVF.size.x, btnViewCampoUVF.size.y, spnZagAreaAliada.increaseButton.pos.x+spnZagAreaAliada.increaseButton.size.x+30, spnZagAreaAliada.increaseButton.pos.y, BACKGROUND_COLOR, window, self)
+        btnViewZagAreaAliada.setImage("images/visualize.png")
+        projecoesScreen.addButton(btnViewZagAreaAliada)
 
         projecoesScreen.setVisible(False)
 
@@ -412,19 +412,19 @@ class GUI:
         movementScrollPanel = ScrollingBackground("movementScrollPanel", screenDivisionRightMargin.size.x, int(screenDivisionRightMargin.size.y), screenDivisionRightMargin.pos.x, screenDivisionRightMargin.pos.y, BACKGROUND_COLOR, window, self, screenDivisionRightMargin.size.y,  screenDivisionRightMargin.pos.y)
         self.movementScreen.addScrollingBackground(movementScrollPanel)
 
-        graficosControleButton = ToggleButton("graficosControleButton", UVFButton.size.x, UVFButton.size.y, movementScrollPanel.pos.x+20, movementScrollPanel.pos.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
-        graficosControleButton.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
-        graficosControleButton.setText("Gráficos de controle", BLACK_LABEL, 32, center=True)
-        movementScrollPanel.addButton(graficosControleButton)
+        tglGraficos = ToggleButton("tglGraficos", btnUVF.size.x, btnUVF.size.y, movementScrollPanel.pos.x+20, movementScrollPanel.pos.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
+        tglGraficos.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
+        tglGraficos.setText("Gráficos de controle", BLACK_LABEL, 32, center=True)
+        movementScrollPanel.addButton(tglGraficos)
 
-        graficosControleScreen = ScrollingBackground("graficosControleScreen", graficosControleButton.size.x, windowSize.y, graficosControleButton.pos.x, graficosControleButton.pos.y+graficosControleButton.size.y+5, BACKGROUND_COLOR, window, self, graficosControleButton.size.x, windowSize.y, border=True)
+        graficosControleScreen = ScrollingBackground("graficosControleScreen", tglGraficos.size.x, windowSize.y, tglGraficos.pos.x, tglGraficos.pos.y+tglGraficos.size.y+5, BACKGROUND_COLOR, window, self, tglGraficos.size.x, windowSize.y, border=True)
         movementScrollPanel.addScrollingBackground(graficosControleScreen)
 
-        robotIDGraficosControleComboBox = ComboBox("robotIDGraficosControleComboBox", robotIDComboBox.size.x, robotIDComboBox.size.y, graficosControleScreen.pos.x+20, graficosControleScreen.pos.y+10, WHITE, window, self, "Robô ID", BACKGROUND_COLOR)
-        graficosControleScreen.addButton(robotIDGraficosControleComboBox)
-        robotIDGraficosControleComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
+        cmbRobotIDGraficosControle = ComboBox("cmbRobotIDGraficosControle", cmbRobotID.size.x, cmbRobotID.size.y, graficosControleScreen.pos.x+20, graficosControleScreen.pos.y+10, WHITE, window, self, "Robô ID", BACKGROUND_COLOR)
+        graficosControleScreen.addButton(cmbRobotIDGraficosControle)
+        cmbRobotIDGraficosControle.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblPosicaoGraficosControle = Label("lblPosicaoGraficosControle", lblPosicao.size.y, robotIDGraficosControleComboBox.pos.x, robotIDGraficosControleComboBox.pos.y+robotIDGraficosControleComboBox.size.y+20, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
+        lblPosicaoGraficosControle = Label("lblPosicaoGraficosControle", lblPosicao.size.y, cmbRobotIDGraficosControle.pos.x, cmbRobotIDGraficosControle.pos.y+cmbRobotIDGraficosControle.size.y+20, BACKGROUND_COLOR, window, self, "Posição", BLACK_LABEL)
         graficosControleScreen.addBlock(lblPosicaoGraficosControle)
 
         boxPosicaoGraficosControle = Block("boxPosicaoGraficosControle", boxPosicao.size.x, boxPosicao.size.y, lblPosicaoGraficosControle.pos.x, lblPosicaoGraficosControle.pos.y+lblPosicaoGraficosControle.size.y, BACKGROUND_COLOR, window, self, border=True)
@@ -458,39 +458,39 @@ class GUI:
 
         graficosControleScreen.setVisible(False)
 
-        controleManualButton = ToggleButton("controleManualButton", graficosControleButton.size.x, graficosControleButton.size.y, graficosControleButton.pos.x, graficosControleButton.pos.y+graficosControleButton.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
-        controleManualButton.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
-        controleManualButton.setText("Controle manual", BLACK_LABEL, 32, center=True)
-        movementScrollPanel.addButton(controleManualButton)
+        tglControleManual = ToggleButton("tglControleManual", tglGraficos.size.x, tglGraficos.size.y, tglGraficos.pos.x, tglGraficos.pos.y+tglGraficos.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
+        tglControleManual.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
+        tglControleManual.setText("Controle manual", BLACK_LABEL, 32, center=True)
+        movementScrollPanel.addButton(tglControleManual)
 
-        controleManualScreen = ScrollingBackground("controleManualScreen", controleManualButton.size.x, windowSize.y*0.8, controleManualButton.pos.x, controleManualButton.pos.y+controleManualButton.size.y+5, BACKGROUND_COLOR, window, self, controleManualButton.size.x, windowSize.y, border=True)
+        controleManualScreen = ScrollingBackground("controleManualScreen", tglControleManual.size.x, windowSize.y*0.8, tglControleManual.pos.x, tglControleManual.pos.y+tglControleManual.size.y+5, BACKGROUND_COLOR, window, self, tglControleManual.size.x, windowSize.y, border=True)
         movementScrollPanel.addScrollingBackground(controleManualScreen)
 
-        robotIDControleManualComboBox = ComboBox("robotIDControleManualComboBox", robotIDGraficosControleComboBox.size.x, robotIDGraficosControleComboBox.size.y, controleManualScreen.pos.x+20, controleManualScreen.pos.y+20, WHITE, window, self, "Robô ID")
-        controleManualScreen.addButton(robotIDControleManualComboBox)
-        robotIDControleManualComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
+        cmbRobotIDControleManual = ComboBox("cmbRobotIDControleManual", cmbRobotIDGraficosControle.size.x, cmbRobotIDGraficosControle.size.y, controleManualScreen.pos.x+20, controleManualScreen.pos.y+20, WHITE, window, self, "Robô ID")
+        controleManualScreen.addButton(cmbRobotIDControleManual)
+        cmbRobotIDControleManual.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblHabilitarJoystick = Label("lblHabilitarJoystick", lblVelocidadeLinearGraficosControle.size.y, robotIDControleManualComboBox.pos.x, robotIDControleManualComboBox.pos.y+robotIDControleManualComboBox.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar joystick")
+        lblHabilitarJoystick = Label("lblHabilitarJoystick", lblVelocidadeLinearGraficosControle.size.y, cmbRobotIDControleManual.pos.x, cmbRobotIDControleManual.pos.y+cmbRobotIDControleManual.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar joystick")
         controleManualScreen.addBlock(lblHabilitarJoystick)
 
-        enableJoystickToggleButton = ToggleButton("enableJoystickToggleButton", virtualJudgeToggleButton.size.x, virtualJudgeToggleButton.size.y, virtualJudgeToggleButton.pos.x, lblHabilitarJoystick.pos.y-12, BACKGROUND_COLOR, window, self)
-        enableJoystickToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        controleManualScreen.addButton(enableJoystickToggleButton)
+        tglEnableJoystick = ToggleButton("tglEnableJoystick", tglVirtualJudge.size.x, tglVirtualJudge.size.y, tglVirtualJudge.pos.x, lblHabilitarJoystick.pos.y-12, BACKGROUND_COLOR, window, self)
+        tglEnableJoystick.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        controleManualScreen.addButton(tglEnableJoystick)
 
-        directionComboBox = ComboBox("directionComboBox", robotIDControleManualComboBox.size.x, robotIDControleManualComboBox.size.y, robotIDControleManualComboBox.pos.x, lblHabilitarJoystick.pos.y+lblHabilitarJoystick.size.y+60, WHITE, window, self, "Para frente")
-        controleManualScreen.addButton(directionComboBox)
-        directionComboBox.addOptions(["Para frente", "Curva direita", "Curva esquerda", "Girar horário", "Girar anti-horário"])
+        cmbDirection = ComboBox("cmbDirection", cmbRobotIDControleManual.size.x, cmbRobotIDControleManual.size.y, cmbRobotIDControleManual.pos.x, lblHabilitarJoystick.pos.y+lblHabilitarJoystick.size.y+60, WHITE, window, self, "Para frente")
+        controleManualScreen.addButton(cmbDirection)
+        cmbDirection.addOptions(["Para frente", "Curva direita", "Curva esquerda", "Girar horário", "Girar anti-horário"])
 
-        enableDirectionToggleButton = ToggleButton("enableDirectionToggleButton", enableJoystickToggleButton.size.x, enableJoystickToggleButton.size.y, enableJoystickToggleButton.pos.x, directionComboBox.pos.y-12, BACKGROUND_COLOR, window, self)
-        enableDirectionToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        controleManualScreen.addButton(enableDirectionToggleButton)
+        tglEnableDirection = ToggleButton("tglEnableDirection", tglEnableJoystick.size.x, tglEnableJoystick.size.y, tglEnableJoystick.pos.x, cmbDirection.pos.y-12, BACKGROUND_COLOR, window, self)
+        tglEnableDirection.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        controleManualScreen.addButton(tglEnableDirection)
 
-        lblHabilitarControleManual = Label("lblHabilitarControleManual", lblHabilitarJoystick.size.y, lblHabilitarJoystick.pos.x, directionComboBox.pos.y+directionComboBox.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar controle manual")
+        lblHabilitarControleManual = Label("lblHabilitarControleManual", lblHabilitarJoystick.size.y, lblHabilitarJoystick.pos.x, cmbDirection.pos.y+cmbDirection.size.y+60, BACKGROUND_COLOR, window, self, "Habilitar controle manual")
         controleManualScreen.addBlock(lblHabilitarControleManual)
 
-        enableControleManualToggleButton = ToggleButton("enableControleManualToggleButton", enableDirectionToggleButton.size.x, enableDirectionToggleButton.size.y, enableDirectionToggleButton.pos.x, lblHabilitarControleManual.pos.y-12, BACKGROUND_COLOR, window, self)
-        enableControleManualToggleButton.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
-        controleManualScreen.addButton(enableControleManualToggleButton)
+        tglEnableControleManual = ToggleButton("tglEnableControleManual", tglEnableDirection.size.x, tglEnableDirection.size.y, tglEnableDirection.pos.x, lblHabilitarControleManual.pos.y-12, BACKGROUND_COLOR, window, self)
+        tglEnableControleManual.setImage("images/toggle_button_on.png", "images/toggle_button_off.png")
+        controleManualScreen.addButton(tglEnableControleManual)
 
         lblVelocidadeLinearControleManual = Block("lblVelocidadeLinearControleManual", controleManualScreen.size.x-20, lblVelocidadeLinearGraficosControle.size.y, controleManualScreen.pos.x+10, lblHabilitarControleManual.pos.y+lblHabilitarControleManual.size.y+60, BACKGROUND_COLOR, window, self)
         lblVelocidadeLinearControleManual.setText("Velocidade linear", center=True)
@@ -499,9 +499,9 @@ class GUI:
         velocidadeLinearBar = Block("velocidadeLinearBar", controleManualScreen.size.x-60, 10, controleManualScreen.pos.x+30, lblVelocidadeLinearControleManual.pos.y+lblVelocidadeLinearControleManual.size.y+5, SLIDER_BAR_COLOR, window, self)
         controleManualScreen.addBlock(velocidadeLinearBar)
 
-        velocidadeLinearSlider = Slider("velocidadeLinearSlider", 20, 10, velocidadeLinearBar.pos.x, velocidadeLinearBar.pos.y+velocidadeLinearBar.size.y/2, BACKGROUND_COLOR, window, self, velocidadeLinearBar)
-        controleManualScreen.addButton(velocidadeLinearSlider)
-        velocidadeLinearSlider.createLabel()
+        sldVelocidadeLinear = Slider("sldVelocidadeLinear", 20, 10, velocidadeLinearBar.pos.x, velocidadeLinearBar.pos.y+velocidadeLinearBar.size.y/2, BACKGROUND_COLOR, window, self, velocidadeLinearBar)
+        controleManualScreen.addButton(sldVelocidadeLinear)
+        sldVelocidadeLinear.createLabel()
 
         lblVelocidadeAngularControleManual = Block("lblVelocidadeAngularControleManual", lblVelocidadeLinearControleManual.size.x, lblVelocidadeLinearControleManual.size.y, lblVelocidadeLinearControleManual.pos.x, velocidadeLinearBar.pos.y+velocidadeLinearBar.size.y+20, BACKGROUND_COLOR, window, self)
         lblVelocidadeAngularControleManual.setText("Velocidade angular", center=True)
@@ -510,9 +510,9 @@ class GUI:
         velocidadeAngularBar = Block("velocidadeAngularBar", velocidadeLinearBar.size.x, velocidadeLinearBar.size.y, controleManualScreen.pos.x+30, lblVelocidadeAngularControleManual.pos.y+lblVelocidadeAngularControleManual.size.y+5, SLIDER_BAR_COLOR, window, self)
         controleManualScreen.addBlock(velocidadeAngularBar)
 
-        velocidadeAngularSlider = Slider("velocidadeAngularSlider", velocidadeLinearSlider.size.x, velocidadeLinearSlider.size.y, velocidadeAngularBar.pos.x, velocidadeAngularBar.pos.y+velocidadeAngularBar.size.y/2, BACKGROUND_COLOR, window, self, velocidadeAngularBar)
-        controleManualScreen.addButton(velocidadeAngularSlider)
-        velocidadeAngularSlider.createLabel()
+        sldVelocidadeAngular = Slider("sldVelocidadeAngular", sldVelocidadeLinear.size.x, sldVelocidadeLinear.size.y, velocidadeAngularBar.pos.x, velocidadeAngularBar.pos.y+velocidadeAngularBar.size.y/2, BACKGROUND_COLOR, window, self, velocidadeAngularBar)
+        controleManualScreen.addButton(sldVelocidadeAngular)
+        sldVelocidadeAngular.createLabel()
 
         lblAceleracaoControleManual = Block("lblAceleracaoControleManual", lblVelocidadeAngularControleManual.size.x, lblVelocidadeAngularControleManual.size.y, lblVelocidadeAngularControleManual.pos.x, velocidadeAngularBar.pos.y+velocidadeAngularBar.size.y+20, BACKGROUND_COLOR, window, self)
         lblAceleracaoControleManual.setText("Aceleração", center=True)
@@ -521,96 +521,96 @@ class GUI:
         aceleracaoBar = Block("aceleracaoBar", velocidadeLinearBar.size.x, velocidadeLinearBar.size.y, controleManualScreen.pos.x+30, lblAceleracaoControleManual.pos.y+lblAceleracaoControleManual.size.y+5, SLIDER_BAR_COLOR, window, self)
         controleManualScreen.addBlock(aceleracaoBar)
 
-        aceleracaoSlider = Slider("aceleracaoSlider", velocidadeLinearSlider.size.x, velocidadeLinearSlider.size.y, aceleracaoBar.pos.x, aceleracaoBar.pos.y+aceleracaoBar.size.y/2, BACKGROUND_COLOR, window, self, aceleracaoBar)
-        controleManualScreen.addButton(aceleracaoSlider)
-        aceleracaoSlider.createLabel()
+        sldAceleracao = Slider("sldAceleracao", sldVelocidadeLinear.size.x, sldVelocidadeLinear.size.y, aceleracaoBar.pos.x, aceleracaoBar.pos.y+aceleracaoBar.size.y/2, BACKGROUND_COLOR, window, self, aceleracaoBar)
+        controleManualScreen.addButton(sldAceleracao)
+        sldAceleracao.createLabel()
 
         controleManualScreen.setVisible(False)
 
-        controleUVFButton = ToggleButton("controleUVFButton", controleManualButton.size.x, controleManualButton.size.y, controleManualButton.pos.x, controleManualButton.pos.y+controleManualButton.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
-        controleUVFButton.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
-        controleUVFButton.setText("Controle UVF", BLACK_LABEL, 32, center=True)
-        movementScrollPanel.addButton(controleUVFButton)
+        tglControleUVF = ToggleButton("tglControleUVF", tglControleManual.size.x, tglControleManual.size.y, tglControleManual.pos.x, tglControleManual.pos.y+tglControleManual.size.y+30, BUTTON_HELD_SCREEN_COLOR, window, self)
+        tglControleUVF.setImage("images/button_screen_held.png", "images/button_screen_expanded.png", center=True)
+        tglControleUVF.setText("Controle UVF", BLACK_LABEL, 32, center=True)
+        movementScrollPanel.addButton(tglControleUVF)
 
-        controleUVFScreen = ScrollingBackground("controleUVFScreen", controleUVFButton.size.x, windowSize.y*0.8, controleUVFButton.pos.x, controleUVFButton.pos.y+controleUVFButton.size.y+5, BACKGROUND_COLOR, window, self, controleUVFButton.size.x, windowSize.y, border=True)
+        controleUVFScreen = ScrollingBackground("controleUVFScreen", tglControleUVF.size.x, windowSize.y*0.8, tglControleUVF.pos.x, tglControleUVF.pos.y+tglControleUVF.size.y+5, BACKGROUND_COLOR, window, self, tglControleUVF.size.x, windowSize.y, border=True)
         movementScrollPanel.addScrollingBackground(controleUVFScreen)
 
-        robotIDControleUVFComboBox = ComboBox("robotIDControleUVFComboBox", robotIDControleManualComboBox.size.x, robotIDControleManualComboBox.size.y, robotIDControleManualComboBox.pos.x, controleUVFScreen.pos.y+30, WHITE, window, self, "Robô ID")
-        controleUVFScreen.addButton(robotIDControleUVFComboBox)
-        robotIDControleUVFComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
+        cmbRobotIDControleUVF = ComboBox("cmbRobotIDControleUVF", cmbRobotIDControleManual.size.x, cmbRobotIDControleManual.size.y, cmbRobotIDControleManual.pos.x, controleUVFScreen.pos.y+30, WHITE, window, self, "Robô ID")
+        controleUVFScreen.addButton(cmbRobotIDControleUVF)
+        cmbRobotIDControleUVF.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
-        lblVisualizarCampoControleUVF = Label("lblVisualizarCampoControleUVF", lblVisualizarCampoUVF.size.y, robotIDControleUVFComboBox.pos.x, robotIDControleUVFComboBox.pos.y+robotIDControleUVFComboBox.size.y+30, BACKGROUND_COLOR, window, self, "Visualizar campo")
+        lblVisualizarCampoControleUVF = Label("lblVisualizarCampoControleUVF", lblVisualizarCampoUVF.size.y, cmbRobotIDControleUVF.pos.x, cmbRobotIDControleUVF.pos.y+cmbRobotIDControleUVF.size.y+30, BACKGROUND_COLOR, window, self, "Visualizar campo")
         controleUVFScreen.addBlock(lblVisualizarCampoControleUVF)
 
         lblHabilitaVisualizacaoCamposControleUVF = Label("lblHabilitaVisualizacaoCamposControleUVF", lblHabilitaVisualizacaoCampos.size.y, lblVisualizarCampoControleUVF.pos.x+30, lblVisualizarCampoControleUVF.pos.y+lblVisualizarCampoControleUVF.size.y-6, BACKGROUND_COLOR, window, self, "Habilita a visualização do campo UVF do robô", fontSize=21)
         controleUVFScreen.addBlock(lblHabilitaVisualizacaoCamposControleUVF)
 
-        viewCampoControleUVF = Button("viewCampoControleUVF", viewCampoUVF.size.x, viewCampoUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x+lblHabilitaVisualizacaoCamposControleUVF.size.x+100, lblVisualizarCampoControleUVF.pos.y+10, BACKGROUND_COLOR, window, self)
-        viewCampoControleUVF.setImage("images/visualize.png")
-        controleUVFScreen.addButton(viewCampoControleUVF)
+        btnViewCampoControleUVF = Button("btnViewCampoControleUVF", btnViewCampoUVF.size.x, btnViewCampoUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x+lblHabilitaVisualizacaoCamposControleUVF.size.x+100, lblVisualizarCampoControleUVF.pos.y+10, BACKGROUND_COLOR, window, self)
+        btnViewCampoControleUVF.setImage("images/visualize.png")
+        controleUVFScreen.addButton(btnViewCampoControleUVF)
 
         lblKw = Label("lblKw", lblVisualizarCampoControleUVF.size.y, lblHabilitaVisualizacaoCamposControleUVF.pos.x-5, lblHabilitaVisualizacaoCamposControleUVF.pos.y+lblHabilitaVisualizacaoCamposControleUVF.size.y+50, BACKGROUND_COLOR, window, self, "kw")
         controleUVFScreen.addBlock(lblKw)
 
-        spinnerKw = Spinner("spinnerKw", spinnerRaio.size.x, spinnerRaio.size.y, lblKw.pos.x, lblKw.pos.y+lblKw.size.y-5, WHITE, window, self)
-        spinnerKw.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerKw)
+        spnKw = Spinner("spnKw", spnRaio.size.x, spnRaio.size.y, lblKw.pos.x, lblKw.pos.y+lblKw.size.y-5, WHITE, window, self)
+        spnKw.setText("10", center=True)
+        controleUVFScreen.addButton(spnKw)
 
-        lblKp = Label("lblKp", lblKw.size.y, spinnerKw.increaseButton.pos.x+spinnerKw.increaseButton.size.x*3, lblKw.pos.y, BACKGROUND_COLOR, window, self, "kp")
+        lblKp = Label("lblKp", lblKw.size.y, spnKw.increaseButton.pos.x+spnKw.increaseButton.size.x*3, lblKw.pos.y, BACKGROUND_COLOR, window, self, "kp")
         controleUVFScreen.addBlock(lblKp)
 
-        spinnerKp = Spinner("spinnerKp", spinnerKw.size.x, spinnerKw.size.y, lblKp.pos.x, lblKp.pos.y+lblKp.size.y-5, WHITE, window, self)
-        spinnerKp.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerKp)
+        spnKp = Spinner("spnKp", spnKw.size.x, spnKw.size.y, lblKp.pos.x, lblKp.pos.y+lblKp.size.y-5, WHITE, window, self)
+        spnKp.setText("10", center=True)
+        controleUVFScreen.addButton(spnKp)
 
-        lblL = Label("lblL", lblKw.size.y, lblKw.pos.x, spinnerKw.pos.y+spinnerKw.size.y*1.5, BACKGROUND_COLOR, window, self, "L")
+        lblL = Label("lblL", lblKw.size.y, lblKw.pos.x, spnKw.pos.y+spnKw.size.y*1.5, BACKGROUND_COLOR, window, self, "L")
         controleUVFScreen.addBlock(lblL)
 
-        spinnerL = Spinner("spinnerL", spinnerKw.size.x, spinnerKw.size.y, spinnerKw.pos.x, lblL.pos.y+lblL.size.y-5, WHITE, window, self)
-        spinnerL.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerL)
+        spnL = Spinner("spnL", spnKw.size.x, spnKw.size.y, spnKw.pos.x, lblL.pos.y+lblL.size.y-5, WHITE, window, self)
+        spnL.setText("10", center=True)
+        controleUVFScreen.addButton(spnL)
 
         lblVmax = Label("lblVmax", lblKp.size.y, lblKp.pos.x, lblL.pos.y, BACKGROUND_COLOR, window, self, "vmax")
         controleUVFScreen.addBlock(lblVmax)
 
-        spinnerVmax = Spinner("spinnerVmax", spinnerKp.size.x, spinnerKp.size.y, spinnerKp.pos.x, spinnerL.decreaseButton.pos.y, WHITE, window, self)
-        spinnerVmax.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerVmax)
+        spnVmax = Spinner("spnVmax", spnKp.size.x, spnKp.size.y, spnKp.pos.x, spnL.decreaseButton.pos.y, WHITE, window, self)
+        spnVmax.setText("10", center=True)
+        controleUVFScreen.addButton(spnVmax)
 
-        lblMu = Label("lblMu", lblL.size.y, lblL.pos.x, spinnerL.pos.y+spinnerL.size.y*1.5, BACKGROUND_COLOR, window, self, "mu")
+        lblMu = Label("lblMu", lblL.size.y, lblL.pos.x, spnL.pos.y+spnL.size.y*1.5, BACKGROUND_COLOR, window, self, "mu")
         controleUVFScreen.addBlock(lblMu)
 
-        spinnerMu = Spinner("spinnerMu", spinnerL.size.x, spinnerL.size.y, spinnerL.pos.x, lblMu.pos.y+lblMu.size.y-5, WHITE, window, self)
-        spinnerMu.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerMu)
+        spnMu = Spinner("spnMu", spnL.size.x, spnL.size.y, spnL.pos.x, lblMu.pos.y+lblMu.size.y-5, WHITE, window, self)
+        spnMu.setText("10", center=True)
+        controleUVFScreen.addButton(spnMu)
         
         lblVref = Label("lblVref", lblVmax.size.y, lblVmax.pos.x, lblMu.pos.y, BACKGROUND_COLOR, window, self, "vref")
         controleUVFScreen.addBlock(lblVref)
 
-        spinnerVref = Spinner("spinnerVref", spinnerVmax.size.x, spinnerVmax.size.y, spinnerVmax.pos.x, spinnerMu.decreaseButton.pos.y, WHITE, window, self)
-        spinnerVref.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerVref)
+        spnVref = Spinner("spnVref", spnVmax.size.x, spnVmax.size.y, spnVmax.pos.x, spnMu.decreaseButton.pos.y, WHITE, window, self)
+        spnVref.setText("10", center=True)
+        controleUVFScreen.addButton(spnVref)
 
-        lblR = Label("lblR", lblL.size.y, lblMu.pos.x, spinnerMu.pos.y+spinnerMu.size.y*1.5, BACKGROUND_COLOR, window, self, "r")
+        lblR = Label("lblR", lblL.size.y, lblMu.pos.x, spnMu.pos.y+spnMu.size.y*1.5, BACKGROUND_COLOR, window, self, "r")
         controleUVFScreen.addBlock(lblR)
 
-        spinnerR = Spinner("spinnerR", spinnerMu.size.x, spinnerMu.size.y, spinnerMu.pos.x, lblR.pos.y+lblR.size.y-5, WHITE, window, self)
-        spinnerR.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerR)
+        spnR = Spinner("spnR", spnMu.size.x, spnMu.size.y, spnMu.pos.x, lblR.pos.y+lblR.size.y-5, WHITE, window, self)
+        spnR.setText("10", center=True)
+        controleUVFScreen.addButton(spnR)
 
         lblMaxAngError = Label("lblMaxAngError", lblVref.size.y, lblVref.pos.x, lblR.pos.y, BACKGROUND_COLOR, window, self, "maxangerror")
         controleUVFScreen.addBlock(lblMaxAngError)
 
-        spinnerMaxAngError = Spinner("spinnerMaxAngError", spinnerVref.size.x, spinnerVref.size.y, spinnerVref.pos.x, spinnerR.decreaseButton.pos.y, WHITE, window, self)
-        spinnerMaxAngError.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerMaxAngError)
+        spnMaxAngError = Spinner("spnMaxAngError", spnVref.size.x, spnVref.size.y, spnVref.pos.x, spnR.decreaseButton.pos.y, WHITE, window, self)
+        spnMaxAngError.setText("10", center=True)
+        controleUVFScreen.addButton(spnMaxAngError)
 
-        lblTau = Label("lblTau", lblR.size.y, lblR.pos.x, spinnerR.pos.y+spinnerR.size.y*1.5, BACKGROUND_COLOR, window, self, "tau")
+        lblTau = Label("lblTau", lblR.size.y, lblR.pos.x, spnR.pos.y+spnR.size.y*1.5, BACKGROUND_COLOR, window, self, "tau")
         controleUVFScreen.addBlock(lblTau)
 
-        spinnerTau = Spinner("spinnerTau", spinnerR.size.x, spinnerR.size.y, spinnerR.pos.x, lblTau.pos.y+lblTau.size.y-5, WHITE, window, self)
-        spinnerTau.setText("10", center=True)
-        controleUVFScreen.addButton(spinnerTau)
+        spnTau = Spinner("spnTau", spnR.size.x, spnR.size.y, spnR.pos.x, lblTau.pos.y+lblTau.size.y-5, WHITE, window, self)
+        spnTau.setText("10", center=True)
+        controleUVFScreen.addButton(spnTau)
 
         controleUVFScreen.setVisible(False)
 
@@ -664,7 +664,7 @@ class GUI:
         boxWireless = Block("boxWireless", boxErrosWarnings.size.x-16, boxErrosWarnings.size.y-35, lblWireless.pos.x, lblWireless.pos.y+lblWireless.size.y, BACKGROUND_COLOR, window, self, border=True)
         self.communicationScreen.addBlock(boxWireless)
 
-        robotIDCommunicationComboBox = ComboBox("robotIDCommunicationComboBox", robotIDComboBox.size.x, robotIDComboBox.size.y, boxWireless.pos.x+20, boxWireless.pos.y+20, WHITE, window, self, "Robô ID")
+        robotIDCommunicationComboBox = ComboBox("robotIDCommunicationComboBox", cmbRobotID.size.x, cmbRobotID.size.y, boxWireless.pos.x+20, boxWireless.pos.y+20, WHITE, window, self, "Robô ID")
         self.communicationScreen.addButton(robotIDCommunicationComboBox)
         robotIDCommunicationComboBox.addOptions(["Robô 00", "Robô 01", "Robô 02"])
 
@@ -815,95 +815,95 @@ class GUI:
 
        # Instance button methods 
         def changeToNavigationScreen(self):
-            """Instance method of navegacaoButton to make the button change the screen to the navigation screen"""
+            """Instance method of btnNavegacao to make the button change the screen to the navigation screen"""
             #window = pg.display.set_mode((int(windowSize.x), int(windowSize.y))) 
             # perhaps is better to fill the screen towards doing this
             self.window.fill(BACKGROUND_COLOR)
             window.fill(BACKGROUND_COLOR)
             if self.gui.activeScreen != self.gui.navigationScreen:
                 self.gui.activeScreen = self.gui.navigationScreen
-            self.gui.activeScreen.menuBar.buttons[navegacaoButton.name].color = BORDER_COLOR
-            self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BACKGROUND_COLOR
-            self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnNavegacao.name].color = BORDER_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnMovimentacao.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnComunicacao.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.draw()
-        self.navigationScreen.menuBar.buttons[navegacaoButton.name].actionAssign(changeToNavigationScreen)
+        self.navigationScreen.menuBar.buttons[btnNavegacao.name].actionAssign(changeToNavigationScreen)
         
 
         def changeToMovementScreen(self):
-            """Instance method of movimentacaoButton to make the button change the screen to the movement screen"""
+            """Instance method of btnMovimentacao to make the button change the screen to the movement screen"""
             #window = pg.display.set_mode((int(windowSize.x), int(windowSize.y))) 
             # perhaps is better to fill the screen towards doing this
             self.window.fill(BACKGROUND_COLOR)
             window.fill(BACKGROUND_COLOR)
             if self.gui.activeScreen != self.gui.movementScreen:
                 self.gui.activeScreen = self.gui.movementScreen
-            self.gui.activeScreen.menuBar.buttons[navegacaoButton.name].color = BACKGROUND_COLOR
-            self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BORDER_COLOR
-            self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnNavegacao.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnMovimentacao.name].color = BORDER_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnComunicacao.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.draw()
-        self.movementScreen.menuBar.buttons[movimentacaoButton.name].actionAssign(changeToMovementScreen)
+        self.movementScreen.menuBar.buttons[btnMovimentacao.name].actionAssign(changeToMovementScreen)
         
 
         def changeToCommunicationScreen(self):
-            """Instance method of comunicacaoButton to make the button change the screen to the communication screen"""
+            """Instance method of btnComunicacao to make the button change the screen to the communication screen"""
             #window = pg.display.set_mode((int(windowSize.x), int(windowSize.y))) 
             # perhaps is better to fill the screen towards doing this
             self.window.fill(BACKGROUND_COLOR)
             window.fill(BACKGROUND_COLOR)
             if self.gui.activeScreen != self.gui.communicationScreen:
                 self.gui.activeScreen = self.gui.communicationScreen
-            self.gui.activeScreen.menuBar.buttons[navegacaoButton.name].color = BACKGROUND_COLOR
-            self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BACKGROUND_COLOR
-            self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BORDER_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnNavegacao.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnMovimentacao.name].color = BACKGROUND_COLOR
+            self.gui.activeScreen.menuBar.buttons[btnComunicacao.name].color = BORDER_COLOR
             self.gui.activeScreen.draw()
-        self.communicationScreen.menuBar.buttons[comunicacaoButton.name].actionAssign(changeToCommunicationScreen)
+        self.communicationScreen.menuBar.buttons[btnComunicacao.name].actionAssign(changeToCommunicationScreen)
 
 
         def closeWindow(self):
-            """Instance method of closeButton to make the application stop running and close the window"""
+            """Instance method of btnClose to make the application stop running and close the window"""
             if self.gui.unbrain_loop is not None:
                 self.gui.unbrain_loop.handle_SIGINT(None, None, shut_down=True)
                 self.gui.unbrain_loop = None
                 print("UnBrain stopped")
             self.gui.running = False
-        self.navigationScreen.menuBar.buttons[closeButton.name].actionAssign(closeWindow)
+        self.navigationScreen.menuBar.buttons[btnClose.name].actionAssign(closeWindow)
 
 
         def minimizeWindow(self):
-            """Instance method of minimizeButton to minimize the window of the application"""
+            """Instance method of btnMinimize to minimize the window of the application"""
             pg.display.iconify()
-        self.navigationScreen.menuBar.buttons[minimizeButton.name].actionAssign(minimizeWindow)
+        self.navigationScreen.menuBar.buttons[btnMinimize.name].actionAssign(minimizeWindow)
 
 
         def maximizeWindow(self):
-            """Instance method of maximizeButton to minimize the window of the application"""
+            """Instance method of btnMaximize to minimize the window of the application"""
             pg.display.toggle_fullscreen()
-        self.navigationScreen.menuBar.buttons[maximizeButton.name].actionAssign(maximizeWindow)
+        self.navigationScreen.menuBar.buttons[btnMaximize.name].actionAssign(maximizeWindow)
 
 
         def showOptionsColorComboBox(self):
-            """Instance method to show the color options in the chooseColorComboBox"""
+            """Instance method to show the color options in the cmbChooseColor"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].actionAssign(showOptionsColorComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseColor.name].actionAssign(showOptionsColorComboBox)
         
 
         def chooseOptionColorComboBox(self):
-            """Instance method to choose the option in chooseColorComboBox"""
-            if self.getText() == "Azul" and self.screen.buttons[inversaoToggleButton.name].isOn():
-                self.screen.buttons[inversaoToggleButton.name].action()
-            elif self.getText() == "Amarelo" and not self.screen.buttons[inversaoToggleButton.name].isOn():
-                self.screen.buttons[inversaoToggleButton.name].action()
-            self.screen.buttons[chooseColorComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[chooseColorComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].options:
+            """Instance method to choose the option in cmbChooseColor"""
+            if self.getText() == "Azul" and self.screen.buttons[tglInversao.name].isOn():
+                self.screen.buttons[tglInversao.name].action()
+            elif self.getText() == "Amarelo" and not self.screen.buttons[tglInversao.name].isOn():
+                self.screen.buttons[tglInversao.name].action()
+            self.screen.buttons[cmbChooseColor.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbChooseColor.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseColor.name].options:
             button.actionAssign(chooseOptionColorComboBox)
 
 
         def changeSide(self):
-            """Instance method to change the state of inversaoToggleButton"""
+            """Instance method to change the state of tglInversao"""
             self.changeState()
             self.imgs[self.isOn()]
             if self.isOn():    
@@ -916,75 +916,75 @@ class GUI:
                 self.gui.navigationScreen.blocks[lblLadoEsquerdo.name].setText("Lado aliado", center=True)
                 self.gui.navigationScreen.blocks[lblLadoDireito.name].setText("Lado inimigo", center=True)
                 self.gui.navigationScreen.blocks[arrow.name].setImage("images/arrow.png")
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].actionAssign(changeSide)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglInversao.name].actionAssign(changeSide)
 
 
         def showOptionsTypeEntityComboBox(self):
-            """Instance method to show the type options in chooseEntityTypeComboBox"""
+            """Instance method to show the type options in cmbChooseEntityType"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].actionAssign(showOptionsTypeEntityComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseEntityType.name].actionAssign(showOptionsTypeEntityComboBox)
 
 
         def chooseOptionTypeEntityComboBox(self):
-            """Instance method to choose the option in the chooseEntityTypeComboBox"""
-            self.screen.buttons[chooseEntityTypeComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[chooseEntityTypeComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].options:
+            """Instance method to choose the option in the cmbChooseEntityType"""
+            self.screen.buttons[cmbChooseEntityType.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbChooseEntityType.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseEntityType.name].options:
             button.actionAssign(chooseOptionTypeEntityComboBox)
 
 
         def showOptionsNumRobotsComboBox(self):
-            """Instance method to show the num robots options in chooseNumRobotsComboBox"""
+            """Instance method to show the num robots options in cmbChooseNumRobots"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].actionAssign(showOptionsNumRobotsComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseNumRobots.name].actionAssign(showOptionsNumRobotsComboBox)
 
 
         def chooseOptionNumRobotsComboBox(self):
-            """Instance method to choose the option in the chooseNumRobotsComboBox"""
-            self.screen.buttons[chooseNumRobotsComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[chooseNumRobotsComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].options:
+            """Instance method to choose the option in the cmbChooseNumRobots"""
+            self.screen.buttons[cmbChooseNumRobots.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbChooseNumRobots.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseNumRobots.name].options:
             button.actionAssign(chooseOptionNumRobotsComboBox)
 
 
-        def showOptionsRobotIDComboBox(self):
-            """Instance method to show the type options in robotIDComboBox"""
+        def showOptionscmbRobotID(self):
+            """Instance method to show the type options in cmbRobotID"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbRobotID.name].actionAssign(showOptionscmbRobotID)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[cmbRobotIDUVF.name].actionAssign(showOptionscmbRobotID)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[cmbRobotIDProjecoes.name].actionAssign(showOptionscmbRobotID)
 
 
-        def chooseOptionRobotIDComboBox(self):
-            """Instance method to choose the option in the robotIDComboBox"""
-            self.screen.buttons[robotIDComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDComboBox)
+        def chooseOptioncmbRobotID(self):
+            """Instance method to choose the option in the cmbRobotID"""
+            self.screen.buttons[cmbRobotID.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotID.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbRobotID.name].options:
+            button.actionAssign(chooseOptioncmbRobotID)
 
 
         def changeManualVirtualPos(self):
-            """Instance method to change the state of virtualJudgeToggleButton"""
+            """Instance method to change the state of tglVirtualJudge"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[virtualJudgeToggleButton.name].actionAssign(changeManualVirtualPos)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglVirtualJudge.name].actionAssign(changeManualVirtualPos)
 
-        def showOptionsPositioningComboBox(self):
-            """Instance method to show the positioning options in positioningComboBox"""
+        def showOptionscmbPositioning(self):
+            """Instance method to show the positioning options in cmbPositioning"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[positioningComboBox.name].actionAssign(showOptionsPositioningComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbPositioning.name].actionAssign(showOptionscmbPositioning)
 
 
         def expandUVFScreen(self):
@@ -997,54 +997,54 @@ class GUI:
             self.changeState()
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[projecoesScreen.name].pos.y += resizeRange
-            self.screen.buttons[projecoesButton.name].pos.y += resizeRange
+            self.screen.buttons[tglProjecoes.name].pos.y += resizeRange
             for block in self.screen.scrollingBackgrounds[projecoesScreen.name].blocks.values():
                 block.pos.y += resizeRange
             for button in self.screen.scrollingBackgrounds[projecoesScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[UVFScreen.name].setVisible(visible)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[UVFButton.name].actionAssign(expandUVFScreen)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[btnUVF.name].actionAssign(expandUVFScreen)
 
 
-        def chooseOptionRobotIDUVFComboBox(self):
-            """Instance method to choose the option in the robotIDUVFComboBox"""
-            self.screen.buttons[robotIDUVFComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDUVFComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDUVFComboBox)
+        def chooseOptioncmbRobotIDUVF(self):
+            """Instance method to choose the option in the cmbRobotIDUVF"""
+            self.screen.buttons[cmbRobotIDUVF.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotIDUVF.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[cmbRobotIDUVF.name].options:
+            button.actionAssign(chooseOptioncmbRobotIDUVF)
 
 
         def showFieldComboBox(self):
-            """Instance method to show the field options in selectFieldComboBox"""
+            """Instance method to show the field options in cmbSelectField"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].actionAssign(showFieldComboBox)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].actionAssign(showFieldComboBox)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].actionAssign(showFieldComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[cmbSelectField.name].actionAssign(showFieldComboBox)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[cmbRobotIDGraficosControle.name].actionAssign(showFieldComboBox)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[cmbRobotIDControleManual.name].actionAssign(showFieldComboBox)
 
 
         def chooseFieldComboBox(self):
-            """Instance method to choose the option in the selectFieldComboBox"""
-            self.screen.buttons[selectFieldComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[selectFieldComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].options:
+            """Instance method to choose the option in the cmbSelectField"""
+            self.screen.buttons[cmbSelectField.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbSelectField.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[cmbSelectField.name].options:
             button.actionAssign(chooseFieldComboBox)
 
 
         def changePontoFinal(self):
-            """Instance method to change the state of pontoFinalSelecToggleButton"""
+            """Instance method to change the state of tglPontoFinalSelec"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[pontoFinalSelecToggleButton.name].actionAssign(changePontoFinal)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[tglPontoFinalSelec.name].actionAssign(changePontoFinal)
 
 
         def changeViewAllFields(self):
-            """Instance method to change the state of visualizarTodosCamposToggleButton"""
+            """Instance method to change the state of tglVisualizarTodosCampos"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[visualizarTodosCamposToggleButton.name].actionAssign(changeViewAllFields)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[tglVisualizarTodosCampos.name].actionAssign(changeViewAllFields)
 
 
         def expandprojecoesScreen(self):
@@ -1057,15 +1057,15 @@ class GUI:
             self.changeState()
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[projecoesScreen.name].setVisible(visible)
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[projecoesButton.name].actionAssign(expandprojecoesScreen)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglProjecoes.name].actionAssign(expandprojecoesScreen)
 
 
-        def chooseOptionRobotIDProjecoesComboBox(self):
-            """Instance method to choose the option in the robotIDProjecoesComboBox"""
-            self.screen.buttons[robotIDProjecoesComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDProjecoesComboBox.name].setOptionsVisibility(False)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDProjecoesComboBox)
+        def cmbRhooseOptionRobotIDProjecoes(self):
+            """Instance method to choose the option in the cmbRobotIDProjecoes"""
+            self.screen.buttons[cmbRobotIDProjecoes.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotIDProjecoes.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[cmbRobotIDProjecoes.name].options:
+            button.actionAssign(cmbRhooseOptionRobotIDProjecoes)
 
 
         def expandGraficosControleScreen(self):
@@ -1078,26 +1078,26 @@ class GUI:
             self.changeState()
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[controleManualScreen.name].pos.y += resizeRange
-            self.screen.buttons[controleManualButton.name].pos.y += resizeRange
+            self.screen.buttons[tglControleManual.name].pos.y += resizeRange
             for block in self.screen.scrollingBackgrounds[controleManualScreen.name].blocks.values():
                 block.pos.y += resizeRange
             for button in self.screen.scrollingBackgrounds[controleManualScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[controleUVFScreen.name].pos.y += resizeRange
-            self.screen.buttons[controleUVFButton.name].pos.y += resizeRange
+            self.screen.buttons[tglControleUVF.name].pos.y += resizeRange
             for block in self.screen.scrollingBackgrounds[controleUVFScreen.name].blocks.values():
                 block.pos.y += resizeRange
             for button in self.screen.scrollingBackgrounds[controleUVFScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[graficosControleScreen.name].setVisible(visible)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[graficosControleButton.name].actionAssign(expandGraficosControleScreen)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[tglGraficos.name].actionAssign(expandGraficosControleScreen)
 
-        def chooseOptionRobotIDGraficosControleComboBox(self):
-            """Instance method to choose the option in the robotIDGraficosControleComboBox"""
-            self.screen.buttons[robotIDGraficosControleComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDGraficosControleComboBox.name].setOptionsVisibility(False)
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDGraficosControleComboBox)
+        def cmbRhooseOptionRobotIDGraficosControle(self):
+            """Instance method to choose the option in the cmbRobotIDGraficosControle"""
+            self.screen.buttons[cmbRobotIDGraficosControle.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotIDGraficosControle.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[cmbRobotIDGraficosControle.name].options:
+            button.actionAssign(cmbRhooseOptionRobotIDGraficosControle)
 
 
         def expandControleManualScreen(self):
@@ -1110,57 +1110,57 @@ class GUI:
             self.changeState()
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[controleUVFScreen.name].pos.y += resizeRange
-            self.screen.buttons[controleUVFButton.name].pos.y += resizeRange
+            self.screen.buttons[tglControleUVF.name].pos.y += resizeRange
             for block in self.screen.scrollingBackgrounds[controleUVFScreen.name].blocks.values():
                 block.pos.y += resizeRange
             for button in self.screen.scrollingBackgrounds[controleUVFScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[controleManualScreen.name].setVisible(visible)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleManualButton.name].actionAssign(expandControleManualScreen)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[tglControleManual.name].actionAssign(expandControleManualScreen)
 
 
-        def chooseOptionRobotIDControleManualComboBox(self):
-            """Instance method to choose the option in the robotIDControleManualComboBox"""
-            self.screen.buttons[robotIDControleManualComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDControleManualComboBox.name].setOptionsVisibility(False)
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDControleManualComboBox)
+        def cmbRhooseOptionRobotIDControleManual(self):
+            """Instance method to choose the option in the cmbRobotIDControleManual"""
+            self.screen.buttons[cmbRobotIDControleManual.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotIDControleManual.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[cmbRobotIDControleManual.name].options:
+            button.actionAssign(cmbRhooseOptionRobotIDControleManual)
 
 
         def changeEnableJoystick(self):
-            """Instance method to change the state of enableJoystickToggleButton"""
+            """Instance method to change the state of tglEnableJoystick"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableJoystickToggleButton.name].actionAssign(changeEnableJoystick)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[tglEnableJoystick.name].actionAssign(changeEnableJoystick)
 
         def changeEnableDirection(self):
-            """Instance method to change the state of enableDirectionToggleButton"""
+            """Instance method to change the state of tglEnableDirection"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableDirectionToggleButton.name].actionAssign(changeEnableDirection)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[tglEnableDirection.name].actionAssign(changeEnableDirection)
 
         def changeEnableManualControl(self):
-            """Instance method to change the state of enableControleManualToggleButton"""
+            """Instance method to change the state of tglEnableControleManual"""
             self.changeState()
             self.imgs[self.isOn()]
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableControleManualToggleButton.name].actionAssign(changeEnableManualControl)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[tglEnableControleManual.name].actionAssign(changeEnableManualControl)
 
 
-        def showOptionsDirectionComboBox(self):
-            """Instance method to show the positioning options in directionComboBox"""
+        def cmbDhowOptionsDirection(self):
+            """Instance method to show the positioning options in cmbDirection"""
             if (self.getOptionsVisibility()):
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].actionAssign(showOptionsDirectionComboBox)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[cmbDirection.name].actionAssign(cmbDhowOptionsDirection)
 
 
-        def chooseOptionDirectionComboBox(self):
-            """Instance method to choose the option in the directionComboBox"""
-            self.screen.buttons[directionComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[directionComboBox.name].setOptionsVisibility(False)
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].options:
-            button.actionAssign(chooseOptionDirectionComboBox)
+        def cmbDhooseOptionDirection(self):
+            """Instance method to choose the option in the cmbDirection"""
+            self.screen.buttons[cmbDirection.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbDirection.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[cmbDirection.name].options:
+            button.actionAssign(cmbDhooseOptionDirection)
 
 
         def expandControleUVFScreen(self):
@@ -1174,31 +1174,31 @@ class GUI:
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[controleUVFScreen.name].setVisible(visible)
 
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleUVFButton.name].actionAssign(expandControleUVFScreen)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[tglControleUVF.name].actionAssign(expandControleUVFScreen)
 
 
         def slide(self):
             """Instance method to slide a Slider object"""
             self.setActive(True)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeLinearSlider.name].actionAssign(slide)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeAngularSlider.name].actionAssign(slide)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[aceleracaoSlider.name].actionAssign(slide)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[sldVelocidadeLinear.name].actionAssign(slide)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[sldVelocidadeAngular.name].actionAssign(slide)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[sldAceleracao.name].actionAssign(slide)
 
 
-        def chooseOptionRobotIDControleUVFComboBox(self):
-            """Instance method to choose the option in the robotIDControleUVFComboBox"""
-            self.screen.buttons[robotIDControleUVFComboBox.name].setText(self.getText(), center=True)
-            self.screen.buttons[robotIDControleUVFComboBox.name].setOptionsVisibility(False)
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDControleUVFComboBox)
+        def cmbRhooseOptionRobotIDControleUVF(self):
+            """Instance method to choose the option in the cmbRobotIDControleUVF"""
+            self.screen.buttons[cmbRobotIDControleUVF.name].setText(self.getText(), center=True)
+            self.screen.buttons[cmbRobotIDControleUVF.name].setOptionsVisibility(False)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[cmbRobotIDControleUVF.name].actionAssign(showOptionscmbRobotID)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[cmbRobotIDControleUVF.name].options:
+            button.actionAssign(cmbRhooseOptionRobotIDControleUVF)
 
 
         def chooseOptionRobotIDCommunicationComboBox(self):
             """Instance method to choose the option in the robotIDCommunicationComboBox"""
             self.screen.buttons[robotIDCommunicationComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDCommunicationComboBox.name].setOptionsVisibility(False)
-        self.communicationScreen.buttons[robotIDCommunicationComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        self.communicationScreen.buttons[robotIDCommunicationComboBox.name].actionAssign(showOptionscmbRobotID)
         for button in self.communicationScreen.buttons[robotIDCommunicationComboBox.name].options:
             button.actionAssign(chooseOptionRobotIDCommunicationComboBox)
 
@@ -1210,13 +1210,13 @@ class GUI:
 
         def play(self):
             if self.gui.unbrain_loop is None:
-                teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].getText() == "Azul" else True
+                teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseColor.name].getText() == "Azul" else True
 
-                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
+                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglInversao.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglInversao.name].isOn()) else False
 
-                numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].getText().split(", ")]
+                numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseNumRobots.name].getText().split(", ")]
 
-                entitiesType = self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].getText()
+                entitiesType = self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseEntityType.name].getText()
                 if entitiesType == "Entidades estáticas":
                     self.gui.unbrain_loop = Loop(team_yellow=teamColor, mirror=mirror, n_robots=numRobots, static_entities=True, vssvision=True)
 
@@ -1237,7 +1237,7 @@ class GUI:
             else:
                 print("Nothing happened")
 
-        self.navigationScreen.menuBar.buttons[playButton.name].actionAssign(play)
+        self.navigationScreen.menuBar.buttons[btnPlay.name].actionAssign(play)
 
 
         def pause(self):
@@ -1247,7 +1247,7 @@ class GUI:
             else:
                 print("Nothing happened")
 
-        self.navigationScreen.menuBar.buttons[pauseButton.name].actionAssign(pause)
+        self.navigationScreen.menuBar.buttons[btnPause.name].actionAssign(pause)
 
 
         def stop(self):
@@ -1259,18 +1259,18 @@ class GUI:
             else:
                 print("Nothing happened")
 
-        self.navigationScreen.menuBar.buttons[stopButton.name].actionAssign(stop)
+        self.navigationScreen.menuBar.buttons[btnStop.name].actionAssign(stop)
 
 
         def play_firasim(self):
             if self.gui.unbrain_loop is None:
-                teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].getText() == "Azul" else True
+                teamColor = False if self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseColor.name].getText() == "Azul" else True
 
-                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].isOn()) else False
+                mirror = True if (teamColor == False and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglInversao.name].isOn()) or (teamColor == True and self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[tglInversao.name].isOn()) else False
 
-                numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].getText().split(", ")]
+                numRobots = [int(e) for e in self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseNumRobots.name].getText().split(", ")]
 
-                entitiesType = self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].getText()
+                entitiesType = self.gui.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[cmbChooseEntityType.name].getText()
                 if entitiesType == "Entidades estáticas":
                     self.gui.unbrain_loop = Loop(team_yellow=teamColor, mirror=mirror, n_robots=numRobots, static_entities=True, firasim=True)
 
@@ -1291,7 +1291,7 @@ class GUI:
             else:
                 print("Nothing happened")
 
-        self.navigationScreen.menuBar.buttons[configButton.name].actionAssign(play_firasim)
+        self.navigationScreen.menuBar.buttons[btnConfig.name].actionAssign(play_firasim)
 
 
 

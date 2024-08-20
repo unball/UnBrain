@@ -826,7 +826,9 @@ class GUI:
             self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.draw()
+        self.navigationScreen.menuBar.buttons[navegacaoButton.name].actionAssign(changeToNavigationScreen)
         
+
         def changeToMovementScreen(self):
             """Instance method of movimentacaoButton to make the button change the screen to the movement screen"""
             #window = pg.display.set_mode((int(windowSize.x), int(windowSize.y))) 
@@ -839,7 +841,9 @@ class GUI:
             self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BORDER_COLOR
             self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.draw()
+        self.movementScreen.menuBar.buttons[movimentacaoButton.name].actionAssign(changeToMovementScreen)
         
+
         def changeToCommunicationScreen(self):
             """Instance method of comunicacaoButton to make the button change the screen to the communication screen"""
             #window = pg.display.set_mode((int(windowSize.x), int(windowSize.y))) 
@@ -852,6 +856,8 @@ class GUI:
             self.gui.activeScreen.menuBar.buttons[movimentacaoButton.name].color = BACKGROUND_COLOR
             self.gui.activeScreen.menuBar.buttons[comunicacaoButton.name].color = BORDER_COLOR
             self.gui.activeScreen.draw()
+        self.communicationScreen.menuBar.buttons[comunicacaoButton.name].actionAssign(changeToCommunicationScreen)
+
 
         def closeWindow(self):
             """Instance method of closeButton to make the application stop running and close the window"""
@@ -860,14 +866,20 @@ class GUI:
                 self.gui.unbrain_loop = None
                 print("UnBrain stopped")
             self.gui.running = False
+        self.navigationScreen.menuBar.buttons[closeButton.name].actionAssign(closeWindow)
+
 
         def minimizeWindow(self):
             """Instance method of minimizeButton to minimize the window of the application"""
             pg.display.iconify()
+        self.navigationScreen.menuBar.buttons[minimizeButton.name].actionAssign(minimizeWindow)
+
 
         def maximizeWindow(self):
             """Instance method of maximizeButton to minimize the window of the application"""
             pg.display.toggle_fullscreen()
+        self.navigationScreen.menuBar.buttons[maximizeButton.name].actionAssign(maximizeWindow)
+
 
         def showOptionsColorComboBox(self):
             """Instance method to show the color options in the chooseColorComboBox"""
@@ -875,7 +887,9 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].actionAssign(showOptionsColorComboBox)
         
+
         def chooseOptionColorComboBox(self):
             """Instance method to choose the option in chooseColorComboBox"""
             if self.getText() == "Azul" and self.screen.buttons[inversaoToggleButton.name].isOn():
@@ -884,6 +898,9 @@ class GUI:
                 self.screen.buttons[inversaoToggleButton.name].action()
             self.screen.buttons[chooseColorComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[chooseColorComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].options:
+            button.actionAssign(chooseOptionColorComboBox)
+
 
         def changeSide(self):
             """Instance method to change the state of inversaoToggleButton"""
@@ -899,6 +916,8 @@ class GUI:
                 self.gui.navigationScreen.blocks[lblLadoEsquerdo.name].setText("Lado aliado", center=True)
                 self.gui.navigationScreen.blocks[lblLadoDireito.name].setText("Lado inimigo", center=True)
                 self.gui.navigationScreen.blocks[arrow.name].setImage("images/arrow.png")
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].actionAssign(changeSide)
+
 
         def showOptionsTypeEntityComboBox(self):
             """Instance method to show the type options in chooseEntityTypeComboBox"""
@@ -906,11 +925,16 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].actionAssign(showOptionsTypeEntityComboBox)
+
 
         def chooseOptionTypeEntityComboBox(self):
             """Instance method to choose the option in the chooseEntityTypeComboBox"""
             self.screen.buttons[chooseEntityTypeComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[chooseEntityTypeComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].options:
+            button.actionAssign(chooseOptionTypeEntityComboBox)
+
 
         def showOptionsNumRobotsComboBox(self):
             """Instance method to show the num robots options in chooseNumRobotsComboBox"""
@@ -918,11 +942,16 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].actionAssign(showOptionsNumRobotsComboBox)
+
 
         def chooseOptionNumRobotsComboBox(self):
             """Instance method to choose the option in the chooseNumRobotsComboBox"""
             self.screen.buttons[chooseNumRobotsComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[chooseNumRobotsComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].options:
+            button.actionAssign(chooseOptionNumRobotsComboBox)
+
 
         def showOptionsRobotIDComboBox(self):
             """Instance method to show the type options in robotIDComboBox"""
@@ -930,16 +959,24 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+
 
         def chooseOptionRobotIDComboBox(self):
             """Instance method to choose the option in the robotIDComboBox"""
             self.screen.buttons[robotIDComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDComboBox)
+
 
         def changeManualVirtualPos(self):
             """Instance method to change the state of virtualJudgeToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[virtualJudgeToggleButton.name].actionAssign(changeManualVirtualPos)
 
         def showOptionsPositioningComboBox(self):
             """Instance method to show the positioning options in positioningComboBox"""
@@ -947,6 +984,8 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[positioningComboBox.name].actionAssign(showOptionsPositioningComboBox)
+
 
         def expandUVFScreen(self):
             """Instance method to expand the UVFScreen"""
@@ -964,11 +1003,16 @@ class GUI:
             for button in self.screen.scrollingBackgrounds[projecoesScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[UVFScreen.name].setVisible(visible)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[UVFButton.name].actionAssign(expandUVFScreen)
+
 
         def chooseOptionRobotIDUVFComboBox(self):
             """Instance method to choose the option in the robotIDUVFComboBox"""
             self.screen.buttons[robotIDUVFComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDUVFComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDUVFComboBox)
+
 
         def showFieldComboBox(self):
             """Instance method to show the field options in selectFieldComboBox"""
@@ -976,21 +1020,32 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].actionAssign(showFieldComboBox)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].actionAssign(showFieldComboBox)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].actionAssign(showFieldComboBox)
+
 
         def chooseFieldComboBox(self):
             """Instance method to choose the option in the selectFieldComboBox"""
             self.screen.buttons[selectFieldComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[selectFieldComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].options:
+            button.actionAssign(chooseFieldComboBox)
+
 
         def changePontoFinal(self):
             """Instance method to change the state of pontoFinalSelecToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[pontoFinalSelecToggleButton.name].actionAssign(changePontoFinal)
+
 
         def changeViewAllFields(self):
             """Instance method to change the state of visualizarTodosCamposToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[visualizarTodosCamposToggleButton.name].actionAssign(changeViewAllFields)
+
 
         def expandprojecoesScreen(self):
             """Instance method to expand the projecoesScreen"""
@@ -1002,11 +1057,16 @@ class GUI:
             self.changeState()
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[projecoesScreen.name].setVisible(visible)
+        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[projecoesButton.name].actionAssign(expandprojecoesScreen)
+
 
         def chooseOptionRobotIDProjecoesComboBox(self):
             """Instance method to choose the option in the robotIDProjecoesComboBox"""
             self.screen.buttons[robotIDProjecoesComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDProjecoesComboBox.name].setOptionsVisibility(False)
+        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDProjecoesComboBox)
+
 
         def expandGraficosControleScreen(self):
             """Instance method to expand the graficosControleScreen"""
@@ -1030,11 +1090,15 @@ class GUI:
             for button in self.screen.scrollingBackgrounds[controleUVFScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[graficosControleScreen.name].setVisible(visible)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[graficosControleButton.name].actionAssign(expandGraficosControleScreen)
 
         def chooseOptionRobotIDGraficosControleComboBox(self):
             """Instance method to choose the option in the robotIDGraficosControleComboBox"""
             self.screen.buttons[robotIDGraficosControleComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDGraficosControleComboBox.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDGraficosControleComboBox)
+
 
         def expandControleManualScreen(self):
             """Instance method to expand the controleManualScreen"""
@@ -1052,26 +1116,35 @@ class GUI:
             for button in self.screen.scrollingBackgrounds[controleUVFScreen.name].buttons.values():
                 button.pos.y += resizeRange
             self.screen.scrollingBackgrounds[controleManualScreen.name].setVisible(visible)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleManualButton.name].actionAssign(expandControleManualScreen)
+
 
         def chooseOptionRobotIDControleManualComboBox(self):
             """Instance method to choose the option in the robotIDControleManualComboBox"""
             self.screen.buttons[robotIDControleManualComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDControleManualComboBox.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDControleManualComboBox)
+
 
         def changeEnableJoystick(self):
             """Instance method to change the state of enableJoystickToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableJoystickToggleButton.name].actionAssign(changeEnableJoystick)
 
         def changeEnableDirection(self):
             """Instance method to change the state of enableDirectionToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableDirectionToggleButton.name].actionAssign(changeEnableDirection)
 
         def changeEnableManualControl(self):
             """Instance method to change the state of enableControleManualToggleButton"""
             self.changeState()
             self.imgs[self.isOn()]
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableControleManualToggleButton.name].actionAssign(changeEnableManualControl)
+
 
         def showOptionsDirectionComboBox(self):
             """Instance method to show the positioning options in directionComboBox"""
@@ -1079,11 +1152,16 @@ class GUI:
                 self.setOptionsVisibility(False)
             else:
                 self.setOptionsVisibility(True)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].actionAssign(showOptionsDirectionComboBox)
+
 
         def chooseOptionDirectionComboBox(self):
             """Instance method to choose the option in the directionComboBox"""
             self.screen.buttons[directionComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[directionComboBox.name].setOptionsVisibility(False)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].options:
+            button.actionAssign(chooseOptionDirectionComboBox)
+
 
         def expandControleUVFScreen(self):
             """Instance method to expand the controleUVFScreen"""
@@ -1096,21 +1174,33 @@ class GUI:
             self.screen.size.y += resizeRange
             self.screen.scrollingBackgrounds[controleUVFScreen.name].setVisible(visible)
 
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleUVFButton.name].actionAssign(expandControleUVFScreen)
+
+
         def slide(self):
             """Instance method to slide a Slider object"""
             self.setActive(True)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeLinearSlider.name].actionAssign(slide)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeAngularSlider.name].actionAssign(slide)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[aceleracaoSlider.name].actionAssign(slide)
+
 
         def chooseOptionRobotIDControleUVFComboBox(self):
             """Instance method to choose the option in the robotIDControleUVFComboBox"""
             self.screen.buttons[robotIDControleUVFComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDControleUVFComboBox.name].setOptionsVisibility(False)
+        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDControleUVFComboBox)
+
 
         def chooseOptionRobotIDCommunicationComboBox(self):
             """Instance method to choose the option in the robotIDCommunicationComboBox"""
             self.screen.buttons[robotIDCommunicationComboBox.name].setText(self.getText(), center=True)
             self.screen.buttons[robotIDCommunicationComboBox.name].setOptionsVisibility(False)
-        
-
+        self.communicationScreen.buttons[robotIDCommunicationComboBox.name].actionAssign(showOptionsRobotIDComboBox)
+        for button in self.communicationScreen.buttons[robotIDCommunicationComboBox.name].options:
+            button.actionAssign(chooseOptionRobotIDCommunicationComboBox)
 
 
 
@@ -1204,114 +1294,6 @@ class GUI:
         self.navigationScreen.menuBar.buttons[configButton.name].actionAssign(play_firasim)
 
 
-
-
-
-
-
-
-
-        # Assigns the buttons with the changeScreen function
-        self.navigationScreen.menuBar.buttons[navegacaoButton.name].actionAssign(changeToNavigationScreen)
-        self.movementScreen.menuBar.buttons[movimentacaoButton.name].actionAssign(changeToMovementScreen)
-        self.communicationScreen.menuBar.buttons[comunicacaoButton.name].actionAssign(changeToCommunicationScreen)
-        self.navigationScreen.menuBar.buttons[closeButton.name].actionAssign(closeWindow)
-        self.navigationScreen.menuBar.buttons[minimizeButton.name].actionAssign(minimizeWindow)
-        self.navigationScreen.menuBar.buttons[maximizeButton.name].actionAssign(maximizeWindow)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].actionAssign(showOptionsColorComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[inversaoToggleButton.name].actionAssign(changeSide)
-
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseColorComboBox.name].options:
-            button.actionAssign(chooseOptionColorComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].actionAssign(showOptionsTypeEntityComboBox)
-
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseEntityTypeComboBox.name].options:
-            button.actionAssign(chooseOptionTypeEntityComboBox)
-        
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].actionAssign(showOptionsNumRobotsComboBox)
-
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[chooseNumRobotsComboBox.name].options:
-            button.actionAssign(chooseOptionNumRobotsComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[robotIDComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[UVFButton.name].actionAssign(expandUVFScreen)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[virtualJudgeToggleButton.name].actionAssign(changeManualVirtualPos)
-        
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[positioningComboBox.name].actionAssign(showOptionsPositioningComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[robotIDUVFComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDUVFComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].actionAssign(showFieldComboBox)
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[selectFieldComboBox.name].options:
-            button.actionAssign(chooseFieldComboBox)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[pontoFinalSelecToggleButton.name].actionAssign(changePontoFinal)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[UVFScreen.name].buttons[visualizarTodosCamposToggleButton.name].actionAssign(changeViewAllFields)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].buttons[projecoesButton.name].actionAssign(expandprojecoesScreen)
-
-        self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-
-        for button in self.navigationScreen.scrollingBackgrounds[navigationScrollPanel.name].scrollingBackgrounds[projecoesScreen.name].buttons[robotIDProjecoesComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDProjecoesComboBox)
-
-
-
-        # movementScreen's instance methods
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[graficosControleButton.name].actionAssign(expandGraficosControleScreen)
-        
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleManualButton.name].actionAssign(expandControleManualScreen)
-        
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].buttons[controleUVFButton.name].actionAssign(expandControleUVFScreen)
-        
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].actionAssign(showFieldComboBox)
-        
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[graficosControleScreen.name].buttons[robotIDGraficosControleComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDGraficosControleComboBox)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].actionAssign(showFieldComboBox)
-        
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[robotIDControleManualComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDControleManualComboBox)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableJoystickToggleButton.name].actionAssign(changeEnableJoystick)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableDirectionToggleButton.name].actionAssign(changeEnableDirection)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[enableControleManualToggleButton.name].actionAssign(changeEnableManualControl)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].actionAssign(showOptionsDirectionComboBox)
-        
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[directionComboBox.name].options:
-            button.actionAssign(chooseOptionDirectionComboBox)
-        
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeLinearSlider.name].actionAssign(slide)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[velocidadeAngularSlider.name].actionAssign(slide)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleManualScreen.name].buttons[aceleracaoSlider.name].actionAssign(slide)
-
-        self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        
-        for button in self.movementScreen.scrollingBackgrounds[movementScrollPanel.name].scrollingBackgrounds[controleUVFScreen.name].buttons[robotIDControleUVFComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDControleUVFComboBox)
-
-
-        # communicationScreen's instance methods
-        self.communicationScreen.buttons[robotIDCommunicationComboBox.name].actionAssign(showOptionsRobotIDComboBox)
-        for button in self.communicationScreen.buttons[robotIDCommunicationComboBox.name].options:
-            button.actionAssign(chooseOptionRobotIDCommunicationComboBox)
 
 
         # Initialize the running flag

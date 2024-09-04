@@ -26,7 +26,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=60,
+                loop_freq=90,
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=False,

@@ -9,7 +9,7 @@ from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
 from control.defender import DefenderControl
 from control.UFC import UFC_Simple
-from control.PIDController import PIDController
+from control.UFC_modified import UFC_New
 from control.SecAttacker import SecAttackerControl
 import numpy as np
 import math
@@ -18,12 +18,10 @@ import time
 class ControlTester(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
-        self.time_elapsed = 0
-        self.best_constants = self.optimize_pid_constants()
-        self._control = PIDController(self.world, *self.best_constants)
+
+        self._control = UFC_Simple(self.world)
         self.lastChat = 0
         self.x = 1
-        self.performance_metric = 0
 
     @property
     def control(self):
@@ -34,71 +32,6 @@ class ControlTester(Entity):
 
     def onExit(self):
         pass
-
-    def optimize_pid_constants(self):
-        best_constants = (10.0, 0.9, 0.07)  # Default values
-        best_performance = float('inf')
-
-        # Define ranges for PID constants
-        kp_values = np.linspace(0.5, 3.0, 5)  # Proportional
-        ki_values = np.linspace(0.1, 1.0, 5)  # Integral
-        kd_values = np.linspace(0.01, 0.1, 5)  # Derivative
-
-        for kp in kp_values:
-            for ki in ki_values:
-                for kd in kd_values:
-                    self._control = PIDController(self.world, kp, ki, kd)
-                    self.performance_metric = 0.0  # Reset performance metric
-                    self.simulate_performance(kp, ki, kd)
-                    if self.performance_metric < best_performance:
-                        best_performance = self.performance_metric
-                        best_constants = (kp, ki, kd)
-        print(best_constants)
-        return best_constants
-
-    def simulate_performance(self, kp, ki, kd):
-        # Simulate the robot's behavior for a defined period
-        simulation_time = 10  # seconds
-        dt = 0.01  # time step
-
-        if self.robot.field is not None:
-            # Desired position (target)
-            target_position = self.robot.field.Pb[:2] # Example target position
-            total_error = 0.0
-            previous_error = 0.0
-            integral = 0.0
-
-            # Run the simulation loop
-            if self.world.execTime < simulation_time:
-                print(self.world.execTime)
-                # Get the current position of the robot
-                current_position = np.array(self.robot.pos)  # Assuming pose contains [x, y, theta]
-
-                # Calculate the error
-                error = np.linalg.norm(target_position - current_position)
-                total_error += error
-
-                # Update PID controller
-                integral += error * dt
-                derivative = (error - previous_error) / dt
-                output = kp * error + ki * integral + kd * derivative
-                
-                # Simulate the robot's movement (this is a simplified representation)
-                self.robot.vref = output  # Set the robot's velocity reference
-
-                # Prepare for the next iteration
-                previous_error = error
-                self.world.execTime += dt
-                return
-            else:
-                self.world.execTime = 0
-
-            # Calculate average error over the simulation period
-            average_error = total_error / (simulation_time / dt)
-
-            # Update the performance metric
-            self.performance_metric = average_error
-
         
     def directionDecider(self):
        if self.robot.field is not None:
@@ -111,16 +44,9 @@ class ControlTester(Entity):
                     self.lastChat = time.time()
 
             # Inverter a direção se o robô ficar preso em algo
-                if not self.robot.isAlive() and self.robot.spin == 0:
-                    self.lastChat = time.time()
-                    self.robot.direction *= -1    
-    
-        # Performance evaluation logic
-    def evaluation_logic(self):
-        rr = np.array(self.robot.pose)
-        target_position = self.robot.field.Pb[:2] # Example target position
-        error = np.linalg.norm(rr - target_position)  # Example target position
-        self.performance_metric += error  # Accumulate error for performance evaluation
+            if not self.robot.isAlive() and self.robot.spin == 0:
+                self.lastChat = time.time()
+                self.robot.direction *= -1    
 
     def fieldDecider(self):
         rr = np.array(self.robot.pose)
@@ -129,11 +55,10 @@ class ControlTester(Entity):
         rg = np.array(self.world.field.goalPos)
         vr = np.array(self.robot.v)
         oneSpiralMargin = (self.world.marginPos[0]-0.15, self.world.marginPos[1])
-        if self.robot.field is not None:
-            target_position = self.robot.field.Pb[:2] # Example target position
         
         robotBallAngle = ang(rr, rb)
         
+        self.robot.vref = 0
 
         #Quad 1: X = -0.375 Y = +0.430
         #Quad 2: X = +0.375 Y = +0.430
@@ -144,7 +69,6 @@ class ControlTester(Entity):
         if self.x == 1:
             if not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
                 self.robot.field = DirectionalField(ang(rr,[-0.360,0.380]), Pb=(-0.360,0.380,1.5*np.pi))
-                self.evaluation_logic
                 print(self.x)
                 return
             self.x = 2
@@ -152,7 +76,6 @@ class ControlTester(Entity):
             if not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
                 self.robot.field = DirectionalField(ang(rr,[0.370,0.380]), Pb=(0.370,0.380, np.pi))
                 print(self.x)
-                self.evaluation_logic
                 return
             self.x = 3
         if self.x == 3:
@@ -215,9 +138,6 @@ class ControlTester(Entity):
                 print(self.x)
                 return
             self.x = 1
-
-
-        
 
         # if rr[0] == 0.375 and rr[1] == 0.430:
         #     self.robot.field = DirectionalField(np.pi, Pb=(0.375,-0.430,np.pi))

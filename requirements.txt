@@ -9,7 +9,7 @@ scipy
 dubins
 opencv-python
 vext
-pandas==0.16.2
+pandas
 pycairo 
 PyGObject
 rc-robosim

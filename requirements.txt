@@ -14,3 +14,4 @@ pycairo
 PyGObject
 rc-robosim
 rsoccer-gym
+websocket-client

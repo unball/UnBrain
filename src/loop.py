@@ -17,6 +17,7 @@ import sys
 import signal
 from vision.receiver import FiraClient
 from client.client_pickle import ClientPickle
+from client.client_webscoket import ClientWebSocket
 
 
 from strategy.automaticReplacer import AutomaticReplacer
@@ -81,6 +82,8 @@ class Loop:
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
         signal.signal(signal.SIGINT, self.handle_SIGINT)
+
+        self.igglu_client = ClientWebSocket()
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
@@ -176,6 +179,10 @@ class Loop:
                 if robot is not None: robot.turnOn()
             robos = control_output
             self.simulado.step(robos)
+        
+        if self.world.igglu:
+            for robot in self.world.raw_team:
+                if robot is not None: robot.turnOff()
                 
         # Desenha no ALP-GUI
         self.draw()
@@ -228,7 +235,11 @@ class Loop:
                 # obedece o comando e sai do busy loop
             else:
                 self.strategy.manageReferee(self.arp, self.world.last_command)
-           
+        
+        if self.world.igglu:
+            self.igglu_client.send_msg()
+            self.igglu_client.recv_msg()
+
     def draw(self):
         for robot in [r for r in self.world.team if r is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.th, robot.direction)

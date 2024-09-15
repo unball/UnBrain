@@ -17,7 +17,7 @@ import sys
 import signal
 from vision.receiver import FiraClient
 from client.client_pickle import ClientPickle
-from client.client_webscoket import ClientWebSocket
+from client.websocket import WebSocket
 
 
 from strategy.automaticReplacer import AutomaticReplacer
@@ -41,11 +41,15 @@ class Loop:
                 debug =False,
                 port=5002,
                 mirror=False, 
-                n_robots=[0,1,2]
+                n_robots=[0,1,2],
+                
             ):
+        
+
+
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
-
+        
         yellow_robots_pos = []
         blue_robots_pos = []
         field_type = 0  # 0 for Division B, 1 for Division A
@@ -77,13 +81,11 @@ class Loop:
             yellow_robots_pos,
         )
 
-        field_params = self.simulado.get_field_params()
-        print(f"estado do campo:{self.simulado.get_state()}")
+        # field_params = self.simulado.get_field_params()
+        # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
-        signal.signal(signal.SIGINT, self.handle_SIGINT)
-
-        self.igglu_client = ClientWebSocket()
+        # signal.signal(signal.SIGINT, self.handle_SIGINT)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
@@ -235,10 +237,6 @@ class Loop:
                 # obedece o comando e sai do busy loop
             else:
                 self.strategy.manageReferee(self.arp, self.world.last_command)
-        
-        if self.world.igglu:
-            self.igglu_client.send_msg()
-            self.igglu_client.recv_msg()
 
     def draw(self):
         for robot in [r for r in self.world.team if r is not None]:
@@ -255,7 +253,6 @@ class Loop:
         logging.info("System is running")
 
         while self.running:
-            
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()
             while time.time() - t0 < self.loopTime:

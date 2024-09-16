@@ -13,58 +13,48 @@ static QString getIdentifier(QWebSocket *peer)
                                        QString::number(peer->peerPort()));
 }
 
-serverIgglu::serverIgglu(quint16 port, QObject *parent)
-    : QObject{parent},
-    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Igglu Server"),
-                                            QWebSocketServer::NonSecureMode,
-                                              this))
-{
-    if (m_pWebSocketServer->listen(QHostAddress::Any, port))
-    {
-        QTextStream(stdout) << "Chat Server listening on port " << port << '\n';
-        connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
-                this, &serverIgglu::onNewConnection);
+ServerIgglu::ServerIgglu(QObject *parent)
+    : QObject{parent}
+{}
+
+ServerIgglu::~ServerIgglu() {}
+
+void ServerIgglu::connectWebSocket(quint16 port) {
+    QUrl url{"ws://localhost:5001"};
+
+    if(m_webSocket.state() == QAbstractSocket::ConnectedState){
+        return;
     }
+
+    m_webSocket.open(url);
+
+    QTextStream(stdout) << "Connected to "<< url.toString()  <<"\n";
+
+
+    connect(&m_webSocket, &QWebSocket::connected, this, &ServerIgglu::onConnected);
+    connect(&m_webSocket, &QWebSocket::disconnected, this, &ServerIgglu::closed);
 }
 
-void serverIgglu::onNewConnection()
-{
-    auto pSocket = m_pWebSocketServer->nextPendingConnection();
-    QTextStream(stdout) << getIdentifier(pSocket) << " connected!\n";
-    pSocket->setParent(this);
-
-    connect(pSocket, &QWebSocket::textMessageReceived,
-            this, &serverIgglu::processMessage);
-    connect(pSocket, &QWebSocket::disconnected,
-            this, &serverIgglu::socketDisconnected);
-
-    m_clients << pSocket;
+void ServerIgglu::closeWebSocket() {
+    m_webSocket.close();
+    qDebug() << "CLOSED EWE SOCKET";
 }
 
-serverIgglu::~serverIgglu()
-{
-    m_pWebSocketServer->close();
+void ServerIgglu::onConnected() {
+
+    connect(&m_webSocket, &QWebSocket::textMessageReceived,
+            this, &ServerIgglu::processMessage);
 }
 
-void serverIgglu::processMessage(const QString &message)
+void ServerIgglu::closed() {
+// TODO is this needed?
+    qDebug() << "closed";
+}
+
+void ServerIgglu::processMessage(const QString &message)
 {
     QTextStream(stdout) << message;
-    QWebSocket *pSender = qobject_cast<QWebSocket *>(sender());
-    pSender->sendTextMessage("Oi!");
-    for (QWebSocket *pClient : std::as_const(m_clients)) {
-        if (pClient != pSender) //don't echo message back to sender
-            pClient->sendTextMessage(message);
-    }
 }
-
-void serverIgglu::socketDisconnected()
-{
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    QTextStream(stdout) << getIdentifier(pClient) << " disconnected!\n";
-    if (pClient)
-    {
-        m_clients.removeAll(pClient);
-        pClient->deleteLater();
-    }
+void ServerIgglu::sendMessage() {
+    m_webSocket.sendTextMessage("message");
 }
-

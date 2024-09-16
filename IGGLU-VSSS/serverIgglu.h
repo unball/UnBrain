@@ -3,22 +3,29 @@
 
 #include <QObject>
 #include <QtCore/QList>
-#include <QtWebSockets/QWebSocketServer>
+#include <QtWebSockets/QWebSocket>
 
-class serverIgglu : public QObject
+class ServerIgglu : public QObject
 {
     Q_OBJECT
 public:
-    explicit serverIgglu(quint16 port,QObject *parent = nullptr);
-    ~serverIgglu() override;
+    explicit ServerIgglu(QObject *parent = nullptr);
+    void connectWebSocket(quint16 port);
+    void closeWebSocket();
+    void disconnectWebSocket();
+    void sendMessage();
+    ~ServerIgglu() override;
 
 private slots:
-    void onNewConnection();
+    void onConnected();
+    void closed();
     void processMessage(const QString &message);
-    void socketDisconnected();
+    void onDisconnected(){
+        qDebug() << "Disconnected";
+    }
 
 private:
-    QWebSocketServer *m_pWebSocketServer;
+    QWebSocket m_webSocket;
     QList<QWebSocket *> m_clients;
 };
 

@@ -1,14 +1,13 @@
 import asyncio
 from websockets.asyncio.server import serve
 
-queue = asyncio.Queue()
-
+# sleep foi para simular o tempo que o Loop demora para ser executado
 async def producer():
     await asyncio.sleep(3)
-    return "Hello !"
+    return "Hello from UnBrain!\n"
 
 async def consumer(message):
-    print(f'Hello {message}')
+    print(f'Message from client: {message}\n')
     await queue.put(message)
 
 class WebSocket:
@@ -25,14 +24,15 @@ class WebSocket:
 async def consumer_handler(websocket):
     async for message in websocket:
         await consumer(message)
+        await websocket.send(f"UnBrain received: {message}\n")
 
 async def producer_handler(websocket):
     while True:
-        print("while true")
         message = await producer()
         await websocket.send(message)
 
 async def hello(websocket):
+    print(f"New websocket connected\n")
     await asyncio.gather(
         consumer_handler(websocket),
         producer_handler(websocket),
@@ -41,7 +41,6 @@ async def hello(websocket):
 async def main():
     async with serve(hello, "localhost", 5001):
         await asyncio.get_running_loop().create_future()
-        asyncio.Future()
 
 
 if __name__ == '__main__':

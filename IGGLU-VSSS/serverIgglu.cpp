@@ -7,12 +7,6 @@ using namespace std;
 
 QT_USE_NAMESPACE
 
-static QString getIdentifier(QWebSocket *peer)
-{
-    return QStringLiteral("%1:%2").arg(peer->peerAddress().toString(),
-                                       QString::number(peer->peerPort()));
-}
-
 ServerIgglu::ServerIgglu(QObject *parent)
     : QObject{parent}
 {}
@@ -32,11 +26,12 @@ void ServerIgglu::connectWebSocket(quint16 port) {
 
 
     connect(&m_webSocket, &QWebSocket::connected, this, &ServerIgglu::onConnected);
-    connect(&m_webSocket, &QWebSocket::disconnected, this, &ServerIgglu::closed);
+    connect(&m_webSocket, &QWebSocket::disconnected, this, &ServerIgglu::closeWebSocket);
 }
 
 void ServerIgglu::closeWebSocket() {
     m_webSocket.close();
+    m_webSocket.disconnect();
     qDebug() << "CLOSED EWE SOCKET";
 }
 

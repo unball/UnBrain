@@ -1,47 +1,51 @@
-import asyncio
-from websockets.asyncio.server import serve
+import threading
+import websockets.sync.server as sync_ws
+import time
+import websockets
 
-# sleep foi para simular o tempo que o Loop demora para ser executado
-async def producer():
-    await asyncio.sleep(3)
-    return "Hello from UnBrain!\n"
+def producer():
+    while True:
+        time.sleep(3)
+        message = "Hello !"
 
-async def consumer(message):
-    print(f'Message from client: {message}\n')
-    await queue.put(message)
+def consumer(message):
+    print(f'Hello {message}')
 
 class WebSocket:
     def __init__(self, port=5001):
-        global queue
-        self.host="localhost"
+        self.host = "localhost"
         self.port = port
-        self.message = ""
-        self.queue = queue
-    
+        self.server = None
+
+    def producer(self):
+    # Simula uma tarefa demorada de 3 segundos
+        time.sleep(3)
+        return "Hello from UnBrain!\n"
+
     def run(self):
-        asyncio.run(main())
+        server_thread = threading.Thread(target=self.start_server)
+        server_thread.start()
 
-async def consumer_handler(websocket):
-    async for message in websocket:
-        await consumer(message)
-        await websocket.send(f"UnBrain received: {message}\n")
-
-async def producer_handler(websocket):
-    while True:
-        message = await producer()
-        await websocket.send(message)
-
-async def hello(websocket):
-    print(f"New websocket connected\n")
-    await asyncio.gather(
-        consumer_handler(websocket),
-        producer_handler(websocket),
-    )
-
-async def main():
-    async with serve(hello, "localhost", 5001):
-        await asyncio.get_running_loop().create_future()
+    def start_server(self):
+        if self.server is None:
+            with sync_ws.serve(self.handle_connection, host=self.host, port=self.port) as server:
+                print(f"WebSocket server running at ws://{self.host}:{self.port}")
+                server.serve_forever()
+                    
+    def handle_connection(self, websocket):
+        print(f"New websocket connected\n")
+        while True:
+            try:
+                message = websocket.recv()
+                print(f"Message from client: {message}\n")
+                websocket.send(f"UnBrain received: {message}\n")
+                response = self.producer()
+                websocket.send(response)
+            except websockets.ConnectionClosed:
+                print("Client disconnected\n")
+                break
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    ws = WebSocket()
+    ws.run()

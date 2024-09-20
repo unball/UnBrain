@@ -5,6 +5,9 @@ from UVF_screen import UVFScreen
 from communication.serialWifi import SerialRadio
 from world import World
 
+import threading
+from client import websocket
+
 # Importa interface com FiraSim
 from client import VSS
 
@@ -30,7 +33,7 @@ class Loop:
                 loop_freq=90,
                 draw_uvf=False,
                 team_yellow=False,
-                immediate_start=False,
+                immediate_start=True,
                 static_entities=False,
                 referee=False,
                 firasim=False,
@@ -45,7 +48,9 @@ class Loop:
                 
             ):
         
-
+        self.loop_thread = None
+        self.ws_thread = None
+        self.threadScreen = None
 
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
@@ -85,7 +90,7 @@ class Loop:
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
-        # signal.signal(signal.SIGINT, self.handle_SIGINT)
+        signal.signal(signal.SIGINT, self.handle_SIGINT)
 
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
@@ -184,7 +189,7 @@ class Loop:
         
         if self.world.igglu:
             for robot in self.world.raw_team:
-                if robot is not None: robot.turnOff()
+                if robot is not None: robot.turnOn()
                 
         # Desenha no ALP-GUI
         self.draw()
@@ -247,12 +252,18 @@ class Loop:
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
 
-    def run(self):
+    def websocket_thread(self):
+        print("entrou no ws")
+        webapp = WebSocket()
+        webapp.run()
+
+    def run_loop(self):
         t0 = 0
 
         logging.info("System is running")
 
         while self.running:
+            
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
@@ -265,7 +276,25 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            if self.draw_uvf:
-                self.UVF_screen.updateScreen()
+            print('gfl', end="")
 
         logging.info("System stopped")
+
+    def run(self):
+        if self.ws_thread is None and self.loop_thread is None:
+            # inicializa threads
+            self.ws_thread = threading.Thread(target=self.websocket_thread)
+            self.loop_thread = threading.Thread(target=self.run_loop)
+
+            self.ws_thread.start()
+            self.loop_thread.start() # inicia thread do loop
+
+            # espera threads
+            self.ws_thread.join()
+            self.loop_thread.join()
+
+        if self.draw_uvf:
+                if self.threadScreen is None:
+                    self.threadScreen = threading.Thread(target=self.UVF_screen.updateScreen)
+                    print('Iniciando thread...')
+                    self.threadScreen.start()

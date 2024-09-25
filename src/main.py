@@ -65,6 +65,7 @@ args.n_robots = [int(e) for e in args.n_robots.split(",")]
 print(args.n_robots)
 
 # Instancia o programa principal
+global loop
 loop = Loop(
     draw_uvf=False, 
     team_yellow=team_yellow,

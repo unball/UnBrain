@@ -2,6 +2,9 @@ import threading
 import websockets.sync.server as sync_ws
 import time
 import websockets
+import pickle
+import numpy as np
+# import main
 
 def producer():
     while True:
@@ -12,7 +15,8 @@ def consumer(message):
     print(f'Hello {message}')
 
 class WebSocket:
-    def __init__(self, port=5001):
+    def __init__(self, loop, port=5001):
+        self.loop = loop
         self.host = "localhost"
         self.port = port
         self.server = None
@@ -20,7 +24,10 @@ class WebSocket:
     def producer(self):
     # Simula uma tarefa demorada de 3 segundos
         time.sleep(3)
-        return "Hello from UnBrain!\n"
+        self.message = self.loop.world.team[1].x # main.loop.world.team
+        mock_data = self.message
+        print("produzindo")
+        return str(mock_data)
 
     def run(self):
         server_thread = threading.Thread(target=self.start_server)

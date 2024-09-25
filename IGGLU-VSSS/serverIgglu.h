@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtCore/QList>
 #include <QtWebSockets/QWebSocket>
+#include <QByteArray>
 
 class ServerIgglu : public QObject
 {

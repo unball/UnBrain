@@ -3,6 +3,8 @@
 #include <QtWebSockets/QtWebSockets>
 #include <QtCore>
 #include <cstdio>
+#include <QDataStream>
+#include <QByteArray>
 using namespace std;
 
 QT_USE_NAMESPACE
@@ -48,7 +50,7 @@ void ServerIgglu::closed() {
 
 void ServerIgglu::processMessage(const QString &message)
 {
-    QTextStream(stdout) << message;
+    QTextStream(stdout) << "Received float:" << message;
 }
 void ServerIgglu::sendMessage() {
     m_webSocket.sendTextMessage("message");

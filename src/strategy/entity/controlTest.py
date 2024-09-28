@@ -1,5 +1,5 @@
 from ..entity import Entity
-from strategy.field.UVF import UVF, UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
 from strategy.field.goalKeeper import GoalKeeperField
 from strategy.field.attractive import AttractiveField
@@ -9,7 +9,6 @@ from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
 from control.defender import DefenderControl
 from control.UFC import UFC_Simple
-from control.UFC_modified import UFC_New
 from control.SecAttacker import SecAttackerControl
 import numpy as np
 import math
@@ -116,25 +115,25 @@ class ControlTester(Entity):
             self.x = 9
         if self.x == 9:
             if not -0.410 < rr[0] < -0.310 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (-0.360,0.380,1.5*np.pi), rr, direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
+                self.robot.field = UVF((-0.360,0.380,1.5*np.pi), direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
                 print(self.x)
                 return
             self.x = 10
         if self.x == 10:
             if not +0.420 > rr[0] > +0.320 or not 0.330 < rr[1] < 0.430: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (0.370,0.380, np.pi), rr, direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
+                self.robot.field = UVF((0.370,0.380, np.pi), direction=0) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
                 print(self.x)
                 return
             self.x = 11
         if self.x == 11:
             if not +0.430 > rr[0] > +0.330 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (0.380,-0.380, 1,5*np.pi), rr, direction=0)
+                self.robot.field = UVF((0.380,-0.380, 1,5*np.pi), direction=0)
                 print(self.x)
                 return
             self.x = 12
         if self.x == 12:
             if not -0.410 < rr[0] < -0.310 or not -0.330 > rr[1] > -0.430: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (-0.360,-0.380, np.pi), rr, direction=0)
+                self.robot.field = UVF((-0.360,-0.380, np.pi), direction=0)
                 print(self.x)
                 return
             self.x = 1

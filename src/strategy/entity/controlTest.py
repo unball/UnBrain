@@ -1,5 +1,5 @@
 from ..entity import Entity
-from strategy.field.UVF import UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
 from strategy.field.goalKeeper import GoalKeeperField
 from strategy.field.attractive import AttractiveField
@@ -107,22 +107,22 @@ class ControlTester(Entity):
             else: self.x = 9
         if self.x == 9:
             if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (-0.380,0.430, 0), radius=0.05, Kr=0.03, direction=1)#AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
+                self.robot.field = UVF((-0.360,0.430, 0), direction=1) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
                 
             else: self.x = 10
         if self.x == 10:
             if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (0.380,0.430, np.pi/2), radius=0.05, Kr=0.03, direction=-1)#AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
+                self.robot.field = UVF((0.380,0.430, np.pi/2), direction=-1) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
 
             else: self.x = 11
         if self.x == 11:
             if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (0.380,-0.430, 0), rr, direction=-1)
+                self.robot.field = UVF((0.380,-0.430, 0), direction=-1)
 
             else: self.x = 12
         if self.x == 12:
             if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = UVFDefault(self.world, (-0.380,-0.430, np.pi/2), rr, direction=0)
+                self.robot.field = UVF((-0.360,-0.430, np.pi/2), direction=1)
             else: self.x = 1
         # if rr[0] == 0.375 and rr[1] == 0.430:
         #     self.robot.field = DirectionalField(np.pi, Pb=(0.375,-0.430,np.pi))

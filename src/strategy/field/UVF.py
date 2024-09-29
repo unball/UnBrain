@@ -4,7 +4,7 @@ from tools import angl, unit, norml, angError, filt, sat
 from . import Field
 
 class UVF(Field):
-    def __init__(self, Pb, radius=0.13, direction=0, spiral=True, Kr=0.03, Kr_single=0.03, nullgamma=False):
+    def __init__(self, Pb, radius=0.05, direction=0, spiral=True, Kr=0.03, Kr_single=0.03, nullgamma=False):
         super().__init__(Pb)
 
         # Raio da espiral

@@ -261,6 +261,7 @@ class Loop:
 
     def run_loop(self):
         t0 = 0
+        tempo_zero = time.time()
 
         logging.info("System is running")
 
@@ -278,7 +279,7 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print('gfl', end="")
+            print(f"gfl{time.time()-tempo_zero:.2f}", end="\r", flush=True)
 
         logging.info("System stopped")
 

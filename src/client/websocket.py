@@ -4,7 +4,7 @@ import time
 import websockets
 import pickle
 import numpy as np
-# import main
+import matplotlib.pyplot as plt
 
 def producer():
     while True:
@@ -16,18 +16,44 @@ def consumer(message):
 
 class WebSocket:
     def __init__(self, loop, port=5001):
-        self.loop = loop
+        self.world = loop.world
         self.host = "localhost"
         self.port = port
         self.server = None
 
     def producer(self):
     # Simula uma tarefa demorada de 3 segundos
-        time.sleep(3)
-        self.message = self.loop.world.team[1].x # main.loop.world.team
-        mock_data = self.message
+        # time.sleep(3)
+
+        # mensagem com infos dos robos e bola
+        message_robot = [f"ROBOT {i}: pos {self.world.team[i].pos} vel {self.world.team[i].v};\n" for i in self.world.n_robots]
+        message_ball = f"BALL: pos {self.world.ball.pos} vel {self.world.ball.v*400}\n"
+
+        # calculo pra enviar o UVF via mensagem
+        def message_uvf(robot_i=2, field_dims=(170*4, 130*4), arrow_spaces=16):
+            x = np.arange(-field_dims[0]/2, field_dims[0]/2, arrow_spaces)
+            y = np.arange(-field_dims[1]/2, field_dims[1]/2, arrow_spaces)
+            X, Y = np.meshgrid(x, y)
+            arrow_positions = np.array([X.flatten(), Y.flatten()]).T
+        
+            robot = self.world.raw_team[robot_i]
+
+            positions = []
+            for i in range(arrow_positions.shape[0]):
+                positions.append(arrow_positions[i]/400)
+            
+            angles = list(map(robot.field.F, positions))
+
+            # plt.quiver(X, Y, np.cos(angles), np.sin(angles))
+            # plt.show()
+
+            return angles if robot.field is not None else 0
+        
+        self.message = f"{message_robot[0]}{message_robot[1]}{message_robot[2]}{message_ball};\n UVF:{message_uvf()}" # main.loop.world.team
+        
+        info = self.message
         print("produzindo")
-        return str(mock_data)
+        return str(info)
 
     def run(self):
         server_thread = threading.Thread(target=self.start_server)

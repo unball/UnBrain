@@ -1,5 +1,5 @@
 from ..entity import Entity
-from strategy.field.UVF import UVF, UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
 from strategy.field.goalKeeper import GoalKeeperField
 from strategy.field.attractive import AttractiveField

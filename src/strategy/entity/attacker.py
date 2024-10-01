@@ -119,9 +119,8 @@ class Attacker(Entity):
             self.robot.vref = 999
             self.robot.gammavels = (0,0,0)
             self.robot.movState = 1
-            Kr = None
+            Kr = 0.03
             pose = self.robot.ref
-            singleObstacle = False
         # Se não, vai para a bola
         else:
             # Vai para a bola saturada em -0.60m em x
@@ -130,8 +129,7 @@ class Attacker(Entity):
             self.robot.vref = 999
             self.robot.gammavels = gammavels
             self.robot.movState = 0
-            Kr = 0.04
-            singleObstacle = False#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
+            Kr = 0.04#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
         
         # Decide quais espirais estarão no campo e compõe o campo
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
@@ -144,7 +142,7 @@ class Attacker(Entity):
         if any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
-            self.robot.field = UVF((*pose[:2], angle), direction=-np.sign(rb[1]), radius=0.1, Kr=Kr, )
+            self.robot.field = UVF((*pose[:2], angle), direction=-np.sign(rb[1]), radius=0.1, Kr=Kr)
         else: 
             #if howFrontBall(rb, rr, rg) > 0: radius = 0
             #else: radius = None

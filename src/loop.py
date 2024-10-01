@@ -292,11 +292,31 @@ class Loop:
             self.ws_thread.start()
             self.loop_thread.start() # inicia thread do loop
 
+            robot_i=0
+            field_dims=(170*4, 130*4)
+            arrow_spaces=16
+
+            x = np.arange(-field_dims[0]/2, field_dims[0]/2, arrow_spaces)
+            y = np.arange(-field_dims[1]/2, field_dims[1]/2, arrow_spaces)
+            X, Y = np.meshgrid(x, y)
+            arrow_positions = np.array([X.flatten(), Y.flatten()]).T
+            positions = []
+            for i in range(arrow_positions.shape[0]):
+                positions.append(arrow_positions[i]/400)
+
             if self.draw_uvf:
-                    if self.threadScreen is None:
-                        print('Iniciando thread...')
-                        self.threadScreen = threading.Thread(target=self.UVF_screen.animate)
-                        self.threadScreen.start()
+                plt.ion()
+                plt.show(block=False)
+                while self.running:
+                    print(self.world.raw_team[0].field)
+                    robot = self.world.raw_team[robot_i]
+                    
+                    angles = list(map(robot.field.F, positions))
+
+                    plt.quiver(X, Y, np.cos(angles), np.sin(angles))
+                    plt.draw()
+                    plt.pause(1)
+                    plt.clf()
                         
             # espera threads
             self.ws_thread.join()

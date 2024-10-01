@@ -45,7 +45,8 @@ class WebSocket:
             angles = list(map(robot.field.F, positions))
 
             # plt.quiver(X, Y, np.cos(angles), np.sin(angles))
-            # plt.show()
+            # plt.draw()
+            # plt.pause(1)
 
             return angles if robot.field is not None else 0
         

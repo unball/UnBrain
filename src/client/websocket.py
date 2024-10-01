@@ -5,6 +5,7 @@ import websockets
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+import msgpack
 
 def producer():
     while True:
@@ -16,7 +17,7 @@ def consumer(message):
 
 class WebSocket:
     def __init__(self, loop, port=5001):
-        self.world = loop.world
+        self.loop = loop
         self.host = "localhost"
         self.port = port
         self.server = None
@@ -26,8 +27,8 @@ class WebSocket:
         # time.sleep(3)
 
         # mensagem com infos dos robos e bola
-        message_robot = [f"ROBOT {i}: pos {self.world.team[i].pos} vel {self.world.team[i].v};\n" for i in self.world.n_robots]
-        message_ball = f"BALL: pos {self.world.ball.pos} vel {self.world.ball.v*400}\n"
+        message_robot = {f"ROBOT {i}": list(self.loop.world.team[i].pos)+list(self.loop.world.team[i].v) for i in self.loop.world.n_robots if i is not None}
+        message_ball = list(self.loop.world.ball.pos)+list(self.loop.world.ball.v) # lembrar de multiplicar a velocidade por 400 (n sei pq)
 
         # calculo pra enviar o UVF via mensagem
         def message_uvf(robot_i=2, field_dims=(170*4, 130*4), arrow_spaces=16):
@@ -36,7 +37,7 @@ class WebSocket:
             X, Y = np.meshgrid(x, y)
             arrow_positions = np.array([X.flatten(), Y.flatten()]).T
         
-            robot = self.world.raw_team[robot_i]
+            robot = self.loop.world.raw_team[robot_i]
 
             positions = []
             for i in range(arrow_positions.shape[0]):
@@ -44,17 +45,21 @@ class WebSocket:
             
             angles = list(map(robot.field.F, positions))
 
-            # plt.quiver(X, Y, np.cos(angles), np.sin(angles))
-            # plt.draw()
-            # plt.pause(1)
-
             return angles if robot.field is not None else 0
         
-        self.message = f"{message_robot[0]}{message_robot[1]}{message_robot[2]}{message_ball};\n UVF:{message_uvf()}" # main.loop.world.team
+        # self.message = f"{message_robot[0]}{message_robot[1]}{message_robot[2]}{message_ball};\n UVF:{message_uvf()}" # main.loop.world.team
+        self.message = {"TEAM": message_robot, 
+                        "BALL": message_ball}
         
-        info = self.message
+        if self.loop.draw_uvf:
+            self.message["UVF"] = message_uvf()
+
+        packed_message = msgpack.packb(self.message)
+        print(msgpack.unpackb(packed_message)["BALL"])
+        
+        info = packed_message
         print("produzindo")
-        return str(info)
+        return info
 
     def run(self):
         server_thread = threading.Thread(target=self.start_server)

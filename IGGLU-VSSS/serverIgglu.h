@@ -20,7 +20,7 @@ public:
 private slots:
     void onConnected();
     void closed();
-    void processMessage(const QString &message);
+    void processMessage(const QByteArray &message);
     void onDisconnected(){
         qDebug() << "Disconnected";
     }

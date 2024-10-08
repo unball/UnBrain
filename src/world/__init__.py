@@ -81,7 +81,7 @@ class World:
         self.delay_camera = 0
         self.t0 = time.time()
         self.execTime = 0
-
+        self.igglu = True
         
         self.team_yellow = team_yellow
 

@@ -5,6 +5,8 @@ from UVF_screen import UVFScreen
 from communication.serialWifi import SerialRadio
 from world import World
 
+import threading
+
 # Importa interface com FiraSim
 from client import VSS
 
@@ -17,7 +19,7 @@ import sys
 import signal
 from vision.receiver import FiraClient
 from client.client_pickle import ClientPickle
-from client.websocket import WebSocket
+# from client.websocket import WebSocket
 
 
 from strategy.automaticReplacer import AutomaticReplacer
@@ -30,7 +32,7 @@ class Loop:
                 loop_freq=90,
                 draw_uvf=False,
                 team_yellow=False,
-                immediate_start=False,
+                immediate_start=True,
                 static_entities=False,
                 referee=False,
                 firasim=False,
@@ -45,7 +47,9 @@ class Loop:
                 
             ):
         
-
+        self.loop_thread = None
+        self.ws_thread = None
+        self.threadScreen = None
 
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
@@ -85,8 +89,10 @@ class Loop:
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
-        # signal.signal(signal.SIGINT, self.handle_SIGINT)
-
+        try: 
+            signal.signal(signal.SIGINT, self.handle_SIGINT)
+        except ValueError:
+            print("tentou chamar signal fora da thread principal")
         # Instancia interfaces com o referee
         self.rc = RefereeCommands()
         self.rp = RefereePlacement(team_yellow=team_yellow)
@@ -112,8 +118,8 @@ class Loop:
         self.draw_uvf = draw_uvf
         if self.draw_uvf:
             self.UVF_screen = UVFScreen(self.world, index_uvf_robot=1)
-            self.UVF_screen.initialiazeScreen()
-            self.UVF_screen.initialiazeObjects()
+            # self.UVF_screen.initialiazeScreen()
+            # self.UVF_screen.initialiazeObjects()
 
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
     def handle_SIGINT(self, signum, frame):
@@ -184,10 +190,10 @@ class Loop:
         
         if self.world.igglu:
             for robot in self.world.raw_team:
-                if robot is not None: robot.turnOff()
+                if robot is not None: robot.turnOn()
                 
         # Desenha no ALP-GUI
-        self.draw()
+        # self.draw()
 
     def busyLoop(self):
 
@@ -247,12 +253,20 @@ class Loop:
 
         clientProvider().drawBall(0, self.world.ball.x, self.world.ball.y)
 
-    def run(self):
+    def websocket_thread(self):
+        from client.websocket import WebSocket
+        print("entrou no ws")
+        webapp = WebSocket(loop=self)
+        webapp.run()
+
+    def run_loop(self):
         t0 = 0
+        tempo_zero = time.time()
 
         logging.info("System is running")
 
         while self.running:
+            
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
@@ -265,7 +279,45 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            if self.draw_uvf:
-                self.UVF_screen.updateScreen()
+            print(f"gfl{time.time()-tempo_zero:.2f}", end="\r", flush=True)
 
         logging.info("System stopped")
+
+    def run(self):
+        if self.ws_thread is None and self.loop_thread is None:
+            # inicializa threads
+            self.ws_thread = threading.Thread(target=self.websocket_thread)
+            self.loop_thread = threading.Thread(target=self.run_loop)
+
+            self.ws_thread.start()
+            self.loop_thread.start() # inicia thread do loop
+
+            robot_i=0
+            field_dims=(170*4, 130*4)
+            arrow_spaces=16
+
+            x = np.arange(-field_dims[0]/2, field_dims[0]/2, arrow_spaces)
+            y = np.arange(-field_dims[1]/2, field_dims[1]/2, arrow_spaces)
+            X, Y = np.meshgrid(x, y)
+            arrow_positions = np.array([X.flatten(), Y.flatten()]).T
+            positions = []
+            for i in range(arrow_positions.shape[0]):
+                positions.append(arrow_positions[i]/400)
+
+            if self.draw_uvf:
+                plt.ion()
+                plt.show(block=False)
+                while self.running:
+                    print(self.world.raw_team[0].field)
+                    robot = self.world.raw_team[robot_i]
+                    
+                    angles = list(map(robot.field.F, positions))
+
+                    plt.quiver(X, Y, np.cos(angles), np.sin(angles))
+                    plt.draw()
+                    plt.pause(1)
+                    plt.clf()
+                        
+            # espera threads
+            self.ws_thread.join()
+            self.loop_thread.join()

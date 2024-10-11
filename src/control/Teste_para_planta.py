@@ -30,20 +30,20 @@ class Teste(Control):
           v = 0.2
           w = 0.0
           if self.index == 1:
-            self.expectate_x += 0.0033333333
+            self.expectate_x += v*1/60
           elif self.index == 2:
-            self.expectate_y += 0.0033333333
+            self.expectate_y += v*1/60
           elif self.index == 3:
-            self.expectate_x -= 0.0033333333
+            self.expectate_x -= v*1/60
           elif self.index == 4:
-            self.expectate_y -= 0.0033333333
+            self.expectate_y -= v*1/60
         elif self.x == 1 and not time.time() - self.tempo < 0.7:
           self.x = 2
           self.tempo = time.time()
         elif self.x == 2 and time.time() - self.tempo < 0.314:
           v = 0.0
-          w = 5
-          self.expectate_th += 0.0261799388
+          w = 5.0
+          self.expectate_th += w*1/60
         elif self.x == 2 and not time.time() - self.tempo < 0.314:
           self.x = 3
           self.tempo = time.time()
@@ -60,20 +60,20 @@ class Teste(Control):
           v = -0.2
           w = 0.0
           if self.index == 1:
-            self.expectate_x -= 0.0033333333
+            self.expectate_x -= v*1/60
           elif self.index == 2:
-            self.expectate_y -= 0.0033333333
+            self.expectate_y -= v*1/60
           elif self.index == 3:
-            self.expectate_x += 0.0033333333
+            self.expectate_x += v*1/60
           elif self.index == 4:
-            self.expectate_y += 0.0033333333
+            self.expectate_y += v*1/60
         elif self.x == 1 and not time.time() - self.tempo < 0.7:
           self.x = 2
           self.tempo = time.time()
         elif self.x == 2 and time.time() - self.tempo < 0.314:
           v = 0.0
-          w = -5
-          self.expectate_th -= 0.0261799388
+          w = -5.0
+          self.expectate_th -= w*1/60
         elif self.x == 2 and not time.time() - self.tempo < 0.314:
           self.x = 3
           self.tempo = time.time()

@@ -11,6 +11,7 @@ from control.defender import DefenderControl
 from control.UFC import UFC_Simple
 from control.Teste_para_planta import Teste
 from control.SecAttacker import SecAttackerControl
+from control.V_e_W import Teste_v_w
 import numpy as np
 import math
 import time

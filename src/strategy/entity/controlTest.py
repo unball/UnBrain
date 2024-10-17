@@ -12,6 +12,7 @@ from control.UFC import UFC_Simple
 from control.Teste_para_planta import Teste
 from control.SecAttacker import SecAttackerControl
 from control.V_e_W import Teste_v_w
+from control.Twiddle import Twiddle
 import numpy as np
 import math
 import time
@@ -20,7 +21,7 @@ class ControlTester(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = Teste(self.world)
+        self._control = Twiddle(self.world)
         self.lastChat = 0
         self.x = 9
 

@@ -45,14 +45,18 @@ nc = 1
 ny = 3
 nu = 2
 
+print(p)
+
 y,u = m.arx(p)
 
 tf = 12
 u0 = np.zeros(tf+1)
 u1 = u0.copy()
 
-u0[5:] = 2.0 #v
-u1[2:] = 0.0 #w
+u0[5:] = 2.0 #vx  
+# u0[5:10] = 0.7
+# u1[2:] = 5.0 #w
+# u1[11:] = -15.0
 
 u[0].value = u0
 u[1].value = u1
@@ -66,13 +70,13 @@ plt.figure(1)
 plt.subplot(2,1,1)
 plt.plot(m.time,u[0].value,'r-',label=r'$v$')
 plt.plot(m.time,u[1].value,'b--',label=r'$w$')
-plt.ylabel('MV')
+plt.ylabel('Manipulated Variable')
 plt.legend(loc='best')
 plt.subplot(2,1,2)
 plt.plot(m.time,y[0].value,'r:',label=r'$y_0$')
 plt.plot(m.time,y[1].value,'b.-',label=r'$y_1$')
 plt.plot(m.time,y[2].value,'g.-',label=r'$y_2$')
-plt.ylabel('CV')
+plt.ylabel('Process Variable')
 plt.xlabel('Time (sec)')
 plt.legend(loc='best')
 plt.tight_layout()

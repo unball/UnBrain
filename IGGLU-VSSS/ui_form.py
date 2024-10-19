@@ -18,8 +18,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplication, QComboBox,
     QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLayout, QMainWindow, QPushButton,
-    QScrollArea, QSizePolicy, QSlider, QSpacerItem,
-    QSpinBox, QTabWidget, QVBoxLayout, QWidget)
+    QRadioButton, QScrollArea, QSizePolicy, QSlider,
+    QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -1668,6 +1669,310 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.navTab, "")
         self.decisionTab = QWidget()
         self.decisionTab.setObjectName(u"decisionTab")
+        self.decScrollArea = QScrollArea(self.decisionTab)
+        self.decScrollArea.setObjectName(u"decScrollArea")
+        self.decScrollArea.setGeometry(QRect(0, 0, 441, 271))
+        sizePolicy1.setHeightForWidth(self.decScrollArea.sizePolicy().hasHeightForWidth())
+        self.decScrollArea.setSizePolicy(sizePolicy1)
+        self.decScrollArea.setMinimumSize(QSize(310, 0))
+        self.decScrollArea.setFrameShape(QFrame.Shape.NoFrame)
+        self.decScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.decScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.decScrollArea.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.decScrollArea.setWidgetResizable(True)
+        self.decScrollArea.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.decScrollContents = QWidget()
+        self.decScrollContents.setObjectName(u"decScrollContents")
+        self.decScrollContents.setGeometry(QRect(0, 0, 427, 271))
+        sizePolicy.setHeightForWidth(self.decScrollContents.sizePolicy().hasHeightForWidth())
+        self.decScrollContents.setSizePolicy(sizePolicy)
+        self.verticalLayout_26 = QVBoxLayout(self.decScrollContents)
+        self.verticalLayout_26.setSpacing(6)
+        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
+        self.verticalLayout_26.setContentsMargins(6, 6, 6, 6)
+        self.decHeader = QFrame(self.decScrollContents)
+        self.decHeader.setObjectName(u"decHeader")
+        sizePolicy1.setHeightForWidth(self.decHeader.sizePolicy().hasHeightForWidth())
+        self.decHeader.setSizePolicy(sizePolicy1)
+        self.decHeader.setMinimumSize(QSize(350, 0))
+        self.decHeader.setMaximumSize(QSize(16777215, 16777215))
+        self.decHeader.setFrameShape(QFrame.Shape.NoFrame)
+        self.decHeader.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_38 = QHBoxLayout(self.decHeader)
+        self.horizontalLayout_38.setSpacing(0)
+        self.horizontalLayout_38.setObjectName(u"horizontalLayout_38")
+        self.horizontalLayout_38.setContentsMargins(0, 0, 0, 0)
+        self.decTabTitle = QLabel(self.decHeader)
+        self.decTabTitle.setObjectName(u"decTabTitle")
+        sizePolicy2.setHeightForWidth(self.decTabTitle.sizePolicy().hasHeightForWidth())
+        self.decTabTitle.setSizePolicy(sizePolicy2)
+        self.decTabTitle.setFont(font2)
+        self.decTabTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.horizontalLayout_38.addWidget(self.decTabTitle)
+
+        self.decHeaderSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_38.addItem(self.decHeaderSpacer)
+
+
+        self.verticalLayout_26.addWidget(self.decHeader)
+
+        self.staticEntitiesContents = QHBoxLayout()
+        self.staticEntitiesContents.setSpacing(0)
+        self.staticEntitiesContents.setObjectName(u"staticEntitiesContents")
+        self.chooseEntitites = QVBoxLayout()
+        self.chooseEntitites.setObjectName(u"chooseEntitites")
+        self.staticEntitiesRadio = QRadioButton(self.decScrollContents)
+        self.staticEntitiesRadio.setObjectName(u"staticEntitiesRadio")
+        self.staticEntitiesRadio.setFont(font3)
+        self.staticEntitiesRadio.setChecked(True)
+
+        self.chooseEntitites.addWidget(self.staticEntitiesRadio)
+
+        self.dynEntitiesRadio = QRadioButton(self.decScrollContents)
+        self.dynEntitiesRadio.setObjectName(u"dynEntitiesRadio")
+        self.dynEntitiesRadio.setFont(font3)
+
+        self.chooseEntitites.addWidget(self.dynEntitiesRadio)
+
+
+        self.staticEntitiesContents.addLayout(self.chooseEntitites)
+
+        self.staticRobotsBox = QFrame(self.decScrollContents)
+        self.staticRobotsBox.setObjectName(u"staticRobotsBox")
+        self.staticRobotsBox.setFrameShape(QFrame.Shape.NoFrame)
+        self.staticRobotsBox.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_33 = QVBoxLayout(self.staticRobotsBox)
+        self.verticalLayout_33.setObjectName(u"verticalLayout_33")
+        self.verticalLayout_33.setContentsMargins(0, 0, 0, 0)
+        self.staticRobot = QHBoxLayout()
+        self.staticRobot.setObjectName(u"staticRobot")
+        self.staticRobotLabel = QLabel(self.staticRobotsBox)
+        self.staticRobotLabel.setObjectName(u"staticRobotLabel")
+        self.staticRobotLabel.setFont(font2)
+        self.staticRobotLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.staticRobot.addWidget(self.staticRobotLabel)
+
+        self.staticRobotDropdown = QComboBox(self.staticRobotsBox)
+        self.staticRobotDropdown.addItem("")
+        self.staticRobotDropdown.addItem("")
+        self.staticRobotDropdown.addItem("")
+        self.staticRobotDropdown.addItem("")
+        self.staticRobotDropdown.setObjectName(u"staticRobotDropdown")
+        self.staticRobotDropdown.setFont(font3)
+        self.staticRobotDropdown.setCursor(QCursor(Qt.PointingHandCursor))
+        self.staticRobotDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+
+        self.staticRobot.addWidget(self.staticRobotDropdown)
+
+
+        self.verticalLayout_33.addLayout(self.staticRobot)
+
+        self.staticRobot_2 = QHBoxLayout()
+        self.staticRobot_2.setObjectName(u"staticRobot_2")
+        self.staticRobotLabel_2 = QLabel(self.staticRobotsBox)
+        self.staticRobotLabel_2.setObjectName(u"staticRobotLabel_2")
+        self.staticRobotLabel_2.setFont(font2)
+        self.staticRobotLabel_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.staticRobot_2.addWidget(self.staticRobotLabel_2)
+
+        self.staticRobotDropdown_2 = QComboBox(self.staticRobotsBox)
+        self.staticRobotDropdown_2.addItem("")
+        self.staticRobotDropdown_2.addItem("")
+        self.staticRobotDropdown_2.addItem("")
+        self.staticRobotDropdown_2.addItem("")
+        self.staticRobotDropdown_2.setObjectName(u"staticRobotDropdown_2")
+        self.staticRobotDropdown_2.setFont(font3)
+        self.staticRobotDropdown_2.setCursor(QCursor(Qt.PointingHandCursor))
+        self.staticRobotDropdown_2.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+
+        self.staticRobot_2.addWidget(self.staticRobotDropdown_2)
+
+
+        self.verticalLayout_33.addLayout(self.staticRobot_2)
+
+        self.staticRobot3 = QHBoxLayout()
+        self.staticRobot3.setObjectName(u"staticRobot3")
+        self.staticRobotLabel_3 = QLabel(self.staticRobotsBox)
+        self.staticRobotLabel_3.setObjectName(u"staticRobotLabel_3")
+        self.staticRobotLabel_3.setFont(font2)
+        self.staticRobotLabel_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.staticRobot3.addWidget(self.staticRobotLabel_3)
+
+        self.staticRobotDropdown_3 = QComboBox(self.staticRobotsBox)
+        self.staticRobotDropdown_3.addItem("")
+        self.staticRobotDropdown_3.addItem("")
+        self.staticRobotDropdown_3.addItem("")
+        self.staticRobotDropdown_3.addItem("")
+        self.staticRobotDropdown_3.setObjectName(u"staticRobotDropdown_3")
+        self.staticRobotDropdown_3.setFont(font3)
+        self.staticRobotDropdown_3.setCursor(QCursor(Qt.PointingHandCursor))
+        self.staticRobotDropdown_3.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+
+        self.staticRobot3.addWidget(self.staticRobotDropdown_3)
+
+
+        self.verticalLayout_33.addLayout(self.staticRobot3)
+
+
+        self.staticEntitiesContents.addWidget(self.staticRobotsBox)
+
+
+        self.verticalLayout_26.addLayout(self.staticEntitiesContents)
+
+        self.decHLine = QFrame(self.decScrollContents)
+        self.decHLine.setObjectName(u"decHLine")
+        self.decHLine.setFrameShape(QFrame.HLine)
+        self.decHLine.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_26.addWidget(self.decHLine)
+
+        self.positioning = QVBoxLayout()
+        self.positioning.setObjectName(u"positioning")
+        self.posLabel = QLabel(self.decScrollContents)
+        self.posLabel.setObjectName(u"posLabel")
+        self.posLabel.setFont(font2)
+
+        self.positioning.addWidget(self.posLabel)
+
+        self.posContents = QFrame(self.decScrollContents)
+        self.posContents.setObjectName(u"posContents")
+        self.posContents.setFrameShape(QFrame.Shape.StyledPanel)
+        self.posContents.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_34 = QVBoxLayout(self.posContents)
+        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
+        self.verticalLayout_34.setContentsMargins(0, 0, 0, 0)
+        self.refereePos = QHBoxLayout()
+        self.refereePos.setObjectName(u"refereePos")
+        self.refereePosLabel = QLabel(self.posContents)
+        self.refereePosLabel.setObjectName(u"refereePosLabel")
+        self.refereePosLabel.setFont(font3)
+
+        self.refereePos.addWidget(self.refereePosLabel)
+
+        self.refereePosSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.refereePos.addItem(self.refereePosSpacer)
+
+        self.refereePosSwitch = QSlider(self.posContents)
+        self.refereePosSwitch.setObjectName(u"refereePosSwitch")
+        sizePolicy2.setHeightForWidth(self.refereePosSwitch.sizePolicy().hasHeightForWidth())
+        self.refereePosSwitch.setSizePolicy(sizePolicy2)
+        self.refereePosSwitch.setMinimumSize(QSize(41, 0))
+        self.refereePosSwitch.setMaximumSize(QSize(41, 16777215))
+        self.refereePosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
+        self.refereePosSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.refereePosSwitch.setMaximum(1)
+        self.refereePosSwitch.setValue(0)
+        self.refereePosSwitch.setSliderPosition(0)
+        self.refereePosSwitch.setOrientation(Qt.Orientation.Horizontal)
+
+        self.refereePos.addWidget(self.refereePosSwitch)
+
+
+        self.verticalLayout_34.addLayout(self.refereePos)
+
+        self.manualPos = QHBoxLayout()
+        self.manualPos.setObjectName(u"manualPos")
+        self.manualPosLabel = QLabel(self.posContents)
+        self.manualPosLabel.setObjectName(u"manualPosLabel")
+        self.manualPosLabel.setFont(font3)
+
+        self.manualPos.addWidget(self.manualPosLabel)
+
+        self.manualPosSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.manualPos.addItem(self.manualPosSpacer)
+
+        self.manualPosSwitch = QSlider(self.posContents)
+        self.manualPosSwitch.setObjectName(u"manualPosSwitch")
+        sizePolicy2.setHeightForWidth(self.manualPosSwitch.sizePolicy().hasHeightForWidth())
+        self.manualPosSwitch.setSizePolicy(sizePolicy2)
+        self.manualPosSwitch.setMinimumSize(QSize(41, 0))
+        self.manualPosSwitch.setMaximumSize(QSize(41, 16777215))
+        self.manualPosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
+        self.manualPosSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.manualPosSwitch.setMaximum(1)
+        self.manualPosSwitch.setValue(1)
+        self.manualPosSwitch.setSliderPosition(1)
+        self.manualPosSwitch.setOrientation(Qt.Orientation.Horizontal)
+
+        self.manualPos.addWidget(self.manualPosSwitch)
+
+
+        self.verticalLayout_34.addLayout(self.manualPos)
+
+        self.selectPos = QHBoxLayout()
+        self.selectPos.setObjectName(u"selectPos")
+        self.selectPosLabel = QLabel(self.posContents)
+        self.selectPosLabel.setObjectName(u"selectPosLabel")
+        font6 = QFont()
+        font6.setFamilies([u"Roboto"])
+        font6.setPointSize(8)
+        font6.setBold(False)
+        self.selectPosLabel.setFont(font6)
+        self.selectPosLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.selectPos.addWidget(self.selectPosLabel)
+
+        self.selectPosSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.selectPos.addItem(self.selectPosSpacer)
+
+        self.selectPosDropdown = QComboBox(self.posContents)
+        self.selectPosDropdown.addItem("")
+        self.selectPosDropdown.addItem("")
+        self.selectPosDropdown.addItem("")
+        self.selectPosDropdown.setObjectName(u"selectPosDropdown")
+        sizePolicy1.setHeightForWidth(self.selectPosDropdown.sizePolicy().hasHeightForWidth())
+        self.selectPosDropdown.setSizePolicy(sizePolicy1)
+        self.selectPosDropdown.setFont(font3)
+        self.selectPosDropdown.setCursor(QCursor(Qt.PointingHandCursor))
+        self.selectPosDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+
+        self.selectPos.addWidget(self.selectPosDropdown)
+
+
+        self.verticalLayout_34.addLayout(self.selectPos)
+
+        self.posTime = QHBoxLayout()
+        self.posTime.setObjectName(u"posTime")
+        self.posTimeLabel = QLabel(self.posContents)
+        self.posTimeLabel.setObjectName(u"posTimeLabel")
+        self.posTimeLabel.setFont(font6)
+        self.posTimeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.posTime.addWidget(self.posTimeLabel)
+
+        self.posTimeSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.posTime.addItem(self.posTimeSpacer)
+
+        self.posTimeValue = QLabel(self.posContents)
+        self.posTimeValue.setObjectName(u"posTimeValue")
+        self.posTimeValue.setFont(font6)
+        self.posTimeValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.posTime.addWidget(self.posTimeValue)
+
+
+        self.verticalLayout_34.addLayout(self.posTime)
+
+
+        self.positioning.addWidget(self.posContents)
+
+
+        self.verticalLayout_26.addLayout(self.positioning)
+
+        self.decSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_26.addItem(self.decSpacer)
+
+        self.decScrollArea.setWidget(self.decScrollContents)
         self.tabWidget.addTab(self.decisionTab, "")
         self.layoutWidget = QWidget(self.sysInfoTab)
         self.layoutWidget.setObjectName(u"layoutWidget")
@@ -1719,10 +2024,6 @@ class Ui_MainWindow(object):
 
         self.ballInfoStatus = QLabel(self.ballInfoHeader)
         self.ballInfoStatus.setObjectName(u"ballInfoStatus")
-        font6 = QFont()
-        font6.setFamilies([u"Roboto"])
-        font6.setPointSize(8)
-        font6.setBold(False)
         self.ballInfoStatus.setFont(font6)
         self.ballInfoStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4739,12 +5040,14 @@ class Ui_MainWindow(object):
         self.hueMinSlider.valueChanged.connect(self.hueMinValue.setNum)
         self.valueMinSlider.valueChanged.connect(self.valueMinValue.setNum)
         self.vBallMaxSlider.valueChanged.connect(self.vBallMaxValue.setNum)
-        self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeTeamColor)
-        self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeFieldSideArrow)
+        self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeFieldSideArrow)
+        self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeTeamColor)
         self.viewUvfButton.clicked["bool"].connect(MainWindow.enableViewUvf)
+        self.staticEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setVisible)
+        self.dynEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setHidden)
 
         self.appContents.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.visionSteps.setCurrentIndex(0)
 
 
@@ -4883,6 +5186,44 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.allUvfLabel.setText(QCoreApplication.translate("MainWindow", u"Visualizar todos os campos UVF", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.navTab), QCoreApplication.translate("MainWindow", u"Navega\u00e7\u00e3o", None))
+#if QT_CONFIG(tooltip)
+        self.decTabTitle.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione o tipo de forma\u00e7\u00e3o", None))
+#endif // QT_CONFIG(tooltip)
+        self.decTabTitle.setText(QCoreApplication.translate("MainWindow", u"Forma\u00e7\u00e3o das entidades", None))
+        self.staticEntitiesRadio.setText(QCoreApplication.translate("MainWindow", u"Entidades est\u00e1ticas", None))
+        self.dynEntitiesRadio.setText(QCoreApplication.translate("MainWindow", u"Entidades din\u00e2micas", None))
+        self.staticRobotLabel.setText(QCoreApplication.translate("MainWindow", u"Rob\u00f4 0:", None))
+        self.staticRobotDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.staticRobotDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"Atacante", None))
+        self.staticRobotDropdown.setItemText(2, QCoreApplication.translate("MainWindow", u"Zagueiro", None))
+        self.staticRobotDropdown.setItemText(3, QCoreApplication.translate("MainWindow", u"Goleiro", None))
+
+        self.staticRobotDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.staticRobotLabel_2.setText(QCoreApplication.translate("MainWindow", u"Rob\u00f4 1:", None))
+        self.staticRobotDropdown_2.setItemText(0, QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.staticRobotDropdown_2.setItemText(1, QCoreApplication.translate("MainWindow", u"Atacante", None))
+        self.staticRobotDropdown_2.setItemText(2, QCoreApplication.translate("MainWindow", u"Zagueiro", None))
+        self.staticRobotDropdown_2.setItemText(3, QCoreApplication.translate("MainWindow", u"Goleiro", None))
+
+        self.staticRobotDropdown_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.staticRobotLabel_3.setText(QCoreApplication.translate("MainWindow", u"Rob\u00f4 2:", None))
+        self.staticRobotDropdown_3.setItemText(0, QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.staticRobotDropdown_3.setItemText(1, QCoreApplication.translate("MainWindow", u"Atacante", None))
+        self.staticRobotDropdown_3.setItemText(2, QCoreApplication.translate("MainWindow", u"Zagueiro", None))
+        self.staticRobotDropdown_3.setItemText(3, QCoreApplication.translate("MainWindow", u"Goleiro", None))
+
+        self.staticRobotDropdown_3.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        self.posLabel.setText(QCoreApplication.translate("MainWindow", u"Posicionamento", None))
+        self.refereePosLabel.setText(QCoreApplication.translate("MainWindow", u"Usar posicionamento do juiz virtual", None))
+        self.manualPosLabel.setText(QCoreApplication.translate("MainWindow", u"Usar posicionamento do juiz manual", None))
+        self.selectPosLabel.setText(QCoreApplication.translate("MainWindow", u"Selecionar posicionamento", None))
+        self.selectPosDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"Free Ball", None))
+        self.selectPosDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"Kick Off", None))
+        self.selectPosDropdown.setItemText(2, QCoreApplication.translate("MainWindow", u"P\u00eanalti", None))
+
+        self.selectPosDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Free Ball", None))
+        self.posTimeLabel.setText(QCoreApplication.translate("MainWindow", u"Tempo tentando se posicionar:", None))
+        self.posTimeValue.setText(QCoreApplication.translate("MainWindow", u"8s", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.decisionTab), QCoreApplication.translate("MainWindow", u"Decis\u00e3o", None))
         self.ballInfoTitle.setText(QCoreApplication.translate("MainWindow", u"Bola", None))
         self.ballInfoStatus.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" color:#3e7239;\">Status</span></p></body></html>", None))

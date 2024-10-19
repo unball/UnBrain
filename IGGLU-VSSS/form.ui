@@ -4176,6 +4176,734 @@
             <attribute name="title">
              <string>Decisão</string>
             </attribute>
+            <widget class="QScrollArea" name="decScrollArea">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>441</width>
+               <height>271</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>310</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Shape::NoFrame</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <widget class="QWidget" name="decScrollContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>427</width>
+                <height>271</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_26">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="leftMargin">
+                <number>6</number>
+               </property>
+               <property name="topMargin">
+                <number>6</number>
+               </property>
+               <property name="rightMargin">
+                <number>6</number>
+               </property>
+               <property name="bottomMargin">
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QFrame" name="decHeader">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>350</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_38">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="decTabTitle">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>Roboto</family>
+                      <pointsize>8</pointsize>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Selecione o tipo de formação</string>
+                    </property>
+                    <property name="text">
+                     <string>Formação das entidades</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignmentFlag::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="decHeaderSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Orientation::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="staticEntitiesContents">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="chooseEntitites">
+                   <item>
+                    <widget class="QRadioButton" name="staticEntitiesRadio">
+                     <property name="font">
+                      <font>
+                       <family>Roboto</family>
+                       <pointsize>8</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Entidades estáticas</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="dynEntitiesRadio">
+                     <property name="font">
+                      <font>
+                       <family>Roboto</family>
+                       <pointsize>8</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Entidades dinâmicas</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="staticRobotsBox">
+                   <property name="frameShape">
+                    <enum>QFrame::Shape::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Shadow::Raised</enum>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_33">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <layout class="QHBoxLayout" name="staticRobot">
+                      <item>
+                       <widget class="QLabel" name="staticRobotLabel">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Robô 0:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="staticRobotDropdown">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Papel do robô</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Papel do robô</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Atacante</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Zagueiro</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Goleiro</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="staticRobot_2">
+                      <item>
+                       <widget class="QLabel" name="staticRobotLabel_2">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Robô 1:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="staticRobotDropdown_2">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Papel do robô</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Papel do robô</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Atacante</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Zagueiro</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Goleiro</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="staticRobot3">
+                      <item>
+                       <widget class="QLabel" name="staticRobotLabel_3">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Robô 2:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="staticRobotDropdown_3">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Papel do robô</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Papel do robô</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Atacante</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Zagueiro</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Goleiro</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="Line" name="decHLine">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="positioning">
+                 <item>
+                  <widget class="QLabel" name="posLabel">
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>8</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Posicionamento</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="posContents">
+                   <property name="frameShape">
+                    <enum>QFrame::Shape::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Shadow::Raised</enum>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_34">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <layout class="QHBoxLayout" name="refereePos">
+                      <item>
+                       <widget class="QLabel" name="refereePosLabel">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Usar posicionamento do juiz virtual</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="refereePosSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QSlider" name="refereePosSwitch">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>41</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>41</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="layoutDirection">
+                         <enum>Qt::LayoutDirection::LeftToRight</enum>
+                        </property>
+                        <property name="maximum">
+                         <number>1</number>
+                        </property>
+                        <property name="value">
+                         <number>0</number>
+                        </property>
+                        <property name="sliderPosition">
+                         <number>0</number>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="manualPos">
+                      <item>
+                       <widget class="QLabel" name="manualPosLabel">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Usar posicionamento do juiz manual</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="manualPosSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QSlider" name="manualPosSwitch">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>41</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>41</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="layoutDirection">
+                         <enum>Qt::LayoutDirection::LeftToRight</enum>
+                        </property>
+                        <property name="maximum">
+                         <number>1</number>
+                        </property>
+                        <property name="value">
+                         <number>1</number>
+                        </property>
+                        <property name="sliderPosition">
+                         <number>1</number>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="selectPos">
+                      <item>
+                       <widget class="QLabel" name="selectPosLabel">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>false</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Selecionar posicionamento</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="selectPosSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="selectPosDropdown">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                         </font>
+                        </property>
+                        <property name="cursor">
+                         <cursorShape>PointingHandCursor</cursorShape>
+                        </property>
+                        <property name="sizeAdjustPolicy">
+                         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Free Ball</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Free Ball</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Kick Off</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Pênalti</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="posTime">
+                      <item>
+                       <widget class="QLabel" name="posTimeLabel">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>false</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Tempo tentando se posicionar:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="posTimeSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="posTimeValue">
+                        <property name="font">
+                         <font>
+                          <family>Roboto</family>
+                          <pointsize>8</pointsize>
+                          <bold>false</bold>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>8s</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="decSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
            </widget>
           </widget>
           <widget class="QWidget" name="layoutWidget">
@@ -11682,12 +12410,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>368</y>
     </hint>
    </hints>
   </connection>
@@ -11698,12 +12426,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>417</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>418</y>
     </hint>
    </hints>
   </connection>
@@ -11714,12 +12442,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>368</y>
     </hint>
    </hints>
   </connection>
@@ -11730,12 +12458,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>417</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>418</y>
     </hint>
    </hints>
   </connection>
@@ -11746,12 +12474,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>538</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>539</y>
     </hint>
    </hints>
   </connection>
@@ -11762,12 +12490,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>
@@ -11778,12 +12506,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>
@@ -11794,12 +12522,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>296</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>297</y>
     </hint>
    </hints>
   </connection>
@@ -11810,12 +12538,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>296</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>297</y>
     </hint>
    </hints>
   </connection>
@@ -11826,12 +12554,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>488</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>489</y>
     </hint>
    </hints>
   </connection>
@@ -11842,12 +12570,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>
@@ -11858,12 +12586,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>488</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>489</y>
     </hint>
    </hints>
   </connection>
@@ -11874,12 +12602,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>144</y>
+     <x>707</x>
+     <y>538</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>144</y>
+     <x>858</x>
+     <y>539</y>
     </hint>
    </hints>
   </connection>
@@ -11928,6 +12656,22 @@
     <hint type="destinationlabel">
      <x>854</x>
      <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>staticEntitiesRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>staticRobotsBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>623</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>686</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>

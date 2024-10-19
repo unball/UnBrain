@@ -21,8 +21,6 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplicati
     QScrollArea, QSizePolicy, QSlider, QSpacerItem,
     QSpinBox, QTabWidget, QVBoxLayout, QWidget)
 
-from pyqt5Custom import ToggleSwitch
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -373,7 +371,6 @@ class Ui_MainWindow(object):
         self.myTeamSideSwitch.setValue(1)
         self.myTeamSideSwitch.setSliderPosition(1)
         self.myTeamSideSwitch.setOrientation(Qt.Orientation.Horizontal)
-        
 
         self.horizontalLayout_6.addWidget(self.myTeamSideSwitch)
 
@@ -4742,11 +4739,12 @@ class Ui_MainWindow(object):
         self.hueMinSlider.valueChanged.connect(self.hueMinValue.setNum)
         self.valueMinSlider.valueChanged.connect(self.valueMinValue.setNum)
         self.vBallMaxSlider.valueChanged.connect(self.vBallMaxValue.setNum)
-        self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeFieldSideArrow)
-        self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeTeamColor)
+        self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeTeamColor)
+        self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeFieldSideArrow)
+        self.viewUvfButton.clicked["bool"].connect(MainWindow.enableViewUvf)
 
         self.appContents.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.visionSteps.setCurrentIndex(0)
 
 

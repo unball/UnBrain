@@ -25,6 +25,10 @@ class MainWindow(QMainWindow):
         self.yellowFlagIcon.addFile(u"assets/icons/yellow_flag.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.blueFlagIcon = QIcon()
         self.blueFlagIcon.addFile(u"assets/icons/blue_flag.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.closedEyeIcon = QIcon()
+        self.closedEyeIcon.addFile(u"assets/icons/mdi_eye-off.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.eyeIcon = QIcon()
+        self.eyeIcon.addFile(u"assets/icons/mdi_eye.svg", QSize(), QIcon.Normal, QIcon.Off)
         
         
     def mousePressEvent(self, event):
@@ -60,6 +64,12 @@ class MainWindow(QMainWindow):
             self.ui.rightTeamSideLabel.setText("Lado inimigo")
             self.ui.leftTeamSideLabel.setText("Lado aliado")
             self.ui.myTeamSideLabel.setText("Esquerdo")
+    
+    def enableViewUvf(self):
+        if self.ui.viewUvfButton.isChecked():
+            self.ui.viewUvfButton.setIcon(self.closedEyeIcon)
+        else:
+            self.ui.viewUvfButton.setIcon(self.eyeIcon)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -1,6 +1,7 @@
 import asyncio
 from websockets.asyncio.server import serve
 
+global queue
 # sleep foi para simular o tempo que o Loop demora para ser executado
 async def producer():
     await asyncio.sleep(3)
@@ -8,11 +9,10 @@ async def producer():
 
 async def consumer(message):
     print(f'Message from client: {message}\n')
-    await queue.put(message)
+    #await queue.put(message)
 
 class WebSocket:
     def __init__(self, port=5001):
-        global queue
         self.host="localhost"
         self.port = port
         self.message = ""

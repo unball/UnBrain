@@ -9,7 +9,6 @@ from tools.interval import Interval
 from control.goalKeeper import GoalKeeperControl
 from control.defender import DefenderControl
 from control.UFC import UFC_Simple
-from control.UFC_modified import UFC_New
 from control.SecAttacker import SecAttackerControl
 import numpy as np
 import math

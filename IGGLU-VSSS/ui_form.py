@@ -14,13 +14,15 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
+    QPalette, QPixmap, QRadialGradient, QTransform, QPen)
 from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplication, QComboBox,
     QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLayout, QMainWindow, QPushButton,
     QRadioButton, QScrollArea, QSizePolicy, QSlider,
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
     QWidget)
+
+from editor import CropEditor
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -2948,33 +2950,31 @@ class Ui_MainWindow(object):
         self.horizontalLayout_138 = QHBoxLayout(self.cropFieldContents)
         self.horizontalLayout_138.setObjectName(u"horizontalLayout_138")
         self.horizontalLayout_138.setContentsMargins(6, 6, 6, 6)
-        self.visionCropDisplay = QFrame(self.cropFieldContents)
-        self.visionCropDisplay.setObjectName(u"visionCropDisplay")
-        sizePolicy7.setHeightForWidth(self.visionCropDisplay.sizePolicy().hasHeightForWidth())
-        self.visionCropDisplay.setSizePolicy(sizePolicy7)
-        self.visionCropDisplay.setMinimumSize(QSize(0, 0))
-        self.visionCropDisplay.setMaximumSize(QSize(16777215, 16777215))
-        self.visionCropDisplay.setCursor(QCursor(Qt.PointingHandCursor))
-        self.visionCropDisplay.setFrameShape(QFrame.Shape.NoFrame)
-        self.visionCropDisplay.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_109 = QVBoxLayout(self.visionCropDisplay)
-        self.verticalLayout_109.setSpacing(0)
-        self.verticalLayout_109.setObjectName(u"verticalLayout_109")
-        self.verticalLayout_109.setContentsMargins(0, 0, 0, 0)
-        self.visionCropFrame = QLabel(self.visionCropDisplay)
+        # self.visionCropDisplay = CropEditor(self.cropFieldContents)
+        # self.visionCropDisplay.setObjectName(u"visionCropDisplay")
+        # sizePolicy7.setHeightForWidth(self.visionCropDisplay.sizePolicy().hasHeightForWidth())
+        # self.visionCropDisplay.setSizePolicy(sizePolicy7)
+        # self.visionCropDisplay.setMinimumSize(QSize(0, 0))
+        # self.visionCropDisplay.setMaximumSize(QSize(16777215, 16777215))
+        # self.visionCropDisplay.setCursor(QCursor(Qt.PointingHandCursor))
+        # self.visionCropDisplay.setFrameShape(QFrame.Shape.NoFrame)
+        # self.visionCropDisplay.setFrameShadow(QFrame.Shadow.Raised)
+        # self.verticalLayout_109 = QVBoxLayout(self.visionCropDisplay)
+        # self.verticalLayout_109.setSpacing(0)
+        # self.verticalLayout_109.setObjectName(u"verticalLayout_109")
+        # self.verticalLayout_109.setContentsMargins(0, 0, 0, 0)
+        self.visionCropFrame = CropEditor(self.cropFieldContents, QPixmap(u"assets/defaultFrame.png"))
         self.visionCropFrame.setObjectName(u"visionCropFrame")
         sizePolicy2.setHeightForWidth(self.visionCropFrame.sizePolicy().hasHeightForWidth())
-        self.visionCropFrame.setSizePolicy(sizePolicy2)
-        self.visionCropFrame.setMinimumSize(QSize(0, 0))
-        self.visionCropFrame.setMaximumSize(QSize(16777215, 16777215))
-        self.visionCropFrame.setPixmap(QPixmap(u"assets/defaultFrame.png"))
+        self.visionCropFrame.setSizePolicy(sizePolicy7)
         self.visionCropFrame.setScaledContents(True)
         self.visionCropFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.visionCropFrame.setCursor(QCursor(Qt.PointingHandCursor))
 
-        self.verticalLayout_109.addWidget(self.visionCropFrame)
+        #self.verticalLayout_109.addWidget(self.visionCropFrame)
 
 
-        self.horizontalLayout_138.addWidget(self.visionCropDisplay, 0, Qt.AlignmentFlag.AlignTop)
+        self.horizontalLayout_138.addWidget(self.visionCropFrame, 0, Qt.AlignmentFlag.AlignTop)
 
         self.cropFieldTools = QFrame(self.cropFieldContents)
         self.cropFieldTools.setObjectName(u"cropFieldTools")
@@ -5302,7 +5302,7 @@ class Ui_MainWindow(object):
         self.vBallPos.setText(QCoreApplication.translate("MainWindow", u"Posi\u00e7\u00e3o: (0.00, 0.00) m", None))
         self.nextStepVisionButton.setText(QCoreApplication.translate("MainWindow", u"Avan\u00e7ar para executar", None))
 #if QT_CONFIG(tooltip)
-        self.visionCropDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione 4 pontos", None))
+        #self.visionCropDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione 4 pontos", None))
 #endif // QT_CONFIG(tooltip)
         self.visionCropFrame.setText("")
         self.cropFieldToolsHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"Ferramentas", None))

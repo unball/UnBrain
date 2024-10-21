@@ -4,64 +4,6 @@ from PySide6.QtWidgets import QFrame, QLabel, QMainWindow, QApplication
 from PySide6.QtGui import QCursor, QPainter, QPixmap, QColor, QPen, QImage
 from PySide6.QtCore import Qt, QSize, QPoint, QPointF, QRect
 import numpy as np
-
-class Editor:
-    def __init__(self) -> None:
-        
-        self.foregroundHsv = [0, 38, 198, 179, 255, 255]
-        self.ballHsv = [0,44,0,82,255,255]
-        self.teamHsv = [0,0,0,179,255,255]
-    
-    def crop(self, image, rect):
-        return image.crop(rect)
-    
-    def wrap(self, image, rect):
-        # height, width, _ = shape
-    
-        # base = np.array([[0,0],[1,0],[1,1],[0,1]])
-        # key_points = np.array(points) * np.array([width, height])
-        
-        # frame_points = base * np.array([width, height])
-        
-        # h, mask = cv2.findHomography(key_points, frame_points, cv2.RANSAC)
-        # homography_matrix = self.getHomography(image.shape)
-        # return cv2.warpPerspective(image, np.array(homography_matrix), (image.shape[1], image.shape[0]))
-        pass
-    
-    def convert2Hsv(self, image):
-        img_filtered = cv.GaussianBlur(image, (5,5), 0)
-        return cv.cvtColor(img_filtered, cv.COLOR_BGR2HSV)
-    
-    def segment(self, image, find="all"):
-        image = self.convert2Hsv(image)
-        if find == "all":
-            mask = cv.inRange(image, np.array(self.foregroundHsv[0:3]), np.array(self.foregroundHsv[3:6]))
-        
-        if find == "ball":
-            mask = cv.inRange(image, np.array(self.ballHsv[0:3]), np.array(self.ballHsv[3:6]))
-        
-        if find == "team":
-            mask = cv.inRange(image, np.array(self.teamHsv[0:3]), np.array(self.teamHsv[3:6]))
-        
-        return mask
-    
-    def brightness(self, image):
-        raise NotImplementedError
-        
-    def contrast(self, image):
-        raise NotImplementedError
-    
-    def sharpness(self, image):
-        raise NotImplementedError
-    
-    def updateFgHsv(self, range):
-        self.foregroundHsv = range
-
-    def updateBallHsv(self, range):
-        self.ballHsv = range
-
-    def updateTeamHsv(self, range):
-        self.teamHsv = range
     
 
 class Editor(QLabel):
@@ -88,8 +30,16 @@ class Editor(QLabel):
         
         return pixmapPosition
 
+class SegmentEditor(Editor):
+    def __init__(self, parent, defaultImagePath):
+        super().__init__(parent, defaultImagePath)
+        
+        self.foregroundHsv = [0, 38, 198, 179, 255, 255]
+        self.ballHsv = [0,44,0,82,255,255]
+        self.teamHsv = [0,0,0,179,255,255]
+        
+        self.segmentedImage = self.defaultImage.copy()
     
-
 class CropEditor(Editor):
     def __init__(self, parent, defaultImagePath):
         super().__init__(parent, defaultImagePath)

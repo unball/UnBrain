@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplicati
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
     QWidget)
 
-from editor import CropEditor
+from editor import CropEditor, SegmentEditor
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -2977,28 +2977,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_138 = QHBoxLayout(self.cropFieldContents)
         self.horizontalLayout_138.setObjectName(u"horizontalLayout_138")
         self.horizontalLayout_138.setContentsMargins(6, 6, 6, 6)
-        # self.visionCropDisplay = CropEditor(self.cropFieldContents)
-        # self.visionCropDisplay.setObjectName(u"visionCropDisplay")
-        # sizePolicy7.setHeightForWidth(self.visionCropDisplay.sizePolicy().hasHeightForWidth())
-        # self.visionCropDisplay.setSizePolicy(sizePolicy7)
-        # self.visionCropDisplay.setMinimumSize(QSize(0, 0))
-        # self.visionCropDisplay.setMaximumSize(QSize(16777215, 16777215))
-        # self.visionCropDisplay.setCursor(QCursor(Qt.PointingHandCursor))
-        # self.visionCropDisplay.setFrameShape(QFrame.Shape.NoFrame)
-        # self.visionCropDisplay.setFrameShadow(QFrame.Shadow.Raised)
-        # self.verticalLayout_109 = QVBoxLayout(self.visionCropDisplay)
-        # self.verticalLayout_109.setSpacing(0)
-        # self.verticalLayout_109.setObjectName(u"verticalLayout_109")
-        # self.verticalLayout_109.setContentsMargins(0, 0, 0, 0)
-        self.visionCropFrame = CropEditor(self.cropFieldContents, QPixmap(u"assets/defaultFrame.png"))
+        
+        self.visionCropFrame = CropEditor(self.cropFieldContents, u"assets/defaultFrame.png")
         self.visionCropFrame.setObjectName(u"visionCropFrame")
         sizePolicy2.setHeightForWidth(self.visionCropFrame.sizePolicy().hasHeightForWidth())
         self.visionCropFrame.setSizePolicy(sizePolicy7)
         self.visionCropFrame.setScaledContents(True)
         self.visionCropFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.visionCropFrame.setCursor(QCursor(Qt.PointingHandCursor))
-
-        #self.verticalLayout_109.addWidget(self.visionCropFrame)
 
 
         self.horizontalLayout_138.addWidget(self.visionCropFrame, 0, Qt.AlignmentFlag.AlignTop)
@@ -3432,32 +3418,20 @@ class Ui_MainWindow(object):
         self.horizontalLayout_146 = QHBoxLayout(self.segContents)
         self.horizontalLayout_146.setObjectName(u"horizontalLayout_146")
         self.horizontalLayout_146.setContentsMargins(6, 6, 6, 6)
-        self.segDisplay = QFrame(self.segContents)
-        self.segDisplay.setObjectName(u"segDisplay")
-        sizePolicy7.setHeightForWidth(self.segDisplay.sizePolicy().hasHeightForWidth())
-        self.segDisplay.setSizePolicy(sizePolicy7)
-        self.segDisplay.setCursor(QCursor(Qt.PointingHandCursor))
-        self.segDisplay.setFrameShape(QFrame.Shape.NoFrame)
-        self.segDisplay.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_113 = QVBoxLayout(self.segDisplay)
-        self.verticalLayout_113.setSpacing(0)
-        self.verticalLayout_113.setObjectName(u"verticalLayout_113")
-        self.verticalLayout_113.setContentsMargins(0, 0, 0, 0)
-        self.segFrame = QLabel(self.segDisplay)
+        
+#####################
+        self.segFrame = SegmentEditor(self.segContents, u"assets/defaultFrame.png")
         self.segFrame.setObjectName(u"segFrame")
-        sizePolicy2.setHeightForWidth(self.segFrame.sizePolicy().hasHeightForWidth())
-        self.segFrame.setSizePolicy(sizePolicy2)
-        self.segFrame.setMinimumSize(QSize(479, 0))
-        self.segFrame.setMaximumSize(QSize(16777215, 16777215))
-        self.segFrame.setPixmap(QPixmap(u"assets/segImage.png"))
+        sizePolicy7.setHeightForWidth(self.segFrame.sizePolicy().hasHeightForWidth())
+        self.segFrame.setSizePolicy(sizePolicy7)
         self.segFrame.setScaledContents(True)
         self.segFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segFrame.setCursor(QCursor(Qt.PointingHandCursor))
 
-        self.verticalLayout_113.addWidget(self.segFrame)
 
+        self.horizontalLayout_146.addWidget(self.segFrame, 0, Qt.AlignmentFlag.AlignTop)
 
-        self.horizontalLayout_146.addWidget(self.segDisplay, 0, Qt.AlignmentFlag.AlignTop)
-
+#####################
         self.segTools = QFrame(self.segContents)
         self.segTools.setObjectName(u"segTools")
         sizePolicy3.setHeightForWidth(self.segTools.sizePolicy().hasHeightForWidth())
@@ -5327,10 +5301,7 @@ class Ui_MainWindow(object):
         self.vBallStatus.setText(QCoreApplication.translate("MainWindow", u"N\u00e3o identificado", None))
         self.vBallPos.setText(QCoreApplication.translate("MainWindow", u"Posi\u00e7\u00e3o: (0.00, 0.00) m", None))
         self.nextStepVisionButton.setText(QCoreApplication.translate("MainWindow", u"Avan\u00e7ar para executar", None))
-#if QT_CONFIG(tooltip)
-        #self.visionCropDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione 4 pontos", None))
-#endif // QT_CONFIG(tooltip)
-        self.visionCropFrame.setText("")
+
         self.cropFieldToolsHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"Ferramentas", None))
         self.showCropFieldLabel.setText(QCoreApplication.translate("MainWindow", u"Mostrar campo cortado", None))
         self.cropFieldActionHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"A\u00e7\u00f5es:", None))
@@ -5348,7 +5319,7 @@ class Ui_MainWindow(object):
         self.cropInnerFieldEraseButton.setText("")
         self.visionSteps.setTabText(self.visionSteps.indexOf(self.cropInnerFieldTab), QCoreApplication.translate("MainWindow", u"Cortar campo interno", None))
 #if QT_CONFIG(tooltip)
-        self.segDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione 4 pontos", None))
+        self.segFrame.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione o filtro por intervalo (espaço HSV)", None))
 #endif // QT_CONFIG(tooltip)
         self.segToolsHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"Ferramentas", None))
         self.hueTitle.setText(QCoreApplication.translate("MainWindow", u"Hue", None))

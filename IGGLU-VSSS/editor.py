@@ -40,6 +40,48 @@ class SegmentEditor(Editor):
         
         self.segmentedImage = self.defaultImage.copy()
     
+    def segmentImage(self, find="all"):
+        image = self.defaultImage.copy()
+        height, width = image.height(), image.width()
+        
+        cvImage = self.pixmapToCv(image)
+        hsvImage = cv.cvtColor(cvImage, cv.COLOR_BGR2HSV)
+       
+        if find == "all":
+            minHsv = np.array(self.foregroundHsv[0:3])
+            maxHsv = np.array(self.foregroundHsv[3:6])
+        
+        if find == "team":
+            minHsv = np.array(self.teamHsv[0:3])
+            maxHsv = np.array(self.teamHsv[3:6])
+        
+        if find == "ball":
+            minHsv = np.array(self.ballHsv[0:3])
+            maxHsv = np.array(self.ballHsv[3:6])
+            
+        mask = cv.inRange(hsvImage, minHsv, maxHsv)
+        
+        self.segmentedImage = self.cvToPixmap(mask, width, height)
+        self.setPixmap(self.segmentedImage)
+        
+    def pixmapToCv(self, qpixmap):
+        qimage = qpixmap.toImage()
+        qimage = qimage.convertToFormat(QImage.Format.Format_RGB888)
+        
+        height, width = qimage.height(), qimage.width()
+        channels = qimage.depth() // 8
+        
+        cvImage = np.frombuffer(qimage.bits(), dtype=np.uint8, count=height * width * channels).reshape((height, width, channels))
+        
+        return cvImage
+    
+    def cvToPixmap(self, cvImage, width, height):
+        bgrImage = cv.cvtColor(cvImage, cv.COLOR_GRAY2BGR) 
+        qimage = QImage(bgrImage.data, width, height, width * 3, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(qimage)
+        
+        return pixmap
+        
 class CropEditor(Editor):
     def __init__(self, parent, defaultImagePath):
         super().__init__(parent, defaultImagePath)

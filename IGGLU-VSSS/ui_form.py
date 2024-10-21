@@ -26,24 +26,30 @@ from editor import CropEditor
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        #############################################
+        # Main window config
+        #############################################
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(900, 700)
         MainWindow.setMinimumSize(QSize(800, 600))
         MainWindow.setMaximumSize(QSize(1366, 1166))
+        
         font = QFont()
         font.setFamilies([u"URW Bookman [UKWN]"])
         MainWindow.setFont(font)
+        
         icon = QIcon()
         icon.addFile(u"assets/icons/UnBall_Logo_Preto.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
+        
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
+        
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
+        
         self.centralwidget.setMinimumSize(QSize(800, 600))
         self.centralwidget.setMaximumSize(QSize(1366, 1166))
         self.centralwidget.setMouseTracking(True)
@@ -59,29 +65,38 @@ class Ui_MainWindow(object):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        
+        #############################################
+        # Header config
+        #############################################
         self.header = QFrame(self.centralwidget)
         self.header.setObjectName(u"header")
+        
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.header.sizePolicy().hasHeightForWidth())
         self.header.setSizePolicy(sizePolicy1)
+        
         self.header.setFrameShape(QFrame.Shape.StyledPanel)
         self.header.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout = QHBoxLayout(self.header)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(5, 0, 5, 0)
+        
         self.appTitle = QHBoxLayout()
         self.appTitle.setSpacing(3)
         self.appTitle.setObjectName(u"appTitle")
+        
         self.appLogo = QLabel(self.header)
         self.appLogo.setObjectName(u"appLogo")
+        
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.appLogo.sizePolicy().hasHeightForWidth())
         self.appLogo.setSizePolicy(sizePolicy2)
+        
         self.appLogo.setPixmap(QPixmap(u"assets/icons/UnBall_Logo_Preto.svg"))
         self.appLogo.setScaledContents(True)
 
@@ -89,11 +104,14 @@ class Ui_MainWindow(object):
 
         self.appName = QLabel(self.header)
         self.appName.setObjectName(u"appName")
+        
         sizePolicy2.setHeightForWidth(self.appName.sizePolicy().hasHeightForWidth())
         self.appName.setSizePolicy(sizePolicy2)
+        
         font1 = QFont()
         font1.setFamilies([u"Roboto"])
         font1.setPointSize(18)
+        
         self.appName.setFont(font1)
         self.appName.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -103,17 +121,19 @@ class Ui_MainWindow(object):
 
         self.appTitle.addItem(self.appHeaderSpacer)
 
-
         self.horizontalLayout.addLayout(self.appTitle)
 
         self.appControls = QHBoxLayout()
         self.appControls.setSpacing(0)
         self.appControls.setObjectName(u"appControls")
+        
         self.minButton = QPushButton(self.header)
         self.minButton.setObjectName(u"minButton")
+        self.minButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         sizePolicy2.setHeightForWidth(self.minButton.sizePolicy().hasHeightForWidth())
         self.minButton.setSizePolicy(sizePolicy2)
-        self.minButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon1 = QIcon()
         icon1.addFile(u"assets/icons/min.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.minButton.setIcon(icon1)
@@ -124,9 +144,11 @@ class Ui_MainWindow(object):
 
         self.maxButton = QPushButton(self.header)
         self.maxButton.setObjectName(u"maxButton")
+        self.maxButton.setCursor(QCursor(Qt.PointingHandCursor))
+
         sizePolicy2.setHeightForWidth(self.maxButton.sizePolicy().hasHeightForWidth())
         self.maxButton.setSizePolicy(sizePolicy2)
-        self.maxButton.setCursor(QCursor(Qt.PointingHandCursor))
+
         icon2 = QIcon()
         icon2.addFile(u"assets/icons/max.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.maxButton.setIcon(icon2)
@@ -138,9 +160,11 @@ class Ui_MainWindow(object):
 
         self.closeButton = QPushButton(self.header)
         self.closeButton.setObjectName(u"closeButton")
+        self.closeButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         sizePolicy2.setHeightForWidth(self.closeButton.sizePolicy().hasHeightForWidth())
         self.closeButton.setSizePolicy(sizePolicy2)
-        self.closeButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon3 = QIcon()
         icon3.addFile(u"assets/icons/close.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.closeButton.setIcon(icon3)
@@ -154,7 +178,10 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout.addWidget(self.header, 0, Qt.AlignmentFlag.AlignTop)
-
+        
+        ###################################
+        # Body config
+        ###################################
         self.body = QFrame(self.centralwidget)
         self.body.setObjectName(u"body")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
@@ -3409,8 +3436,6 @@ class Ui_MainWindow(object):
         self.segDisplay.setObjectName(u"segDisplay")
         sizePolicy7.setHeightForWidth(self.segDisplay.sizePolicy().hasHeightForWidth())
         self.segDisplay.setSizePolicy(sizePolicy7)
-        self.segDisplay.setMinimumSize(QSize(0, 0))
-        self.segDisplay.setMaximumSize(QSize(16777215, 16777215))
         self.segDisplay.setCursor(QCursor(Qt.PointingHandCursor))
         self.segDisplay.setFrameShape(QFrame.Shape.NoFrame)
         self.segDisplay.setFrameShadow(QFrame.Shadow.Raised)
@@ -5325,7 +5350,6 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.segDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Selecione 4 pontos", None))
 #endif // QT_CONFIG(tooltip)
-        self.segFrame.setText("")
         self.segToolsHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"Ferramentas", None))
         self.hueTitle.setText(QCoreApplication.translate("MainWindow", u"Hue", None))
         self.hueMinLabel.setText(QCoreApplication.translate("MainWindow", u"Hmin", None))

@@ -64,12 +64,36 @@ class Editor:
         self.teamHsv = range
     
 
-class CropEditor(QLabel):
-    def __init__(self, parent, defaultImage):
+class Editor(QLabel):
+    def __init__(self, parent, defaultImagePath):
         super().__init__(parent)
         
-        self.defaultImage = QPixmap(defaultImage)
+        self.defaultImage = QPixmap(defaultImagePath)
         self.setPixmap(self.defaultImage)
+    
+    def clearFrame(self):
+        self.setPixmap(self.defaultImage.copy())
+    
+    def calcRelativePosition(self, position):
+        labelPosition = position
+        labelSize = self.size()
+        
+        pixmapSize = self.pixmap().size()
+        relativePosition = labelPosition - self.rect().topLeft()
+        
+        pixmapPosition = QPointF(
+            (relativePosition.x() * pixmapSize.width() / labelSize.width()),
+            (relativePosition.y() * pixmapSize.height() / labelSize.height())
+        )
+        
+        return pixmapPosition
+
+    
+
+class CropEditor(Editor):
+    def __init__(self, parent, defaultImagePath):
+        super().__init__(parent, defaultImagePath)
+        
         self.croppedImage = self.defaultImage.copy()
         
         self.pen = QPen()
@@ -78,21 +102,6 @@ class CropEditor(QLabel):
         
         self.clickedPoints = []
     
-    def clearFrame(self):
-        self.setPixmap(self.defaultImage.copy())
-    
-    def calcRelativePosition(self, position):
-        label_position = position
-        label_size = self.size()
-        pixmap_size = self.pixmap().size()
-        relative_position = label_position - self.rect().topLeft()
-        pixmap_position = QPointF(
-            (relative_position.x() * pixmap_size.width() / label_size.width()),
-            (relative_position.y() * pixmap_size.height() / label_size.height())
-        )
-        
-        return pixmap_position
-
     def mousePressEvent(self, event):
         position = event.position()
         pixmap_position = self.calcRelativePosition(position)
@@ -133,9 +142,6 @@ class CropEditor(QLabel):
         
         self.cropImage(rect)
         self.setPixmap(canvas)
-    
-    def getClickedPoints(self):
-        return self.clickedPoints
     
     def cropImage(self, points):
         p1 = QPointF(points[0]).toPoint()

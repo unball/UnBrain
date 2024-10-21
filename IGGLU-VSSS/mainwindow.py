@@ -40,7 +40,13 @@ class MainWindow(QMainWindow):
         
         self.oldPosition = event.globalPosition()
     
-
+    def showCropField(self):
+        if self.ui.showCropFieldSwitch.value() == 1:
+            self.ui.visionCropFrame.showCroppedImage()
+        
+        else: 
+            self.ui.visionCropFrame.clearFrame()
+    
     def changeTeamColor(self):
         if self.ui.switchTeamColorButton.isChecked():
             self.ui.switchTeamColorButton.setIcon(self.yellowFlagIcon)

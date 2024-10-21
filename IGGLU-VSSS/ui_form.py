@@ -5024,6 +5024,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
+        self.showCropFieldSwitch.valueChanged.connect(MainWindow.showCropField)
         self.closeButton.clicked.connect(MainWindow.close)
         self.minButton.clicked.connect(MainWindow.showMinimized)
         self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)

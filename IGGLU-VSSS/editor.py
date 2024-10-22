@@ -7,10 +7,10 @@ import numpy as np
     
 
 class Editor(QLabel):
-    def __init__(self, parent, defaultImagePath):
+    def __init__(self, parent, defaultImage):
         super().__init__(parent)
         
-        self.defaultImage = QPixmap(defaultImagePath)
+        self.defaultImage = defaultImage
         self.setPixmap(self.defaultImage)
     
     def clearFrame(self):
@@ -31,14 +31,14 @@ class Editor(QLabel):
         return pixmapPosition
 
 class SegmentEditor(Editor):
-    def __init__(self, parent, defaultImagePath, type="foreground"):
-        super().__init__(parent, defaultImagePath)
+    def __init__(self, parent, defaultImage, type="foreground"):
+        super().__init__(parent, defaultImage)
         
         if type == "foreground":
             self.hsvRange = [0, 38, 198, 179, 255, 255]
         
         if type == "ball":
-            self.hsvRange = [0,44,0,82,255,255]
+            self.hsvRange = [116,79,233,180,180,255]
         
         if type == "team":
             self.hsvRange = [0,0,0,179,255,255]
@@ -103,8 +103,8 @@ class SegmentEditor(Editor):
         self.segmentImage()
         
 class CropEditor(Editor):
-    def __init__(self, parent, defaultImagePath):
-        super().__init__(parent, defaultImagePath)
+    def __init__(self, parent, defaultImage):
+        super().__init__(parent, defaultImage)
         
         self.croppedImage = self.defaultImage.copy()
         

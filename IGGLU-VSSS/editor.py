@@ -31,33 +31,29 @@ class Editor(QLabel):
         return pixmapPosition
 
 class SegmentEditor(Editor):
-    def __init__(self, parent, defaultImagePath):
+    def __init__(self, parent, defaultImagePath, type="foreground"):
         super().__init__(parent, defaultImagePath)
         
-        self.foregroundHsv = [0, 38, 198, 179, 255, 255]
-        self.ballHsv = [0,44,0,82,255,255]
-        self.teamHsv = [0,0,0,179,255,255]
+        if type == "foreground":
+            self.hsvRange = [0, 38, 198, 179, 255, 255]
+        
+        if type == "ball":
+            self.hsvRange = [0,44,0,82,255,255]
+        
+        if type == "team":
+            self.hsvRange = [0,0,0,179,255,255]
         
         self.segmentedImage = self.defaultImage.copy()
     
-    def segmentImage(self, find="all"):
+    def segmentImage(self):
         image = self.defaultImage.copy()
         height, width = image.height(), image.width()
         
         cvImage = self.pixmapToCv(image)
         hsvImage = cv.cvtColor(cvImage, cv.COLOR_BGR2HSV)
        
-        if find == "all":
-            minHsv = np.array(self.foregroundHsv[0:3])
-            maxHsv = np.array(self.foregroundHsv[3:6])
-        
-        if find == "team":
-            minHsv = np.array(self.teamHsv[0:3])
-            maxHsv = np.array(self.teamHsv[3:6])
-        
-        if find == "ball":
-            minHsv = np.array(self.ballHsv[0:3])
-            maxHsv = np.array(self.ballHsv[3:6])
+        minHsv = np.array(self.hsvRange[0:3])
+        maxHsv = np.array(self.hsvRange[3:6])
             
         mask = cv.inRange(hsvImage, minHsv, maxHsv)
         
@@ -81,6 +77,30 @@ class SegmentEditor(Editor):
         pixmap = QPixmap.fromImage(qimage)
         
         return pixmap
+    
+    def updateMinHue(self, value):
+        self.hsvRange[0] = value
+        self.segmentImage()
+        
+    def updateMaxHue(self, value):
+        self.hsvRange[3] = value
+        self.segmentImage()
+    
+    def updateMinSaturation(self, value):
+        self.hsvRange[1] = value
+        self.segmentImage()
+        
+    def updateMaxSaturation(self, value):
+        self.hsvRange[4] = value
+        self.segmentImage()
+    
+    def updateMinValue(self, value):
+        self.hsvRange[2] = value
+        self.segmentImage()
+        
+    def updateMaxValue(self, value):
+        self.hsvRange[5] = value
+        self.segmentImage()
         
 class CropEditor(Editor):
     def __init__(self, parent, defaultImagePath):

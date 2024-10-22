@@ -31,17 +31,10 @@ class Editor(QLabel):
         return pixmapPosition
 
 class SegmentEditor(Editor):
-    def __init__(self, parent, defaultImage, type="foreground"):
+    def __init__(self, parent, defaultImage):
         super().__init__(parent, defaultImage)
-        
-        if type == "foreground":
-            self.hsvRange = [0, 38, 198, 179, 255, 255]
-        
-        if type == "ball":
-            self.hsvRange = [116,79,233,180,180,255]
-        
-        if type == "team":
-            self.hsvRange = [0,0,0,179,255,255]
+       
+        self.hsvRange = [0, 38, 198, 179, 255, 255]
         
         self.segmentedImage = self.defaultImage.copy()
     

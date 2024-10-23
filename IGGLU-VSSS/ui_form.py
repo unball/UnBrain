@@ -27,7 +27,7 @@ from editor import CropEditor, SegmentEditor
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         #############################################
-        # Main window config
+        # Main Window
         #############################################
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -43,10 +43,23 @@ class Ui_MainWindow(object):
         icon.addFile(u"assets/icons/UnBall_Logo_Preto.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
         
+         #############################################
+        # Size Policies 
+        #############################################
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        
+        
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
         
@@ -71,8 +84,7 @@ class Ui_MainWindow(object):
         #############################################
         self.header = QFrame(self.centralwidget)
         self.header.setObjectName(u"header")
-        
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
         sizePolicy1.setHeightForWidth(self.header.sizePolicy().hasHeightForWidth())
         self.header.setSizePolicy(sizePolicy1)
         
@@ -91,7 +103,6 @@ class Ui_MainWindow(object):
         self.appLogo = QLabel(self.header)
         self.appLogo.setObjectName(u"appLogo")
         
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.appLogo.sizePolicy().hasHeightForWidth())
@@ -184,7 +195,7 @@ class Ui_MainWindow(object):
         ###################################
         self.body = QFrame(self.centralwidget)
         self.body.setObjectName(u"body")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Expanding)
+
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.body.sizePolicy().hasHeightForWidth())
@@ -482,7 +493,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.imageDisplay = QLabel(self.imageLayout)
         self.imageDisplay.setObjectName(u"imageDisplay")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.imageDisplay.sizePolicy().hasHeightForWidth())
@@ -501,7 +512,7 @@ class Ui_MainWindow(object):
 
         self.displaySettings = QFrame(self.displayBox)
         self.displaySettings.setObjectName(u"displaySettings")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        
         sizePolicy5.setHorizontalStretch(0)
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.displaySettings.sizePolicy().hasHeightForWidth())
@@ -2633,7 +2644,7 @@ class Ui_MainWindow(object):
         self.highLevelVisionContents = QFrame(self.visionSettingsTab)
         self.highLevelVisionContents.setObjectName(u"highLevelVisionContents")
         self.highLevelVisionContents.setGeometry(QRect(10, 100, 841, 404))
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
         sizePolicy6.setHorizontalStretch(0)
         sizePolicy6.setVerticalStretch(0)
         sizePolicy6.setHeightForWidth(self.highLevelVisionContents.sizePolicy().hasHeightForWidth())
@@ -2646,7 +2657,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_134.setContentsMargins(6, 6, 6, 6)
         self.highLevelVisionDisplay = QFrame(self.highLevelVisionContents)
         self.highLevelVisionDisplay.setObjectName(u"highLevelVisionDisplay")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        
         sizePolicy7.setHorizontalStretch(0)
         sizePolicy7.setVerticalStretch(0)
         sizePolicy7.setHeightForWidth(self.highLevelVisionDisplay.sizePolicy().hasHeightForWidth())

@@ -63,28 +63,29 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         
         #############################################
-        # Header config
+        # Header Widget
         #############################################
         self.header = QHeader(self.centralwidget)
         self.verticalLayout.addWidget(self.header, 0, Qt.AlignmentFlag.AlignTop)
         
         ###################################
-        # Body config
+        # Body Section
         ###################################
         self.body = QFrame(self.centralwidget)
         self.body.setObjectName(u"body")
-
-        SizePolicies["MinExpanding_Expanding"].setHorizontalStretch(0)
-        SizePolicies["MinExpanding_Expanding"].setVerticalStretch(0)
-        SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.body.sizePolicy().hasHeightForWidth())
-        self.body.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
         self.body.setFrameShape(QFrame.Shape.StyledPanel)
         self.body.setFrameShadow(QFrame.Shadow.Raised)
+        
+
+        SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.body.sizePolicy().hasHeightForWidth())
+        self.body.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.verticalLayout_2 = QVBoxLayout(self.body)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        
         self.appContents = QTabWidget(self.body)
         self.appContents.setObjectName(u"appContents")
         self.appContents.setCursor(QCursor(Qt.ArrowCursor))
@@ -92,41 +93,54 @@ class Ui_MainWindow(object):
         self.appContents.setTabPosition(QTabWidget.TabPosition.West)
         self.appContents.setTabShape(QTabWidget.TabShape.Rounded)
         self.appContents.setIconSize(QSize(24, 24))
+        
         self.sysInfoTab = QWidget()
         self.sysInfoTab.setObjectName(u"sysInfoTab")
+        
         self.sysInfoHeader = QFrame(self.sysInfoTab)
         self.sysInfoHeader.setObjectName(u"sysInfoHeader")
         self.sysInfoHeader.setGeometry(QRect(0, 0, 861, 71))
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.sysInfoHeader.sizePolicy().hasHeightForWidth())
         self.sysInfoHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.sysInfoHeader.setMinimumSize(QSize(761, 0))
         self.sysInfoHeader.setMaximumSize(QSize(1332, 16777215))
         self.sysInfoHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.sysInfoHeader.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_9 = QHBoxLayout(self.sysInfoHeader)
         self.horizontalLayout_9.setSpacing(10)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.horizontalLayout_9.setContentsMargins(10, 10, 10, 10)
+        
         self.gameSettings = QFrame(self.sysInfoHeader)
         self.gameSettings.setObjectName(u"gameSettings")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.gameSettings.sizePolicy().hasHeightForWidth())
         self.gameSettings.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.gameSettings.setMinimumSize(QSize(0, 51))
         self.gameSettings.setMaximumSize(QSize(350, 51))
         self.gameSettings.setFrameShape(QFrame.Shape.StyledPanel)
         self.gameSettings.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_4 = QHBoxLayout(self.gameSettings)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(3, 3, 3, 3)
+        
         self.gameOptions = QVBoxLayout()
         self.gameOptions.setSpacing(0)
         self.gameOptions.setObjectName(u"gameOptions")
+        
         self.gameOptionsLabel = QLabel(self.gameSettings)
         self.gameOptionsLabel.setObjectName(u"gameOptionsLabel")
+        
         font2 = QFont()
         font2.setFamilies([u"Roboto"])
         font2.setPointSize(8)
         font2.setBold(True)
+        
         self.gameOptionsLabel.setFont(font2)
         self.gameOptionsLabel.setScaledContents(True)
         self.gameOptionsLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
@@ -134,27 +148,30 @@ class Ui_MainWindow(object):
         self.gameOptions.addWidget(self.gameOptionsLabel)
 
         self.gameOptionsDropdown = QComboBox(self.gameSettings)
-        self.gameOptionsDropdown.addItem("")
-        self.gameOptionsDropdown.addItem("")
         self.gameOptionsDropdown.setObjectName(u"gameOptionsDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.gameOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.gameOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         font3 = QFont()
         font3.setFamilies([u"Roboto"])
         font3.setPointSize(8)
+        
         self.gameOptionsDropdown.setFont(font3)
         self.gameOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.gameOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.gameOptionsDropdown.setFrame(True)
+        self.gameOptionsDropdown.addItem("")
+        self.gameOptionsDropdown.addItem("")
 
         self.gameOptions.addWidget(self.gameOptionsDropdown)
-
 
         self.horizontalLayout_4.addLayout(self.gameOptions)
 
         self.visionOptions = QVBoxLayout()
         self.visionOptions.setSpacing(0)
         self.visionOptions.setObjectName(u"visionOptions")
+        
         self.visionOptionsLabel = QLabel(self.gameSettings)
         self.visionOptionsLabel.setObjectName(u"visionOptionsLabel")
         self.visionOptionsLabel.setFont(font2)
@@ -162,45 +179,54 @@ class Ui_MainWindow(object):
         self.visionOptions.addWidget(self.visionOptionsLabel)
 
         self.visionOptionsDropdown = QComboBox(self.gameSettings)
-        self.visionOptionsDropdown.addItem("")
-        self.visionOptionsDropdown.addItem("")
         self.visionOptionsDropdown.setObjectName(u"visionOptionsDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visionOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.visionOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.visionOptionsDropdown.setFont(font3)
         self.visionOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.visionOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.visionOptionsDropdown.setFrame(True)
+        self.visionOptionsDropdown.addItem("")
+        self.visionOptionsDropdown.addItem("")
+        self.visionOptionsDropdown.addItem("")
 
         self.visionOptions.addWidget(self.visionOptionsDropdown)
 
-
         self.horizontalLayout_4.addLayout(self.visionOptions)
-
 
         self.horizontalLayout_9.addWidget(self.gameSettings)
 
         self.myTeamInfo = QFrame(self.sysInfoHeader)
         self.myTeamInfo.setObjectName(u"myTeamInfo")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.myTeamInfo.sizePolicy().hasHeightForWidth())
         self.myTeamInfo.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.myTeamInfo.setMaximumSize(QSize(350, 16777215))
-        self.myTeamInfo.setStyleSheet(u"")
+        
         self.myTeamInfo.setFrameShape(QFrame.Shape.StyledPanel)
         self.myTeamInfo.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.verticalLayout_5 = QVBoxLayout(self.myTeamInfo)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(3, 3, 3, 3)
+        
         self.myTeamColor = QFrame(self.myTeamInfo)
         self.myTeamColor.setObjectName(u"myTeamColor")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.myTeamColor.sizePolicy().hasHeightForWidth())
         self.myTeamColor.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.myTeamColor.setFrameShape(QFrame.Shape.NoFrame)
         self.myTeamColor.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_8 = QHBoxLayout(self.myTeamColor)
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
+        
         self.myTeamSideText = QLabel(self.myTeamColor)
         self.myTeamSideText.setObjectName(u"myTeamSideText")
         self.myTeamSideText.setFont(font2)
@@ -214,21 +240,28 @@ class Ui_MainWindow(object):
 
         self.teamColorControls = QFrame(self.myTeamColor)
         self.teamColorControls.setObjectName(u"teamColorControls")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.teamColorControls.sizePolicy().hasHeightForWidth())
         self.teamColorControls.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.teamColorControls.setFrameShape(QFrame.Shape.NoFrame)
         self.teamColorControls.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_5 = QHBoxLayout(self.teamColorControls)
         self.horizontalLayout_5.setSpacing(3)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        
         self.switchTeamColorButton = QPushButton(self.teamColorControls)
         self.switchTeamColorButton.setObjectName(u"switchTeamColorButton")
+        self.switchTeamColorButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.switchTeamColorButton.sizePolicy().hasHeightForWidth())
         self.switchTeamColorButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.switchTeamColorButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon4 = QIcon()
         icon4.addFile(u"assets/icons/blue_flag.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.switchTeamColorButton.setIcon(icon4)
         self.switchTeamColorButton.setIconSize(QSize(24, 22))
         self.switchTeamColorButton.setCheckable(True)
@@ -242,22 +275,24 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5.addWidget(self.myTeamColorLabel)
 
-
         self.horizontalLayout_8.addWidget(self.teamColorControls)
-
 
         self.verticalLayout_5.addWidget(self.myTeamColor)
 
         self.myTeamSide = QFrame(self.myTeamInfo)
         self.myTeamSide.setObjectName(u"myTeamSide")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.myTeamSide.sizePolicy().hasHeightForWidth())
         self.myTeamSide.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.myTeamSide.setFrameShape(QFrame.Shape.NoFrame)
         self.myTeamSide.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_7 = QHBoxLayout(self.myTeamSide)
         self.horizontalLayout_7.setSpacing(0)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        
         self.myTeamSideTitle = QLabel(self.myTeamSide)
         self.myTeamSideTitle.setObjectName(u"myTeamSideTitle")
         self.myTeamSideTitle.setFont(font2)
@@ -270,18 +305,24 @@ class Ui_MainWindow(object):
 
         self.myTeamSideControl = QFrame(self.myTeamSide)
         self.myTeamSideControl.setObjectName(u"myTeamSideControl")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.myTeamSideControl.sizePolicy().hasHeightForWidth())
         self.myTeamSideControl.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.myTeamSideControl.setFrameShape(QFrame.Shape.NoFrame)
         self.myTeamSideControl.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_6 = QHBoxLayout(self.myTeamSideControl)
         self.horizontalLayout_6.setSpacing(10)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
+        
         self.myTeamSideSwitch = QSlider(self.myTeamSideControl)
         self.myTeamSideSwitch.setObjectName(u"myTeamSideSwitch")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.myTeamSideSwitch.sizePolicy().hasHeightForWidth())
         self.myTeamSideSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.myTeamSideSwitch.setMinimumSize(QSize(41, 0))
         self.myTeamSideSwitch.setMaximumSize(QSize(41, 16777215))
         self.myTeamSideSwitch.setCursor(QCursor(Qt.PointingHandCursor))
@@ -299,12 +340,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6.addWidget(self.myTeamSideLabel)
 
-
         self.horizontalLayout_7.addWidget(self.myTeamSideControl)
 
-
         self.verticalLayout_5.addWidget(self.myTeamSide)
-
 
         self.horizontalLayout_9.addWidget(self.myTeamInfo)
 
@@ -314,40 +352,50 @@ class Ui_MainWindow(object):
 
         self.execStart = QFrame(self.sysInfoHeader)
         self.execStart.setObjectName(u"execStart")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.execStart.sizePolicy().hasHeightForWidth())
         self.execStart.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.execStart.setMinimumSize(QSize(105, 35))
         self.execStart.setMaximumSize(QSize(105, 35))
         self.execStart.setCursor(QCursor(Qt.PointingHandCursor))
         self.execStart.setFrameShape(QFrame.Shape.NoFrame)
         self.execStart.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.execButton = QPushButton(self.execStart)
         self.execButton.setObjectName(u"execButton")
         self.execButton.setGeometry(QRect(0, 0, 101, 31))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.execButton.sizePolicy().hasHeightForWidth())
         self.execButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.execButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.execButton.setStyleSheet(u"color: #fff; background: #3E7239;")
+        
         icon5 = QIcon()
         icon5.addFile(u"assets/icons/play.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.execButton.setIcon(icon5)
         self.execButton.setIconSize(QSize(16, 16))
         self.execButton.setCheckable(True)
+        self.execButton.raise_()
+        
         self.execButtonShadow = QFrame(self.execStart)
         self.execButtonShadow.setObjectName(u"execButtonShadow")
         self.execButtonShadow.setGeometry(QRect(3, 3, 101, 31))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.execButtonShadow.sizePolicy().hasHeightForWidth())
         self.execButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.execButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.execButtonShadow.setFrameShape(QFrame.Shape.NoFrame)
         self.execButtonShadow.setFrameShadow(QFrame.Shadow.Plain)
         self.execButtonShadow.raise_()
-        self.execButton.raise_()
 
         self.horizontalLayout_9.addWidget(self.execStart)
-
         self.horizontalLayout_9.setStretch(0, 1)
         self.horizontalLayout_9.setStretch(1, 2)
+        
         self.displayBox = QFrame(self.sysInfoTab)
         self.displayBox.setObjectName(u"displayBox")
         self.displayBox.setGeometry(QRect(10, 80, 401, 301))
@@ -355,27 +403,30 @@ class Ui_MainWindow(object):
         self.displayBox.setMaximumSize(QSize(560, 419))
         self.displayBox.setFrameShape(QFrame.Shape.NoFrame)
         self.displayBox.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.verticalLayout_7 = QVBoxLayout(self.displayBox)
         self.verticalLayout_7.setSpacing(0)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        
         self.imageLayout = QFrame(self.displayBox)
         self.imageLayout.setObjectName(u"imageLayout")
         self.imageLayout.setMinimumSize(QSize(351, 265))
         self.imageLayout.setMaximumSize(QSize(560, 419))
         self.imageLayout.setFrameShape(QFrame.Shape.NoFrame)
         self.imageLayout.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.verticalLayout_6 = QVBoxLayout(self.imageLayout)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        
         self.imageDisplay = QLabel(self.imageLayout)
         self.imageDisplay.setObjectName(u"imageDisplay")
         
-        SizePolicies["Preferred_Preferred"].setHorizontalStretch(0)
-        SizePolicies["Preferred_Preferred"].setVerticalStretch(0)
         SizePolicies["Preferred_Preferred"].setHeightForWidth(self.imageDisplay.sizePolicy().hasHeightForWidth())
         self.imageDisplay.setSizePolicy(SizePolicies["Preferred_Preferred"])
+        
         self.imageDisplay.setMinimumSize(QSize(351, 265))
         self.imageDisplay.setMaximumSize(QSize(560, 445))
         self.imageDisplay.setBaseSize(QSize(351, 265))
@@ -385,33 +436,37 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addWidget(self.imageDisplay)
 
-
         self.verticalLayout_7.addWidget(self.imageLayout)
 
         self.displaySettings = QFrame(self.displayBox)
         self.displaySettings.setObjectName(u"displaySettings")
         
-        SizePolicies["Preferred_Fixed"].setHorizontalStretch(0)
-        SizePolicies["Preferred_Fixed"].setVerticalStretch(0)
         SizePolicies["Preferred_Fixed"].setHeightForWidth(self.displaySettings.sizePolicy().hasHeightForWidth())
         self.displaySettings.setSizePolicy(SizePolicies["Preferred_Fixed"])
+        
         self.displaySettings.setMinimumSize(QSize(351, 0))
         self.displaySettings.setFrameShape(QFrame.Shape.NoFrame)
         self.displaySettings.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_3 = QHBoxLayout(self.displaySettings)
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        
         self.controlButtons = QHBoxLayout()
         self.controlButtons.setSpacing(0)
         self.controlButtons.setObjectName(u"controlButtons")
+        
         self.prevButton = QPushButton(self.displaySettings)
         self.prevButton.setObjectName(u"prevButton")
+        self.prevButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.prevButton.sizePolicy().hasHeightForWidth())
         self.prevButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.prevButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon6 = QIcon()
         icon6.addFile(u"assets/icons/prev.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.prevButton.setIcon(icon6)
         self.prevButton.setFlat(True)
 
@@ -419,11 +474,14 @@ class Ui_MainWindow(object):
 
         self.stopButton = QPushButton(self.displaySettings)
         self.stopButton.setObjectName(u"stopButton")
+        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopButton.sizePolicy().hasHeightForWidth())
         self.stopButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon7 = QIcon()
         icon7.addFile(u"assets/icons/stop_red.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.stopButton.setIcon(icon7)
         self.stopButton.setFlat(True)
 
@@ -431,11 +489,14 @@ class Ui_MainWindow(object):
 
         self.playButton = QPushButton(self.displaySettings)
         self.playButton.setObjectName(u"playButton")
+        self.playButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.playButton.sizePolicy().hasHeightForWidth())
         self.playButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.playButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon8 = QIcon()
         icon8.addFile(u"assets/icons/play_gray.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.playButton.setIcon(icon8)
         self.playButton.setFlat(True)
 
@@ -443,23 +504,27 @@ class Ui_MainWindow(object):
 
         self.nextButton = QPushButton(self.displaySettings)
         self.nextButton.setObjectName(u"nextButton")
+        self.nextButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.nextButton.sizePolicy().hasHeightForWidth())
         self.nextButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.nextButton.setCursor(QCursor(Qt.PointingHandCursor))
+        
         icon9 = QIcon()
         icon9.addFile(u"assets/icons/next.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         self.nextButton.setIcon(icon9)
         self.nextButton.setFlat(True)
 
         self.controlButtons.addWidget(self.nextButton)
 
-
         self.horizontalLayout_3.addLayout(self.controlButtons)
 
         self.speedSpinBox = QDoubleSpinBox(self.displaySettings)
         self.speedSpinBox.setObjectName(u"speedSpinBox")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.speedSpinBox.sizePolicy().hasHeightForWidth())
         self.speedSpinBox.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.speedSpinBox.setMinimumSize(QSize(43, 20))
         self.speedSpinBox.setMaximumSize(QSize(45, 20))
         self.speedSpinBox.setFont(font3)
@@ -470,9 +535,9 @@ class Ui_MainWindow(object):
         self.speedSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.PlusMinus)
         self.speedSpinBox.setProperty("showGroupSeparator", False)
         self.speedSpinBox.setDecimals(1)
-        self.speedSpinBox.setMinimum(1.000000000000000)
-        self.speedSpinBox.setMaximum(3.000000000000000)
-        self.speedSpinBox.setSingleStep(0.500000000000000)
+        self.speedSpinBox.setMinimum(1.0)
+        self.speedSpinBox.setMaximum(3.0)
+        self.speedSpinBox.setSingleStep(0.5)
 
         self.horizontalLayout_3.addWidget(self.speedSpinBox)
 
@@ -482,16 +547,20 @@ class Ui_MainWindow(object):
 
         self.fieldSideDisplay = QFrame(self.displaySettings)
         self.fieldSideDisplay.setObjectName(u"fieldSideDisplay")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.fieldSideDisplay.sizePolicy().hasHeightForWidth())
         self.fieldSideDisplay.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.fieldSideDisplay.setMinimumSize(QSize(216, 26))
         self.fieldSideDisplay.setMaximumSize(QSize(560, 26))
         self.fieldSideDisplay.setFrameShape(QFrame.Shape.NoFrame)
         self.fieldSideDisplay.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_2 = QHBoxLayout(self.fieldSideDisplay)
         self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        
         self.leftTeamSideLabel = QLabel(self.fieldSideDisplay)
         self.leftTeamSideLabel.setObjectName(u"leftTeamSideLabel")
         self.leftTeamSideLabel.setFont(font3)
@@ -501,8 +570,10 @@ class Ui_MainWindow(object):
 
         self.fieldSideDirection = QLabel(self.fieldSideDisplay)
         self.fieldSideDirection.setObjectName(u"fieldSideDirection")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.fieldSideDirection.sizePolicy().hasHeightForWidth())
         self.fieldSideDirection.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.fieldSideDirection.setPixmap(QPixmap(u"assets/icons/arrow_left.svg"))
         self.fieldSideDirection.setScaledContents(True)
         self.fieldSideDirection.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -511,16 +582,16 @@ class Ui_MainWindow(object):
 
         self.rightTeamSideLabel = QLabel(self.fieldSideDisplay)
         self.rightTeamSideLabel.setObjectName(u"rightTeamSideLabel")
+        
         SizePolicies["Preferred_Preferred"].setHeightForWidth(self.rightTeamSideLabel.sizePolicy().hasHeightForWidth())
         self.rightTeamSideLabel.setSizePolicy(SizePolicies["Preferred_Preferred"])
+        
         self.rightTeamSideLabel.setFont(font3)
         self.rightTeamSideLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_2.addWidget(self.rightTeamSideLabel)
 
-
         self.horizontalLayout_3.addWidget(self.fieldSideDisplay)
-
 
         self.verticalLayout_7.addWidget(self.displaySettings)
 
@@ -529,13 +600,17 @@ class Ui_MainWindow(object):
         self.tabWidget.setGeometry(QRect(420, 80, 431, 301))
         self.tabWidget.setMinimumSize(QSize(310, 0))
         self.tabWidget.setFont(font3)
+        
         self.debugTab = QWidget()
         self.debugTab.setObjectName(u"debugTab")
+        
         self.debugScrollArea = QScrollArea(self.debugTab)
         self.debugScrollArea.setObjectName(u"debugScrollArea")
         self.debugScrollArea.setGeometry(QRect(0, 0, 441, 271))
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.debugScrollArea.sizePolicy().hasHeightForWidth())
         self.debugScrollArea.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.debugScrollArea.setMinimumSize(QSize(310, 0))
         self.debugScrollArea.setFrameShape(QFrame.Shape.NoFrame)
         self.debugScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
@@ -543,30 +618,40 @@ class Ui_MainWindow(object):
         self.debugScrollArea.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
         self.debugScrollArea.setWidgetResizable(True)
         self.debugScrollArea.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
         self.debugScrollContents = QWidget()
         self.debugScrollContents.setObjectName(u"debugScrollContents")
         self.debugScrollContents.setGeometry(QRect(0, 0, 427, 515))
+        
         SizePolicies["Expanding_Preferred"].setHeightForWidth(self.debugScrollContents.sizePolicy().hasHeightForWidth())
         self.debugScrollContents.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
         self.verticalLayout_17 = QVBoxLayout(self.debugScrollContents)
         self.verticalLayout_17.setSpacing(6)
         self.verticalLayout_17.setObjectName(u"verticalLayout_17")
         self.verticalLayout_17.setContentsMargins(6, 6, 6, 6)
+        
         self.configHeader = QFrame(self.debugScrollContents)
         self.configHeader.setObjectName(u"configHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.configHeader.sizePolicy().hasHeightForWidth())
         self.configHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.configHeader.setMinimumSize(QSize(350, 0))
         self.configHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.configHeader.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_23 = QHBoxLayout(self.configHeader)
         self.horizontalLayout_23.setSpacing(0)
         self.horizontalLayout_23.setObjectName(u"horizontalLayout_23")
         self.horizontalLayout_23.setContentsMargins(0, 0, 0, 0)
+        
         self.debugTabTitle = QLabel(self.configHeader)
         self.debugTabTitle.setObjectName(u"debugTabTitle")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.debugTabTitle.sizePolicy().hasHeightForWidth())
         self.debugTabTitle.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.debugTabTitle.setFont(font2)
         self.debugTabTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -578,8 +663,10 @@ class Ui_MainWindow(object):
 
         self.robotsFound = QLabel(self.configHeader)
         self.robotsFound.setObjectName(u"robotsFound")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.robotsFound.sizePolicy().hasHeightForWidth())
         self.robotsFound.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.robotsFound.setMinimumSize(QSize(110, 0))
         self.robotsFound.setMaximumSize(QSize(110, 16777215))
         self.robotsFound.setFont(font3)
@@ -587,36 +674,40 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_23.addWidget(self.robotsFound)
 
-
         self.verticalLayout_17.addWidget(self.configHeader)
 
         self.robotInfoBox = QFrame(self.debugScrollContents)
         self.robotInfoBox.setObjectName(u"robotInfoBox")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.robotInfoBox.sizePolicy().hasHeightForWidth())
         self.robotInfoBox.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.robotInfoBox.setMinimumSize(QSize(350, 0))
         self.robotInfoBox.setFrameShape(QFrame.Shape.StyledPanel)
         self.robotInfoBox.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.verticalLayout_22 = QVBoxLayout(self.robotInfoBox)
         self.verticalLayout_22.setSpacing(3)
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.verticalLayout_22.setContentsMargins(3, 3, 3, 3)
+        
         self.robotInfoHeader = QFrame(self.robotInfoBox)
         self.robotInfoHeader.setObjectName(u"robotInfoHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.robotInfoHeader.sizePolicy().hasHeightForWidth())
         self.robotInfoHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.robotInfoHeader.setMinimumSize(QSize(340, 0))
         self.robotInfoHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.robotInfoHeader.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.horizontalLayout_31 = QHBoxLayout(self.robotInfoHeader)
         self.horizontalLayout_31.setSpacing(0)
         self.horizontalLayout_31.setObjectName(u"horizontalLayout_31")
         self.horizontalLayout_31.setContentsMargins(0, 0, 0, 0)
+        
         self.robotRoleDropdown = QComboBox(self.robotInfoHeader)
-        self.robotRoleDropdown.addItem("")
-        self.robotRoleDropdown.addItem("")
-        self.robotRoleDropdown.addItem("")
-        self.robotRoleDropdown.addItem("")
+        
         self.robotRoleDropdown.setObjectName(u"robotRoleDropdown")
         self.robotRoleDropdown.setFont(font3)
         self.robotRoleDropdown.setCursor(QCursor(Qt.PointingHandCursor))
@@ -1610,8 +1701,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_38.setContentsMargins(0, 0, 0, 0)
         self.decTabTitle = QLabel(self.decHeader)
         self.decTabTitle.setObjectName(u"decTabTitle")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.decTabTitle.sizePolicy().hasHeightForWidth())
         self.decTabTitle.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.decTabTitle.setFont(font2)
         self.decTabTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -1620,7 +1713,6 @@ class Ui_MainWindow(object):
         self.decHeaderSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_38.addItem(self.decHeaderSpacer)
-
 
         self.verticalLayout_26.addWidget(self.decHeader)
 
@@ -1673,7 +1765,6 @@ class Ui_MainWindow(object):
 
         self.staticRobot.addWidget(self.staticRobotDropdown)
 
-
         self.verticalLayout_33.addLayout(self.staticRobot)
 
         self.staticRobot_2 = QHBoxLayout()
@@ -1696,7 +1787,6 @@ class Ui_MainWindow(object):
         self.staticRobotDropdown_2.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
         self.staticRobot_2.addWidget(self.staticRobotDropdown_2)
-
 
         self.verticalLayout_33.addLayout(self.staticRobot_2)
 
@@ -1721,12 +1811,9 @@ class Ui_MainWindow(object):
 
         self.staticRobot3.addWidget(self.staticRobotDropdown_3)
 
-
         self.verticalLayout_33.addLayout(self.staticRobot3)
 
-
         self.staticEntitiesContents.addWidget(self.staticRobotsBox)
-
 
         self.verticalLayout_26.addLayout(self.staticEntitiesContents)
 
@@ -1766,8 +1853,10 @@ class Ui_MainWindow(object):
 
         self.refereePosSwitch = QSlider(self.posContents)
         self.refereePosSwitch.setObjectName(u"refereePosSwitch")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.refereePosSwitch.sizePolicy().hasHeightForWidth())
         self.refereePosSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.refereePosSwitch.setMinimumSize(QSize(41, 0))
         self.refereePosSwitch.setMaximumSize(QSize(41, 16777215))
         self.refereePosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
@@ -1778,7 +1867,6 @@ class Ui_MainWindow(object):
         self.refereePosSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.refereePos.addWidget(self.refereePosSwitch)
-
 
         self.verticalLayout_34.addLayout(self.refereePos)
 
@@ -1796,8 +1884,10 @@ class Ui_MainWindow(object):
 
         self.manualPosSwitch = QSlider(self.posContents)
         self.manualPosSwitch.setObjectName(u"manualPosSwitch")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.manualPosSwitch.sizePolicy().hasHeightForWidth())
         self.manualPosSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.manualPosSwitch.setMinimumSize(QSize(41, 0))
         self.manualPosSwitch.setMaximumSize(QSize(41, 16777215))
         self.manualPosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
@@ -1808,7 +1898,6 @@ class Ui_MainWindow(object):
         self.manualPosSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.manualPos.addWidget(self.manualPosSwitch)
-
 
         self.verticalLayout_34.addLayout(self.manualPos)
 
@@ -1834,14 +1923,15 @@ class Ui_MainWindow(object):
         self.selectPosDropdown.addItem("")
         self.selectPosDropdown.addItem("")
         self.selectPosDropdown.setObjectName(u"selectPosDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.selectPosDropdown.sizePolicy().hasHeightForWidth())
         self.selectPosDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.selectPosDropdown.setFont(font3)
         self.selectPosDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.selectPosDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
         self.selectPos.addWidget(self.selectPosDropdown)
-
 
         self.verticalLayout_34.addLayout(self.selectPos)
 
@@ -1865,12 +1955,9 @@ class Ui_MainWindow(object):
 
         self.posTime.addWidget(self.posTimeValue)
 
-
         self.verticalLayout_34.addLayout(self.posTime)
 
-
         self.positioning.addWidget(self.posContents)
-
 
         self.verticalLayout_26.addLayout(self.positioning)
 
@@ -1888,8 +1975,10 @@ class Ui_MainWindow(object):
         self.sysInfoFooter.setContentsMargins(0, 0, 0, 0)
         self.sysInfoBox = QFrame(self.layoutWidget)
         self.sysInfoBox.setObjectName(u"sysInfoBox")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.sysInfoBox.sizePolicy().hasHeightForWidth())
         self.sysInfoBox.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.sysInfoBox.setFrameShape(QFrame.Shape.NoFrame)
         self.sysInfoBox.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_17 = QHBoxLayout(self.sysInfoBox)
@@ -1898,8 +1987,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
         self.ballInfo = QFrame(self.sysInfoBox)
         self.ballInfo.setObjectName(u"ballInfo")
+        
         SizePolicies["Expanding_Preferred"].setHeightForWidth(self.ballInfo.sizePolicy().hasHeightForWidth())
         self.ballInfo.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
         self.ballInfo.setMinimumSize(QSize(251, 0))
         self.ballInfo.setFrameShape(QFrame.Shape.StyledPanel)
         self.ballInfo.setFrameShadow(QFrame.Shadow.Raised)
@@ -1909,8 +2000,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.setContentsMargins(-1, 3, -1, -1)
         self.ballInfoHeader = QFrame(self.ballInfo)
         self.ballInfoHeader.setObjectName(u"ballInfoHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.ballInfoHeader.sizePolicy().hasHeightForWidth())
         self.ballInfoHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.ballInfoHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.ballInfoHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_10 = QHBoxLayout(self.ballInfoHeader)
@@ -1935,13 +2028,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_10.addWidget(self.ballInfoStatus)
 
-
         self.verticalLayout_9.addWidget(self.ballInfoHeader)
 
         self.ballInfoBox = QFrame(self.ballInfo)
         self.ballInfoBox.setObjectName(u"ballInfoBox")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.ballInfoBox.sizePolicy().hasHeightForWidth())
         self.ballInfoBox.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.ballInfoBox.setFrameShape(QFrame.Shape.NoFrame)
         self.ballInfoBox.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_11 = QHBoxLayout(self.ballInfoBox)
@@ -1951,8 +2045,10 @@ class Ui_MainWindow(object):
         self.ballPos.setObjectName(u"ballPos")
         self.ballPosHeader = QFrame(self.ballInfoBox)
         self.ballPosHeader.setObjectName(u"ballPosHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.ballPosHeader.sizePolicy().hasHeightForWidth())
         self.ballPosHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.ballPosHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.ballPosHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_18 = QHBoxLayout(self.ballPosHeader)
@@ -1970,13 +2066,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_18.addItem(self.ballPosSpacer)
 
-
         self.ballPos.addWidget(self.ballPosHeader)
 
         self.ballPosBox = QFrame(self.ballInfoBox)
         self.ballPosBox.setObjectName(u"ballPosBox")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.ballPosBox.sizePolicy().hasHeightForWidth())
         self.ballPosBox.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.ballPosBox.setMinimumSize(QSize(86, 0))
         self.ballPosBox.setStyleSheet(u"")
         self.ballPosBox.setFrameShape(QFrame.Shape.StyledPanel)
@@ -1992,9 +2089,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.ballPosValue)
 
-
         self.ballPos.addWidget(self.ballPosBox)
-
 
         self.horizontalLayout_11.addLayout(self.ballPos)
 
@@ -2009,8 +2104,10 @@ class Ui_MainWindow(object):
 
         self.ballSpeedBox = QFrame(self.ballInfoBox)
         self.ballSpeedBox.setObjectName(u"ballSpeedBox")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.ballSpeedBox.sizePolicy().hasHeightForWidth())
         self.ballSpeedBox.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.ballSpeedBox.setFrameShape(QFrame.Shape.StyledPanel)
         self.ballSpeedBox.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.ballSpeedBox)
@@ -2023,9 +2120,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.ballSpeedValue)
 
-
         self.ballSpeed.addWidget(self.ballSpeedBox)
-
 
         self.horizontalLayout_11.addLayout(self.ballSpeed)
 
@@ -2040,8 +2135,10 @@ class Ui_MainWindow(object):
 
         self.ballAccBox = QFrame(self.ballInfoBox)
         self.ballAccBox.setObjectName(u"ballAccBox")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.ballAccBox.sizePolicy().hasHeightForWidth())
         self.ballAccBox.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.ballAccBox.setFrameShape(QFrame.Shape.StyledPanel)
         self.ballAccBox.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_8 = QVBoxLayout(self.ballAccBox)
@@ -2055,22 +2152,20 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.ballAccValue)
 
-
         self.ballAcc.addWidget(self.ballAccBox)
-
 
         self.horizontalLayout_11.addLayout(self.ballAcc)
 
-
         self.verticalLayout_9.addWidget(self.ballInfoBox)
-
 
         self.horizontalLayout_17.addWidget(self.ballInfo)
 
         self.comm = QFrame(self.sysInfoBox)
         self.comm.setObjectName(u"comm")
+        
         SizePolicies["Expanding_Preferred"].setHeightForWidth(self.comm.sizePolicy().hasHeightForWidth())
         self.comm.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
         self.comm.setMinimumSize(QSize(397, 0))
         self.comm.setFrameShape(QFrame.Shape.StyledPanel)
         self.comm.setFrameShadow(QFrame.Shadow.Raised)
@@ -2079,8 +2174,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_13.setContentsMargins(-1, 3, -1, -1)
         self.commHeader = QFrame(self.comm)
         self.commHeader.setObjectName(u"commHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.commHeader.sizePolicy().hasHeightForWidth())
         self.commHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.commHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.commHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_19 = QHBoxLayout(self.commHeader)
@@ -2098,13 +2195,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_19.addItem(self.commSpacer)
 
-
         self.verticalLayout_13.addWidget(self.commHeader)
 
         self.commInfoBox = QFrame(self.comm)
         self.commInfoBox.setObjectName(u"commInfoBox")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.commInfoBox.sizePolicy().hasHeightForWidth())
         self.commInfoBox.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.commInfoBox.setFrameShape(QFrame.Shape.NoFrame)
         self.commInfoBox.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_15 = QHBoxLayout(self.commInfoBox)
@@ -2114,8 +2212,10 @@ class Ui_MainWindow(object):
         self.visionComm.setObjectName(u"visionComm")
         self.visionCommHeader = QFrame(self.commInfoBox)
         self.visionCommHeader.setObjectName(u"visionCommHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visionCommHeader.sizePolicy().hasHeightForWidth())
         self.visionCommHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.visionCommHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.visionCommHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_12 = QHBoxLayout(self.visionCommHeader)
@@ -2140,7 +2240,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_12.addWidget(self.visionCommStatus)
 
-
         self.visionComm.addWidget(self.visionCommHeader)
 
         self.visionCommPortBox = QFrame(self.commInfoBox)
@@ -2159,9 +2258,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_10.addWidget(self.visionCommPortValue, 0, Qt.AlignmentFlag.AlignVCenter)
 
-
         self.visionComm.addWidget(self.visionCommPortBox)
-
 
         self.horizontalLayout_15.addLayout(self.visionComm)
 
@@ -2169,8 +2266,10 @@ class Ui_MainWindow(object):
         self.refComm.setObjectName(u"refComm")
         self.refCommHeader = QFrame(self.commInfoBox)
         self.refCommHeader.setObjectName(u"refCommHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.refCommHeader.sizePolicy().hasHeightForWidth())
         self.refCommHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.refCommHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.refCommHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_13 = QHBoxLayout(self.refCommHeader)
@@ -2213,9 +2312,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_11.addWidget(self.refCommPortValue, 0, Qt.AlignmentFlag.AlignVCenter)
 
-
         self.refComm.addWidget(self.refCommPortBox)
-
 
         self.horizontalLayout_15.addLayout(self.refComm)
 
@@ -2223,8 +2320,10 @@ class Ui_MainWindow(object):
         self.transComm.setObjectName(u"transComm")
         self.transCommHeader = QFrame(self.commInfoBox)
         self.transCommHeader.setObjectName(u"transCommHeader")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.transCommHeader.sizePolicy().hasHeightForWidth())
         self.transCommHeader.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.transCommHeader.setFrameShape(QFrame.Shape.NoFrame)
         self.transCommHeader.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_14 = QHBoxLayout(self.transCommHeader)
@@ -2249,7 +2348,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_14.addWidget(self.transCommStatus)
 
-
         self.transComm.addWidget(self.transCommHeader)
 
         self.transCommPortBox = QFrame(self.commInfoBox)
@@ -2267,19 +2365,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_12.addWidget(self.transCommPortValue, 0, Qt.AlignmentFlag.AlignVCenter)
 
-
         self.transComm.addWidget(self.transCommPortBox)
 
-
         self.horizontalLayout_15.addLayout(self.transComm)
-
 
         self.verticalLayout_13.addWidget(self.commInfoBox)
 
         self.commButtons = QFrame(self.comm)
         self.commButtons.setObjectName(u"commButtons")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.commButtons.sizePolicy().hasHeightForWidth())
         self.commButtons.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.commButtons.setFrameShape(QFrame.Shape.NoFrame)
         self.commButtons.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_20 = QHBoxLayout(self.commButtons)
@@ -2292,9 +2389,11 @@ class Ui_MainWindow(object):
 
         self.commCancelButton = QPushButton(self.commButtons)
         self.commCancelButton.setObjectName(u"commCancelButton")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.commCancelButton.sizePolicy().hasHeightForWidth())
         self.commCancelButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         self.commCancelButton.setMinimumSize(QSize(70, 20))
+        
         self.commCancelButton.setFont(font3)
         self.commCancelButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commCancelButton.setStyleSheet(u"")
@@ -2303,25 +2402,24 @@ class Ui_MainWindow(object):
 
         self.commAlterButton = QPushButton(self.commButtons)
         self.commAlterButton.setObjectName(u"commAlterButton")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.commAlterButton.sizePolicy().hasHeightForWidth())
         self.commAlterButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         self.commAlterButton.setMinimumSize(QSize(120, 20))
+        
         self.commAlterButton.setFont(font3)
         self.commAlterButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commAlterButton.setStyleSheet(u"")
 
         self.horizontalLayout_20.addWidget(self.commAlterButton)
 
-
         self.verticalLayout_13.addWidget(self.commButtons)
-
 
         self.horizontalLayout_17.addWidget(self.comm)
 
         self.infoSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_17.addItem(self.infoSpacer)
-
 
         self.sysInfoFooter.addWidget(self.sysInfoBox)
 
@@ -2330,8 +2428,10 @@ class Ui_MainWindow(object):
         self.logging.setObjectName(u"logging")
         self.logBox = QFrame(self.layoutWidget)
         self.logBox.setObjectName(u"logBox")
+        
         SizePolicies["Expanding_Preferred"].setHeightForWidth(self.logBox.sizePolicy().hasHeightForWidth())
         self.logBox.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
         self.logBox.setMinimumSize(QSize(656, 0))
         self.logBox.setFrameShape(QFrame.Shape.StyledPanel)
         self.logBox.setFrameShadow(QFrame.Shadow.Raised)
@@ -2357,7 +2457,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_16.addItem(self.logHeaderSpacer)
 
-
         self.verticalLayout_14.addWidget(self.logHeader)
 
         self.logScrollArea = QScrollArea(self.logBox)
@@ -2373,13 +2472,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_14.addWidget(self.logScrollArea)
 
-
         self.logging.addWidget(self.logBox)
 
         self.logSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.logging.addItem(self.logSpacer)
-
 
         self.sysInfoFooter.addLayout(self.logging)
 
@@ -2391,8 +2488,10 @@ class Ui_MainWindow(object):
         self.visionSettings = QFrame(self.visionSettingsTab)
         self.visionSettings.setObjectName(u"visionSettings")
         self.visionSettings.setGeometry(QRect(10, 10, 551, 51))
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visionSettings.sizePolicy().hasHeightForWidth())
         self.visionSettings.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.visionSettings.setMinimumSize(QSize(551, 51))
         self.visionSettings.setMaximumSize(QSize(16777215, 51))
         self.visionSettings.setFrameShape(QFrame.Shape.StyledPanel)
@@ -2415,15 +2514,16 @@ class Ui_MainWindow(object):
         self.visGameOptionsDropdown.addItem("")
         self.visGameOptionsDropdown.addItem("")
         self.visGameOptionsDropdown.setObjectName(u"visGameOptionsDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visGameOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.visGameOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.visGameOptionsDropdown.setFont(font3)
         self.visGameOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.visGameOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.visGameOptionsDropdown.setFrame(True)
 
         self.visGameOptions.addWidget(self.visGameOptionsDropdown)
-
 
         self.horizontalLayout_37.addLayout(self.visGameOptions)
 
@@ -2439,15 +2539,16 @@ class Ui_MainWindow(object):
         self.deviceOptionsDropdown = QComboBox(self.visionSettings)
         self.deviceOptionsDropdown.addItem("")
         self.deviceOptionsDropdown.setObjectName(u"deviceOptionsDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.deviceOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.deviceOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.deviceOptionsDropdown.setFont(font3)
         self.deviceOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.deviceOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.deviceOptionsDropdown.setFrame(True)
 
         self.deviceOptions.addWidget(self.deviceOptionsDropdown)
-
 
         self.horizontalLayout_37.addLayout(self.deviceOptions)
 
@@ -2464,8 +2565,10 @@ class Ui_MainWindow(object):
         self.selectVisionOptionsDropdown.addItem("")
         self.selectVisionOptionsDropdown.addItem("")
         self.selectVisionOptionsDropdown.setObjectName(u"selectVisionOptionsDropdown")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.selectVisionOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.selectVisionOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.selectVisionOptionsDropdown.setFont(font3)
         self.selectVisionOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.selectVisionOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
@@ -2473,14 +2576,15 @@ class Ui_MainWindow(object):
 
         self.selectVisionOptions.addWidget(self.selectVisionOptionsDropdown)
 
-
         self.horizontalLayout_37.addLayout(self.selectVisionOptions)
 
         self.highLevelVision = QFrame(self.visionSettingsTab)
         self.highLevelVision.setObjectName(u"highLevelVision")
         self.highLevelVision.setGeometry(QRect(630, 10, 161, 35))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.highLevelVision.sizePolicy().hasHeightForWidth())
         self.highLevelVision.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.highLevelVision.setMinimumSize(QSize(105, 35))
         self.highLevelVision.setCursor(QCursor(Qt.PointingHandCursor))
         self.highLevelVision.setFrameShape(QFrame.Shape.NoFrame)
@@ -2488,8 +2592,10 @@ class Ui_MainWindow(object):
         self.highLevelVisionButton = QPushButton(self.highLevelVision)
         self.highLevelVisionButton.setObjectName(u"highLevelVisionButton")
         self.highLevelVisionButton.setGeometry(QRect(0, 0, 161, 31))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.highLevelVisionButton.sizePolicy().hasHeightForWidth())
         self.highLevelVisionButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.highLevelVisionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.highLevelVisionButton.setAutoFillBackground(False)
         self.highLevelVisionButton.setStyleSheet(u"color: #494848; background: #a5a5a5;")
@@ -2498,8 +2604,10 @@ class Ui_MainWindow(object):
         self.highLevelVisionShadow = QFrame(self.highLevelVision)
         self.highLevelVisionShadow.setObjectName(u"highLevelVisionShadow")
         self.highLevelVisionShadow.setGeometry(QRect(3, 3, 161, 31))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.highLevelVisionShadow.sizePolicy().hasHeightForWidth())
         self.highLevelVisionShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.highLevelVisionShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.highLevelVisionShadow.setFrameShape(QFrame.Shape.NoFrame)
         self.highLevelVisionShadow.setFrameShadow(QFrame.Shadow.Plain)
@@ -2509,10 +2617,9 @@ class Ui_MainWindow(object):
         self.highLevelVisionContents.setObjectName(u"highLevelVisionContents")
         self.highLevelVisionContents.setGeometry(QRect(10, 100, 841, 404))
         
-        SizePolicies["Expanding_Expanding"].setHorizontalStretch(0)
-        SizePolicies["Expanding_Expanding"].setVerticalStretch(0)
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.highLevelVisionContents.sizePolicy().hasHeightForWidth())
         self.highLevelVisionContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.highLevelVisionContents.setMinimumSize(QSize(737, 402))
         self.highLevelVisionContents.setFrameShape(QFrame.Shape.NoFrame)
         self.highLevelVisionContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -2522,10 +2629,9 @@ class Ui_MainWindow(object):
         self.highLevelVisionDisplay = QFrame(self.highLevelVisionContents)
         self.highLevelVisionDisplay.setObjectName(u"highLevelVisionDisplay")
         
-        SizePolicies["MinExpanding_Fixed"].setHorizontalStretch(0)
-        SizePolicies["MinExpanding_Fixed"].setVerticalStretch(0)
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.highLevelVisionDisplay.sizePolicy().hasHeightForWidth())
         self.highLevelVisionDisplay.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.highLevelVisionDisplay.setCursor(QCursor(Qt.PointingHandCursor))
         self.highLevelVisionDisplay.setFrameShape(QFrame.Shape.NoFrame)
         self.highLevelVisionDisplay.setFrameShadow(QFrame.Shadow.Raised)
@@ -2535,8 +2641,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_105.setContentsMargins(0, 0, 0, 0)
         self.highLevelVisionFrame = QLabel(self.highLevelVisionDisplay)
         self.highLevelVisionFrame.setObjectName(u"highLevelVisionFrame")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.highLevelVisionFrame.sizePolicy().hasHeightForWidth())
         self.highLevelVisionFrame.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.highLevelVisionFrame.setMinimumSize(QSize(486, 390))
         self.highLevelVisionFrame.setMaximumSize(QSize(486, 390))
         self.highLevelVisionFrame.setPixmap(QPixmap(u"assets/highLevelVision.png"))
@@ -2545,13 +2653,14 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_105.addWidget(self.highLevelVisionFrame)
 
-
         self.horizontalLayout_134.addWidget(self.highLevelVisionDisplay)
 
         self.highLevelVisionTools = QFrame(self.highLevelVisionContents)
         self.highLevelVisionTools.setObjectName(u"highLevelVisionTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.highLevelVisionTools.sizePolicy().hasHeightForWidth())
         self.highLevelVisionTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.highLevelVisionTools.setMinimumSize(QSize(0, 392))
         self.highLevelVisionTools.setBaseSize(QSize(0, 0))
         self.highLevelVisionTools.setFrameShape(QFrame.Shape.StyledPanel)
@@ -2581,7 +2690,6 @@ class Ui_MainWindow(object):
         self.highLevelVisionHeaderSpacer = QSpacerItem(73, 15, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_135.addItem(self.highLevelVisionHeaderSpacer)
-
 
         self.verticalLayout_106.addWidget(self.highLevelVisionToolsHeader)
 
@@ -2649,9 +2757,7 @@ class Ui_MainWindow(object):
 
         self.vRobotInfo.addWidget(self.vRobotAngle)
 
-
         self.vRobotContents.addLayout(self.vRobotInfo)
-
 
         self.vRobots.addLayout(self.vRobotContents)
 
@@ -2684,9 +2790,7 @@ class Ui_MainWindow(object):
 
         self.vRobotInfo_2.addWidget(self.vRobotAngle_2)
 
-
         self.vRobotContents_2.addLayout(self.vRobotInfo_2)
-
 
         self.vRobots.addLayout(self.vRobotContents_2)
 
@@ -2719,15 +2823,11 @@ class Ui_MainWindow(object):
 
         self.vRobotInfo_3.addWidget(self.vRobotAngle_3)
 
-
         self.vRobotContents_3.addLayout(self.vRobotInfo_3)
-
 
         self.vRobots.addLayout(self.vRobotContents_3)
 
-
         self.verticalLayout_107.addLayout(self.vRobots)
-
 
         self.verticalLayout_106.addWidget(self.vRobotsContents)
 
@@ -2751,7 +2851,6 @@ class Ui_MainWindow(object):
         self.vBallInfoSpacer = QSpacerItem(117, 15, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_137.addItem(self.vBallInfoSpacer)
-
 
         self.vBall.addWidget(self.vBallInfoHeader)
 
@@ -2779,19 +2878,18 @@ class Ui_MainWindow(object):
 
         self.vBallInfo.addWidget(self.vBallPos)
 
-
         self.vBallContents.addLayout(self.vBallInfo)
 
-
         self.vBall.addLayout(self.vBallContents)
-
 
         self.verticalLayout_106.addLayout(self.vBall)
 
         self.nextStepVision = QFrame(self.highLevelVisionTools)
         self.nextStepVision.setObjectName(u"nextStepVision")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.nextStepVision.sizePolicy().hasHeightForWidth())
         self.nextStepVision.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.nextStepVision.setMinimumSize(QSize(105, 35))
         self.nextStepVision.setCursor(QCursor(Qt.PointingHandCursor))
         self.nextStepVision.setFrameShape(QFrame.Shape.NoFrame)
@@ -2799,8 +2897,10 @@ class Ui_MainWindow(object):
         self.nextStepVisionButton = QPushButton(self.nextStepVision)
         self.nextStepVisionButton.setObjectName(u"nextStepVisionButton")
         self.nextStepVisionButton.setGeometry(QRect(0, 0, 321, 31))
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.nextStepVisionButton.sizePolicy().hasHeightForWidth())
         self.nextStepVisionButton.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.nextStepVisionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.nextStepVisionButton.setAutoFillBackground(False)
         self.nextStepVisionButton.setStyleSheet(u"color: #fff; background: #3E7239;")
@@ -2809,8 +2909,10 @@ class Ui_MainWindow(object):
         self.nextStepVisionLabel = QFrame(self.nextStepVision)
         self.nextStepVisionLabel.setObjectName(u"nextStepVisionLabel")
         self.nextStepVisionLabel.setGeometry(QRect(3, 3, 321, 31))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.nextStepVisionLabel.sizePolicy().hasHeightForWidth())
         self.nextStepVisionLabel.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.nextStepVisionLabel.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.nextStepVisionLabel.setFrameShape(QFrame.Shape.NoFrame)
         self.nextStepVisionLabel.setFrameShadow(QFrame.Shadow.Plain)
@@ -2823,26 +2925,31 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_106.addItem(self.highLevelVisionToolsSpacer)
 
-
         self.horizontalLayout_134.addWidget(self.highLevelVisionTools)
 
         self.visionSteps = QTabWidget(self.visionSettingsTab)
         self.visionSteps.setObjectName(u"visionSteps")
         self.visionSteps.setGeometry(QRect(10, 70, 841, 491))
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.visionSteps.sizePolicy().hasHeightForWidth())
         self.visionSteps.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.visionSteps.setFont(font3)
         self.visionSteps.setCursor(QCursor(Qt.ArrowCursor))
         self.visionSteps.setFocusPolicy(Qt.FocusPolicy.TabFocus)
         self.cropFieldTab = QWidget()
         self.cropFieldTab.setObjectName(u"cropFieldTab")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldTab.sizePolicy().hasHeightForWidth())
         self.cropFieldTab.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldContents = QFrame(self.cropFieldTab)
         self.cropFieldContents.setObjectName(u"cropFieldContents")
         self.cropFieldContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.cropFieldContents.sizePolicy().hasHeightForWidth())
         self.cropFieldContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.cropFieldContents.setMinimumSize(QSize(737, 402))
         self.cropFieldContents.setFrameShape(QFrame.Shape.NoFrame)
         self.cropFieldContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -2852,8 +2959,10 @@ class Ui_MainWindow(object):
         
         self.visionCropFrame = CropEditor(self.cropFieldContents, QPixmap(u"assets/defaultFrame.png"))
         self.visionCropFrame.setObjectName(u"visionCropFrame")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.visionCropFrame.sizePolicy().hasHeightForWidth())
         self.visionCropFrame.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.visionCropFrame.setScaledContents(True)
         self.visionCropFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.visionCropFrame.setCursor(QCursor(Qt.PointingHandCursor))
@@ -2863,8 +2972,10 @@ class Ui_MainWindow(object):
 
         self.cropFieldTools = QFrame(self.cropFieldContents)
         self.cropFieldTools.setObjectName(u"cropFieldTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.cropFieldTools.sizePolicy().hasHeightForWidth())
         self.cropFieldTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.cropFieldTools.setMinimumSize(QSize(0, 392))
         self.cropFieldTools.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropFieldTools.setFrameShadow(QFrame.Shadow.Raised)
@@ -2909,8 +3020,10 @@ class Ui_MainWindow(object):
 
         self.showCropFieldSwitch = QSlider(self.cropFieldTools)
         self.showCropFieldSwitch.setObjectName(u"showCropFieldSwitch")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.showCropFieldSwitch.sizePolicy().hasHeightForWidth())
         self.showCropFieldSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.showCropFieldSwitch.setMinimumSize(QSize(41, 0))
         self.showCropFieldSwitch.setMaximumSize(QSize(41, 16777215))
         self.showCropFieldSwitch.setCursor(QCursor(Qt.PointingHandCursor))
@@ -2947,13 +3060,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_140.addItem(self.cropFieldActionHeaderSpacer)
 
-
         self.cropFieldActions.addWidget(self.cropFieldActionHeader)
 
         self.cropFieldActionButtons = QFrame(self.cropFieldTools)
         self.cropFieldActionButtons.setObjectName(u"cropFieldActionButtons")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.cropFieldActionButtons.sizePolicy().hasHeightForWidth())
         self.cropFieldActionButtons.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.cropFieldActionButtons.setSizeIncrement(QSize(5, 0))
         self.cropFieldActionButtons.setFrameShape(QFrame.Shape.NoFrame)
         self.cropFieldActionButtons.setFrameShadow(QFrame.Shadow.Raised)
@@ -2967,8 +3081,10 @@ class Ui_MainWindow(object):
 
         self.cropFieldRedoTool = QFrame(self.cropFieldActionButtons)
         self.cropFieldRedoTool.setObjectName(u"cropFieldRedoTool")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldRedoTool.sizePolicy().hasHeightForWidth())
         self.cropFieldRedoTool.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldRedoTool.setMinimumSize(QSize(49, 49))
         self.cropFieldRedoTool.setMaximumSize(QSize(49, 49))
         self.cropFieldRedoTool.setFrameShape(QFrame.Shape.NoFrame)
@@ -2976,16 +3092,20 @@ class Ui_MainWindow(object):
         self.cropFieldRedoButtonShadow = QFrame(self.cropFieldRedoTool)
         self.cropFieldRedoButtonShadow.setObjectName(u"cropFieldRedoButtonShadow")
         self.cropFieldRedoButtonShadow.setGeometry(QRect(3, 3, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldRedoButtonShadow.sizePolicy().hasHeightForWidth())
         self.cropFieldRedoButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldRedoButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.cropFieldRedoButtonShadow.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropFieldRedoButtonShadow.setFrameShadow(QFrame.Shadow.Raised)
         self.cropFieldRedoButton = QPushButton(self.cropFieldRedoTool)
         self.cropFieldRedoButton.setObjectName(u"cropFieldRedoButton")
         self.cropFieldRedoButton.setGeometry(QRect(0, 0, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldRedoButton.sizePolicy().hasHeightForWidth())
         self.cropFieldRedoButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldRedoButton.setCursor(QCursor(Qt.PointingHandCursor))
         icon12 = QIcon()
         icon12.addFile(u"assets/icons/redo.svg", QSize(), QIcon.Normal, QIcon.Off)
@@ -3001,8 +3121,10 @@ class Ui_MainWindow(object):
 
         self.cropFieldEraseTool = QFrame(self.cropFieldActionButtons)
         self.cropFieldEraseTool.setObjectName(u"cropFieldEraseTool")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldEraseTool.sizePolicy().hasHeightForWidth())
         self.cropFieldEraseTool.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldEraseTool.setMinimumSize(QSize(49, 49))
         self.cropFieldEraseTool.setMaximumSize(QSize(49, 49))
         self.cropFieldEraseTool.setFrameShape(QFrame.Shape.NoFrame)
@@ -3010,16 +3132,20 @@ class Ui_MainWindow(object):
         self.cropFieldEraseButtonShadow = QFrame(self.cropFieldEraseTool)
         self.cropFieldEraseButtonShadow.setObjectName(u"cropFieldEraseButtonShadow")
         self.cropFieldEraseButtonShadow.setGeometry(QRect(3, 3, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldEraseButtonShadow.sizePolicy().hasHeightForWidth())
         self.cropFieldEraseButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldEraseButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.cropFieldEraseButtonShadow.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropFieldEraseButtonShadow.setFrameShadow(QFrame.Shadow.Raised)
         self.cropFieldEraseButton = QPushButton(self.cropFieldEraseTool)
         self.cropFieldEraseButton.setObjectName(u"cropFieldEraseButton")
         self.cropFieldEraseButton.setGeometry(QRect(0, 0, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropFieldEraseButton.sizePolicy().hasHeightForWidth())
         self.cropFieldEraseButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropFieldEraseButton.setMinimumSize(QSize(46, 46))
         self.cropFieldEraseButton.setMaximumSize(QSize(46, 46))
         self.cropFieldEraseButton.setCursor(QCursor(Qt.PointingHandCursor))
@@ -3035,16 +3161,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_141.addItem(self.cropFieldSpacerRight)
 
-
         self.cropFieldActions.addWidget(self.cropFieldActionButtons)
-
 
         self.verticalLayout_110.addLayout(self.cropFieldActions)
 
         self.cropFieldSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_110.addItem(self.cropFieldSpacer)
-
 
         self.horizontalLayout_138.addWidget(self.cropFieldTools)
 
@@ -3057,8 +3180,10 @@ class Ui_MainWindow(object):
         self.cropInnerFieldContents = QFrame(self.cropInnerFieldTab)
         self.cropInnerFieldContents.setObjectName(u"cropInnerFieldContents")
         self.cropInnerFieldContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.cropInnerFieldContents.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.cropInnerFieldContents.setMinimumSize(QSize(737, 402))
         self.cropInnerFieldContents.setFrameShape(QFrame.Shape.NoFrame)
         self.cropInnerFieldContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -3067,8 +3192,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_142.setContentsMargins(6, 6, 6, 6)
         self.visionInnerCropDisplay = QFrame(self.cropInnerFieldContents)
         self.visionInnerCropDisplay.setObjectName(u"visionInnerCropDisplay")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.visionInnerCropDisplay.sizePolicy().hasHeightForWidth())
         self.visionInnerCropDisplay.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.visionInnerCropDisplay.setCursor(QCursor(Qt.PointingHandCursor))
         self.visionInnerCropDisplay.setFrameShape(QFrame.Shape.NoFrame)
         self.visionInnerCropDisplay.setFrameShadow(QFrame.Shadow.Raised)
@@ -3078,8 +3205,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_111.setContentsMargins(0, 0, 0, 0)
         self.visionInnerCropFrame = QLabel(self.visionInnerCropDisplay)
         self.visionInnerCropFrame.setObjectName(u"visionInnerCropFrame")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.visionInnerCropFrame.sizePolicy().hasHeightForWidth())
         self.visionInnerCropFrame.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.visionInnerCropFrame.setPixmap(QPixmap(u"assets/defaultFrame.png"))
         self.visionInnerCropFrame.setScaledContents(True)
         self.visionInnerCropFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -3091,8 +3220,10 @@ class Ui_MainWindow(object):
 
         self.cropInnerFieldTools = QFrame(self.cropInnerFieldContents)
         self.cropInnerFieldTools.setObjectName(u"cropInnerFieldTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.cropInnerFieldTools.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.cropInnerFieldTools.setMinimumSize(QSize(0, 392))
         self.cropInnerFieldTools.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropInnerFieldTools.setFrameShadow(QFrame.Shadow.Raised)
@@ -3137,8 +3268,10 @@ class Ui_MainWindow(object):
 
         self.showInnerCropFieldSwitch = QSlider(self.cropInnerFieldTools)
         self.showInnerCropFieldSwitch.setObjectName(u"showInnerCropFieldSwitch")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.showInnerCropFieldSwitch.sizePolicy().hasHeightForWidth())
         self.showInnerCropFieldSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.showInnerCropFieldSwitch.setMinimumSize(QSize(41, 0))
         self.showInnerCropFieldSwitch.setMaximumSize(QSize(41, 16777215))
         self.showInnerCropFieldSwitch.setCursor(QCursor(Qt.PointingHandCursor))
@@ -3150,7 +3283,6 @@ class Ui_MainWindow(object):
         self.showInnerCropFieldSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.showInnerCropField.addWidget(self.showInnerCropFieldSwitch)
-
 
         self.verticalLayout_112.addLayout(self.showInnerCropField)
 
@@ -3175,13 +3307,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_144.addItem(self.cropInnerFieldActionHeaderSpacer)
 
-
         self.cropInnerFieldActions.addWidget(self.cropInnerFieldActionHeader)
 
         self.cropInnerFieldActionButtons = QFrame(self.cropInnerFieldTools)
         self.cropInnerFieldActionButtons.setObjectName(u"cropInnerFieldActionButtons")
+        
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.cropInnerFieldActionButtons.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldActionButtons.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
         self.cropInnerFieldActionButtons.setSizeIncrement(QSize(5, 0))
         self.cropInnerFieldActionButtons.setFrameShape(QFrame.Shape.NoFrame)
         self.cropInnerFieldActionButtons.setFrameShadow(QFrame.Shadow.Raised)
@@ -3195,8 +3328,10 @@ class Ui_MainWindow(object):
 
         self.cropInnerFieldRedoTool = QFrame(self.cropInnerFieldActionButtons)
         self.cropInnerFieldRedoTool.setObjectName(u"cropInnerFieldRedoTool")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldRedoTool.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldRedoTool.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldRedoTool.setMinimumSize(QSize(49, 49))
         self.cropInnerFieldRedoTool.setMaximumSize(QSize(49, 49))
         self.cropInnerFieldRedoTool.setFrameShape(QFrame.Shape.NoFrame)
@@ -3204,16 +3339,20 @@ class Ui_MainWindow(object):
         self.cropInnerFieldRedoButtonShadow = QFrame(self.cropInnerFieldRedoTool)
         self.cropInnerFieldRedoButtonShadow.setObjectName(u"cropInnerFieldRedoButtonShadow")
         self.cropInnerFieldRedoButtonShadow.setGeometry(QRect(3, 3, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldRedoButtonShadow.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldRedoButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldRedoButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.cropInnerFieldRedoButtonShadow.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropInnerFieldRedoButtonShadow.setFrameShadow(QFrame.Shadow.Raised)
         self.cropInnerFieldRedoButton = QPushButton(self.cropInnerFieldRedoTool)
         self.cropInnerFieldRedoButton.setObjectName(u"cropInnerFieldRedoButton")
         self.cropInnerFieldRedoButton.setGeometry(QRect(0, 0, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldRedoButton.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldRedoButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldRedoButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.cropInnerFieldRedoButton.setIcon(icon12)
         self.cropInnerFieldRedoButton.setIconSize(QSize(36, 36))
@@ -3227,8 +3366,10 @@ class Ui_MainWindow(object):
 
         self.cropInnerFieldEraseTool = QFrame(self.cropInnerFieldActionButtons)
         self.cropInnerFieldEraseTool.setObjectName(u"cropInnerFieldEraseTool")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldEraseTool.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldEraseTool.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldEraseTool.setMinimumSize(QSize(49, 49))
         self.cropInnerFieldEraseTool.setMaximumSize(QSize(49, 49))
         self.cropInnerFieldEraseTool.setFrameShape(QFrame.Shape.NoFrame)
@@ -3236,16 +3377,20 @@ class Ui_MainWindow(object):
         self.cropInnerFieldEraseButtonShadow = QFrame(self.cropInnerFieldEraseTool)
         self.cropInnerFieldEraseButtonShadow.setObjectName(u"cropInnerFieldEraseButtonShadow")
         self.cropInnerFieldEraseButtonShadow.setGeometry(QRect(3, 3, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldEraseButtonShadow.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldEraseButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldEraseButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
         self.cropInnerFieldEraseButtonShadow.setFrameShape(QFrame.Shape.StyledPanel)
         self.cropInnerFieldEraseButtonShadow.setFrameShadow(QFrame.Shadow.Raised)
         self.cropInnerFieldEraseButton = QPushButton(self.cropInnerFieldEraseTool)
         self.cropInnerFieldEraseButton.setObjectName(u"cropInnerFieldEraseButton")
         self.cropInnerFieldEraseButton.setGeometry(QRect(0, 0, 46, 46))
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.cropInnerFieldEraseButton.sizePolicy().hasHeightForWidth())
         self.cropInnerFieldEraseButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.cropInnerFieldEraseButton.setMinimumSize(QSize(46, 46))
         self.cropInnerFieldEraseButton.setMaximumSize(QSize(46, 46))
         self.cropInnerFieldEraseButton.setCursor(QCursor(Qt.PointingHandCursor))
@@ -3259,16 +3404,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_145.addItem(self.cropInnerFieldSpacerRight)
 
-
         self.cropInnerFieldActions.addWidget(self.cropInnerFieldActionButtons)
-
 
         self.verticalLayout_112.addLayout(self.cropInnerFieldActions)
 
         self.cropInnerFieldSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_112.addItem(self.cropInnerFieldSpacer)
-
 
         self.horizontalLayout_142.addWidget(self.cropInnerFieldTools)
 
@@ -3278,8 +3420,10 @@ class Ui_MainWindow(object):
         self.segContents = QFrame(self.segTab)
         self.segContents.setObjectName(u"segContents")
         self.segContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.segContents.sizePolicy().hasHeightForWidth())
         self.segContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.segContents.setMinimumSize(QSize(737, 402))
         self.segContents.setFrameShape(QFrame.Shape.NoFrame)
         self.segContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -3290,8 +3434,10 @@ class Ui_MainWindow(object):
 #####################
         self.segFrame = SegmentEditor(self.segContents, QPixmap(u"assets/defaultFrame.png"))
         self.segFrame.setObjectName(u"segFrame")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segFrame.sizePolicy().hasHeightForWidth())
         self.segFrame.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.segFrame.setScaledContents(True)
         self.segFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3300,8 +3446,10 @@ class Ui_MainWindow(object):
 #####################
         self.segTools = QFrame(self.segContents)
         self.segTools.setObjectName(u"segTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.segTools.sizePolicy().hasHeightForWidth())
         self.segTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.segTools.setMinimumSize(QSize(0, 392))
         self.segTools.setBaseSize(QSize(0, 0))
         self.segTools.setFrameShape(QFrame.Shape.StyledPanel)
@@ -3736,8 +3884,10 @@ class Ui_MainWindow(object):
         self.segTeamContents = QFrame(self.segTeamTab)
         self.segTeamContents.setObjectName(u"segTeamContents")
         self.segTeamContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.segTeamContents.sizePolicy().hasHeightForWidth())
         self.segTeamContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.segTeamContents.setMinimumSize(QSize(737, 402))
         self.segTeamContents.setFrameShape(QFrame.Shape.NoFrame)
         self.segTeamContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -3747,8 +3897,10 @@ class Ui_MainWindow(object):
         
         self.segTeamFrame = SegmentEditor(self.segTeamContents, QPixmap(u"assets/defaultFrame.png"))
         self.segTeamFrame.setObjectName(u"segTeamFrame")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segTeamFrame.sizePolicy().hasHeightForWidth())
         self.segTeamFrame.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.segTeamFrame.setScaledContents(True)
         self.segTeamFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3757,8 +3909,10 @@ class Ui_MainWindow(object):
 
         self.segTeamTools = QFrame(self.segTeamContents)
         self.segTeamTools.setObjectName(u"segTeamTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.segTeamTools.sizePolicy().hasHeightForWidth())
         self.segTeamTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.segTeamTools.setMinimumSize(QSize(0, 392))
         self.segTeamTools.setBaseSize(QSize(0, 0))
         self.segTeamTools.setFrameShape(QFrame.Shape.StyledPanel)
@@ -4194,8 +4348,10 @@ class Ui_MainWindow(object):
         self.segBallContents = QFrame(self.segBallTab)
         self.segBallContents.setObjectName(u"segBallContents")
         self.segBallContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.segBallContents.sizePolicy().hasHeightForWidth())
         self.segBallContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.segBallContents.setMinimumSize(QSize(737, 402))
         self.segBallContents.setFrameShape(QFrame.Shape.NoFrame)
         self.segBallContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -4205,8 +4361,10 @@ class Ui_MainWindow(object):
        
         self.segBallFrame = SegmentEditor(self.segBallContents, QPixmap(u"assets/defaultFrame.png"))
         self.segBallFrame.setObjectName(u"segBallFrame")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segBallFrame.sizePolicy().hasHeightForWidth())
         self.segBallFrame.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.segBallFrame.setScaledContents(True)
         self.segBallFrame.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4215,8 +4373,10 @@ class Ui_MainWindow(object):
 
         self.segBallTools = QFrame(self.segBallContents)
         self.segBallTools.setObjectName(u"segBallTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.segBallTools.sizePolicy().hasHeightForWidth())
         self.segBallTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.segBallTools.setMinimumSize(QSize(0, 392))
         self.segBallTools.setBaseSize(QSize(0, 0))
         self.segBallTools.setFrameShape(QFrame.Shape.StyledPanel)
@@ -4651,8 +4811,10 @@ class Ui_MainWindow(object):
         self.genParamsContents = QFrame(self.genParamsTab)
         self.genParamsContents.setObjectName(u"genParamsContents")
         self.genParamsContents.setGeometry(QRect(0, 0, 831, 451))
+        
         SizePolicies["Expanding_Expanding"].setHeightForWidth(self.genParamsContents.sizePolicy().hasHeightForWidth())
         self.genParamsContents.setSizePolicy(SizePolicies["Expanding_Expanding"])
+        
         self.genParamsContents.setMinimumSize(QSize(737, 402))
         self.genParamsContents.setFrameShape(QFrame.Shape.NoFrame)
         self.genParamsContents.setFrameShadow(QFrame.Shadow.Raised)
@@ -4661,8 +4823,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_179.setContentsMargins(6, 6, 6, 6)
         self.genParamsDisplay = QFrame(self.genParamsContents)
         self.genParamsDisplay.setObjectName(u"genParamsDisplay")
+        
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.genParamsDisplay.sizePolicy().hasHeightForWidth())
         self.genParamsDisplay.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
+        
         self.genParamsDisplay.setCursor(QCursor(Qt.PointingHandCursor))
         self.genParamsDisplay.setFrameShape(QFrame.Shape.NoFrame)
         self.genParamsDisplay.setFrameShadow(QFrame.Shadow.Raised)
@@ -4672,8 +4836,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_140.setContentsMargins(0, 0, 0, 0)
         self.genParamsFrame = QLabel(self.genParamsDisplay)
         self.genParamsFrame.setObjectName(u"genParamsFrame")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.genParamsFrame.sizePolicy().hasHeightForWidth())
         self.genParamsFrame.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.genParamsFrame.setMinimumSize(QSize(479, 0))
         self.genParamsFrame.setPixmap(QPixmap(u"assets/segImage.png"))
         self.genParamsFrame.setScaledContents(True)
@@ -4686,8 +4852,10 @@ class Ui_MainWindow(object):
 
         self.genParamsTools = QFrame(self.genParamsContents)
         self.genParamsTools.setObjectName(u"genParamsTools")
+        
         SizePolicies["MinExpanding_Expanding"].setHeightForWidth(self.genParamsTools.sizePolicy().hasHeightForWidth())
         self.genParamsTools.setSizePolicy(SizePolicies["MinExpanding_Expanding"])
+        
         self.genParamsTools.setMinimumSize(QSize(0, 392))
         self.genParamsTools.setBaseSize(QSize(0, 0))
         self.genParamsTools.setFrameShape(QFrame.Shape.StyledPanel)
@@ -4737,8 +4905,10 @@ class Ui_MainWindow(object):
 
         self.minAreaInnerContourSpinner = QSpinBox(self.segBallToolsContents)
         self.minAreaInnerContourSpinner.setObjectName(u"minAreaInnerContourSpinner")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.minAreaInnerContourSpinner.sizePolicy().hasHeightForWidth())
         self.minAreaInnerContourSpinner.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.minAreaInnerContourSpinner.setCursor(QCursor(Qt.PointingHandCursor))
         self.minAreaInnerContourSpinner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.minAreaInnerContourSpinner.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.PlusMinus)
@@ -4764,8 +4934,10 @@ class Ui_MainWindow(object):
         self.minAreaContour.addWidget(self.minAreaContourLabel)
 
         self.minAreaContourSpinner = QSpinBox(self.genParamsTools)
+        
         self.minAreaContourSpinner.setObjectName(u"minAreaContourSpinner")
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.minAreaContourSpinner.sizePolicy().hasHeightForWidth())
+        
         self.minAreaContourSpinner.setSizePolicy(SizePolicies["Fixed_Fixed"])
         self.minAreaContourSpinner.setCursor(QCursor(Qt.PointingHandCursor))
         self.minAreaContourSpinner.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -4790,8 +4962,10 @@ class Ui_MainWindow(object):
 
         self.areaRectRatioSpinner = QSpinBox(self.genParamsTools)
         self.areaRectRatioSpinner.setObjectName(u"areaRectRatioSpinner")
+        
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.areaRectRatioSpinner.sizePolicy().hasHeightForWidth())
         self.areaRectRatioSpinner.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
         self.areaRectRatioSpinner.setCursor(QCursor(Qt.PointingHandCursor))
         self.areaRectRatioSpinner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.areaRectRatioSpinner.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.PlusMinus)
@@ -4825,7 +4999,6 @@ class Ui_MainWindow(object):
 
         self.stabilityParam.addWidget(self.stabilityParamSpinner)
 
-
         self.verticalLayout_141.addLayout(self.stabilityParam)
 
         self.segBallSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -4847,57 +5020,86 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.appContents)
 
-
         self.verticalLayout.addWidget(self.body)
 
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.showCropFieldSwitch.valueChanged.connect(MainWindow.showCropField)
+        
+        ##########################################
+        # Connect Slots and Signals
+        ##########################################
+        # Header
         self.header.closeButton.clicked.connect(MainWindow.close)
         self.header.minButton.clicked.connect(MainWindow.showMinimized)
-        self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
-        self.satMinSlider.valueChanged.connect(self.satMinValue.setNum)
-        self.satMinSlider.valueChanged.connect(self.segFrame.updateMinSaturation)
-        self.satMaxSlider.valueChanged.connect(self.satMaxValue.setNum)
-        self.satMinSlider.valueChanged.connect(self.segFrame.updateMaxSaturation)
-        self.sBallMinSlider.valueChanged.connect(self.sBallMinValue.setNum)
-        self.sBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinSaturation)
-        self.sBallMaxSlider.valueChanged.connect(self.sBallMaxValue.setNum)
-        self.sBallMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxSaturation)
-        self.sTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinSaturation)
-        self.sTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxSaturation)
-        self.sTeamMinSlider.valueChanged.connect(self.sTeamMinValue.setNum)
-        self.sTeamMaxSlider.valueChanged.connect(self.sTeamMaxValue.setNum)
-        self.valueMaxSlider.valueChanged.connect(self.valueMaxValue.setNum)
-        self.valueMaxSlider.valueChanged.connect(self.segFrame.updateMaxValue)
-        self.vTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinValue)
-        self.vTeamMinSlider.valueChanged.connect(self.vTeamMinValue.setNum)
-        self.vTeamMaxSlider.valueChanged.connect(self.vTeamMaxValue.setNum)
-        self.vTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxValue)
-        self.hueBallMinSlider.valueChanged.connect(self.hueBallMinValue.setNum)
-        self.hueBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinHue)
-        self.hueTeamMinSlider.valueChanged.connect(self.hueTeamMinValue.setNum)
-        self.hueTeamMaxSlider.valueChanged.connect(self.hueTeamMaxValue.setNum)
-        self.hueBallMaxSlider.valueChanged.connect(self.hueBallMaxValue.setNum)
-        self.hueMaxSlider.valueChanged.connect(self.hueMaxValue.setNum)
-        self.hueMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxHue)
-        self.hueTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinHue)
-        self.hueTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxHue)
-        self.vBallMinSlider.valueChanged.connect(self.vBallMinValue.setNum)
-        self.vBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinValue)
-        self.hueMinSlider.valueChanged.connect(self.hueMinValue.setNum)
-        self.hueMinSlider.valueChanged.connect(self.segFrame.updateMinHue)
-        self.valueMinSlider.valueChanged.connect(self.valueMinValue.setNum)
-        self.valueMinSlider.valueChanged.connect(self.segFrame.updateMinValue)
-        self.vBallMaxSlider.valueChanged.connect(self.vBallMaxValue.setNum)
-        self.vBallMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxValue)
+        
+        # System Info Signals
+        
+        self.showCropFieldSwitch.valueChanged.connect(MainWindow.showCropField)
         self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeFieldSideArrow)
         self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeTeamColor)
         self.viewUvfButton.clicked["bool"].connect(MainWindow.enableViewUvf)
         self.staticEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setVisible)
         self.dynEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setHidden)
+        self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
+        
+        # Elements Saturation Sliders
+        self.satMinSlider.valueChanged.connect(self.satMinValue.setNum)
+        self.satMinSlider.valueChanged.connect(self.segFrame.updateMinSaturation)
+        self.satMaxSlider.valueChanged.connect(self.satMaxValue.setNum)
+        self.satMinSlider.valueChanged.connect(self.segFrame.updateMaxSaturation)
+        
+        # Ball Saturation Sliders
+        self.sBallMinSlider.valueChanged.connect(self.sBallMinValue.setNum)
+        self.sBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinSaturation)
+        self.sBallMaxSlider.valueChanged.connect(self.sBallMaxValue.setNum)
+        self.sBallMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxSaturation)
+        
+        # Team Saturation Sliders
+        self.sTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinSaturation)
+        self.sTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxSaturation)
+        self.sTeamMinSlider.valueChanged.connect(self.sTeamMinValue.setNum)
+        self.sTeamMaxSlider.valueChanged.connect(self.sTeamMaxValue.setNum)
+        
+        # Elements Value Sliders 
+        self.valueMaxSlider.valueChanged.connect(self.valueMaxValue.setNum)
+        self.valueMaxSlider.valueChanged.connect(self.segFrame.updateMaxValue)
+        self.valueMinSlider.valueChanged.connect(self.valueMinValue.setNum)
+        self.valueMinSlider.valueChanged.connect(self.segFrame.updateMinValue)
+        
+        # Team Value Sliders
+        self.vTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinValue)
+        self.vTeamMinSlider.valueChanged.connect(self.vTeamMinValue.setNum)
+        self.vTeamMaxSlider.valueChanged.connect(self.vTeamMaxValue.setNum)
+        self.vTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxValue)
+        
+        # Ball Value Sliders
+        self.vBallMinSlider.valueChanged.connect(self.vBallMinValue.setNum)
+        self.vBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinValue)
+        self.vBallMaxSlider.valueChanged.connect(self.vBallMaxValue.setNum)
+        self.vBallMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxValue)
+        
+        # Ball Hue Sliders
+        self.hueBallMinSlider.valueChanged.connect(self.hueBallMinValue.setNum)
+        self.hueBallMinSlider.valueChanged.connect(self.segBallFrame.updateMinHue)
+        self.hueBallMaxSlider.valueChanged.connect(self.hueBallMaxValue.setNum)
+        
+        
+        # Team Hue Sliders
+        self.hueTeamMinSlider.valueChanged.connect(self.hueTeamMinValue.setNum)
+        self.hueTeamMaxSlider.valueChanged.connect(self.hueTeamMaxValue.setNum)
+        self.hueTeamMinSlider.valueChanged.connect(self.segTeamFrame.updateMinHue)
+        self.hueTeamMaxSlider.valueChanged.connect(self.segTeamFrame.updateMaxHue)
+        
+        # Elements Hue Sliders
+        self.hueMaxSlider.valueChanged.connect(self.hueMaxValue.setNum)
+        self.hueMaxSlider.valueChanged.connect(self.segBallFrame.updateMaxHue)
+        self.hueMinSlider.valueChanged.connect(self.hueMinValue.setNum)
+        self.hueMinSlider.valueChanged.connect(self.segFrame.updateMinHue)
 
+        ####################################
+        # Tab Initialization
+        ####################################
         self.appContents.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
         self.visionSteps.setCurrentIndex(0)

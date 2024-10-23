@@ -1,11 +1,9 @@
-from PIL import Image
 import cv2 as cv
-from PySide6.QtWidgets import QFrame, QLabel, QMainWindow, QApplication
-from PySide6.QtGui import QCursor, QPainter, QPixmap, QColor, QPen, QImage
-from PySide6.QtCore import Qt, QSize, QPoint, QPointF, QRect
+from PySide6.QtWidgets import QLabel
+from PySide6.QtGui import QPainter, QPixmap, QPen, QImage
+from PySide6.QtCore import Qt, QPointF, QRect
 import numpy as np
     
-
 class Editor(QLabel):
     def __init__(self, parent, defaultImage):
         super().__init__(parent)

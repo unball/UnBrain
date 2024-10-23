@@ -18,6 +18,57 @@ from header import QHeader
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        
+        ############################################
+        # Icons
+        ############################################
+        icon = QIcon()
+        icon.addFile(u"assets/icons/UnBall_Logo_Preto.svg", QSize(), QIcon.Normal, QIcon.Off)
+        blueFlagIcon = QIcon()
+        blueFlagIcon.addFile(u"assets/icons/blue_flag.svg", QSize(), QIcon.Normal, QIcon.Off)
+        playIcon = QIcon()
+        playIcon.addFile(u"assets/icons/play.svg", QSize(), QIcon.Normal, QIcon.Off)
+        prevIcon = QIcon()
+        prevIcon.addFile(u"assets/icons/prev.svg", QSize(), QIcon.Normal, QIcon.Off)
+        redStopIcon = QIcon()
+        redStopIcon.addFile(u"assets/icons/stop_red.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
+        ############################################
+        # Fonts
+        ############################################
+        font = QFont()
+        font.setFamilies([u"URW Bookman [UKWN]"])
+        
+        font2 = QFont()
+        font2.setFamilies([u"Roboto"])
+        font2.setPointSize(8)
+        font2.setBold(True)       
+        
+        font3 = QFont()
+        font3.setFamilies([u"Roboto"])
+        font3.setPointSize(8)
+        
+        font4 = QFont()
+        font4.setFamilies([u"Roboto"])
+        font4.setBold(True)
+        
+        font5 = QFont()
+        font5.setFamilies([u"Roboto"])
+        font5.setPointSize(7)
+        
+        font6 = QFont()
+        font6.setFamilies([u"Roboto"])
+        font6.setPointSize(8)
+        
+        font7 = QFont()
+        font7.setFamilies([u"Roboto"])
+        font7.setPointSize(11)
+        font7.setBold(True)
+        
+        font8 = QFont()
+        font8.setFamilies([u"Roboto"])
+        font8.setPointSize(20)
+        
         #############################################
         # Main Window
         #############################################
@@ -26,19 +77,13 @@ class Ui_MainWindow(object):
         MainWindow.resize(900, 700)
         MainWindow.setMinimumSize(QSize(800, 600))
         MainWindow.setMaximumSize(QSize(1366, 1166))
-        
-        font = QFont()
-        font.setFamilies([u"URW Bookman [UKWN]"])
         MainWindow.setFont(font)
-        
-        icon = QIcon()
-        icon.addFile(u"assets/icons/UnBall_Logo_Preto.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
-       
+
         
         ############################################
         # Central Widget
-        #############################################
+        ############################################
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         
@@ -94,6 +139,9 @@ class Ui_MainWindow(object):
         self.appContents.setTabShape(QTabWidget.TabShape.Rounded)
         self.appContents.setIconSize(QSize(24, 24))
         
+        ############################################
+        # System Information Tab
+        ############################################
         self.sysInfoTab = QWidget()
         self.sysInfoTab.setObjectName(u"sysInfoTab")
         
@@ -136,11 +184,6 @@ class Ui_MainWindow(object):
         self.gameOptionsLabel = QLabel(self.gameSettings)
         self.gameOptionsLabel.setObjectName(u"gameOptionsLabel")
         
-        font2 = QFont()
-        font2.setFamilies([u"Roboto"])
-        font2.setPointSize(8)
-        font2.setBold(True)
-        
         self.gameOptionsLabel.setFont(font2)
         self.gameOptionsLabel.setScaledContents(True)
         self.gameOptionsLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
@@ -152,10 +195,6 @@ class Ui_MainWindow(object):
         
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.gameOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.gameOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
-        
-        font3 = QFont()
-        font3.setFamilies([u"Roboto"])
-        font3.setPointSize(8)
         
         self.gameOptionsDropdown.setFont(font3)
         self.gameOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
@@ -259,10 +298,7 @@ class Ui_MainWindow(object):
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.switchTeamColorButton.sizePolicy().hasHeightForWidth())
         self.switchTeamColorButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        icon4 = QIcon()
-        icon4.addFile(u"assets/icons/blue_flag.svg", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.switchTeamColorButton.setIcon(icon4)
+        self.switchTeamColorButton.setIcon(blueFlagIcon)
         self.switchTeamColorButton.setIconSize(QSize(24, 22))
         self.switchTeamColorButton.setCheckable(True)
         self.switchTeamColorButton.setFlat(True)
@@ -372,10 +408,7 @@ class Ui_MainWindow(object):
         self.execButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.execButton.setStyleSheet(u"color: #fff; background: #3E7239;")
         
-        icon5 = QIcon()
-        icon5.addFile(u"assets/icons/play.svg", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.execButton.setIcon(icon5)
+        self.execButton.setIcon(playIcon)
         self.execButton.setIconSize(QSize(16, 16))
         self.execButton.setCheckable(True)
         self.execButton.raise_()
@@ -464,10 +497,7 @@ class Ui_MainWindow(object):
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.prevButton.sizePolicy().hasHeightForWidth())
         self.prevButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        icon6 = QIcon()
-        icon6.addFile(u"assets/icons/prev.svg", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.prevButton.setIcon(icon6)
+        self.prevButton.setIcon(prevIcon)
         self.prevButton.setFlat(True)
 
         self.controlButtons.addWidget(self.prevButton)
@@ -479,10 +509,7 @@ class Ui_MainWindow(object):
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopButton.sizePolicy().hasHeightForWidth())
         self.stopButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        icon7 = QIcon()
-        icon7.addFile(u"assets/icons/stop_red.svg", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.stopButton.setIcon(icon7)
+        self.stopButton.setIcon(redStopIcon)
         self.stopButton.setFlat(True)
 
         self.controlButtons.addWidget(self.stopButton)
@@ -1334,9 +1361,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
         self.uvfLabel = QLabel(self.uvfTitle)
         self.uvfLabel.setObjectName(u"uvfLabel")
-        font4 = QFont()
-        font4.setFamilies([u"Roboto"])
-        font4.setBold(True)
+        
         self.uvfLabel.setFont(font4)
         self.uvfLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -1374,9 +1399,7 @@ class Ui_MainWindow(object):
         self.pointsNumber.setObjectName(u"pointsNumber")
         self.pointsLabel = QLabel(self.viewUvf)
         self.pointsLabel.setObjectName(u"pointsLabel")
-        font5 = QFont()
-        font5.setFamilies([u"Roboto"])
-        font5.setPointSize(7)
+        
         self.pointsLabel.setFont(font5)
         self.pointsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -1905,10 +1928,7 @@ class Ui_MainWindow(object):
         self.selectPos.setObjectName(u"selectPos")
         self.selectPosLabel = QLabel(self.posContents)
         self.selectPosLabel.setObjectName(u"selectPosLabel")
-        font6 = QFont()
-        font6.setFamilies([u"Roboto"])
-        font6.setPointSize(8)
-        font6.setBold(False)
+        
         self.selectPosLabel.setFont(font6)
         self.selectPosLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2482,6 +2502,10 @@ class Ui_MainWindow(object):
 
         icon11 = QIcon()
         icon11.addFile(u"assets/icons/mdi_cog-outline.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
+        ############################################
+        # Vision Settings Tab
+        ############################################
         self.appContents.addTab(self.sysInfoTab, icon11, "")
         self.visionSettingsTab = QWidget()
         self.visionSettingsTab.setObjectName(u"visionSettingsTab")
@@ -2678,10 +2702,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_135.setContentsMargins(0, 0, 0, 0)
         self.highLevelVisionToolsLabel = QLabel(self.highLevelVisionToolsHeader)
         self.highLevelVisionToolsLabel.setObjectName(u"highLevelVisionToolsLabel")
-        font7 = QFont()
-        font7.setFamilies([u"Roboto"])
-        font7.setPointSize(11)
-        font7.setBold(True)
+        
         self.highLevelVisionToolsLabel.setFont(font7)
         self.highLevelVisionToolsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2729,9 +2750,7 @@ class Ui_MainWindow(object):
         self.vRobotContents.setObjectName(u"vRobotContents")
         self.vRobotIdLabel = QLabel(self.vRobotsContents)
         self.vRobotIdLabel.setObjectName(u"vRobotIdLabel")
-        font8 = QFont()
-        font8.setFamilies([u"Roboto"])
-        font8.setPointSize(20)
+        
         self.vRobotIdLabel.setFont(font8)
         self.vRobotIdLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -5016,6 +5035,9 @@ class Ui_MainWindow(object):
         self.visionAiTab.setObjectName(u"visionAiTab")
         icon16 = QIcon()
         icon16.addFile(u"assets/icons/mdi_bullseye-arrow.svg", QSize(), QIcon.Normal, QIcon.Off)
+        ############################################
+        # AI Vision Tab
+        ############################################
         self.appContents.addTab(self.visionAiTab, icon16, "")
 
         self.verticalLayout_2.addWidget(self.appContents)

@@ -10,7 +10,6 @@ from PySide6.QtGui import QPixmap, QIcon
 #     pyside2-uic form.ui -o ui_form.py
 
 from ui_form import Ui_MainWindow
-from pyqt5Custom import ToggleSwitch
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):

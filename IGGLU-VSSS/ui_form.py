@@ -411,7 +411,6 @@ class Ui_MainWindow(object):
         self.execButton.setIcon(playIcon)
         self.execButton.setIconSize(QSize(16, 16))
         self.execButton.setCheckable(True)
-        self.execButton.raise_()
         
         self.execButtonShadow = QFrame(self.execStart)
         self.execButtonShadow.setObjectName(u"execButtonShadow")
@@ -424,6 +423,7 @@ class Ui_MainWindow(object):
         self.execButtonShadow.setFrameShape(QFrame.Shape.NoFrame)
         self.execButtonShadow.setFrameShadow(QFrame.Shadow.Plain)
         self.execButtonShadow.raise_()
+        self.execButton.raise_()
 
         self.horizontalLayout_9.addWidget(self.execStart)
         self.horizontalLayout_9.setStretch(0, 1)

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplicati
     QWidget)
 
 from editor import CropEditor, SegmentEditor
-from core import SizePolicies
+from core import SizePolicies, Fonts
 from header import QHeader
 
 class Ui_MainWindow(object):
@@ -33,42 +33,6 @@ class Ui_MainWindow(object):
         redStopIcon = QIcon()
         redStopIcon.addFile(u"assets/icons/stop_red.svg", QSize(), QIcon.Normal, QIcon.Off)
         
-        ############################################
-        # Fonts
-        ############################################
-        font = QFont()
-        font.setFamilies([u"URW Bookman [UKWN]"])
-        
-        font2 = QFont()
-        font2.setFamilies([u"Roboto"])
-        font2.setPointSize(8)
-        font2.setBold(True)       
-        
-        font3 = QFont()
-        font3.setFamilies([u"Roboto"])
-        font3.setPointSize(8)
-        
-        font4 = QFont()
-        font4.setFamilies([u"Roboto"])
-        font4.setBold(True)
-        
-        font5 = QFont()
-        font5.setFamilies([u"Roboto"])
-        font5.setPointSize(7)
-        
-        font6 = QFont()
-        font6.setFamilies([u"Roboto"])
-        font6.setPointSize(8)
-        
-        font7 = QFont()
-        font7.setFamilies([u"Roboto"])
-        font7.setPointSize(11)
-        font7.setBold(True)
-        
-        font8 = QFont()
-        font8.setFamilies([u"Roboto"])
-        font8.setPointSize(20)
-        
         #############################################
         # Main Window
         #############################################
@@ -77,7 +41,6 @@ class Ui_MainWindow(object):
         MainWindow.resize(900, 700)
         MainWindow.setMinimumSize(QSize(800, 600))
         MainWindow.setMaximumSize(QSize(1366, 1166))
-        MainWindow.setFont(font)
         MainWindow.setWindowIcon(icon)
 
         
@@ -184,7 +147,7 @@ class Ui_MainWindow(object):
         self.gameOptionsLabel = QLabel(self.gameSettings)
         self.gameOptionsLabel.setObjectName(u"gameOptionsLabel")
         
-        self.gameOptionsLabel.setFont(font2)
+        self.gameOptionsLabel.setFont(Fonts["font2"])
         self.gameOptionsLabel.setScaledContents(True)
         self.gameOptionsLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
 
@@ -196,7 +159,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.gameOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.gameOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.gameOptionsDropdown.setFont(font3)
+        self.gameOptionsDropdown.setFont(Fonts["font3"])
         self.gameOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.gameOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.gameOptionsDropdown.setFrame(True)
@@ -213,7 +176,7 @@ class Ui_MainWindow(object):
         
         self.visionOptionsLabel = QLabel(self.gameSettings)
         self.visionOptionsLabel.setObjectName(u"visionOptionsLabel")
-        self.visionOptionsLabel.setFont(font2)
+        self.visionOptionsLabel.setFont(Fonts["font2"])
 
         self.visionOptions.addWidget(self.visionOptionsLabel)
 
@@ -223,7 +186,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visionOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.visionOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.visionOptionsDropdown.setFont(font3)
+        self.visionOptionsDropdown.setFont(Fonts["font3"])
         self.visionOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.visionOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.visionOptionsDropdown.setFrame(True)
@@ -268,7 +231,7 @@ class Ui_MainWindow(object):
         
         self.myTeamSideText = QLabel(self.myTeamColor)
         self.myTeamSideText.setObjectName(u"myTeamSideText")
-        self.myTeamSideText.setFont(font2)
+        self.myTeamSideText.setFont(Fonts["font2"])
         self.myTeamSideText.setScaledContents(True)
 
         self.horizontalLayout_8.addWidget(self.myTeamSideText)
@@ -307,7 +270,7 @@ class Ui_MainWindow(object):
 
         self.myTeamColorLabel = QLabel(self.teamColorControls)
         self.myTeamColorLabel.setObjectName(u"myTeamColorLabel")
-        self.myTeamColorLabel.setFont(font3)
+        self.myTeamColorLabel.setFont(Fonts["font3"])
 
         self.horizontalLayout_5.addWidget(self.myTeamColorLabel)
 
@@ -331,7 +294,7 @@ class Ui_MainWindow(object):
         
         self.myTeamSideTitle = QLabel(self.myTeamSide)
         self.myTeamSideTitle.setObjectName(u"myTeamSideTitle")
-        self.myTeamSideTitle.setFont(font2)
+        self.myTeamSideTitle.setFont(Fonts["font2"])
 
         self.horizontalLayout_7.addWidget(self.myTeamSideTitle)
 
@@ -372,7 +335,7 @@ class Ui_MainWindow(object):
 
         self.myTeamSideLabel = QLabel(self.myTeamSideControl)
         self.myTeamSideLabel.setObjectName(u"myTeamSideLabel")
-        self.myTeamSideLabel.setFont(font3)
+        self.myTeamSideLabel.setFont(Fonts["font3"])
 
         self.horizontalLayout_6.addWidget(self.myTeamSideLabel)
 
@@ -554,7 +517,7 @@ class Ui_MainWindow(object):
         
         self.speedSpinBox.setMinimumSize(QSize(43, 20))
         self.speedSpinBox.setMaximumSize(QSize(45, 20))
-        self.speedSpinBox.setFont(font3)
+        self.speedSpinBox.setFont(Fonts["font3"])
         self.speedSpinBox.setCursor(QCursor(Qt.PointingHandCursor))
         self.speedSpinBox.setWrapping(False)
         self.speedSpinBox.setFrame(True)
@@ -590,7 +553,7 @@ class Ui_MainWindow(object):
         
         self.leftTeamSideLabel = QLabel(self.fieldSideDisplay)
         self.leftTeamSideLabel.setObjectName(u"leftTeamSideLabel")
-        self.leftTeamSideLabel.setFont(font3)
+        self.leftTeamSideLabel.setFont(Fonts["font3"])
         self.leftTeamSideLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_2.addWidget(self.leftTeamSideLabel)
@@ -613,7 +576,7 @@ class Ui_MainWindow(object):
         SizePolicies["Preferred_Preferred"].setHeightForWidth(self.rightTeamSideLabel.sizePolicy().hasHeightForWidth())
         self.rightTeamSideLabel.setSizePolicy(SizePolicies["Preferred_Preferred"])
         
-        self.rightTeamSideLabel.setFont(font3)
+        self.rightTeamSideLabel.setFont(Fonts["font3"])
         self.rightTeamSideLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_2.addWidget(self.rightTeamSideLabel)
@@ -626,7 +589,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName(u"tabWidget")
         self.tabWidget.setGeometry(QRect(420, 80, 431, 301))
         self.tabWidget.setMinimumSize(QSize(310, 0))
-        self.tabWidget.setFont(font3)
+        self.tabWidget.setFont(Fonts["font3"])
         
         self.debugTab = QWidget()
         self.debugTab.setObjectName(u"debugTab")
@@ -679,7 +642,7 @@ class Ui_MainWindow(object):
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.debugTabTitle.sizePolicy().hasHeightForWidth())
         self.debugTabTitle.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.debugTabTitle.setFont(font2)
+        self.debugTabTitle.setFont(Fonts["font2"])
         self.debugTabTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_23.addWidget(self.debugTabTitle)
@@ -696,7 +659,7 @@ class Ui_MainWindow(object):
         
         self.robotsFound.setMinimumSize(QSize(110, 0))
         self.robotsFound.setMaximumSize(QSize(110, 16777215))
-        self.robotsFound.setFont(font3)
+        self.robotsFound.setFont(Fonts["font3"])
         self.robotsFound.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_23.addWidget(self.robotsFound)
@@ -736,7 +699,7 @@ class Ui_MainWindow(object):
         self.robotRoleDropdown = QComboBox(self.robotInfoHeader)
         
         self.robotRoleDropdown.setObjectName(u"robotRoleDropdown")
-        self.robotRoleDropdown.setFont(font3)
+        self.robotRoleDropdown.setFont(Fonts["font3"])
         self.robotRoleDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.robotRoleDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -748,7 +711,7 @@ class Ui_MainWindow(object):
 
         self.robotCommStatus = QLabel(self.robotInfoHeader)
         self.robotCommStatus.setObjectName(u"robotCommStatus")
-        self.robotCommStatus.setFont(font2)
+        self.robotCommStatus.setFont(Fonts["font2"])
         self.robotCommStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_31.addWidget(self.robotCommStatus)
@@ -818,78 +781,78 @@ class Ui_MainWindow(object):
         self.robotInfo.setObjectName(u"robotInfo")
         self.robotIdLabel = QLabel(self.robotInfoValues)
         self.robotIdLabel.setObjectName(u"robotIdLabel")
-        self.robotIdLabel.setFont(font2)
+        self.robotIdLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.robotIdLabel, 0, 0, 1, 1)
 
         self.robotIdValue = QLabel(self.robotInfoValues)
         self.robotIdValue.setObjectName(u"robotIdValue")
-        self.robotIdValue.setFont(font3)
+        self.robotIdValue.setFont(Fonts["font3"])
         self.robotIdValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.robotIdValue, 0, 1, 1, 1)
 
         self.robotPosLabel = QLabel(self.robotInfoValues)
         self.robotPosLabel.setObjectName(u"robotPosLabel")
-        self.robotPosLabel.setFont(font2)
+        self.robotPosLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.robotPosLabel, 1, 0, 1, 1)
 
         self.robotPosValue = QLabel(self.robotInfoValues)
         self.robotPosValue.setObjectName(u"robotPosValue")
-        self.robotPosValue.setFont(font3)
+        self.robotPosValue.setFont(Fonts["font3"])
         self.robotPosValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.robotPosValue, 1, 1, 1, 1)
 
         self.robotAngleLabel = QLabel(self.robotInfoValues)
         self.robotAngleLabel.setObjectName(u"robotAngleLabel")
-        self.robotAngleLabel.setFont(font2)
+        self.robotAngleLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.robotAngleLabel, 2, 0, 1, 1)
 
         self.robotAngleValue = QLabel(self.robotInfoValues)
         self.robotAngleValue.setObjectName(u"robotAngleValue")
-        self.robotAngleValue.setFont(font3)
+        self.robotAngleValue.setFont(Fonts["font3"])
         self.robotAngleValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.robotAngleValue, 2, 1, 1, 1)
 
         self.speedReadLabel = QLabel(self.robotInfoValues)
         self.speedReadLabel.setObjectName(u"speedReadLabel")
-        self.speedReadLabel.setFont(font2)
+        self.speedReadLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.speedReadLabel, 3, 0, 1, 1)
 
         self.speedReadValue = QLabel(self.robotInfoValues)
         self.speedReadValue.setObjectName(u"speedReadValue")
-        self.speedReadValue.setFont(font3)
+        self.speedReadValue.setFont(Fonts["font3"])
         self.speedReadValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.speedReadValue, 3, 1, 1, 1)
 
         self.speedSentLabel = QLabel(self.robotInfoValues)
         self.speedSentLabel.setObjectName(u"speedSentLabel")
-        self.speedSentLabel.setFont(font2)
+        self.speedSentLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.speedSentLabel, 4, 0, 1, 1)
 
         self.speedSentValue = QLabel(self.robotInfoValues)
         self.speedSentValue.setObjectName(u"speedSentValue")
-        self.speedSentValue.setFont(font3)
+        self.speedSentValue.setFont(Fonts["font3"])
         self.speedSentValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.speedSentValue, 4, 1, 1, 1)
 
         self.robotFreqLabel = QLabel(self.robotInfoValues)
         self.robotFreqLabel.setObjectName(u"robotFreqLabel")
-        self.robotFreqLabel.setFont(font2)
+        self.robotFreqLabel.setFont(Fonts["font2"])
 
         self.robotInfo.addWidget(self.robotFreqLabel, 5, 0, 1, 1)
 
         self.robotFreqValue = QLabel(self.robotInfoValues)
         self.robotFreqValue.setObjectName(u"robotFreqValue")
-        self.robotFreqValue.setFont(font3)
+        self.robotFreqValue.setFont(Fonts["font3"])
         self.robotFreqValue.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo.addWidget(self.robotFreqValue, 5, 1, 1, 1)
@@ -931,7 +894,7 @@ class Ui_MainWindow(object):
         self.robotRoleDropdown_2.addItem("")
         self.robotRoleDropdown_2.addItem("")
         self.robotRoleDropdown_2.setObjectName(u"robotRoleDropdown_2")
-        self.robotRoleDropdown_2.setFont(font3)
+        self.robotRoleDropdown_2.setFont(Fonts["font3"])
         self.robotRoleDropdown_2.setCursor(QCursor(Qt.PointingHandCursor))
         self.robotRoleDropdown_2.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -943,7 +906,7 @@ class Ui_MainWindow(object):
 
         self.robotCommStatus_2 = QLabel(self.robotInfoHeader_2)
         self.robotCommStatus_2.setObjectName(u"robotCommStatus_2")
-        self.robotCommStatus_2.setFont(font2)
+        self.robotCommStatus_2.setFont(Fonts["font2"])
         self.robotCommStatus_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_25.addWidget(self.robotCommStatus_2)
@@ -1013,78 +976,78 @@ class Ui_MainWindow(object):
         self.robotInfo_2.setObjectName(u"robotInfo_2")
         self.robotIdLabel_2 = QLabel(self.robotInfoValues_2)
         self.robotIdLabel_2.setObjectName(u"robotIdLabel_2")
-        self.robotIdLabel_2.setFont(font2)
+        self.robotIdLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.robotIdLabel_2, 0, 0, 1, 1)
 
         self.robotIdValue_2 = QLabel(self.robotInfoValues_2)
         self.robotIdValue_2.setObjectName(u"robotIdValue_2")
-        self.robotIdValue_2.setFont(font3)
+        self.robotIdValue_2.setFont(Fonts["font3"])
         self.robotIdValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.robotIdValue_2, 0, 1, 1, 1)
 
         self.robotPosLabel_2 = QLabel(self.robotInfoValues_2)
         self.robotPosLabel_2.setObjectName(u"robotPosLabel_2")
-        self.robotPosLabel_2.setFont(font2)
+        self.robotPosLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.robotPosLabel_2, 1, 0, 1, 1)
 
         self.robotPosValue_2 = QLabel(self.robotInfoValues_2)
         self.robotPosValue_2.setObjectName(u"robotPosValue_2")
-        self.robotPosValue_2.setFont(font3)
+        self.robotPosValue_2.setFont(Fonts["font3"])
         self.robotPosValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.robotPosValue_2, 1, 1, 1, 1)
 
         self.robotAngleLabel_2 = QLabel(self.robotInfoValues_2)
         self.robotAngleLabel_2.setObjectName(u"robotAngleLabel_2")
-        self.robotAngleLabel_2.setFont(font2)
+        self.robotAngleLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.robotAngleLabel_2, 2, 0, 1, 1)
 
         self.robotAngleValue_2 = QLabel(self.robotInfoValues_2)
         self.robotAngleValue_2.setObjectName(u"robotAngleValue_2")
-        self.robotAngleValue_2.setFont(font3)
+        self.robotAngleValue_2.setFont(Fonts["font3"])
         self.robotAngleValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.robotAngleValue_2, 2, 1, 1, 1)
 
         self.speedReadLabel_2 = QLabel(self.robotInfoValues_2)
         self.speedReadLabel_2.setObjectName(u"speedReadLabel_2")
-        self.speedReadLabel_2.setFont(font2)
+        self.speedReadLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.speedReadLabel_2, 3, 0, 1, 1)
 
         self.speedReadValue_2 = QLabel(self.robotInfoValues_2)
         self.speedReadValue_2.setObjectName(u"speedReadValue_2")
-        self.speedReadValue_2.setFont(font3)
+        self.speedReadValue_2.setFont(Fonts["font3"])
         self.speedReadValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.speedReadValue_2, 3, 1, 1, 1)
 
         self.speedSentLabel_2 = QLabel(self.robotInfoValues_2)
         self.speedSentLabel_2.setObjectName(u"speedSentLabel_2")
-        self.speedSentLabel_2.setFont(font2)
+        self.speedSentLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.speedSentLabel_2, 4, 0, 1, 1)
 
         self.speedSentValue_2 = QLabel(self.robotInfoValues_2)
         self.speedSentValue_2.setObjectName(u"speedSentValue_2")
-        self.speedSentValue_2.setFont(font3)
+        self.speedSentValue_2.setFont(Fonts["font3"])
         self.speedSentValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.speedSentValue_2, 4, 1, 1, 1)
 
         self.robotFreqLabel_2 = QLabel(self.robotInfoValues_2)
         self.robotFreqLabel_2.setObjectName(u"robotFreqLabel_2")
-        self.robotFreqLabel_2.setFont(font2)
+        self.robotFreqLabel_2.setFont(Fonts["font2"])
 
         self.robotInfo_2.addWidget(self.robotFreqLabel_2, 5, 0, 1, 1)
 
         self.robotFreqValue_2 = QLabel(self.robotInfoValues_2)
         self.robotFreqValue_2.setObjectName(u"robotFreqValue_2")
-        self.robotFreqValue_2.setFont(font3)
+        self.robotFreqValue_2.setFont(Fonts["font3"])
         self.robotFreqValue_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_2.addWidget(self.robotFreqValue_2, 5, 1, 1, 1)
@@ -1126,7 +1089,7 @@ class Ui_MainWindow(object):
         self.robotRoleDropdown_3.addItem("")
         self.robotRoleDropdown_3.addItem("")
         self.robotRoleDropdown_3.setObjectName(u"robotRoleDropdown_3")
-        self.robotRoleDropdown_3.setFont(font3)
+        self.robotRoleDropdown_3.setFont(Fonts["font3"])
         self.robotRoleDropdown_3.setCursor(QCursor(Qt.PointingHandCursor))
         self.robotRoleDropdown_3.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1138,7 +1101,7 @@ class Ui_MainWindow(object):
 
         self.robotCommStatus_3 = QLabel(self.robotInfoHeader_3)
         self.robotCommStatus_3.setObjectName(u"robotCommStatus_3")
-        self.robotCommStatus_3.setFont(font2)
+        self.robotCommStatus_3.setFont(Fonts["font2"])
         self.robotCommStatus_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_28.addWidget(self.robotCommStatus_3)
@@ -1208,78 +1171,78 @@ class Ui_MainWindow(object):
         self.robotInfo_3.setObjectName(u"robotInfo_3")
         self.robotIdLabel_3 = QLabel(self.robotInfoValues_3)
         self.robotIdLabel_3.setObjectName(u"robotIdLabel_3")
-        self.robotIdLabel_3.setFont(font2)
+        self.robotIdLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.robotIdLabel_3, 0, 0, 1, 1)
 
         self.robotIdValue_3 = QLabel(self.robotInfoValues_3)
         self.robotIdValue_3.setObjectName(u"robotIdValue_3")
-        self.robotIdValue_3.setFont(font3)
+        self.robotIdValue_3.setFont(Fonts["font3"])
         self.robotIdValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.robotIdValue_3, 0, 1, 1, 1)
 
         self.robotPosLabel_3 = QLabel(self.robotInfoValues_3)
         self.robotPosLabel_3.setObjectName(u"robotPosLabel_3")
-        self.robotPosLabel_3.setFont(font2)
+        self.robotPosLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.robotPosLabel_3, 1, 0, 1, 1)
 
         self.robotPosValue_3 = QLabel(self.robotInfoValues_3)
         self.robotPosValue_3.setObjectName(u"robotPosValue_3")
-        self.robotPosValue_3.setFont(font3)
+        self.robotPosValue_3.setFont(Fonts["font3"])
         self.robotPosValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.robotPosValue_3, 1, 1, 1, 1)
 
         self.robotAngleLabel_3 = QLabel(self.robotInfoValues_3)
         self.robotAngleLabel_3.setObjectName(u"robotAngleLabel_3")
-        self.robotAngleLabel_3.setFont(font2)
+        self.robotAngleLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.robotAngleLabel_3, 2, 0, 1, 1)
 
         self.robotAngleValue_3 = QLabel(self.robotInfoValues_3)
         self.robotAngleValue_3.setObjectName(u"robotAngleValue_3")
-        self.robotAngleValue_3.setFont(font3)
+        self.robotAngleValue_3.setFont(Fonts["font3"])
         self.robotAngleValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.robotAngleValue_3, 2, 1, 1, 1)
 
         self.speedReadLabel_3 = QLabel(self.robotInfoValues_3)
         self.speedReadLabel_3.setObjectName(u"speedReadLabel_3")
-        self.speedReadLabel_3.setFont(font2)
+        self.speedReadLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.speedReadLabel_3, 3, 0, 1, 1)
 
         self.speedReadValue_3 = QLabel(self.robotInfoValues_3)
         self.speedReadValue_3.setObjectName(u"speedReadValue_3")
-        self.speedReadValue_3.setFont(font3)
+        self.speedReadValue_3.setFont(Fonts["font3"])
         self.speedReadValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.speedReadValue_3, 3, 1, 1, 1)
 
         self.speedSentLabel_3 = QLabel(self.robotInfoValues_3)
         self.speedSentLabel_3.setObjectName(u"speedSentLabel_3")
-        self.speedSentLabel_3.setFont(font2)
+        self.speedSentLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.speedSentLabel_3, 4, 0, 1, 1)
 
         self.speedSentValue_3 = QLabel(self.robotInfoValues_3)
         self.speedSentValue_3.setObjectName(u"speedSentValue_3")
-        self.speedSentValue_3.setFont(font3)
+        self.speedSentValue_3.setFont(Fonts["font3"])
         self.speedSentValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.speedSentValue_3, 4, 1, 1, 1)
 
         self.robotFreqLabel_3 = QLabel(self.robotInfoValues_3)
         self.robotFreqLabel_3.setObjectName(u"robotFreqLabel_3")
-        self.robotFreqLabel_3.setFont(font2)
+        self.robotFreqLabel_3.setFont(Fonts["font2"])
 
         self.robotInfo_3.addWidget(self.robotFreqLabel_3, 5, 0, 1, 1)
 
         self.robotFreqValue_3 = QLabel(self.robotInfoValues_3)
         self.robotFreqValue_3.setObjectName(u"robotFreqValue_3")
-        self.robotFreqValue_3.setFont(font3)
+        self.robotFreqValue_3.setFont(Fonts["font3"])
         self.robotFreqValue_3.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.robotInfo_3.addWidget(self.robotFreqValue_3, 5, 1, 1, 1)
@@ -1336,7 +1299,7 @@ class Ui_MainWindow(object):
         self.navRobotId.addItem("")
         self.navRobotId.addItem("")
         self.navRobotId.setObjectName(u"navRobotId")
-        self.navRobotId.setFont(font3)
+        self.navRobotId.setFont(Fonts["font3"])
         self.navRobotId.setCursor(QCursor(Qt.PointingHandCursor))
         self.navRobotId.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1362,7 +1325,7 @@ class Ui_MainWindow(object):
         self.uvfLabel = QLabel(self.uvfTitle)
         self.uvfLabel.setObjectName(u"uvfLabel")
         
-        self.uvfLabel.setFont(font4)
+        self.uvfLabel.setFont(Fonts["font4"])
         self.uvfLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_24.addWidget(self.uvfLabel)
@@ -1386,7 +1349,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_22.setContentsMargins(3, 3, 3, 3)
         self.viewUvfFieldLabel = QLabel(self.viewUvf)
         self.viewUvfFieldLabel.setObjectName(u"viewUvfFieldLabel")
-        self.viewUvfFieldLabel.setFont(font3)
+        self.viewUvfFieldLabel.setFont(Fonts["font3"])
         self.viewUvfFieldLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_22.addWidget(self.viewUvfFieldLabel)
@@ -1400,7 +1363,7 @@ class Ui_MainWindow(object):
         self.pointsLabel = QLabel(self.viewUvf)
         self.pointsLabel.setObjectName(u"pointsLabel")
         
-        self.pointsLabel.setFont(font5)
+        self.pointsLabel.setFont(Fonts["font5"])
         self.pointsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.pointsNumber.addWidget(self.pointsLabel)
@@ -1448,7 +1411,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_35.setContentsMargins(3, 3, 3, 3)
         self.finalPointLabel = QLabel(self.finalPoint)
         self.finalPointLabel.setObjectName(u"finalPointLabel")
-        self.finalPointLabel.setFont(font3)
+        self.finalPointLabel.setFont(Fonts["font3"])
         self.finalPointLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_35.addWidget(self.finalPointLabel)
@@ -1488,7 +1451,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_34.setContentsMargins(3, 3, 3, 3)
         self.selectFieldLabel = QLabel(self.selectField)
         self.selectFieldLabel.setObjectName(u"selectFieldLabel")
-        self.selectFieldLabel.setFont(font3)
+        self.selectFieldLabel.setFont(Fonts["font3"])
         self.selectFieldLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_34.addWidget(self.selectFieldLabel)
@@ -1502,7 +1465,7 @@ class Ui_MainWindow(object):
         self.selectFieldDropdown.setObjectName(u"selectFieldDropdown")
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.selectFieldDropdown.sizePolicy().hasHeightForWidth())
         self.selectFieldDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
-        self.selectFieldDropdown.setFont(font3)
+        self.selectFieldDropdown.setFont(Fonts["font3"])
         self.selectFieldDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.selectFieldDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.selectFieldDropdown.setFrame(True)
@@ -1535,7 +1498,7 @@ class Ui_MainWindow(object):
         self.radiusHeaderLabel.setObjectName(u"radiusHeaderLabel")
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.radiusHeaderLabel.sizePolicy().hasHeightForWidth())
         self.radiusHeaderLabel.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.radiusHeaderLabel.setFont(font3)
+        self.radiusHeaderLabel.setFont(Fonts["font3"])
         self.radiusHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.radiusHeader.addWidget(self.radiusHeaderLabel)
@@ -1576,7 +1539,7 @@ class Ui_MainWindow(object):
         self.kSmoothHeader.setObjectName(u"kSmoothHeader")
         self.kSmoothHeaderLabel = QLabel(self.kSmooth)
         self.kSmoothHeaderLabel.setObjectName(u"kSmoothHeaderLabel")
-        self.kSmoothHeaderLabel.setFont(font3)
+        self.kSmoothHeaderLabel.setFont(Fonts["font3"])
         self.kSmoothHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.kSmoothHeader.addWidget(self.kSmoothHeaderLabel)
@@ -1617,7 +1580,7 @@ class Ui_MainWindow(object):
         self.uniKSmoothHeader.setObjectName(u"uniKSmoothHeader")
         self.uniKSmoothHeaderLabel = QLabel(self.uniKSmooth)
         self.uniKSmoothHeaderLabel.setObjectName(u"uniKSmoothHeaderLabel")
-        self.uniKSmoothHeaderLabel.setFont(font3)
+        self.uniKSmoothHeaderLabel.setFont(Fonts["font3"])
         self.uniKSmoothHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.uniKSmoothHeader.addWidget(self.uniKSmoothHeaderLabel)
@@ -1658,7 +1621,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_36.setContentsMargins(3, 3, 3, 3)
         self.allUvfLabel = QLabel(self.allUvf)
         self.allUvfLabel.setObjectName(u"allUvfLabel")
-        self.allUvfLabel.setFont(font3)
+        self.allUvfLabel.setFont(Fonts["font3"])
         self.allUvfLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_36.addWidget(self.allUvfLabel)
@@ -1728,7 +1691,7 @@ class Ui_MainWindow(object):
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.decTabTitle.sizePolicy().hasHeightForWidth())
         self.decTabTitle.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.decTabTitle.setFont(font2)
+        self.decTabTitle.setFont(Fonts["font2"])
         self.decTabTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_38.addWidget(self.decTabTitle)
@@ -1746,14 +1709,14 @@ class Ui_MainWindow(object):
         self.chooseEntitites.setObjectName(u"chooseEntitites")
         self.staticEntitiesRadio = QRadioButton(self.decScrollContents)
         self.staticEntitiesRadio.setObjectName(u"staticEntitiesRadio")
-        self.staticEntitiesRadio.setFont(font3)
+        self.staticEntitiesRadio.setFont(Fonts["font3"])
         self.staticEntitiesRadio.setChecked(True)
 
         self.chooseEntitites.addWidget(self.staticEntitiesRadio)
 
         self.dynEntitiesRadio = QRadioButton(self.decScrollContents)
         self.dynEntitiesRadio.setObjectName(u"dynEntitiesRadio")
-        self.dynEntitiesRadio.setFont(font3)
+        self.dynEntitiesRadio.setFont(Fonts["font3"])
 
         self.chooseEntitites.addWidget(self.dynEntitiesRadio)
 
@@ -1771,7 +1734,7 @@ class Ui_MainWindow(object):
         self.staticRobot.setObjectName(u"staticRobot")
         self.staticRobotLabel = QLabel(self.staticRobotsBox)
         self.staticRobotLabel.setObjectName(u"staticRobotLabel")
-        self.staticRobotLabel.setFont(font2)
+        self.staticRobotLabel.setFont(Fonts["font2"])
         self.staticRobotLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.staticRobot.addWidget(self.staticRobotLabel)
@@ -1782,7 +1745,7 @@ class Ui_MainWindow(object):
         self.staticRobotDropdown.addItem("")
         self.staticRobotDropdown.addItem("")
         self.staticRobotDropdown.setObjectName(u"staticRobotDropdown")
-        self.staticRobotDropdown.setFont(font3)
+        self.staticRobotDropdown.setFont(Fonts["font3"])
         self.staticRobotDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.staticRobotDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1794,7 +1757,7 @@ class Ui_MainWindow(object):
         self.staticRobot_2.setObjectName(u"staticRobot_2")
         self.staticRobotLabel_2 = QLabel(self.staticRobotsBox)
         self.staticRobotLabel_2.setObjectName(u"staticRobotLabel_2")
-        self.staticRobotLabel_2.setFont(font2)
+        self.staticRobotLabel_2.setFont(Fonts["font2"])
         self.staticRobotLabel_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.staticRobot_2.addWidget(self.staticRobotLabel_2)
@@ -1805,7 +1768,7 @@ class Ui_MainWindow(object):
         self.staticRobotDropdown_2.addItem("")
         self.staticRobotDropdown_2.addItem("")
         self.staticRobotDropdown_2.setObjectName(u"staticRobotDropdown_2")
-        self.staticRobotDropdown_2.setFont(font3)
+        self.staticRobotDropdown_2.setFont(Fonts["font3"])
         self.staticRobotDropdown_2.setCursor(QCursor(Qt.PointingHandCursor))
         self.staticRobotDropdown_2.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1817,7 +1780,7 @@ class Ui_MainWindow(object):
         self.staticRobot3.setObjectName(u"staticRobot3")
         self.staticRobotLabel_3 = QLabel(self.staticRobotsBox)
         self.staticRobotLabel_3.setObjectName(u"staticRobotLabel_3")
-        self.staticRobotLabel_3.setFont(font2)
+        self.staticRobotLabel_3.setFont(Fonts["font2"])
         self.staticRobotLabel_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.staticRobot3.addWidget(self.staticRobotLabel_3)
@@ -1828,7 +1791,7 @@ class Ui_MainWindow(object):
         self.staticRobotDropdown_3.addItem("")
         self.staticRobotDropdown_3.addItem("")
         self.staticRobotDropdown_3.setObjectName(u"staticRobotDropdown_3")
-        self.staticRobotDropdown_3.setFont(font3)
+        self.staticRobotDropdown_3.setFont(Fonts["font3"])
         self.staticRobotDropdown_3.setCursor(QCursor(Qt.PointingHandCursor))
         self.staticRobotDropdown_3.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1851,7 +1814,7 @@ class Ui_MainWindow(object):
         self.positioning.setObjectName(u"positioning")
         self.posLabel = QLabel(self.decScrollContents)
         self.posLabel.setObjectName(u"posLabel")
-        self.posLabel.setFont(font2)
+        self.posLabel.setFont(Fonts["font2"])
 
         self.positioning.addWidget(self.posLabel)
 
@@ -1866,7 +1829,7 @@ class Ui_MainWindow(object):
         self.refereePos.setObjectName(u"refereePos")
         self.refereePosLabel = QLabel(self.posContents)
         self.refereePosLabel.setObjectName(u"refereePosLabel")
-        self.refereePosLabel.setFont(font3)
+        self.refereePosLabel.setFont(Fonts["font3"])
 
         self.refereePos.addWidget(self.refereePosLabel)
 
@@ -1897,7 +1860,7 @@ class Ui_MainWindow(object):
         self.manualPos.setObjectName(u"manualPos")
         self.manualPosLabel = QLabel(self.posContents)
         self.manualPosLabel.setObjectName(u"manualPosLabel")
-        self.manualPosLabel.setFont(font3)
+        self.manualPosLabel.setFont(Fonts["font3"])
 
         self.manualPos.addWidget(self.manualPosLabel)
 
@@ -1929,7 +1892,7 @@ class Ui_MainWindow(object):
         self.selectPosLabel = QLabel(self.posContents)
         self.selectPosLabel.setObjectName(u"selectPosLabel")
         
-        self.selectPosLabel.setFont(font6)
+        self.selectPosLabel.setFont(Fonts["font6"])
         self.selectPosLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.selectPos.addWidget(self.selectPosLabel)
@@ -1947,7 +1910,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.selectPosDropdown.sizePolicy().hasHeightForWidth())
         self.selectPosDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.selectPosDropdown.setFont(font3)
+        self.selectPosDropdown.setFont(Fonts["font3"])
         self.selectPosDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.selectPosDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
 
@@ -1959,7 +1922,7 @@ class Ui_MainWindow(object):
         self.posTime.setObjectName(u"posTime")
         self.posTimeLabel = QLabel(self.posContents)
         self.posTimeLabel.setObjectName(u"posTimeLabel")
-        self.posTimeLabel.setFont(font6)
+        self.posTimeLabel.setFont(Fonts["font6"])
         self.posTimeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.posTime.addWidget(self.posTimeLabel)
@@ -1970,7 +1933,7 @@ class Ui_MainWindow(object):
 
         self.posTimeValue = QLabel(self.posContents)
         self.posTimeValue.setObjectName(u"posTimeValue")
-        self.posTimeValue.setFont(font6)
+        self.posTimeValue.setFont(Fonts["font6"])
         self.posTimeValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.posTime.addWidget(self.posTimeValue)
@@ -2032,7 +1995,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.ballInfoTitle = QLabel(self.ballInfoHeader)
         self.ballInfoTitle.setObjectName(u"ballInfoTitle")
-        self.ballInfoTitle.setFont(font2)
+        self.ballInfoTitle.setFont(Fonts["font2"])
         self.ballInfoTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_10.addWidget(self.ballInfoTitle)
@@ -2043,7 +2006,7 @@ class Ui_MainWindow(object):
 
         self.ballInfoStatus = QLabel(self.ballInfoHeader)
         self.ballInfoStatus.setObjectName(u"ballInfoStatus")
-        self.ballInfoStatus.setFont(font6)
+        self.ballInfoStatus.setFont(Fonts["font6"])
         self.ballInfoStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_10.addWidget(self.ballInfoStatus)
@@ -2077,7 +2040,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
         self.ballPosLabel = QLabel(self.ballPosHeader)
         self.ballPosLabel.setObjectName(u"ballPosLabel")
-        self.ballPosLabel.setFont(font2)
+        self.ballPosLabel.setFont(Fonts["font2"])
         self.ballPosLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_18.addWidget(self.ballPosLabel)
@@ -2104,7 +2067,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setContentsMargins(3, 3, 3, 3)
         self.ballPosValue = QLabel(self.ballPosBox)
         self.ballPosValue.setObjectName(u"ballPosValue")
-        self.ballPosValue.setFont(font6)
+        self.ballPosValue.setFont(Fonts["font6"])
         self.ballPosValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout_3.addWidget(self.ballPosValue)
@@ -2117,7 +2080,7 @@ class Ui_MainWindow(object):
         self.ballSpeed.setObjectName(u"ballSpeed")
         self.ballSpeedLabel = QLabel(self.ballInfoBox)
         self.ballSpeedLabel.setObjectName(u"ballSpeedLabel")
-        self.ballSpeedLabel.setFont(font2)
+        self.ballSpeedLabel.setFont(Fonts["font2"])
         self.ballSpeedLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.ballSpeed.addWidget(self.ballSpeedLabel)
@@ -2136,7 +2099,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setContentsMargins(3, 3, 3, 3)
         self.ballSpeedValue = QLabel(self.ballSpeedBox)
         self.ballSpeedValue.setObjectName(u"ballSpeedValue")
-        self.ballSpeedValue.setFont(font3)
+        self.ballSpeedValue.setFont(Fonts["font3"])
 
         self.verticalLayout_4.addWidget(self.ballSpeedValue)
 
@@ -2148,7 +2111,7 @@ class Ui_MainWindow(object):
         self.ballAcc.setObjectName(u"ballAcc")
         self.ballAccLabel = QLabel(self.ballInfoBox)
         self.ballAccLabel.setObjectName(u"ballAccLabel")
-        self.ballAccLabel.setFont(font2)
+        self.ballAccLabel.setFont(Fonts["font2"])
         self.ballAccLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.ballAcc.addWidget(self.ballAccLabel)
@@ -2167,7 +2130,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setContentsMargins(3, 3, 3, 3)
         self.ballAccValue = QLabel(self.ballAccBox)
         self.ballAccValue.setObjectName(u"ballAccValue")
-        self.ballAccValue.setFont(font3)
+        self.ballAccValue.setFont(Fonts["font3"])
         self.ballAccValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout_8.addWidget(self.ballAccValue)
@@ -2206,7 +2169,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_19.setContentsMargins(0, 0, 0, 0)
         self.commTitle = QLabel(self.commHeader)
         self.commTitle.setObjectName(u"commTitle")
-        self.commTitle.setFont(font2)
+        self.commTitle.setFont(Fonts["font2"])
         self.commTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_19.addWidget(self.commTitle)
@@ -2244,7 +2207,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
         self.visionCommLabel = QLabel(self.visionCommHeader)
         self.visionCommLabel.setObjectName(u"visionCommLabel")
-        self.visionCommLabel.setFont(font2)
+        self.visionCommLabel.setFont(Fonts["font2"])
         self.visionCommLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_12.addWidget(self.visionCommLabel)
@@ -2255,7 +2218,7 @@ class Ui_MainWindow(object):
 
         self.visionCommStatus = QLabel(self.visionCommHeader)
         self.visionCommStatus.setObjectName(u"visionCommStatus")
-        self.visionCommStatus.setFont(font6)
+        self.visionCommStatus.setFont(Fonts["font6"])
         self.visionCommStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_12.addWidget(self.visionCommStatus)
@@ -2272,7 +2235,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.setContentsMargins(3, 3, 3, 3)
         self.visionCommPortValue = QLabel(self.visionCommPortBox)
         self.visionCommPortValue.setObjectName(u"visionCommPortValue")
-        self.visionCommPortValue.setFont(font3)
+        self.visionCommPortValue.setFont(Fonts["font3"])
         self.visionCommPortValue.setScaledContents(False)
         self.visionCommPortValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2298,7 +2261,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.refCommLabel = QLabel(self.refCommHeader)
         self.refCommLabel.setObjectName(u"refCommLabel")
-        self.refCommLabel.setFont(font2)
+        self.refCommLabel.setFont(Fonts["font2"])
         self.refCommLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_13.addWidget(self.refCommLabel)
@@ -2309,7 +2272,7 @@ class Ui_MainWindow(object):
 
         self.refCommStatus = QLabel(self.refCommHeader)
         self.refCommStatus.setObjectName(u"refCommStatus")
-        self.refCommStatus.setFont(font6)
+        self.refCommStatus.setFont(Fonts["font6"])
         self.refCommStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_13.addWidget(self.refCommStatus)
@@ -2327,7 +2290,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_11.setContentsMargins(3, 3, 3, 3)
         self.refCommPortValue = QLabel(self.refCommPortBox)
         self.refCommPortValue.setObjectName(u"refCommPortValue")
-        self.refCommPortValue.setFont(font3)
+        self.refCommPortValue.setFont(Fonts["font3"])
         self.refCommPortValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout_11.addWidget(self.refCommPortValue, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -2352,7 +2315,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_14.setContentsMargins(0, 0, 0, 0)
         self.transCommLabel = QLabel(self.transCommHeader)
         self.transCommLabel.setObjectName(u"transCommLabel")
-        self.transCommLabel.setFont(font2)
+        self.transCommLabel.setFont(Fonts["font2"])
         self.transCommLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_14.addWidget(self.transCommLabel)
@@ -2363,7 +2326,7 @@ class Ui_MainWindow(object):
 
         self.transCommStatus = QLabel(self.transCommHeader)
         self.transCommStatus.setObjectName(u"transCommStatus")
-        self.transCommStatus.setFont(font6)
+        self.transCommStatus.setFont(Fonts["font6"])
         self.transCommStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_14.addWidget(self.transCommStatus)
@@ -2380,7 +2343,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_12.setContentsMargins(3, 3, 3, 3)
         self.transCommPortValue = QLabel(self.transCommPortBox)
         self.transCommPortValue.setObjectName(u"transCommPortValue")
-        self.transCommPortValue.setFont(font3)
+        self.transCommPortValue.setFont(Fonts["font3"])
         self.transCommPortValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout_12.addWidget(self.transCommPortValue, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -2414,7 +2377,7 @@ class Ui_MainWindow(object):
         self.commCancelButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         self.commCancelButton.setMinimumSize(QSize(70, 20))
         
-        self.commCancelButton.setFont(font3)
+        self.commCancelButton.setFont(Fonts["font3"])
         self.commCancelButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commCancelButton.setStyleSheet(u"")
 
@@ -2427,7 +2390,7 @@ class Ui_MainWindow(object):
         self.commAlterButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         self.commAlterButton.setMinimumSize(QSize(120, 20))
         
-        self.commAlterButton.setFont(font3)
+        self.commAlterButton.setFont(Fonts["font3"])
         self.commAlterButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commAlterButton.setStyleSheet(u"")
 
@@ -2468,7 +2431,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.logHeaderLabel = QLabel(self.logHeader)
         self.logHeaderLabel.setObjectName(u"logHeaderLabel")
-        self.logHeaderLabel.setFont(font2)
+        self.logHeaderLabel.setFont(Fonts["font2"])
         self.logHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_16.addWidget(self.logHeaderLabel)
@@ -2528,7 +2491,7 @@ class Ui_MainWindow(object):
         self.visGameOptions.setObjectName(u"visGameOptions")
         self.visGameOptionsLabel = QLabel(self.visionSettings)
         self.visGameOptionsLabel.setObjectName(u"visGameOptionsLabel")
-        self.visGameOptionsLabel.setFont(font2)
+        self.visGameOptionsLabel.setFont(Fonts["font2"])
         self.visGameOptionsLabel.setScaledContents(True)
         self.visGameOptionsLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
 
@@ -2542,7 +2505,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.visGameOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.visGameOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.visGameOptionsDropdown.setFont(font3)
+        self.visGameOptionsDropdown.setFont(Fonts["font3"])
         self.visGameOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.visGameOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.visGameOptionsDropdown.setFrame(True)
@@ -2556,7 +2519,7 @@ class Ui_MainWindow(object):
         self.deviceOptions.setObjectName(u"deviceOptions")
         self.deviceOptionsLabel = QLabel(self.visionSettings)
         self.deviceOptionsLabel.setObjectName(u"deviceOptionsLabel")
-        self.deviceOptionsLabel.setFont(font2)
+        self.deviceOptionsLabel.setFont(Fonts["font2"])
 
         self.deviceOptions.addWidget(self.deviceOptionsLabel)
 
@@ -2567,7 +2530,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.deviceOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.deviceOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.deviceOptionsDropdown.setFont(font3)
+        self.deviceOptionsDropdown.setFont(Fonts["font3"])
         self.deviceOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.deviceOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.deviceOptionsDropdown.setFrame(True)
@@ -2581,7 +2544,7 @@ class Ui_MainWindow(object):
         self.selectVisionOptions.setObjectName(u"selectVisionOptions")
         self.selectVisionOptionsLabel = QLabel(self.visionSettings)
         self.selectVisionOptionsLabel.setObjectName(u"selectVisionOptionsLabel")
-        self.selectVisionOptionsLabel.setFont(font2)
+        self.selectVisionOptionsLabel.setFont(Fonts["font2"])
 
         self.selectVisionOptions.addWidget(self.selectVisionOptionsLabel)
 
@@ -2593,7 +2556,7 @@ class Ui_MainWindow(object):
         SizePolicies["Expanding_Fixed"].setHeightForWidth(self.selectVisionOptionsDropdown.sizePolicy().hasHeightForWidth())
         self.selectVisionOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Fixed"])
         
-        self.selectVisionOptionsDropdown.setFont(font3)
+        self.selectVisionOptionsDropdown.setFont(Fonts["font3"])
         self.selectVisionOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
         self.selectVisionOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.selectVisionOptionsDropdown.setFrame(True)
@@ -2703,7 +2666,7 @@ class Ui_MainWindow(object):
         self.highLevelVisionToolsLabel = QLabel(self.highLevelVisionToolsHeader)
         self.highLevelVisionToolsLabel.setObjectName(u"highLevelVisionToolsLabel")
         
-        self.highLevelVisionToolsLabel.setFont(font7)
+        self.highLevelVisionToolsLabel.setFont(Fonts["font7"])
         self.highLevelVisionToolsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_135.addWidget(self.highLevelVisionToolsLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -2732,7 +2695,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_136.setContentsMargins(0, 0, 0, 0)
         self.xRobotsLabel = QLabel(self.xRobots)
         self.xRobotsLabel.setObjectName(u"xRobotsLabel")
-        self.xRobotsLabel.setFont(font2)
+        self.xRobotsLabel.setFont(Fonts["font2"])
         self.xRobotsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_136.addWidget(self.xRobotsLabel)
@@ -2751,7 +2714,7 @@ class Ui_MainWindow(object):
         self.vRobotIdLabel = QLabel(self.vRobotsContents)
         self.vRobotIdLabel.setObjectName(u"vRobotIdLabel")
         
-        self.vRobotIdLabel.setFont(font8)
+        self.vRobotIdLabel.setFont(Fonts["font8"])
         self.vRobotIdLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.vRobotContents.addWidget(self.vRobotIdLabel, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -2760,19 +2723,19 @@ class Ui_MainWindow(object):
         self.vRobotInfo.setObjectName(u"vRobotInfo")
         self.vRobotStatus = QLabel(self.vRobotsContents)
         self.vRobotStatus.setObjectName(u"vRobotStatus")
-        self.vRobotStatus.setFont(font3)
+        self.vRobotStatus.setFont(Fonts["font3"])
 
         self.vRobotInfo.addWidget(self.vRobotStatus)
 
         self.vRobotPos = QLabel(self.vRobotsContents)
         self.vRobotPos.setObjectName(u"vRobotPos")
-        self.vRobotPos.setFont(font3)
+        self.vRobotPos.setFont(Fonts["font3"])
 
         self.vRobotInfo.addWidget(self.vRobotPos)
 
         self.vRobotAngle = QLabel(self.vRobotsContents)
         self.vRobotAngle.setObjectName(u"vRobotAngle")
-        self.vRobotAngle.setFont(font3)
+        self.vRobotAngle.setFont(Fonts["font3"])
 
         self.vRobotInfo.addWidget(self.vRobotAngle)
 
@@ -2784,7 +2747,7 @@ class Ui_MainWindow(object):
         self.vRobotContents_2.setObjectName(u"vRobotContents_2")
         self.vRobotIdLabel_2 = QLabel(self.vRobotsContents)
         self.vRobotIdLabel_2.setObjectName(u"vRobotIdLabel_2")
-        self.vRobotIdLabel_2.setFont(font8)
+        self.vRobotIdLabel_2.setFont(Fonts["font8"])
         self.vRobotIdLabel_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.vRobotContents_2.addWidget(self.vRobotIdLabel_2, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -2793,19 +2756,19 @@ class Ui_MainWindow(object):
         self.vRobotInfo_2.setObjectName(u"vRobotInfo_2")
         self.vRobotStatus_2 = QLabel(self.vRobotsContents)
         self.vRobotStatus_2.setObjectName(u"vRobotStatus_2")
-        self.vRobotStatus_2.setFont(font3)
+        self.vRobotStatus_2.setFont(Fonts["font3"])
 
         self.vRobotInfo_2.addWidget(self.vRobotStatus_2)
 
         self.vRobotPos_2 = QLabel(self.vRobotsContents)
         self.vRobotPos_2.setObjectName(u"vRobotPos_2")
-        self.vRobotPos_2.setFont(font3)
+        self.vRobotPos_2.setFont(Fonts["font3"])
 
         self.vRobotInfo_2.addWidget(self.vRobotPos_2)
 
         self.vRobotAngle_2 = QLabel(self.vRobotsContents)
         self.vRobotAngle_2.setObjectName(u"vRobotAngle_2")
-        self.vRobotAngle_2.setFont(font3)
+        self.vRobotAngle_2.setFont(Fonts["font3"])
 
         self.vRobotInfo_2.addWidget(self.vRobotAngle_2)
 
@@ -2817,7 +2780,7 @@ class Ui_MainWindow(object):
         self.vRobotContents_3.setObjectName(u"vRobotContents_3")
         self.vRobotIdLabel_3 = QLabel(self.vRobotsContents)
         self.vRobotIdLabel_3.setObjectName(u"vRobotIdLabel_3")
-        self.vRobotIdLabel_3.setFont(font8)
+        self.vRobotIdLabel_3.setFont(Fonts["font8"])
         self.vRobotIdLabel_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.vRobotContents_3.addWidget(self.vRobotIdLabel_3, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -2826,19 +2789,19 @@ class Ui_MainWindow(object):
         self.vRobotInfo_3.setObjectName(u"vRobotInfo_3")
         self.vRobotStatus_3 = QLabel(self.vRobotsContents)
         self.vRobotStatus_3.setObjectName(u"vRobotStatus_3")
-        self.vRobotStatus_3.setFont(font3)
+        self.vRobotStatus_3.setFont(Fonts["font3"])
 
         self.vRobotInfo_3.addWidget(self.vRobotStatus_3)
 
         self.vRobotPos_3 = QLabel(self.vRobotsContents)
         self.vRobotPos_3.setObjectName(u"vRobotPos_3")
-        self.vRobotPos_3.setFont(font3)
+        self.vRobotPos_3.setFont(Fonts["font3"])
 
         self.vRobotInfo_3.addWidget(self.vRobotPos_3)
 
         self.vRobotAngle_3 = QLabel(self.vRobotsContents)
         self.vRobotAngle_3.setObjectName(u"vRobotAngle_3")
-        self.vRobotAngle_3.setFont(font3)
+        self.vRobotAngle_3.setFont(Fonts["font3"])
 
         self.vRobotInfo_3.addWidget(self.vRobotAngle_3)
 
@@ -2862,7 +2825,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_137.setContentsMargins(0, 0, 0, 0)
         self.vBallInfoLabel = QLabel(self.vBallInfoHeader)
         self.vBallInfoLabel.setObjectName(u"vBallInfoLabel")
-        self.vBallInfoLabel.setFont(font2)
+        self.vBallInfoLabel.setFont(Fonts["font2"])
         self.vBallInfoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_137.addWidget(self.vBallInfoLabel)
@@ -2877,7 +2840,7 @@ class Ui_MainWindow(object):
         self.vBallContents.setObjectName(u"vBallContents")
         self.vBallLabel = QLabel(self.highLevelVisionTools)
         self.vBallLabel.setObjectName(u"vBallLabel")
-        self.vBallLabel.setFont(font8)
+        self.vBallLabel.setFont(Fonts["font8"])
         self.vBallLabel.setPixmap(QPixmap(u"assets/icons/volleyball-ball.svg"))
         self.vBallLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -2887,13 +2850,13 @@ class Ui_MainWindow(object):
         self.vBallInfo.setObjectName(u"vBallInfo")
         self.vBallStatus = QLabel(self.highLevelVisionTools)
         self.vBallStatus.setObjectName(u"vBallStatus")
-        self.vBallStatus.setFont(font3)
+        self.vBallStatus.setFont(Fonts["font3"])
 
         self.vBallInfo.addWidget(self.vBallStatus)
 
         self.vBallPos = QLabel(self.highLevelVisionTools)
         self.vBallPos.setObjectName(u"vBallPos")
-        self.vBallPos.setFont(font3)
+        self.vBallPos.setFont(Fonts["font3"])
 
         self.vBallInfo.addWidget(self.vBallPos)
 
@@ -2953,7 +2916,7 @@ class Ui_MainWindow(object):
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.visionSteps.sizePolicy().hasHeightForWidth())
         self.visionSteps.setSizePolicy(SizePolicies["MinExpanding_Fixed"])
         
-        self.visionSteps.setFont(font3)
+        self.visionSteps.setFont(Fonts["font3"])
         self.visionSteps.setCursor(QCursor(Qt.ArrowCursor))
         self.visionSteps.setFocusPolicy(Qt.FocusPolicy.TabFocus)
         self.cropFieldTab = QWidget()
@@ -3011,7 +2974,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_139.setContentsMargins(0, 0, 0, 0)
         self.cropFieldToolsHeaderLabel = QLabel(self.cropFieldToolsHeader)
         self.cropFieldToolsHeaderLabel.setObjectName(u"cropFieldToolsHeaderLabel")
-        self.cropFieldToolsHeaderLabel.setFont(font7)
+        self.cropFieldToolsHeaderLabel.setFont(Fonts["font7"])
         self.cropFieldToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_139.addWidget(self.cropFieldToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -3028,7 +2991,7 @@ class Ui_MainWindow(object):
         self.showCropField.setObjectName(u"showCropField")
         self.showCropFieldLabel = QLabel(self.cropFieldTools)
         self.showCropFieldLabel.setObjectName(u"showCropFieldLabel")
-        self.showCropFieldLabel.setFont(font3)
+        self.showCropFieldLabel.setFont(Fonts["font3"])
         self.showCropFieldLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.showCropField.addWidget(self.showCropFieldLabel)
@@ -3070,7 +3033,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_140.setContentsMargins(0, 0, 0, 0)
         self.cropFieldActionHeaderLabel = QLabel(self.cropFieldActionHeader)
         self.cropFieldActionHeaderLabel.setObjectName(u"cropFieldActionHeaderLabel")
-        self.cropFieldActionHeaderLabel.setFont(font3)
+        self.cropFieldActionHeaderLabel.setFont(Fonts["font3"])
         self.cropFieldActionHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_140.addWidget(self.cropFieldActionHeaderLabel)
@@ -3259,7 +3222,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_143.setContentsMargins(0, 0, 0, 0)
         self.cropInnerFieldToolsHeaderLabel = QLabel(self.cropInnerFieldToolsHeader)
         self.cropInnerFieldToolsHeaderLabel.setObjectName(u"cropInnerFieldToolsHeaderLabel")
-        self.cropInnerFieldToolsHeaderLabel.setFont(font7)
+        self.cropInnerFieldToolsHeaderLabel.setFont(Fonts["font7"])
         self.cropInnerFieldToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_143.addWidget(self.cropInnerFieldToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -3276,7 +3239,7 @@ class Ui_MainWindow(object):
         self.showInnerCropField.setObjectName(u"showInnerCropField")
         self.showInnerCropFieldLabel = QLabel(self.cropInnerFieldTools)
         self.showInnerCropFieldLabel.setObjectName(u"showInnerCropFieldLabel")
-        self.showInnerCropFieldLabel.setFont(font3)
+        self.showInnerCropFieldLabel.setFont(Fonts["font3"])
         self.showInnerCropFieldLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.showInnerCropField.addWidget(self.showInnerCropFieldLabel)
@@ -3317,7 +3280,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_144.setContentsMargins(0, 0, 0, 0)
         self.cropInnerFieldActionHeaderLabel = QLabel(self.cropInnerFieldActionHeader)
         self.cropInnerFieldActionHeaderLabel.setObjectName(u"cropInnerFieldActionHeaderLabel")
-        self.cropInnerFieldActionHeaderLabel.setFont(font3)
+        self.cropInnerFieldActionHeaderLabel.setFont(Fonts["font3"])
         self.cropInnerFieldActionHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_144.addWidget(self.cropInnerFieldActionHeaderLabel)
@@ -3486,7 +3449,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_147.setContentsMargins(0, 0, 0, 0)
         self.segToolsHeaderLabel = QLabel(self.segToolsHeader)
         self.segToolsHeaderLabel.setObjectName(u"segToolsHeaderLabel")
-        self.segToolsHeaderLabel.setFont(font7)
+        self.segToolsHeaderLabel.setFont(Fonts["font7"])
         self.segToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_147.addWidget(self.segToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -3524,7 +3487,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_148.setContentsMargins(0, 0, 0, 0)
         self.hueTitle = QLabel(self.hueHeader)
         self.hueTitle.setObjectName(u"hueTitle")
-        self.hueTitle.setFont(font2)
+        self.hueTitle.setFont(Fonts["font2"])
         self.hueTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_148.addWidget(self.hueTitle)
@@ -3547,7 +3510,7 @@ class Ui_MainWindow(object):
         self.hueMin.setObjectName(u"hueMin")
         self.hueMinLabel = QLabel(self.hueValues)
         self.hueMinLabel.setObjectName(u"hueMinLabel")
-        self.hueMinLabel.setFont(font3)
+        self.hueMinLabel.setFont(Fonts["font3"])
         self.hueMinLabel.setScaledContents(True)
         self.hueMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3589,7 +3552,7 @@ class Ui_MainWindow(object):
         self.hueMax.setObjectName(u"hueMax")
         self.hueMaxLabel = QLabel(self.hueValues)
         self.hueMaxLabel.setObjectName(u"hueMaxLabel")
-        self.hueMaxLabel.setFont(font3)
+        self.hueMaxLabel.setFont(Fonts["font3"])
         self.hueMaxLabel.setScaledContents(True)
         self.hueMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3651,7 +3614,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_151.setContentsMargins(0, 0, 0, 0)
         self.satTitle = QLabel(self.satHeader)
         self.satTitle.setObjectName(u"satTitle")
-        self.satTitle.setFont(font2)
+        self.satTitle.setFont(Fonts["font2"])
         self.satTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_151.addWidget(self.satTitle)
@@ -3674,7 +3637,7 @@ class Ui_MainWindow(object):
         self.satMin.setObjectName(u"satMin")
         self.satMinLabel = QLabel(self.satValues)
         self.satMinLabel.setObjectName(u"satMinLabel")
-        self.satMinLabel.setFont(font3)
+        self.satMinLabel.setFont(Fonts["font3"])
         self.satMinLabel.setScaledContents(True)
         self.satMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3716,7 +3679,7 @@ class Ui_MainWindow(object):
         self.satMax.setObjectName(u"satMax")
         self.satMaxLabel = QLabel(self.satValues)
         self.satMaxLabel.setObjectName(u"satMaxLabel")
-        self.satMaxLabel.setFont(font3)
+        self.satMaxLabel.setFont(Fonts["font3"])
         self.satMaxLabel.setScaledContents(True)
         self.satMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3778,7 +3741,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_154.setContentsMargins(0, 0, 0, 0)
         self.valueTitle = QLabel(self.valueHeader)
         self.valueTitle.setObjectName(u"valueTitle")
-        self.valueTitle.setFont(font2)
+        self.valueTitle.setFont(Fonts["font2"])
         self.valueTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_154.addWidget(self.valueTitle)
@@ -3801,7 +3764,7 @@ class Ui_MainWindow(object):
         self.valueMin.setObjectName(u"valueMin")
         self.valueMinLabel = QLabel(self.valueValues)
         self.valueMinLabel.setObjectName(u"valueMinLabel")
-        self.valueMinLabel.setFont(font3)
+        self.valueMinLabel.setFont(Fonts["font3"])
         self.valueMinLabel.setScaledContents(True)
         self.valueMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3843,7 +3806,7 @@ class Ui_MainWindow(object):
         self.valueMax.setObjectName(u"valueMax")
         self.valueMaxLabel = QLabel(self.valueValues)
         self.valueMaxLabel.setObjectName(u"valueMaxLabel")
-        self.valueMaxLabel.setFont(font3)
+        self.valueMaxLabel.setFont(Fonts["font3"])
         self.valueMaxLabel.setScaledContents(True)
         self.valueMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -3949,7 +3912,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_158.setContentsMargins(0, 0, 0, 0)
         self.segTeamToolsHeaderLabel = QLabel(self.segTeamToolsHeader)
         self.segTeamToolsHeaderLabel.setObjectName(u"segTeamToolsHeaderLabel")
-        self.segTeamToolsHeaderLabel.setFont(font7)
+        self.segTeamToolsHeaderLabel.setFont(Fonts["font7"])
         self.segTeamToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_158.addWidget(self.segTeamToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -3987,7 +3950,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_159.setContentsMargins(0, 0, 0, 0)
         self.hueTeamTitle = QLabel(self.hueTeamHeader)
         self.hueTeamTitle.setObjectName(u"hueTeamTitle")
-        self.hueTeamTitle.setFont(font2)
+        self.hueTeamTitle.setFont(Fonts["font2"])
         self.hueTeamTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_159.addWidget(self.hueTeamTitle)
@@ -4010,7 +3973,7 @@ class Ui_MainWindow(object):
         self.hueTeamMin.setObjectName(u"hueTeamMin")
         self.hueTeamMinLabel = QLabel(self.hueTeamValues)
         self.hueTeamMinLabel.setObjectName(u"hueTeamMinLabel")
-        self.hueTeamMinLabel.setFont(font3)
+        self.hueTeamMinLabel.setFont(Fonts["font3"])
         self.hueTeamMinLabel.setScaledContents(True)
         self.hueTeamMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4052,7 +4015,7 @@ class Ui_MainWindow(object):
         self.hueTeamMax.setObjectName(u"hueTeamMax")
         self.hueTeamMaxLabel = QLabel(self.hueTeamValues)
         self.hueTeamMaxLabel.setObjectName(u"hueTeamMaxLabel")
-        self.hueTeamMaxLabel.setFont(font3)
+        self.hueTeamMaxLabel.setFont(Fonts["font3"])
         self.hueTeamMaxLabel.setScaledContents(True)
         self.hueTeamMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4114,7 +4077,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_162.setContentsMargins(0, 0, 0, 0)
         self.sTeamTitle = QLabel(self.sTeamHeader)
         self.sTeamTitle.setObjectName(u"sTeamTitle")
-        self.sTeamTitle.setFont(font2)
+        self.sTeamTitle.setFont(Fonts["font2"])
         self.sTeamTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_162.addWidget(self.sTeamTitle)
@@ -4137,7 +4100,7 @@ class Ui_MainWindow(object):
         self.sTeamMin.setObjectName(u"sTeamMin")
         self.sTeamMinLabel = QLabel(self.sTeamValues)
         self.sTeamMinLabel.setObjectName(u"sTeamMinLabel")
-        self.sTeamMinLabel.setFont(font3)
+        self.sTeamMinLabel.setFont(Fonts["font3"])
         self.sTeamMinLabel.setScaledContents(True)
         self.sTeamMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4179,7 +4142,7 @@ class Ui_MainWindow(object):
         self.sTeamMax.setObjectName(u"sTeamMax")
         self.sTeamMaxLabel = QLabel(self.sTeamValues)
         self.sTeamMaxLabel.setObjectName(u"sTeamMaxLabel")
-        self.sTeamMaxLabel.setFont(font3)
+        self.sTeamMaxLabel.setFont(Fonts["font3"])
         self.sTeamMaxLabel.setScaledContents(True)
         self.sTeamMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4241,7 +4204,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_165.setContentsMargins(0, 0, 0, 0)
         self.vTeamTitle = QLabel(self.vTeamHeader)
         self.vTeamTitle.setObjectName(u"vTeamTitle")
-        self.vTeamTitle.setFont(font2)
+        self.vTeamTitle.setFont(Fonts["font2"])
         self.vTeamTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_165.addWidget(self.vTeamTitle)
@@ -4264,7 +4227,7 @@ class Ui_MainWindow(object):
         self.vTeamMin.setObjectName(u"vTeamMin")
         self.vTeamMinLabel = QLabel(self.vTeamValues)
         self.vTeamMinLabel.setObjectName(u"vTeamMinLabel")
-        self.vTeamMinLabel.setFont(font3)
+        self.vTeamMinLabel.setFont(Fonts["font3"])
         self.vTeamMinLabel.setScaledContents(True)
         self.vTeamMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4306,7 +4269,7 @@ class Ui_MainWindow(object):
         self.vTeamMax.setObjectName(u"vTeamMax")
         self.vTeamMaxLabel = QLabel(self.vTeamValues)
         self.vTeamMaxLabel.setObjectName(u"vTeamMaxLabel")
-        self.vTeamMaxLabel.setFont(font3)
+        self.vTeamMaxLabel.setFont(Fonts["font3"])
         self.vTeamMaxLabel.setScaledContents(True)
         self.vTeamMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4413,7 +4376,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_169.setContentsMargins(0, 0, 0, 0)
         self.ballToolsHeaderLabel = QLabel(self.ballToolsHeader)
         self.ballToolsHeaderLabel.setObjectName(u"ballToolsHeaderLabel")
-        self.ballToolsHeaderLabel.setFont(font7)
+        self.ballToolsHeaderLabel.setFont(Fonts["font7"])
         self.ballToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_169.addWidget(self.ballToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -4451,7 +4414,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_170.setContentsMargins(0, 0, 0, 0)
         self.hueBallTitle = QLabel(self.hueBallHeader)
         self.hueBallTitle.setObjectName(u"hueBallTitle")
-        self.hueBallTitle.setFont(font2)
+        self.hueBallTitle.setFont(Fonts["font2"])
         self.hueBallTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_170.addWidget(self.hueBallTitle)
@@ -4474,7 +4437,7 @@ class Ui_MainWindow(object):
         self.hueBallMin.setObjectName(u"hueBallMin")
         self.hueBallMinLabel = QLabel(self.hueBallValues)
         self.hueBallMinLabel.setObjectName(u"hueBallMinLabel")
-        self.hueBallMinLabel.setFont(font3)
+        self.hueBallMinLabel.setFont(Fonts["font3"])
         self.hueBallMinLabel.setScaledContents(True)
         self.hueBallMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4516,7 +4479,7 @@ class Ui_MainWindow(object):
         self.hueBallMax.setObjectName(u"hueBallMax")
         self.hueBallMaxLabel = QLabel(self.hueBallValues)
         self.hueBallMaxLabel.setObjectName(u"hueBallMaxLabel")
-        self.hueBallMaxLabel.setFont(font3)
+        self.hueBallMaxLabel.setFont(Fonts["font3"])
         self.hueBallMaxLabel.setScaledContents(True)
         self.hueBallMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4578,7 +4541,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_173.setContentsMargins(0, 0, 0, 0)
         self.sBallTitle = QLabel(self.sBallHeader)
         self.sBallTitle.setObjectName(u"sBallTitle")
-        self.sBallTitle.setFont(font2)
+        self.sBallTitle.setFont(Fonts["font2"])
         self.sBallTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_173.addWidget(self.sBallTitle)
@@ -4601,7 +4564,7 @@ class Ui_MainWindow(object):
         self.sBallMin.setObjectName(u"sBallMin")
         self.sBallMinLabel = QLabel(self.sBallValues)
         self.sBallMinLabel.setObjectName(u"sBallMinLabel")
-        self.sBallMinLabel.setFont(font3)
+        self.sBallMinLabel.setFont(Fonts["font3"])
         self.sBallMinLabel.setScaledContents(True)
         self.sBallMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4643,7 +4606,7 @@ class Ui_MainWindow(object):
         self.sBallMax.setObjectName(u"sBallMax")
         self.sBallMaxLabel = QLabel(self.sBallValues)
         self.sBallMaxLabel.setObjectName(u"sBallMaxLabel")
-        self.sBallMaxLabel.setFont(font3)
+        self.sBallMaxLabel.setFont(Fonts["font3"])
         self.sBallMaxLabel.setScaledContents(True)
         self.sBallMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4705,7 +4668,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_176.setContentsMargins(0, 0, 0, 0)
         self.vBallTitle = QLabel(self.valBallHeader)
         self.vBallTitle.setObjectName(u"vBallTitle")
-        self.vBallTitle.setFont(font2)
+        self.vBallTitle.setFont(Fonts["font2"])
         self.vBallTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_176.addWidget(self.vBallTitle)
@@ -4728,7 +4691,7 @@ class Ui_MainWindow(object):
         self.vBallMin.setObjectName(u"vBallMin")
         self.valBallMinLabel = QLabel(self.vBallValues)
         self.valBallMinLabel.setObjectName(u"valBallMinLabel")
-        self.valBallMinLabel.setFont(font3)
+        self.valBallMinLabel.setFont(Fonts["font3"])
         self.valBallMinLabel.setScaledContents(True)
         self.valBallMinLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4770,7 +4733,7 @@ class Ui_MainWindow(object):
         self.vBallMax.setObjectName(u"vBallMax")
         self.vBallMaxLabel = QLabel(self.vBallValues)
         self.vBallMaxLabel.setObjectName(u"vBallMaxLabel")
-        self.vBallMaxLabel.setFont(font3)
+        self.vBallMaxLabel.setFont(Fonts["font3"])
         self.vBallMaxLabel.setScaledContents(True)
         self.vBallMaxLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4892,7 +4855,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_180.setContentsMargins(0, 0, 0, 0)
         self.segBallToolsHeaderLabel = QLabel(self.segBallToolsHeader)
         self.segBallToolsHeaderLabel.setObjectName(u"segBallToolsHeaderLabel")
-        self.segBallToolsHeaderLabel.setFont(font7)
+        self.segBallToolsHeaderLabel.setFont(Fonts["font7"])
         self.segBallToolsHeaderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_180.addWidget(self.segBallToolsHeaderLabel, 0, Qt.AlignmentFlag.AlignTop)
@@ -4916,7 +4879,7 @@ class Ui_MainWindow(object):
         self.minAreaInnerContour.setObjectName(u"minAreaInnerContour")
         self.minAreaInnerContourLabel = QLabel(self.segBallToolsContents)
         self.minAreaInnerContourLabel.setObjectName(u"minAreaInnerContourLabel")
-        self.minAreaInnerContourLabel.setFont(font3)
+        self.minAreaInnerContourLabel.setFont(Fonts["font3"])
         self.minAreaInnerContourLabel.setScaledContents(True)
         self.minAreaInnerContourLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4946,7 +4909,7 @@ class Ui_MainWindow(object):
         self.minAreaContour.setObjectName(u"minAreaContour")
         self.minAreaContourLabel = QLabel(self.genParamsTools)
         self.minAreaContourLabel.setObjectName(u"minAreaContourLabel")
-        self.minAreaContourLabel.setFont(font3)
+        self.minAreaContourLabel.setFont(Fonts["font3"])
         self.minAreaContourLabel.setScaledContents(True)
         self.minAreaContourLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4973,7 +4936,7 @@ class Ui_MainWindow(object):
         self.areaRectRatio.setObjectName(u"areaRectRatio")
         self.areaRectRatioLabel = QLabel(self.genParamsTools)
         self.areaRectRatioLabel.setObjectName(u"areaRectRatioLabel")
-        self.areaRectRatioLabel.setFont(font3)
+        self.areaRectRatioLabel.setFont(Fonts["font3"])
         self.areaRectRatioLabel.setScaledContents(True)
         self.areaRectRatioLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -5000,7 +4963,7 @@ class Ui_MainWindow(object):
         self.stabilityParam.setObjectName(u"stabilityParam")
         self.stabilityParamLabel = QLabel(self.genParamsTools)
         self.stabilityParamLabel.setObjectName(u"stabilityParamLabel")
-        self.stabilityParamLabel.setFont(font3)
+        self.stabilityParamLabel.setFont(Fonts["font3"])
         self.stabilityParamLabel.setScaledContents(True)
         self.stabilityParamLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 

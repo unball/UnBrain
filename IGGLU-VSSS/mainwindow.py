@@ -3,7 +3,7 @@ import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
@@ -14,8 +14,15 @@ from ui_form import Ui_MainWindow
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+        newFontId = QFontDatabase.addApplicationFont(u"./assets/fonts/Bungee.ttf")
+        bungeeFont = QFontDatabase.applicationFontFamilies(newFontId)[0]
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        
+        self.ui.header.appName.setStyleSheet(f"font-family: {bungeeFont}; font-size: 20px;")
+        
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.arrowLeft = QPixmap(u"assets/icons/arrow_left.svg")
         self.arrowRight = QPixmap(u"assets/icons/arrow_right.svg")

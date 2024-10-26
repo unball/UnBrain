@@ -11,6 +11,11 @@ from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 
 from ui_form import Ui_MainWindow
 
+sys.path.append("../src")
+print(sys.path)
+
+from loop import Loop
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)

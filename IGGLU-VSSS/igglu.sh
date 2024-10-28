@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 mainwindow.py
+python3 app.py

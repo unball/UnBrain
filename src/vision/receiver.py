@@ -43,7 +43,7 @@ class FiraClient:
         
         while True:
             try:
-                
+                socket.setdefaulttimeout(1/30)
                 self.verify_vision = False
                 data, _ = self.vision_sock.recvfrom(1024)
                 self.verify_vision = True

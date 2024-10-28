@@ -31,7 +31,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=60,
+                loop_freq=120,
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -108,6 +108,7 @@ class Loop:
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         # Variáveis
+        self.message = None
         self.loopTime = 1.0 / loop_freq
         self.running = True
         self.lastupdatecount = 0
@@ -201,31 +202,35 @@ class Loop:
 
         if self.world.firasim:
             message = self.firasim.vision.read()
-            #if message is not None: print("mensagem FIRASim", message)
-            self.execute = True if message else False
+            self.message = message if message else self.message
+            #if self.message is not None: print("mensagem FIRASim", self.message)
+            self.execute = True if self.message else False
             if self.execute: 
-                self.world.FIRASim_update(message)
+                self.world.FIRASim_update(self.message)
 
         if self.world.vssvision:
             # Inicia contagem do delay
             self.delay_camera = time.time()
             # Atribuimos a mensagem que queremos passar para a função VSSVision_update
             message = self.visionclient.receive_frame()
-            self.execute = True if message else False
+            self.message = message if message else self.message
+            self.execute = True if self.message else False
             if self.execute:
-                self.world.VSSVision_update(message.detection)
+                self.world.VSSVision_update(self.message.detection)
         if self.world.mainvision:
             # Atribuimos a mensagem que queremos passar para a função update_main_vision
             message = self.pclient.receive()
-            self.execute = message["running"]
-            if message is not None: 
-                self.world.update_main_vision(message)
+            self.message = message if message is not None else self.message
+            self.execute = self.message["running"]
+            if self.message is not None: 
+                self.world.update_main_vision(self.message)
 
         if self.world.simulado:
             message = self.simulado.get_state()
-            self.execute = True if message else False
+            self.message = message if message else self.message
+            self.execute = True if self.message else False
             if self.execute:
-                self.world.update(message)
+                self.world.update(self.message)
         
         elif((self.world.debug) and not (self.world.vssvision) and not (self.world.firasim) and not self.world.mainvision and not self.world.simulado):
             print("_________")

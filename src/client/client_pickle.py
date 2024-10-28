@@ -11,6 +11,7 @@ class ClientPickle:
         #    self.receive()
 
     def receive(self):
+        socket.setdefaulttimeout(1/30)
         data = self.psocket.recv(15000)
         message = pickle.loads(data)
         #print('Received from server: <type> -> ', type(message), '\n',str(message))

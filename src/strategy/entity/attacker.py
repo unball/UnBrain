@@ -1,5 +1,5 @@
 from ..entity import Entity
-from strategy.field.UVF import UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
 from strategy.field.areaAvoidance.avoidanceField import AvoidanceField
 from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
@@ -10,7 +10,6 @@ from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideE
 from tools.interval import Interval
 from control.UFC import UFC_Simple
 from control.goalKeeper import GoalKeeperControl
-from control.UFC_modified import UFC_New
 from client.gui import clientProvider
 import numpy as np
 import math
@@ -120,9 +119,8 @@ class Attacker(Entity):
             self.robot.vref = 999
             self.robot.gammavels = (0,0,0)
             self.robot.movState = 1
-            Kr = None
+            Kr = 0.03
             pose = self.robot.ref
-            singleObstacle = False
         # Se não, vai para a bola
         else:
             # Vai para a bola saturada em -0.60m em x
@@ -131,8 +129,7 @@ class Attacker(Entity):
             self.robot.vref = 999
             self.robot.gammavels = gammavels
             self.robot.movState = 0
-            Kr = 0.04
-            singleObstacle = False#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
+            Kr = 0.04#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
         
         # Decide quais espirais estarão no campo e compõe o campo
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
@@ -140,16 +137,16 @@ class Attacker(Entity):
         # Muda o campo no gol caso a bola esteja lá
         if self.world.ball.insideGoalArea():
             self.robot.vref = 0
-            self.robot.field = UVFDefault(self.world, pose, rr, direction=-np.sign(rb[1]), radius=0, Kr=Kr, singleObstacle=singleObstacle, Vr=vr)
+            self.robot.field = UVF(pose, direction=-np.sign(rb[1]), radius=0, Kr=Kr)
 
         if any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
-            self.robot.field = UVFDefault(self.world, (*pose[:2], angle), rr, direction=-np.sign(rb[1]), Kr=Kr, singleObstacle=singleObstacle, Vr=vr, radius=0.1)
+            self.robot.field = UVF((*pose[:2], angle), direction=-np.sign(rb[1]), radius=0.1, Kr=Kr)
         else: 
             #if howFrontBall(rb, rr, rg) > 0: radius = 0
             #else: radius = None
-            self.robot.field = UVFDefault(self.world, pose, rr, direction=0, Kr=Kr, singleObstacle=singleObstacle, Vr=vr)
+            self.robot.field = UVF(pose, direction=0, Kr=Kr)
 
 
 

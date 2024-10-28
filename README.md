@@ -49,7 +49,17 @@ Em caso de erro "bash ./protobuf.sh: Permission denied", rode:
 ```
 cd src/client/protobuf
 chmod +x protobuf.sh
-```
+``` 
+
+> !!!! Cuidados com protobuf que usamos !!!!
+>   
+> O protobuf converte arquivos .proto para .py utilizando seu compilador `protoc`. Verifique se a versão do seu `protoc` é compatível com a versão do protobuf utilizada por esse projeto. 
+> Uma possível solução é baixar o pacote do protoc 3.20.1 (que é compatível com o protobuf 3.20.2) diretamente do github em um arquivo zip. Extrair em um repositório e compilar os arquivos proto a partir do caminho onde o protoc 3.20.1 está instalado. Como, por exemplo,
+> 
+> `<CAMINHO para protoc 3.20.1>/protobuf-3.20.1/bin/protoc --python_out=./ *.proto`
+>
+> Com o comando acima não é necessário executar ./protobuf.sh 
+
 
 Antes de realizar a execução, cuidados sobre o [serial](https://github.com/unball/UnBrain/blob/main/src/communication/serialWifi.py) atualize o chmod com seu password sudo e por fim execute o comando bash abaixo: 
 ```bash
@@ -104,3 +114,4 @@ ls /dev/ttyUSB*
 ```
 
 E ele irá listar as portas `ttyUSB*` que estão sendo usadas. Basta copiar a que aparecer e substituir no comando de autorizar a porta.
+

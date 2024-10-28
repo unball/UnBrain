@@ -42,6 +42,7 @@ class FIRASimVision:
 
     def read(self):
         try:
+            socket.setdefaulttimeout(1/30)
             data = self.socket.recv(512)
             
             if len(data) > 0:

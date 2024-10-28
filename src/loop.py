@@ -181,10 +181,6 @@ class Loop:
                 if robot is not None: robot.turnOn()
             robos = control_output
             self.simulado.step(robos)
-        
-        if self.world.igglu:
-            for robot in self.world.raw_team:
-                if robot is not None: robot.turnOff()
                 
         # Desenha no ALP-GUI
         self.draw()

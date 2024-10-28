@@ -51,7 +51,7 @@ class SecAttacker(Entity):
         
         self.lastChat = 0
 
-        self._control = SecAttackerControl(self.world)
+        self._control = UFC_Simple(self.world)
     @property
     def control(self):
         return self._control
@@ -133,7 +133,7 @@ class SecAttacker(Entity):
 
         # Ataque ao gol
         elif self.attackState == 1:
-            if self.alignedToGoalRelaxed(Pb[:2], rr, rg) :
+            if self.alignedToGoalRelaxed(Pb[:2], rr, rg):
                 self.attackState =  1
             else:
                 #print("indo até a bola")
@@ -153,7 +153,7 @@ class SecAttacker(Entity):
 
             if np.abs(Pb[1]) > rl[1]:
                 self.robot.vref = math.inf
-                self.robot.field = UVF(Pb, self.robot.pose, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
+                self.robot.field = UVF(world=self.world , Pb=Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
@@ -162,7 +162,7 @@ class SecAttacker(Entity):
                 Pbv = Pb
 
                 self.robot.vref = self.approximationSpeed + 2 * norml(vb)
-                self.robot.field = UVF(Pbv, self.robot.pose, radius=self.spiralRadius, Kr=0.03)
+                self.robot.field = UVF(world=self.world, pose= Pbv, radius=self.spiralRadiusCorners)
 
                 clientProvider().drawTarget(self.robot.id, Pbv[0], Pbv[1], Pbv[2])
 

@@ -16,7 +16,7 @@ class GoalKeeper(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = GoalKeeperControl(self.world)
+        self._control = UFC_Simple(self.world)
         self.lastChat = 0
         self.state = "Stable"
 
@@ -63,7 +63,7 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.12
+        rg[0] += 0.05
     
          # Aplica o movimento
         self.robot.vref = 0

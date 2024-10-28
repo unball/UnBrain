@@ -300,7 +300,7 @@ class TeamRobot(Robot):
             if self.timeLastResponse is not None:
                 dt = time.time() - self.timeLastResponse
                 if dt is not None and dt > 0.33:
-                    self.keepAlive(3)
+                    # self.keepAlive(3)
                     return False
         else:
             self.timeLastResponse = time.time()

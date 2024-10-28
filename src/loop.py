@@ -17,7 +17,6 @@ import sys
 import signal
 from vision.receiver import FiraClient
 from client.client_pickle import ClientPickle
-from client.websocket import WebSocket
 
 
 from strategy.automaticReplacer import AutomaticReplacer

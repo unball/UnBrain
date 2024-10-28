@@ -14,4 +14,5 @@ pycairo
 PyGObject
 rc-robosim
 rsoccer-gym
-websocket-client
+opencv-python
+pyside6

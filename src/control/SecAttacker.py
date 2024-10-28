@@ -9,7 +9,7 @@ import time
 
 class SecAttackerControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=60, mu=0.75, vbias=0.1, vmax=1.2, L=0.0605, enableInjection=False):
+  def __init__(self, world, kw=7, kp=150, mu=0.75, vbias=0.1, vmax=1.2, L=0.0750, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8

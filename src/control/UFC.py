@@ -7,7 +7,7 @@ import time
 
 class UFC_Simple(Control):
     """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-    def __init__(self, world, kw=10, kp=70, mu=0.95, vmax=0.9, L=L, enableInjection=False):
+    def __init__(self, world, kw=8, kp=100, mu=0.4, vmax=0.8, L=L, enableInjection=False):
       Control.__init__(self, world)
 
       self.g = 9.8
@@ -59,7 +59,7 @@ class UFC_Simple(Control):
       v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
 
       # Velocidade limite de aproximação
-      v3 = self.kp * norm(robot.pose, robot.field.Pb) ** 2 
+      v3 = self.kp * norm(robot.pose, robot.field.Pb) ** 2 + robot.vref
 
       # Velocidade linear é menor de todas
       v  = max(min(v1,v2,v3), 0)

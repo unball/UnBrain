@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 app.py --nrobots 3
+python3 app.py 

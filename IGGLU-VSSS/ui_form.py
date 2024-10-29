@@ -6,7 +6,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform, QPen)
 from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QComboBox,
-    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
+    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout, QLineEdit,
     QLabel, QLayout, QMainWindow, QPushButton,
     QRadioButton, QScrollArea, QSizePolicy, QSlider,
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
@@ -19,8 +19,9 @@ from layouts import RobotLayout, Robot
 from typing import List
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow: QWidget, robots: List[Robot]):
-        self.robots = robots        
+    def setupUi(self, MainWindow: QWidget):
+        self.robots : List[Robot] =  [Robot(id=str(n)) for n in range(3)] if MainWindow.robots is None else MainWindow.robots
+        
         ############################################
         # Icons
         ############################################
@@ -649,9 +650,43 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_23.addWidget(self.debugTabTitle)
 
-        self.configHeaderSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        # Substitua QVBoxLayout por QHBoxLayout para alinhamento horizontal
+        self.nrobotsOptions = QHBoxLayout()
+        self.nrobotsOptions.setSpacing(0)  # Ajuste o espaçamento entre os elementos
+        self.nrobotsOptions.setObjectName(u"nrobotsOptions")
 
-        self.horizontalLayout_23.addItem(self.configHeaderSpacer)
+        # Defina as margens do layout para espaçamento adicional
+        self.nrobotsOptions.setContentsMargins(15, 0, 50, 0)
+
+        # Adicione o QLabel ao layout horizontal
+        self.nrobotsLabel = QLabel(self.configHeader)
+        self.nrobotsLabel.setObjectName(u"nrobotsLabel")
+        self.nrobotsLabel.setFont(Fonts["font2"])
+        self.nrobotsOptions.addWidget(self.nrobotsLabel)
+
+        # Adicione um espaçamento entre o QLabel e o QLineEdit
+        self.nrobotsOptions.addSpacing(10)
+
+        # Substitua QComboBox por QLineEdit para a caixa de texto
+        self.nrobotsLineEdit = QLineEdit(self.configHeader)
+        self.nrobotsLineEdit.setObjectName(u"nrobotsLineEdit")
+
+        # Configure a política de tamanho e outras propriedades para o QLineEdit
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.nrobotsLineEdit.sizePolicy().hasHeightForWidth())
+        self.nrobotsLineEdit.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        self.nrobotsLineEdit.setFont(Fonts["font3"])
+        self.nrobotsLineEdit.setCursor(QCursor(Qt.PointingHandCursor))
+        self.nrobotsLineEdit.setMinimumSize(QSize(110, 0))
+        self.nrobotsLineEdit.setMaximumSize(QSize(110, 105))
+
+        # Adicione o QLineEdit ao layout horizontal
+        self.nrobotsOptions.addWidget(self.nrobotsLineEdit)
+
+        # Alinhe o QLineEdit horizontalmente ao centro
+        self.nrobotsOptions.setAlignment(self.nrobotsLineEdit, Qt.AlignmentFlag.AlignCenter)
+
+        # Adicione o layout horizontal ao layout principal com espaçamento adicional
+        self.horizontalLayout_23.addLayout(self.nrobotsOptions)
 
         self.robotsFound = QLabel(self.configHeader)
         self.robotsFound.setObjectName(u"robotsFound")
@@ -660,7 +695,7 @@ class Ui_MainWindow(object):
         self.robotsFound.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
         self.robotsFound.setMinimumSize(QSize(110, 0))
-        self.robotsFound.setMaximumSize(QSize(110, 16777215))
+        self.robotsFound.setMaximumSize(QSize(110, 105))
         self.robotsFound.setFont(Fonts["font3"])
         self.robotsFound.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -4512,6 +4547,7 @@ class Ui_MainWindow(object):
         self.visionOptionsDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"FiraSim", None))
 
         self.visionOptionsDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MainVision", None))
+        self.nrobotsLineEdit.setPlaceholderText(QCoreApplication.translate("Insira o nrobots", u"Insira o nrobots", None))
         self.myTeamSideText.setText(QCoreApplication.translate("MainWindow", u"Cor do time aliado:", None))
         self.switchTeamColorButton.setText("")
         self.myTeamColorLabel.setText(QCoreApplication.translate("MainWindow", u"Azul", None))
@@ -4527,7 +4563,7 @@ class Ui_MainWindow(object):
         self.leftTeamSideLabel.setText(QCoreApplication.translate("MainWindow", u"Lado inimigo", None))
         self.fieldSideDirection.setText("")
         self.rightTeamSideLabel.setText(QCoreApplication.translate("MainWindow", u"Lado aliado", None))
-        self.debugTabTitle.setText(QCoreApplication.translate("MainWindow", u"Configura\u00e7\u00e3o dos rob\u00f4s", None))
+        self.debugTabTitle.setText(QCoreApplication.translate("MainWindow", u"Configuração", None))
         self.robotsFound.setText(QCoreApplication.translate("MainWindow", f"{len(self.robots)} rob\u00f4s identificados", None))
         
         for layout in self.robotLayouts:

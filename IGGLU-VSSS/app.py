@@ -2,11 +2,12 @@
 import sys
 import argparse
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
-from PySide6.QtCore import Qt, QPointF, QSize
+from PySide6.QtCore import Qt, QPointF, QSize, QTimer
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 
 from ui_form import Ui_MainWindow
 from elements import Robot, Ball
+import signal
 
 sys.path.append("../src")
 from loop import Loop
@@ -17,15 +18,13 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        self.robots = [Robot(id=str(n)) for n in range(NROBOTS)]
-        
-        self.ball = Ball()
-        
+        self.robots = None
+
         newFontId = QFontDatabase.addApplicationFont(u"./assets/fonts/Bungee.ttf")
         bungeeFont = QFontDatabase.applicationFontFamilies(newFontId)[0]
 
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self, self.robots)
+        self.ui.setupUi(self)
         
         self.ui.header.appName.setStyleSheet(f"font-family: {bungeeFont}; font-size: 20px;")
         
@@ -45,7 +44,10 @@ class MainWindow(QMainWindow):
         self.unbrainLoop = None
         self.unbrainThread = None
         
-        
+        self.updateTimer = QTimer(self)
+        self.updateTimer.timeout.connect(self.updateLoopInfos)
+        self.updateTimer.start(500)
+
     def mousePressEvent(self, event):
         self.oldPosition = event.globalPosition()
     
@@ -100,6 +102,12 @@ class MainWindow(QMainWindow):
 
     def executeUnbrain(self):
         if self.unbrainLoop is None:
+            self.robot_inds = [int(i) for i in (self.ui.nrobotsLineEdit.text()).split(",")] if self.ui.nrobotsLineEdit.text() else [0,1,2]
+            
+            self.robots = [Robot(id=str(n)) for n in self.robot_inds] #implementacao provisoria de robots
+            self.ball = Ball() #implementacao provisoria de ball
+            # TODO: precisa refazer esses dois (via objeto world)
+
             print("Unbrain rodando")
             teamYellow = True if self.ui.myTeamColorLabel.text() == "Amarelo" else False
             firasim = self.ui.visionOptionsDropdown.currentIndex() == 1
@@ -107,24 +115,36 @@ class MainWindow(QMainWindow):
             simulado = True if self.ui.gameOptionsDropdown.currentIndex() == 1 else False
             robocinVision = self.ui.visionOptionsDropdown.currentIndex() == 2
             staticEntities = self.ui.staticEntitiesRadio.isChecked()
-            numRobots = [0,1,2]
+            nRobots = self.robot_inds
             mirror = self.ui.myTeamSideSwitch.value() == 1
 
 
-            self.unbrainLoop = Loop(team_yellow=teamYellow, firasim=firasim, mainvision=mainVision, simulado=simulado, static_entities=staticEntities, mirror=mirror, n_robots=numRobots, vssvision=robocinVision)
+            self.unbrainLoop = Loop(team_yellow=teamYellow, firasim=firasim, mainvision=mainVision, simulado=simulado, static_entities=staticEntities, mirror=mirror, n_robots=nRobots, vssvision=robocinVision)
             self.unbrainThread = threading.Thread(target=self.unbrainLoop.run)
             self.unbrainThread.daemon = True
             self.unbrainThread.start()
+
+            signal.signal(signal.SIGINT, self.handle_SIGINT)
 
         else:
             self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
             self.unbrainLoop = None
 
+    def updateLoopInfos(self):
+        if self.unbrainLoop is not None:
+            ball = self.unbrainLoop.world.ball
+            robots = self.unbrainLoop.world.team
+            
+            self.ui.ballPosValue.setText(f"x: {ball.pos[0]:.1f} y: {ball.pos[1]:.1f}")
+            self.ui.ballSpeedValue.setText(f"{ball.velmod:.1f} m/s")
+            self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
+            # self.ui.ballAccValue.setText(f"{ball.accmod:.1f} m/s²")   accmod não implementado
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="IGGLU - VSSS")
-    parser.add_argument("--nrobots", "-n", type=int, default=3)
-    args = parser.parse_args()
-    NROBOTS = args.nrobots
+    # parser = argparse.ArgumentParser(prog="IGGLU - VSSS")
+    # parser.add_argument("--nrobots", "-n", type=int, default=3)
+    # args = parser.parse_args()
+    # NROBOTS = args.nrobots
     
     app = QApplication(sys.argv)
     

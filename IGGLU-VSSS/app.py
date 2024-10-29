@@ -105,6 +105,7 @@ class MainWindow(QMainWindow):
         if self.unbrainLoop is None:
             self.robot_inds = [int(i) for i in (self.ui.nrobotsLineEdit.text()).split(",")] if self.ui.nrobotsLineEdit.text() else [0,1,2]
             
+            # TODO: corrigir self.robots
             self.robots = [Robot(id=str(n)) for n in self.robot_inds] #implementacao provisoria de robots
             self.ball = Ball() #implementacao provisoria de ball
             # TODO: precisa refazer esses dois (via objeto world)

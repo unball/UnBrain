@@ -85,6 +85,12 @@ class MainWindow(QMainWindow):
             self.ui.viewUvfButton.setIcon(self.closedEyeIcon)
         else:
             self.ui.viewUvfButton.setIcon(self.eyeIcon)
+    
+    def updatePosSourceLabel(self):
+        if self.ui.posSourceSwitch.value() == 1:
+            self.ui.posSourceLabel.setText("Posicionamento do juiz virtual")
+        else:
+            self.ui.posSourceLabel.setText("Posicionamento do juiz manual")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

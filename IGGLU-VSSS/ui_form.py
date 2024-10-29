@@ -1133,13 +1133,13 @@ class Ui_MainWindow(object):
         self.staticEntitiesRadio = QRadioButton(self.decScrollContents)
         self.staticEntitiesRadio.setObjectName(u"staticEntitiesRadio")
         self.staticEntitiesRadio.setFont(Fonts["font3"])
-        self.staticEntitiesRadio.setChecked(True)
 
         self.chooseEntitites.addWidget(self.staticEntitiesRadio)
 
         self.dynEntitiesRadio = QRadioButton(self.decScrollContents)
         self.dynEntitiesRadio.setObjectName(u"dynEntitiesRadio")
         self.dynEntitiesRadio.setFont(Fonts["font3"])
+        self.dynEntitiesRadio.setChecked(True)
 
         self.chooseEntitites.addWidget(self.dynEntitiesRadio)
 
@@ -1225,6 +1225,8 @@ class Ui_MainWindow(object):
         self.staticEntitiesContents.addWidget(self.staticRobotsBox)
 
         self.verticalLayout_26.addLayout(self.staticEntitiesContents)
+        
+        self.staticRobotsBox.hide()
 
         self.decHLine = QFrame(self.decScrollContents)
         self.decHLine.setObjectName(u"decHLine")
@@ -1248,67 +1250,42 @@ class Ui_MainWindow(object):
         self.verticalLayout_34 = QVBoxLayout(self.posContents)
         self.verticalLayout_34.setObjectName(u"verticalLayout_34")
         self.verticalLayout_34.setContentsMargins(0, 0, 0, 0)
-        self.refereePos = QHBoxLayout()
-        self.refereePos.setObjectName(u"refereePos")
-        self.refereePosLabel = QLabel(self.posContents)
-        self.refereePosLabel.setObjectName(u"refereePosLabel")
-        self.refereePosLabel.setFont(Fonts["font3"])
-
-        self.refereePos.addWidget(self.refereePosLabel)
-
-        self.refereePosSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.refereePos.addItem(self.refereePosSpacer)
-
-        self.refereePosSwitch = QSlider(self.posContents)
-        self.refereePosSwitch.setObjectName(u"refereePosSwitch")
         
-        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.refereePosSwitch.sizePolicy().hasHeightForWidth())
-        self.refereePosSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        ###################################
+        # Position Source
+        ###################################
+        self.posSource = QHBoxLayout()
+        self.posSource.setObjectName(u"posSource")
         
-        self.refereePosSwitch.setMinimumSize(QSize(41, 0))
-        self.refereePosSwitch.setMaximumSize(QSize(41, 16777215))
-        self.refereePosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
-        self.refereePosSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.refereePosSwitch.setMaximum(1)
-        self.refereePosSwitch.setValue(0)
-        self.refereePosSwitch.setSliderPosition(0)
-        self.refereePosSwitch.setOrientation(Qt.Orientation.Horizontal)
-
-        self.refereePos.addWidget(self.refereePosSwitch)
-
-        self.verticalLayout_34.addLayout(self.refereePos)
-
-        self.manualPos = QHBoxLayout()
-        self.manualPos.setObjectName(u"manualPos")
-        self.manualPosLabel = QLabel(self.posContents)
-        self.manualPosLabel.setObjectName(u"manualPosLabel")
-        self.manualPosLabel.setFont(Fonts["font3"])
-
-        self.manualPos.addWidget(self.manualPosLabel)
-
-        self.manualPosSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.manualPos.addItem(self.manualPosSpacer)
-
-        self.manualPosSwitch = QSlider(self.posContents)
-        self.manualPosSwitch.setObjectName(u"manualPosSwitch")
+        self.posSourceLabel = QLabel(self.posContents)
+        self.posSourceLabel.setObjectName(u"posSourceLabel")
+        self.posSourceLabel.setFont(Fonts["font3"])
         
-        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.manualPosSwitch.sizePolicy().hasHeightForWidth())
-        self.manualPosSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        self.posSource.addWidget(self.posSourceLabel)
         
-        self.manualPosSwitch.setMinimumSize(QSize(41, 0))
-        self.manualPosSwitch.setMaximumSize(QSize(41, 16777215))
-        self.manualPosSwitch.setCursor(QCursor(Qt.PointingHandCursor))
-        self.manualPosSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.manualPosSwitch.setMaximum(1)
-        self.manualPosSwitch.setValue(1)
-        self.manualPosSwitch.setSliderPosition(1)
-        self.manualPosSwitch.setOrientation(Qt.Orientation.Horizontal)
+        self.posSourceSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.manualPos.addWidget(self.manualPosSwitch)
+        self.posSource.addItem(self.posSourceSpacer)
 
-        self.verticalLayout_34.addLayout(self.manualPos)
+        self.posSourceSwitch = QSlider(self.posContents)
+        self.posSourceSwitch.setObjectName(u"posSourceSwitch")
+        
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.posSourceSwitch.sizePolicy().hasHeightForWidth())
+        self.posSourceSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
+        self.posSourceSwitch.setMinimumSize(QSize(41, 0))
+        self.posSourceSwitch.setMaximumSize(QSize(41, 16777215))
+        self.posSourceSwitch.setCursor(QCursor(Qt.PointingHandCursor))
+        self.posSourceSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.posSourceSwitch.setSliderPosition(1)
+        self.posSourceSwitch.setValue(1)
+        self.posSourceSwitch.setMaximum(1)
+        self.posSourceSwitch.setOrientation(Qt.Orientation.Horizontal)
+
+        self.posSource.addWidget(self.posSourceSwitch)
+
+        self.verticalLayout_34.addLayout(self.posSource)
+        
 
         self.selectPos = QHBoxLayout()
         self.selectPos.setObjectName(u"selectPos")
@@ -4452,6 +4429,10 @@ class Ui_MainWindow(object):
         self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
         self.execButton.clicked.connect(MainWindow.executeUnbrain)
         
+        # Position Source
+        self.posSourceSwitch.valueChanged.connect(self.posSourceLabel.setNum)
+        self.posSourceSwitch.valueChanged.connect(MainWindow.updatePosSourceLabel)
+        
         # Elements Saturation Sliders
         self.satMinSlider.valueChanged.connect(self.satMinValue.setNum)
         self.satMinSlider.valueChanged.connect(self.segFrame.updateMinSaturation)
@@ -4606,9 +4587,10 @@ class Ui_MainWindow(object):
         self.staticRobotDropdown_3.setItemText(3, QCoreApplication.translate("MainWindow", u"Goleiro", None))
 
         self.staticRobotDropdown_3.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Papel do rob\u00f4", None))
+        
         self.posLabel.setText(QCoreApplication.translate("MainWindow", u"Posicionamento", None))
-        self.refereePosLabel.setText(QCoreApplication.translate("MainWindow", u"Usar posicionamento do juiz virtual", None))
-        self.manualPosLabel.setText(QCoreApplication.translate("MainWindow", u"Usar posicionamento do juiz manual", None))
+        self.posSourceLabel.setText(QCoreApplication.translate("MainWindow", u"Posicionamento com juiz virtual", None))
+        
         self.selectPosLabel.setText(QCoreApplication.translate("MainWindow", u"Selecionar posicionamento", None))
         self.selectPosDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"Free Ball", None))
         self.selectPosDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"Kick Off", None))

@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
 
             self.ui.ballPosValue.setText(f"x: {ball.pos[0]:.1f} y: {ball.pos[1]:.1f}")
             self.ui.ballSpeedValue.setText(f"{ball.velmod:.1f} m/s")
-            self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
+            # self.ui.ballAccValue.setText(f"{ball.accmod:.1f} m/s²")   accmod não implementado
 
 
 if __name__ == "__main__":

@@ -4,22 +4,25 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
-# Important:
-# You need to run the following command to generate the ui_form.py file
-#     pyside6-uic form.ui -o ui_form.py, or
-#     pyside2-uic form.ui -o ui_form.py
+
+NROBOTS = 3
 
 from ui_form import Ui_MainWindow
+from elements import Robot, Ball
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         
+        self.robots = [Robot(id=str(n)) for n in range(NROBOTS)]
+        
+        self.ball = Ball()
+        
         newFontId = QFontDatabase.addApplicationFont(u"./assets/fonts/Bungee.ttf")
         bungeeFont = QFontDatabase.applicationFontFamilies(newFontId)[0]
 
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, self.robots)
         
         self.ui.header.appName.setStyleSheet(f"font-family: {bungeeFont}; font-size: 20px;")
         

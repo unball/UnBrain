@@ -3,6 +3,7 @@ import sys
 import argparse
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize, QTimer
+from PySide6.QtCore import Qt, QPointF, QSize, QTimer
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 
 from ui_form import Ui_MainWindow

@@ -2,7 +2,7 @@
 import sys
 import argparse
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
-from PySide6.QtCore import Qt, QPointF, QSize
+from PySide6.QtCore import Qt, QPointF, QSize, QTimer
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 
 from ui_form import Ui_MainWindow
@@ -44,6 +44,10 @@ class MainWindow(QMainWindow):
 
         self.unbrainLoop = None
         self.unbrainThread = None
+
+        self.updateTimer = QTimer(self)
+        self.updateTimer.timeout.connect(self.updateLoopInfos)
+        self.updateTimer.start(500)
         
         
     def mousePressEvent(self, event):
@@ -119,6 +123,16 @@ class MainWindow(QMainWindow):
         else:
             self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
             self.unbrainLoop = None
+
+    def updateLoopInfos(self):
+        if self.unbrainLoop is not None:
+            ball = self.unbrainLoop.world.ball
+            robots = self.unbrainLoop.world.team
+
+            self.ui.ballPosValue.setText(f"x: {ball.pos[0]:.1f} y: {ball.pos[1]:.1f}")
+            self.ui.ballSpeedValue.setText(f"{ball.velmod:.1f} m/s")
+            self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="IGGLU - VSSS")

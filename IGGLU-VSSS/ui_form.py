@@ -4527,7 +4527,7 @@ class Ui_MainWindow(object):
         self.fieldSideDirection.setText("")
         self.rightTeamSideLabel.setText(QCoreApplication.translate("MainWindow", u"Lado aliado", None))
         self.debugTabTitle.setText(QCoreApplication.translate("MainWindow", u"Configura\u00e7\u00e3o dos rob\u00f4s", None))
-        self.robotsFound.setText(QCoreApplication.translate("MainWindow", u"3 rob\u00f4s identificados", None))
+        self.robotsFound.setText(QCoreApplication.translate("MainWindow", f"{len(self.robots)} rob\u00f4s identificados", None))
         
         for layout in self.robotLayouts:
                 self.robotLayouts[layout].retranslateUi()

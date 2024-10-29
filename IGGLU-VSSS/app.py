@@ -1,11 +1,9 @@
 # This Python file uses the following encoding: utf-8
 import sys
-
+import argparse
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
-
-NROBOTS = 3
 
 from ui_form import Ui_MainWindow
 from elements import Robot, Ball
@@ -93,7 +91,14 @@ class MainWindow(QMainWindow):
             self.ui.posSourceLabel.setText("Posicionamento do juiz manual")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="IGGLU - VSSS")
+    parser.add_argument("--nrobots", "-n", type=int, default=3)
+    args = parser.parse_args()
+    NROBOTS = args.nrobots
+    
     app = QApplication(sys.argv)
+    
     widget = MainWindow()
     widget.show()
+    
     sys.exit(app.exec())

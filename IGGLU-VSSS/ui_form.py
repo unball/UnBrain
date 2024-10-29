@@ -16,9 +16,10 @@ from editor import CropEditor, SegmentEditor
 from core import SizePolicies, Fonts
 from header import QHeader
 from layouts import RobotLayout, Robot
+from typing import List
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow: QWidget, robots: list[Robot]):
+    def setupUi(self, MainWindow: QWidget, robots: List[Robot]):
         self.robots = robots        
         ############################################
         # Icons

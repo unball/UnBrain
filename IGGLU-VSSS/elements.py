@@ -11,6 +11,7 @@ class Robot:
     linearSpeed: float = 0.0
     angularSpeed: float = 0.0
     frequency: float = 0.0
+    role: str = 'Atacante'
 
 class Ball:
     x: float = 0.0

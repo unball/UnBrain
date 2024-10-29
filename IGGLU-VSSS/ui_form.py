@@ -5,12 +5,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform, QPen)
-from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplication,     QComboBox,
+from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QComboBox,
     QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLayout, QMainWindow, QPushButton,
     QRadioButton, QScrollArea, QSizePolicy, QSlider,
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
-    QWidget, QListWidget, QListWidgetItem)
+    QWidget)
 
 from editor import CropEditor, SegmentEditor
 from core import SizePolicies, Fonts

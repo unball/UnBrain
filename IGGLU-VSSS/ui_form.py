@@ -717,10 +717,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_21.setObjectName(u"horizontalLayout_21")
         self.horizontalLayout_21.setContentsMargins(0, 0, 0, 0)
         self.navRobotId = QComboBox(self.navHeader)
-        self.navRobotId.addItem("")
-        self.navRobotId.addItem("")
-        self.navRobotId.addItem("")
-        self.navRobotId.addItem("")
+        
+        for _ in range(len(self.robots)+1):
+                self.navRobotId.addItem("")
+                
         self.navRobotId.setObjectName(u"navRobotId")
         self.navRobotId.setFont(Fonts["font3"])
         self.navRobotId.setCursor(QCursor(Qt.PointingHandCursor))
@@ -4533,12 +4533,12 @@ class Ui_MainWindow(object):
         
        
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.debugTab), QCoreApplication.translate("MainWindow", u"Debug", None))
+        
         self.navRobotId.setItemText(0, QCoreApplication.translate("MainWindow", u"Rob\u00f4 ID", None))
-        self.navRobotId.setItemText(1, QCoreApplication.translate("MainWindow", u"0", None))
-        self.navRobotId.setItemText(2, QCoreApplication.translate("MainWindow", u"1", None))
-        self.navRobotId.setItemText(3, QCoreApplication.translate("MainWindow", u"2", None))
-
+        for n, robot in enumerate(self.robots):
+                self.navRobotId.setItemText(n+1, QCoreApplication.translate("MainWindow", robot.id, None))
         self.navRobotId.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Rob\u00f4 ID", None))
+        
         self.uvfLabel.setText(QCoreApplication.translate("MainWindow", u"UVF", None))
         self.viewUvfFieldLabel.setText(QCoreApplication.translate("MainWindow", u"Visualizar campo UVF", None))
         self.pointsLabel.setText(QCoreApplication.translate("MainWindow", u"Quantidade de pontos", None))

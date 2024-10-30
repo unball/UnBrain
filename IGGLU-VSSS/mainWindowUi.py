@@ -1,26 +1,29 @@
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, QPropertyAnimation)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform, QPen)
 from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QComboBox,
-    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout, QLineEdit,
+    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLayout, QMainWindow, QPushButton,
     QRadioButton, QScrollArea, QSizePolicy, QSlider,
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
-    QWidget)
+    QWidget, QCheckBox)
 
-from editor import CropEditor, SegmentEditor
-from core import SizePolicies, Fonts
-from header import QHeader
-from layouts import RobotLayout, Robot
+from customClasses.layouts import *
+from customClasses.core import *
+from customClasses.elements import *
+from customClasses.widgets import *
 from typing import List
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow: QWidget):
-        self.robots : List[Robot] =  [Robot(id=str(n)) for n in range(3)] if MainWindow.robots is None else MainWindow.robots
+class MainWindowUi(object):
+    def setupUi(self, MainWindow: QWidget, robots: List[Robot]):
+        ############################################
+        # Robots
+        ############################################
+        self.robots = robots        
         
         ############################################
         # Icons
@@ -76,6 +79,7 @@ class Ui_MainWindow(object):
         #############################################
         # Header Widget
         #############################################
+        
         self.header = QHeader(self.centralwidget)
         self.verticalLayout.addWidget(self.header, 0, Qt.AlignmentFlag.AlignTop)
         
@@ -100,7 +104,6 @@ class Ui_MainWindow(object):
         self.appContents = QTabWidget(self.body)
         self.appContents.setObjectName(u"appContents")
         self.appContents.setCursor(QCursor(Qt.ArrowCursor))
-        self.appContents.setStyleSheet(u"")
         self.appContents.setTabPosition(QTabWidget.TabPosition.West)
         self.appContents.setTabShape(QTabWidget.TabShape.Rounded)
         self.appContents.setIconSize(QSize(24, 24))
@@ -319,20 +322,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
         
-        self.myTeamSideSwitch = QSlider(self.myTeamSideControl)
+        self.myTeamSideSwitch = AnimatedToggle(self.myTeamSideControl)
         self.myTeamSideSwitch.setObjectName(u"myTeamSideSwitch")
         
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.myTeamSideSwitch.sizePolicy().hasHeightForWidth())
         self.myTeamSideSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.myTeamSideSwitch.setMinimumSize(QSize(41, 0))
-        self.myTeamSideSwitch.setMaximumSize(QSize(41, 16777215))
         self.myTeamSideSwitch.setCursor(QCursor(Qt.PointingHandCursor))
         self.myTeamSideSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.myTeamSideSwitch.setMaximum(1)
-        self.myTeamSideSwitch.setValue(1)
-        self.myTeamSideSwitch.setSliderPosition(1)
-        self.myTeamSideSwitch.setOrientation(Qt.Orientation.Horizontal)
+        self.myTeamSideSwitch.setFixedSize(QSize(47,24))
+        self.myTeamSideSwitch.click()
 
         self.horizontalLayout_6.addWidget(self.myTeamSideSwitch)
 
@@ -650,43 +649,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_23.addWidget(self.debugTabTitle)
 
-        # Substitua QVBoxLayout por QHBoxLayout para alinhamento horizontal
-        self.nrobotsOptions = QHBoxLayout()
-        self.nrobotsOptions.setSpacing(0)  # Ajuste o espaçamento entre os elementos
-        self.nrobotsOptions.setObjectName(u"nrobotsOptions")
+        self.configHeaderSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        # Defina as margens do layout para espaçamento adicional
-        self.nrobotsOptions.setContentsMargins(15, 0, 50, 0)
-
-        # Adicione o QLabel ao layout horizontal
-        self.nrobotsLabel = QLabel(self.configHeader)
-        self.nrobotsLabel.setObjectName(u"nrobotsLabel")
-        self.nrobotsLabel.setFont(Fonts["font2"])
-        self.nrobotsOptions.addWidget(self.nrobotsLabel)
-
-        # Adicione um espaçamento entre o QLabel e o QLineEdit
-        self.nrobotsOptions.addSpacing(10)
-
-        # Substitua QComboBox por QLineEdit para a caixa de texto
-        self.nrobotsLineEdit = QLineEdit(self.configHeader)
-        self.nrobotsLineEdit.setObjectName(u"nrobotsLineEdit")
-
-        # Configure a política de tamanho e outras propriedades para o QLineEdit
-        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.nrobotsLineEdit.sizePolicy().hasHeightForWidth())
-        self.nrobotsLineEdit.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.nrobotsLineEdit.setFont(Fonts["font3"])
-        self.nrobotsLineEdit.setCursor(QCursor(Qt.PointingHandCursor))
-        self.nrobotsLineEdit.setMinimumSize(QSize(110, 0))
-        self.nrobotsLineEdit.setMaximumSize(QSize(110, 105))
-
-        # Adicione o QLineEdit ao layout horizontal
-        self.nrobotsOptions.addWidget(self.nrobotsLineEdit)
-
-        # Alinhe o QLineEdit horizontalmente ao centro
-        self.nrobotsOptions.setAlignment(self.nrobotsLineEdit, Qt.AlignmentFlag.AlignCenter)
-
-        # Adicione o layout horizontal ao layout principal com espaçamento adicional
-        self.horizontalLayout_23.addLayout(self.nrobotsOptions)
+        self.horizontalLayout_23.addItem(self.configHeaderSpacer)
 
         self.robotsFound = QLabel(self.configHeader)
         self.robotsFound.setObjectName(u"robotsFound")
@@ -695,7 +660,7 @@ class Ui_MainWindow(object):
         self.robotsFound.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
         self.robotsFound.setMinimumSize(QSize(110, 0))
-        self.robotsFound.setMaximumSize(QSize(110, 105))
+        self.robotsFound.setMaximumSize(QSize(110, 16777215))
         self.robotsFound.setFont(Fonts["font3"])
         self.robotsFound.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -879,22 +844,17 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_35.addItem(self.finalPointSpacer)
 
-        self.finalPointSwitch = QSlider(self.finalPoint)
+                
+        self.finalPointSwitch = AnimatedToggle(self.finalPoint)
+        
         self.finalPointSwitch.setObjectName(u"finalPointSwitch")
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.finalPointSwitch.sizePolicy().hasHeightForWidth())
         self.finalPointSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.finalPointSwitch.setMinimumSize(QSize(41, 0))
-        self.finalPointSwitch.setMaximumSize(QSize(41, 16777215))
+        self.finalPointSwitch.setFixedSize(QSize(56,36))
+        
         self.finalPointSwitch.setCursor(QCursor(Qt.PointingHandCursor))
-        self.finalPointSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.finalPointSwitch.setMaximum(1)
-        self.finalPointSwitch.setPageStep(1)
-        self.finalPointSwitch.setValue(0)
-        self.finalPointSwitch.setSliderPosition(0)
-        self.finalPointSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.horizontalLayout_35.addWidget(self.finalPointSwitch)
-
 
         self.verticalLayout_25.addWidget(self.finalPoint)
 
@@ -1089,21 +1049,17 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_36.addItem(self.allUvfSpacer)
 
-        self.allUvfSiwtch = QSlider(self.allUvf)
-        self.allUvfSiwtch.setObjectName(u"allUvfSiwtch")
-        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.allUvfSiwtch.sizePolicy().hasHeightForWidth())
-        self.allUvfSiwtch.setSizePolicy(SizePolicies["Fixed_Fixed"])
-        self.allUvfSiwtch.setMinimumSize(QSize(41, 0))
-        self.allUvfSiwtch.setMaximumSize(QSize(41, 16777215))
-        self.allUvfSiwtch.setCursor(QCursor(Qt.PointingHandCursor))
-        self.allUvfSiwtch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.allUvfSiwtch.setMaximum(1)
-        self.allUvfSiwtch.setPageStep(1)
-        self.allUvfSiwtch.setValue(0)
-        self.allUvfSiwtch.setSliderPosition(0)
-        self.allUvfSiwtch.setOrientation(Qt.Orientation.Horizontal)
-
-        self.horizontalLayout_36.addWidget(self.allUvfSiwtch)
+        self.allUvfSwitch = AnimatedToggle(self.allUvf)
+        self.allUvfSwitch.setFixedSize(QSize(56,36))
+        self.allUvfSwitch.setObjectName(u"allUvfSwitch")
+        
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.allUvfSwitch.sizePolicy().hasHeightForWidth())
+        self.allUvfSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
+        self.allUvfSwitch.setCursor(QCursor(Qt.PointingHandCursor))
+        self.allUvfSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        
+        self.horizontalLayout_36.addWidget(self.allUvfSwitch)
 
 
         self.verticalLayout_25.addWidget(self.allUvf)
@@ -1303,20 +1259,15 @@ class Ui_MainWindow(object):
 
         self.posSource.addItem(self.posSourceSpacer)
 
-        self.posSourceSwitch = QSlider(self.posContents)
+        self.posSourceSwitch = AnimatedToggle(self.posContents)
         self.posSourceSwitch.setObjectName(u"posSourceSwitch")
+        self.posSourceSwitch.setFixedSize(QSize(56,36))
         
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.posSourceSwitch.sizePolicy().hasHeightForWidth())
         self.posSourceSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.posSourceSwitch.setMinimumSize(QSize(41, 0))
-        self.posSourceSwitch.setMaximumSize(QSize(41, 16777215))
         self.posSourceSwitch.setCursor(QCursor(Qt.PointingHandCursor))
         self.posSourceSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.posSourceSwitch.setSliderPosition(1)
-        self.posSourceSwitch.setValue(1)
-        self.posSourceSwitch.setMaximum(1)
-        self.posSourceSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.posSource.addWidget(self.posSourceSwitch)
 
@@ -2436,21 +2387,15 @@ class Ui_MainWindow(object):
 
         self.showCropField.addItem(self.showCropFieldSpacer)
 
-        self.showCropFieldSwitch = QSlider(self.cropFieldTools)
+        self.showCropFieldSwitch = AnimatedToggle(self.cropFieldTools)
         self.showCropFieldSwitch.setObjectName(u"showCropFieldSwitch")
+        self.showCropFieldSwitch.setFixedSize(QSize(56,36))
         
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.showCropFieldSwitch.sizePolicy().hasHeightForWidth())
         self.showCropFieldSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.showCropFieldSwitch.setMinimumSize(QSize(41, 0))
-        self.showCropFieldSwitch.setMaximumSize(QSize(41, 16777215))
         self.showCropFieldSwitch.setCursor(QCursor(Qt.PointingHandCursor))
         self.showCropFieldSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.showCropFieldSwitch.setMaximum(1)
-        self.showCropFieldSwitch.setPageStep(1)
-        self.showCropFieldSwitch.setValue(0)
-        self.showCropFieldSwitch.setSliderPosition(0)
-        self.showCropFieldSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.showCropField.addWidget(self.showCropFieldSwitch)
 
@@ -2684,21 +2629,15 @@ class Ui_MainWindow(object):
 
         self.showInnerCropField.addItem(self.showInnerCropFieldSpacer)
 
-        self.showInnerCropFieldSwitch = QSlider(self.cropInnerFieldTools)
+        self.showInnerCropFieldSwitch = AnimatedToggle(self.cropInnerFieldTools)
         self.showInnerCropFieldSwitch.setObjectName(u"showInnerCropFieldSwitch")
+        self.showInnerCropFieldSwitch.setFixedSize(QSize(56,36))
         
         SizePolicies["Fixed_Fixed"].setHeightForWidth(self.showInnerCropFieldSwitch.sizePolicy().hasHeightForWidth())
         self.showInnerCropFieldSwitch.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.showInnerCropFieldSwitch.setMinimumSize(QSize(41, 0))
-        self.showInnerCropFieldSwitch.setMaximumSize(QSize(41, 16777215))
         self.showInnerCropFieldSwitch.setCursor(QCursor(Qt.PointingHandCursor))
         self.showInnerCropFieldSwitch.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.showInnerCropFieldSwitch.setMaximum(1)
-        self.showInnerCropFieldSwitch.setPageStep(1)
-        self.showInnerCropFieldSwitch.setValue(0)
-        self.showInnerCropFieldSwitch.setSliderPosition(0)
-        self.showInnerCropFieldSwitch.setOrientation(Qt.Orientation.Horizontal)
 
         self.showInnerCropField.addWidget(self.showInnerCropFieldSwitch)
 
@@ -4183,6 +4122,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_178.setSpacing(6)
         self.horizontalLayout_178.setObjectName(u"horizontalLayout_178")
         self.horizontalLayout_178.setContentsMargins(0, 0, 0, 0)
+        
         self.vBallMaxSlider = QSlider(self.vBallMaxContents)
         self.vBallMaxSlider.setObjectName(u"vBallMaxSlider")
         self.vBallMaxSlider.setCursor(QCursor(Qt.PointingHandCursor))
@@ -4456,22 +4396,17 @@ class Ui_MainWindow(object):
         
         # System Info Signals
         
-        self.showCropFieldSwitch.valueChanged.connect(MainWindow.showCropField)
-        self.myTeamSideSwitch.valueChanged.connect(MainWindow.changeFieldSideArrow)
+        self.showCropFieldSwitch.clicked["bool"].connect(MainWindow.showCropField)
+        self.myTeamSideSwitch.clicked["bool"].connect(MainWindow.changeFieldSideArrow)
         self.switchTeamColorButton.clicked["bool"].connect(MainWindow.changeTeamColor)
         self.viewUvfButton.clicked["bool"].connect(MainWindow.enableViewUvf)
         self.staticEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setVisible)
         self.dynEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setHidden)
         self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
-        self.execButton.clicked.connect(MainWindow.executeUnbrain)
         
         # Position Source
-        self.posSourceSwitch.valueChanged.connect(self.posSourceLabel.setNum)
-        self.posSourceSwitch.valueChanged.connect(MainWindow.updatePosSourceLabel)
-        
-        # Position Source
-        self.posSourceSwitch.valueChanged.connect(self.posSourceLabel.setNum)
-        self.posSourceSwitch.valueChanged.connect(MainWindow.updatePosSourceLabel)
+        self.posSourceSwitch.clicked["bool"].connect(self.posSourceLabel.setNum)
+        self.posSourceSwitch.clicked["bool"].connect(MainWindow.updatePosSourceLabel)
         
         # Elements Saturation Sliders
         self.satMinSlider.valueChanged.connect(self.satMinValue.setNum)
@@ -4551,7 +4486,6 @@ class Ui_MainWindow(object):
         self.visionOptionsDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"FiraSim", None))
 
         self.visionOptionsDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"MainVision", None))
-        self.nrobotsLineEdit.setPlaceholderText(QCoreApplication.translate("Insira o nrobots", u"Insira o nrobots", None))
         self.myTeamSideText.setText(QCoreApplication.translate("MainWindow", u"Cor do time aliado:", None))
         self.switchTeamColorButton.setText("")
         self.myTeamColorLabel.setText(QCoreApplication.translate("MainWindow", u"Azul", None))
@@ -4567,7 +4501,7 @@ class Ui_MainWindow(object):
         self.leftTeamSideLabel.setText(QCoreApplication.translate("MainWindow", u"Lado inimigo", None))
         self.fieldSideDirection.setText("")
         self.rightTeamSideLabel.setText(QCoreApplication.translate("MainWindow", u"Lado aliado", None))
-        self.debugTabTitle.setText(QCoreApplication.translate("MainWindow", u"Configuração", None))
+        self.debugTabTitle.setText(QCoreApplication.translate("MainWindow", u"Configura\u00e7\u00e3o dos rob\u00f4s", None))
         self.robotsFound.setText(QCoreApplication.translate("MainWindow", f"{len(self.robots)} rob\u00f4s identificados", None))
         
         for layout in self.robotLayouts:

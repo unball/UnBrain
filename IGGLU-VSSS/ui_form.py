@@ -4427,6 +4427,11 @@ class Ui_MainWindow(object):
         self.staticEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setVisible)
         self.dynEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setHidden)
         self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
+        self.execButton.clicked.connect(MainWindow.executeUnbrain)
+        
+        # Position Source
+        self.posSourceSwitch.valueChanged.connect(self.posSourceLabel.setNum)
+        self.posSourceSwitch.valueChanged.connect(MainWindow.updatePosSourceLabel)
         
         # Position Source
         self.posSourceSwitch.valueChanged.connect(self.posSourceLabel.setNum)

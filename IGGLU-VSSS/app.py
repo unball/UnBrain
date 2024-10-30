@@ -5,8 +5,8 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 
-from ui_form import Ui_MainWindow
-from elements import Robot, Ball
+from mainWindowUi import MainWindowUi
+from customClasses.elements import *
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         newFontId = QFontDatabase.addApplicationFont(u"./assets/fonts/Bungee.ttf")
         bungeeFont = QFontDatabase.applicationFontFamilies(newFontId)[0]
 
-        self.ui = Ui_MainWindow()
+        self.ui = MainWindowUi()
         self.ui.setupUi(self, self.robots)
         
         self.ui.header.appName.setStyleSheet(f"font-family: {bungeeFont}; font-size: 20px;")
@@ -48,8 +48,15 @@ class MainWindow(QMainWindow):
         self.oldPosition = event.globalPosition()
     
     def showCropField(self):
-        if self.ui.showCropFieldSwitch.value() == 1:
+        if self.ui.showCropFieldSwitch.isChecked():
             self.ui.visionCropFrame.showCroppedImage()
+        
+        else: 
+            self.ui.visionCropFrame.clearFrame()
+    
+    def showCropInnerField(self):
+        if self.ui.showInnerCropFieldSwitch.isChecked():
+            self.ui.visionInnerCropFrame.showCroppedImage()
         
         else: 
             self.ui.visionCropFrame.clearFrame()
@@ -66,13 +73,13 @@ class MainWindow(QMainWindow):
             self.ui.myTeamColorLabel.setText("Azul")
    
     def changeFieldSideArrow(self):
-        if self.ui.myTeamSideSwitch.value() == 1:
+        if self.ui.myTeamSideSwitch.isChecked():
             self.ui.fieldSideDirection.setPixmap(self.arrowLeft)
             self.ui.rightTeamSideLabel.setText("Lado aliado")
             self.ui.leftTeamSideLabel.setText("Lado inimigo")
             self.ui.myTeamSideLabel.setText("Direito")
             
-        if self.ui.myTeamSideSwitch.value() == 0:
+        else:
             self.ui.fieldSideDirection.setPixmap(self.arrowRight)
             self.ui.rightTeamSideLabel.setText("Lado inimigo")
             self.ui.leftTeamSideLabel.setText("Lado aliado")
@@ -85,7 +92,7 @@ class MainWindow(QMainWindow):
             self.ui.viewUvfButton.setIcon(self.eyeIcon)
     
     def updatePosSourceLabel(self):
-        if self.ui.posSourceSwitch.value() == 1:
+        if self.ui.posSourceSwitch.isChecked():
             self.ui.posSourceLabel.setText("Posicionamento do juiz virtual")
         else:
             self.ui.posSourceLabel.setText("Posicionamento do juiz manual")

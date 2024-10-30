@@ -38,6 +38,8 @@ class MainWindowUi(object):
         prevIcon.addFile(u"assets/icons/prev.svg", QSize(), QIcon.Normal, QIcon.Off)
         redStopIcon = QIcon()
         redStopIcon.addFile(u"assets/icons/stop_red.svg", QSize(), QIcon.Normal, QIcon.Off)
+        stopIcon = QIcon()
+        stopIcon.addFile(u"assets/icons/stop-circle-outline.svg", QSize(), QIcon.Normal, QIcon.Off)
         
         #############################################
         # Main Window
@@ -389,8 +391,50 @@ class MainWindowUi(object):
         self.execButtonShadow.setFrameShadow(QFrame.Shadow.Plain)
         self.execButtonShadow.raise_()
         self.execButton.raise_()
+        #############
+        
+        self.execStop = QFrame(self.sysInfoHeader)
+        self.execStop.setObjectName(u"execStop")
+        
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.execStop.sizePolicy().hasHeightForWidth())
+        self.execStop.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
+        self.execStop.setMinimumSize(QSize(105, 35))
+        self.execStop.setMaximumSize(QSize(105, 35))
+        self.execStop.setCursor(QCursor(Qt.PointingHandCursor))
+        self.execStop.setFrameShape(QFrame.Shape.NoFrame)
+        self.execStop.setFrameShadow(QFrame.Shadow.Raised)
+        
+        self.stopButton = QPushButton(self.execStop)
+        self.stopButton.setObjectName(u"stopButton")
+        self.stopButton.setGeometry(QRect(0, 0, 31, 31))
+        
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopButton.sizePolicy().hasHeightForWidth())
+        self.stopButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
+        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.stopButton.setStyleSheet(u"color: #fff; background: #820707;")
+        
+        self.stopButton.setIcon(stopIcon)
+        self.stopButton.setIconSize(QSize(16, 16))
+        
+        self.stopButtonShadow = QFrame(self.execStop)
+        self.stopButtonShadow.setObjectName(u"stopButtonShadow")
+        self.stopButtonShadow.setGeometry(QRect(3, 3, 31, 31))
+        
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopButtonShadow.sizePolicy().hasHeightForWidth())
+        self.stopButtonShadow.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        
+        self.stopButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
+        self.stopButtonShadow.setFrameShape(QFrame.Shape.NoFrame)
+        self.stopButtonShadow.setFrameShadow(QFrame.Shadow.Plain)
+        self.stopButtonShadow.raise_()
+        self.stopButton.raise_()
+        
+        #############
 
         self.horizontalLayout_9.addWidget(self.execStart)
+        self.horizontalLayout_9.addWidget(self.execStop)
         self.horizontalLayout_9.setStretch(0, 1)
         self.horizontalLayout_9.setStretch(1, 2)
         

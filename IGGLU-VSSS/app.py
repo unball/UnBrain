@@ -60,14 +60,14 @@ class MainWindow(QMainWindow):
     
     def showCropField(self):
         if self.ui.showCropFieldSwitch.isChecked():
-            self.ui.visionCropFrame.showCroppedImage()
+            self.ui.visionCropFrame.showEditedImage()
         
         else: 
             self.ui.visionCropFrame.clearFrame()
     
     def showCropInnerField(self):
         if self.ui.showInnerCropFieldSwitch.isChecked():
-            self.ui.visionInnerCropFrame.showCroppedImage()
+            self.ui.visionInnerCropFrame.showEditedImage()
         
         else: 
             self.ui.visionCropFrame.clearFrame()

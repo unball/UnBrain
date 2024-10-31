@@ -3,7 +3,9 @@ from PySide6.QtWidgets import (
     QSpacerItem, QSizePolicy, QLabel, QGridLayout, 
     QPushButton
 )
-from PySide6.QtCore import QSize, Qt, QPointF
+from PySide6.QtCore import (
+    QSize, Qt, QPointF, QRect, Signal, Slot
+)
 from PySide6.QtGui import (
     QCursor, QPixmap, QFont, QIcon, QImage, QPen,
     QPainter
@@ -11,9 +13,12 @@ from PySide6.QtGui import (
 
 from customClasses.core import *
 from customClasses.elements import *
+from customClasses.vision import *
 
 import numpy as np
 import cv2 as cv
+
+NROBOTS = 3
 
 class QHeader(QFrame):
     def __init__(self, parent):
@@ -324,11 +329,24 @@ class RobotLayout(QFrame):
         self.robotFreqValue.setText(f"{self.robot.frequency} MHz")
 
 class Editor(QLabel):
-    def __init__(self, parent, defaultImage):
+    edited = Signal(QPixmap)
+    def __init__(self, parent: QWidget, defaultImage: QPixmap):
         super().__init__(parent)
         
         self.defaultImage = defaultImage
         self.setPixmap(self.defaultImage)
+        
+        self.editedImage = self.defaultImage.copy()
+        
+        self.robots = [Robot(id = str(n)) for n in range(NROBOTS)]
+        self.ball = Ball()
+        
+        self.vision = Vision(self)
+    
+    
+    @Slot()
+    def updateEditedImage(self):
+        self.edited.emit(self.editedImage)
     
     def clearFrame(self):
         self.setPixmap(self.defaultImage.copy())
@@ -348,12 +366,10 @@ class Editor(QLabel):
         return pixmapPosition
 
 class SegmentEditor(Editor):
-    def __init__(self, parent, defaultImage):
+    def __init__(self, parent: QWidget, defaultImage: QPixmap):
         super().__init__(parent, defaultImage)
        
         self.hsvRange = [0, 38, 198, 179, 255, 255]
-        
-        self.segmentedImage = self.defaultImage.copy()
     
     def segmentImage(self):
         image = self.defaultImage.copy()
@@ -367,8 +383,9 @@ class SegmentEditor(Editor):
             
         mask = cv.inRange(hsvImage, minHsv, maxHsv)
         
-        self.segmentedImage = self.cvToPixmap(mask, width, height)
-        self.setPixmap(self.segmentedImage)
+        self.editedImage = self.cvToPixmap(mask, width, height)
+        self.setPixmap(self.editedImage)
+            
         
     def pixmapToCv(self, qpixmap):
         qimage = qpixmap.toImage()
@@ -391,33 +408,42 @@ class SegmentEditor(Editor):
     def updateMinHue(self, value):
         self.hsvRange[0] = value
         self.segmentImage()
+        self.detectElements()
         
     def updateMaxHue(self, value):
         self.hsvRange[3] = value
         self.segmentImage()
+        self.detectElements()
     
     def updateMinSaturation(self, value):
         self.hsvRange[1] = value
         self.segmentImage()
+        self.detectElements()
         
     def updateMaxSaturation(self, value):
         self.hsvRange[4] = value
         self.segmentImage()
+        self.detectElements()
     
     def updateMinValue(self, value):
         self.hsvRange[2] = value
         self.segmentImage()
+        self.detectElements()
         
     def updateMaxValue(self, value):
         self.hsvRange[5] = value
         self.segmentImage()
+        self.detectElements()
         
+    def detectElements(self):
+        opencvImage = self.pixmapToCv(self.editedImage)
+        opencvImage = cv.cvtColor(opencvImage, cv.COLOR_BGR2GRAY)
+        ball = self.vision.findBall(opencvImage)
+        print(ball)
 class CropEditor(Editor):
-    def __init__(self, parent, defaultImage):
+    def __init__(self, parent: QWidget, defaultImage: QPixmap):
         super().__init__(parent, defaultImage)
-        
-        self.croppedImage = self.defaultImage.copy()
-        
+                
         self.pen = QPen()
         self.pen.setCapStyle(Qt.PenCapStyle.RoundCap)
         self.pen.setColor(Qt.red)
@@ -469,7 +495,7 @@ class CropEditor(Editor):
         p1 = QPointF(points[0]).toPoint()
         p2 = QPointF(points[2]).toPoint()
         rect = QRect(p1, p2)
-        self.croppedImage = self.defaultImage.copy(rect)
+        self.editedImage = self.defaultImage.copy(rect)
     
-    def showCroppedImage(self):
-        self.setPixmap(self.croppedImage)
+    def showEditedImage(self):
+        self.setPixmap(self.editedImage)

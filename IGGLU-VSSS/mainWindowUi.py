@@ -2833,7 +2833,7 @@ class MainWindowUi(object):
         self.horizontalLayout_146.setContentsMargins(6, 6, 6, 6)
         
 #####################
-        self.segFrame = SegmentEditor(self.segContents, QPixmap(u"assets/defaultFrame.png"))
+        self.segFrame = SegmentEditor(self.segContents, self.visionCropFrame.editedImage)
         self.segFrame.setObjectName(u"segFrame")
         
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segFrame.sizePolicy().hasHeightForWidth())
@@ -3296,7 +3296,7 @@ class MainWindowUi(object):
         self.horizontalLayout_157.setObjectName(u"horizontalLayout_157")
         self.horizontalLayout_157.setContentsMargins(6, 6, 6, 6)
         
-        self.segTeamFrame = SegmentEditor(self.segTeamContents, QPixmap(u"assets/defaultFrame.png"))
+        self.segTeamFrame = SegmentEditor(self.segTeamContents, self.segFrame.editedImage)
         self.segTeamFrame.setObjectName(u"segTeamFrame")
         
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segTeamFrame.sizePolicy().hasHeightForWidth())
@@ -3760,7 +3760,7 @@ class MainWindowUi(object):
         self.horizontalLayout_168.setObjectName(u"horizontalLayout_168")
         self.horizontalLayout_168.setContentsMargins(6, 6, 6, 6)
        
-        self.segBallFrame = SegmentEditor(self.segBallContents, QPixmap(u"assets/defaultFrame.png"))
+        self.segBallFrame = SegmentEditor(self.segBallContents, self.segFrame.editedImage)
         self.segBallFrame.setObjectName(u"segBallFrame")
         
         SizePolicies["MinExpanding_Fixed"].setHeightForWidth(self.segBallFrame.sizePolicy().hasHeightForWidth())
@@ -4451,6 +4451,9 @@ class MainWindowUi(object):
         # Position Source
         self.posSourceSwitch.clicked["bool"].connect(self.posSourceLabel.setNum)
         self.posSourceSwitch.clicked["bool"].connect(MainWindow.updatePosSourceLabel)
+        
+        # Vision Updates
+        self.visionCropFrame.edited.connect(self.segFrame.segmentImage)
         
         # Elements Saturation Sliders
         self.satMinSlider.valueChanged.connect(self.satMinValue.setNum)

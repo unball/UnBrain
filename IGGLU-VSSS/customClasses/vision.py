@@ -58,12 +58,58 @@ return mensagem
 
 """
 from PySide6.QtWidgets import QFrame
-from elements import Robot, Ball
+from PySide6.QtGui import QPixmap
+from PySide6.QtCore import Signal, Slot
 
-class Vision:
-    def __init__(self, initialFrame: QFrame, robots: list[Robot], ball: Ball) -> None:
-        self. updatedFrame = initialFrame
-        self.elements = {
-            "robots": robots,
-            "ball": ball
-        }
+from customClasses.elements import *
+from customClasses.layouts import *
+from typing import List, Tuple
+import cv2 as cv
+import numpy as np
+import pdb
+class Vision(QWidget):
+    def __init__(self, editorFrame) -> None:
+      super().__init__()
+      self.editorFrame = editorFrame
+      self.editorFrame.edited.connect(self.updateBaseImage)
+      
+      self.baseImage = self.editorFrame.editedImage.copy()
+      
+    def pixelToMeters(self, x: float, y:float) -> float:      
+      scaledWidth = 640
+      scaledHeight = 640
+
+      realWidth = 1.75
+      realHeight = 1.35
+
+      widthRatio = realWidth / scaledWidth
+      heightRatio = -1 * (realHeight / scaledHeight)
+
+      realX = x * widthRatio
+      realY = y * heightRatio
+
+      realX = x - scaledWidth / 2
+      realY = y - scaledHeight / 2
+      
+      
+      realX *= widthRatio
+      realY *= heightRatio
+      
+      return realX, realY
+    
+    @Slot(QPixmap)
+    def updateBaseImage(self, image: QPixmap) -> None:
+      self.baseImage = image.copy()
+    
+    def findBall(self, segImageBytes: bytes, minArea: float = 10.0) -> Tuple[float]:
+      segImage = np.frombuffer(segImageBytes, dtype=np.uint8)
+      ballContours,_ = cv.findContours(segImage, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+      ballContours = [countor for countor in ballContours if cv.contourArea(countor) >= minArea]
+
+      if len(ballContours) != 0:
+        bolaContour = max(ballContours, key=cv.contourArea)
+        ((x,y), radius) = cv.minEnclosingCircle(bolaContour)
+        
+        return (self.pixelToMeters(x,y), radius)
+      
+      return None

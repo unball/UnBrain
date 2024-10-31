@@ -38,7 +38,7 @@ class Loop:
                 simulado=False,
                 control=False,
                 debug =False,
-                port=5002,
+                port=5001,
                 mirror=False, 
                 n_robots=[0,1,2],
                 
@@ -104,8 +104,8 @@ class Loop:
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
 
-        if self.world.mainvision:
-            self.pclient = ClientPickle(port)
+        # if self.world.mainvision:
+        #     self.pclient = ClientPickle(port)
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -115,7 +115,7 @@ class Loop:
             self.UVF_screen.initialiazeObjects()
 
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
-    def handle_SIGINT(self, signum, frame, shut_down=True):
+    def handle_SIGINT(self, signum, frame):
         if self.world.firasim:
             for i, id in enumerate(self.world.n_robots):
                 self.firasim.command.write(id, 0, 0)
@@ -133,9 +133,7 @@ class Loop:
             self.simulado.step([(0,0) for robot in self.world.team])
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
-        self.running = False
-        if shut_down:
-            sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+        sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
@@ -182,6 +180,10 @@ class Loop:
                 if robot is not None: robot.turnOn()
             robos = control_output
             self.simulado.step(robos)
+        
+        if self.world.igglu:
+            for robot in self.world.raw_team:
+                if robot is not None: robot.turnOff()
                 
         # Desenha no ALP-GUI
         self.draw()

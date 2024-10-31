@@ -3,7 +3,6 @@ import sys
 import argparse
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 from PySide6.QtCore import Qt, QPointF, QSize, QTimer
-from PySide6.QtCore import Qt, QPointF, QSize, QTimer
 from PySide6.QtGui import QPixmap, QIcon, QFontDatabase, QFont
 import signal
 
@@ -125,15 +124,15 @@ class MainWindow(QMainWindow):
             robocinVision = self.ui.visionOptionsDropdown.currentIndex() == 2
             staticEntities = self.ui.staticEntitiesRadio.isChecked()
             nRobots = self.robot_inds
-            mirror = self.ui.myTeamSideSwitch.value() == 1
+            mirror = self.ui.myTeamSideSwitch.isChecked()
 
 
-            self.unbrainLoop = Loop(team_yellow=teamYellow, firasim=firasim, mainvision=mainVision, simulado=simulado, static_entities=staticEntities, mirror=mirror, n_robots=nRobots, vssvision=robocinVision)
+            self.unbrainLoop = Loop(team_yellow=teamYellow, firasim=firasim, mainvision=False, simulado=simulado, static_entities=staticEntities, mirror=mirror, n_robots=nRobots, vssvision=robocinVision)
             self.unbrainThread = threading.Thread(target=self.unbrainLoop.run)
             self.unbrainThread.daemon = True
             self.unbrainThread.start()
 
-            signal.signal(signal.SIGINT, self.handle_SIGINT)
+            signal.signal(signal.SIGINT, self.unbrainLoop.handle_SIGINT)
 
         else:
             self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
@@ -146,7 +145,7 @@ class MainWindow(QMainWindow):
             
             self.ui.ballPosValue.setText(f"x: {ball.pos[0]:.1f} y: {ball.pos[1]:.1f}")
             self.ui.ballSpeedValue.setText(f"{ball.velmod:.1f} m/s")
-            self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
+            #self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
             # self.ui.ballAccValue.setText(f"{ball.accmod:.1f} m/s²")   accmod não implementado
 
 if __name__ == "__main__":

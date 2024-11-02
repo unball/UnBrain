@@ -8,7 +8,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QComboBox,
     QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLayout, QMainWindow, QPushButton,
-    QRadioButton, QScrollArea, QSizePolicy, QSlider,
+    QRadioButton, QScrollArea, QSlider, QSizePolicy,
     QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
     QWidget, QLineEdit)
 
@@ -4454,15 +4454,267 @@ class MainWindowUi(object):
         icon15 = QIcon()
         icon15.addFile(u"assets/icons/mdi_camera-iris.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.appContents.addTab(self.visionSettingsTab, icon15, "")
-        self.visionAiTab = QWidget()
-        self.visionAiTab.setObjectName(u"visionAiTab")
-        icon16 = QIcon()
-        icon16.addFile(u"assets/icons/mdi_bullseye-arrow.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
         ############################################
         # AI Vision Tab
         ############################################
+        
+        self.visionAiTab = QWidget()
+        self.visionAiTab.setObjectName(u"visionAiTab")
+        
+        icon16 = QIcon()
+        icon16.addFile(u"assets/icons/mdi_bullseye-arrow.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.appContents.addTab(self.visionAiTab, icon16, "")
+        
+        self.aiSettings = QFrame(self.visionAiTab)
+        self.aiSettings.setObjectName(u"aiSettings")
+        self.aiSettings.setGeometry(QRect(10, 10, 551, 51))
+        
+        SizePolicies["Expanding_Preferred"].setHeightForWidth(self.aiSettings.sizePolicy().hasHeightForWidth())
+        self.aiSettings.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
+        self.aiSettings.setMinimumSize(QSize(551, 51))
+        self.aiSettings.setMaximumSize(QSize(16777215, 51))
+        self.aiSettings.setFrameShape(QFrame.Shape.NoFrame)
+        
+        self.horizontalLayout_39 = QHBoxLayout(self.aiSettings)
+        self.horizontalLayout_39.setObjectName(u"horizontalLayout_39")
+        self.horizontalLayout_39.setContentsMargins(3, 3, 3, 3)
+        
+        self.aiModelOptions = QVBoxLayout()
+        self.aiModelOptions.setSpacing(0)
+        self.aiModelOptions.setObjectName(u"aiModelOptions")
+        
+        self.aiModelOptionsLabel = QLabel(self.aiSettings)
+        self.aiModelOptionsLabel.setObjectName(u"aiModelOptionsLabel")
+        self.aiModelOptionsLabel.setFont(font2)
+        self.aiModelOptionsLabel.setScaledContents(True)
 
+        self.aiModelOptions.addWidget(self.aiModelOptionsLabel)
+
+        self.aiModelOptionsDropdown = QComboBox(self.aiSettings)
+        self.aiModelOptionsDropdown.addItem("")
+        self.aiModelOptionsDropdown.addItem("")
+        self.aiModelOptionsDropdown.addItem("")
+        self.aiModelOptionsDropdown.setObjectName(u"aiModelOptionsDropdown")
+        
+        SizePolicies["Expanding_Preferred"].setHeightForWidth(self.aiModelOptionsDropdown.sizePolicy().hasHeightForWidth())
+        self.aiModelOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
+        self.aiModelOptionsDropdown.setFont(Fonts["font3"])
+        self.aiModelOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
+        self.aiModelOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.aiModelOptionsDropdown.setFrame(True)
+
+        self.aiModelOptions.addWidget(self.aiModelOptionsDropdown)
+
+
+        self.horizontalLayout_39.addLayout(self.aiModelOptions)
+
+        self.aiCameraOptions = QVBoxLayout()
+        self.aiCameraOptions.setSpacing(0)
+        self.aiCameraOptions.setObjectName(u"aiCameraOptions")
+        
+        self.aiCameraOptionsLabel = QLabel(self.aiSettings)
+        self.aiCameraOptionsLabel.setObjectName(u"aiCameraOptionsLabel")
+        self.aiCameraOptionsLabel.setFont(font2)
+
+        self.aiCameraOptions.addWidget(self.aiCameraOptionsLabel)
+
+        self.aiCameraOptionsDropdown = QComboBox(self.aiSettings)
+        self.aiCameraOptionsDropdown.addItem("")
+        self.aiCameraOptionsDropdown.setObjectName(u"aiCameraOptionsDropdown")
+        
+        SizePolicies["Expanding_Preferred"].setHeightForWidth(self.aiCameraOptionsDropdown.sizePolicy().hasHeightForWidth())
+        self.aiCameraOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
+        self.aiCameraOptionsDropdown.setFont(Fonts["font3"])
+        self.aiCameraOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
+        self.aiCameraOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.aiCameraOptionsDropdown.setFrame(True)
+
+        self.aiCameraOptions.addWidget(self.aiCameraOptionsDropdown)
+
+
+        self.horizontalLayout_39.addLayout(self.aiCameraOptions)
+
+        self.aiDeviceOptions = QVBoxLayout()
+        self.aiDeviceOptions.setSpacing(0)
+        self.aiDeviceOptions.setObjectName(u"aiDeviceOptions")
+        
+        self.aiDeviceOptionsLabel = QLabel(self.aiSettings)
+        self.aiDeviceOptionsLabel.setObjectName(u"aiDeviceOptionsLabel")
+        self.aiDeviceOptionsLabel.setFont(font2)
+
+        self.aiDeviceOptions.addWidget(self.aiDeviceOptionsLabel)
+
+        self.aiDeviceOptionsDropdown = QComboBox(self.aiSettings)
+        self.aiDeviceOptionsDropdown.addItem("")
+        self.aiDeviceOptionsDropdown.addItem("")
+        self.aiDeviceOptionsDropdown.setObjectName(u"aiDeviceOptionsDropdown")
+        
+        SizePolicies["Expanding_Preferred"].setHeightForWidth(self.aiDeviceOptionsDropdown.sizePolicy().hasHeightForWidth())
+        self.aiDeviceOptionsDropdown.setSizePolicy(SizePolicies["Expanding_Preferred"])
+        
+        self.aiDeviceOptionsDropdown.setFont(Fonts["font3"])
+        self.aiDeviceOptionsDropdown.setCursor(QCursor(Qt.PointingHandCursor))
+        self.aiDeviceOptionsDropdown.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.aiDeviceOptionsDropdown.setFrame(True)
+
+        self.aiDeviceOptions.addWidget(self.aiDeviceOptionsDropdown)
+
+
+        self.horizontalLayout_39.addLayout(self.aiDeviceOptions)
+
+        self.aiFrame = QLabel(self.visionAiTab)
+        self.aiFrame.setObjectName(u"aiFrame")
+        self.aiFrame.setGeometry(QRect(10, 100, 581, 439))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.aiFrame.sizePolicy().hasHeightForWidth())
+        self.aiFrame.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.aiFrame.setPixmap(QPixmap(u"assets/defaultFrame.png"))
+        self.aiFrame.setScaledContents(True)
+        
+        self.aiLogScrollArea = QScrollArea(self.visionAiTab)
+        self.aiLogScrollArea.setObjectName(u"aiLogScrollArea")
+        self.aiLogScrollArea.setGeometry(QRect(600, 100, 241, 441))
+        self.aiLogScrollArea.setWidgetResizable(True)
+        
+        self.aiLogAreaContents = QWidget()
+        self.aiLogAreaContents.setObjectName(u"aiLogAreaContents")
+        self.aiLogAreaContents.setGeometry(QRect(0, 0, 239, 439))
+        
+        self.aiLogBox = QFrame(self.aiLogAreaContents)
+        self.aiLogBox.setObjectName(u"aiLogBox")
+        self.aiLogBox.setGeometry(QRect(0, 0, 241, 441))
+        self.aiLogBox.setFrameShape(QFrame.Shape.NoFrame)
+        self.aiLogBox.setFrameShadow(QFrame.Shadow.Raised)
+        
+        self.verticalLayout_27 = QVBoxLayout(self.aiLogBox)
+        self.verticalLayout_27.setObjectName(u"verticalLayout_27")
+        self.verticalLayout_27.setContentsMargins(6, 6, 6, 6)
+        
+        self.aiLogHeader = QFrame(self.aiLogBox)
+        self.aiLogHeader.setObjectName(u"aiLogHeader")
+        self.aiLogHeader.setFrameShape(QFrame.Shape.NoFrame)
+        self.aiLogHeader.setFrameShadow(QFrame.Shadow.Raised)
+        
+        self.horizontalLayout_40 = QHBoxLayout(self.aiLogHeader)
+        self.horizontalLayout_40.setSpacing(0)
+        self.horizontalLayout_40.setObjectName(u"horizontalLayout_40")
+        self.horizontalLayout_40.setContentsMargins(0, 0, 0, 0)
+        
+        self.aiLogHeaderLabel = QLabel(self.aiLogHeader)
+        self.aiLogHeaderLabel.setObjectName(u"aiLogHeaderLabel")
+        self.aiLogHeaderLabel.setFont(Fonts["font7"])
+
+        self.horizontalLayout_40.addWidget(self.aiLogHeaderLabel)
+
+        self.aiLogHeaderSpacer = QSpacerItem(198, 16, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_40.addItem(self.aiLogHeaderSpacer)
+
+
+        self.verticalLayout_27.addWidget(self.aiLogHeader, 0, Qt.AlignmentFlag.AlignTop)
+
+        self.aiLogContent = QLabel(self.aiLogBox)
+        self.aiLogContent.setObjectName(u"aiLogContent")
+        self.aiLogContent.setFont(Fonts["font3"])
+
+        self.verticalLayout_27.addWidget(self.aiLogContent)
+
+        self.aiLobBoxSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_27.addItem(self.aiLobBoxSpacer)
+
+        self.aiLogScrollArea.setWidget(self.aiLogAreaContents)
+        
+        self.browseImage = QLineEdit(self.visionAiTab)
+        self.browseImage.setObjectName(u"browseImage")
+        self.browseImage.setGeometry(QRect(10, 70, 181, 26))
+        
+        self.browseImage.setFont(Fonts["font9"])
+        self.browseImage.setStyleSheet(u"color: rgb(119, 118, 123);")
+        self.browseImage.setClearButtonEnabled(True)
+        
+        self.detect = QFrame(self.visionAiTab)
+        self.detect.setObjectName(u"detect")
+        self.detect.setGeometry(QRect(570, 10, 105, 35))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.detect.sizePolicy().hasHeightForWidth())
+        self.detect.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.detect.setCursor(QCursor(Qt.PointingHandCursor))
+        self.detect.setFrameShape(QFrame.Shape.NoFrame)
+        
+        self.detectButtonShadow = QFrame(self.detect)
+        self.detectButtonShadow.setObjectName(u"detectButtonShadow")
+        self.detectButtonShadow.setGeometry(QRect(3, 3, 101, 31))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.detectButtonShadow.sizePolicy().hasHeightForWidth())
+        self.detectButtonShadow.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.detectButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
+        self.detectButtonShadow.setFrameShape(QFrame.Shape.NoFrame)
+        
+        self.detectButton = QPushButton(self.detect)
+        self.detectButton.setObjectName(u"detectButton")
+        self.detectButton.setEnabled(True)
+        self.detectButton.setGeometry(QRect(0, 0, 101, 31))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.detectButton.sizePolicy().hasHeightForWidth())
+        self.detectButton.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.detectButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.detectButton.setStyleSheet(u"color: #fff; background: #3E7239;")
+        self.detectButton.setIcon(playIcon)
+        self.detectButton.setIconSize(QSize(16, 16))
+        self.detectButton.setCheckable(True)
+        
+        self.stopDetect = QFrame(self.visionAiTab)
+        self.stopDetect.setObjectName(u"stopDetect")
+        self.stopDetect.setGeometry(QRect(680, 10, 38, 35))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.stopDetect.sizePolicy().hasHeightForWidth())
+        self.stopDetect.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+       
+        self.stopDetect.setMaximumSize(QSize(105, 35))
+        self.stopDetect.setCursor(QCursor(Qt.PointingHandCursor))
+        self.stopDetect.setFrameShape(QFrame.Shape.NoFrame)
+        
+        self.stopDetectButtonShadow = QFrame(self.stopDetect)
+        self.stopDetectButtonShadow.setObjectName(u"stopDetectButtonShadow")
+        self.stopDetectButtonShadow.setGeometry(QRect(3, 3, 33, 33))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.stopDetectButtonShadow.sizePolicy().hasHeightForWidth())
+        self.stopDetectButtonShadow.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.stopDetectButtonShadow.setStyleSheet(u"background: #8D8D8D; border-radius: 6px;")
+        self.stopDetectButtonShadow.setFrameShape(QFrame.Shape.NoFrame)
+        
+        self.stopDetectButton = QPushButton(self.stopDetect)
+        self.stopDetectButton.setObjectName(u"stopDetectButton")
+        self.stopDetectButton.setEnabled(True)
+        self.stopDetectButton.setGeometry(QRect(0, 0, 36, 33))
+        
+        SizePolicies["Expanding_Fixed"].setHeightForWidth(self.stopDetectButton.sizePolicy().hasHeightForWidth())
+        self.stopDetectButton.setSizePolicy(SizePolicies["Expanding_Fixed"])
+        
+        self.stopDetectButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.stopDetectButton.setStyleSheet(u"color: #fff; background: rgb(165, 29, 45);")
+        
+        
+        self.stopDetectButton.setIcon(stopIcon)
+        self.stopDetectButton.setIconSize(QSize(16, 16))
+        self.stopDetectButton.setCheckable(False)
+        
+        icon17 = QIcon()
+        icon17.addFile(u"assets/icons/mdi_bullseye-arrow.svg", QSize(), QIcon.Normal, QIcon.Off)
+        
+        self.appContents.addTab(self.visionAiTab, icon17, "")
+        ###################################################
         self.verticalLayout_2.addWidget(self.appContents)
 
         self.verticalLayout.addWidget(self.body)
@@ -4818,10 +5070,41 @@ class MainWindowUi(object):
         self.appContents.setTabText(self.appContents.indexOf(self.visionSettingsTab), "")
 #if QT_CONFIG(tooltip)
         self.appContents.setTabToolTip(self.appContents.indexOf(self.visionSettingsTab), QCoreApplication.translate("MainWindow", u"Caibra\u00e7\u00e3o da Vis\u00e3o", None))
+        self.aiModelOptionsLabel.setText(QCoreApplication.translate("MainWindow", u"Modelo", None))
+        self.aiModelOptionsDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"YOLOv8n", None))
+        self.aiModelOptionsDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"YOLOv8s", None))
+        self.aiModelOptionsDropdown.setItemText(2, QCoreApplication.translate("MainWindow", u"YOLOv8l", None))
+
+#if QT_CONFIG(tooltip)
+        self.aiModelOptionsDropdown.setToolTip("")
 #endif // QT_CONFIG(tooltip)
+        self.aiModelOptionsDropdown.setCurrentText(QCoreApplication.translate("MainWindow", u"YOLOv8l", None))
+        self.aiModelOptionsDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"YOLOv8l", None))
+        self.aiCameraOptionsLabel.setText(QCoreApplication.translate("MainWindow", u"C\u00e2mera", None))
+        self.aiCameraOptionsDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"LogiTech", None))
+
+#if QT_CONFIG(tooltip)
+        self.aiCameraOptionsDropdown.setToolTip("")
+#endif // QT_CONFIG(tooltip)
+        self.aiCameraOptionsDropdown.setCurrentText("")
+        self.aiCameraOptionsDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"LogiTech", None))
+        self.aiDeviceOptionsLabel.setText(QCoreApplication.translate("MainWindow", u"Dispositivo", None))
+        self.aiDeviceOptionsDropdown.setItemText(0, QCoreApplication.translate("MainWindow", u"GPU", None))
+        self.aiDeviceOptionsDropdown.setItemText(1, QCoreApplication.translate("MainWindow", u"CPU", None))
+
+#if QT_CONFIG(tooltip)
+        self.aiDeviceOptionsDropdown.setToolTip("")
+#endif // QT_CONFIG(tooltip)
+        self.aiDeviceOptionsDropdown.setCurrentText("")
+        self.aiDeviceOptionsDropdown.setPlaceholderText(QCoreApplication.translate("MainWindow", u"GPU", None))
+        self.aiFrame.setText("")
+        self.aiLogHeaderLabel.setText(QCoreApplication.translate("MainWindow", u"Log", None))
+        self.aiLogContent.setText(QCoreApplication.translate("MainWindow", u"[Etapa]: mensagem", None))
+        self.browseImage.setText(QCoreApplication.translate("MainWindow", u"Pesquisar imagem", None))
+        
+        self.detectButton.setText(QCoreApplication.translate("MainWindow", u"Detectar", None))
+        self.stopDetectButton.setText("")
         self.appContents.setTabText(self.appContents.indexOf(self.visionAiTab), "")
 #if QT_CONFIG(tooltip)
         self.appContents.setTabToolTip(self.appContents.indexOf(self.visionAiTab), QCoreApplication.translate("MainWindow", u"Detec\u00e7\u00e3o com IA", None))
 #endif // QT_CONFIG(tooltip)
-    # retranslateUi
-

@@ -56,6 +56,11 @@ font8 = QFont()
 font8.setFamilies([u"Roboto"])
 font8.setPointSize(20)
 
+font9 = QFont()
+font9.setFamilies([u"Roboto"])
+font9.setPointSize(8)
+font9.setWeight(QFont.Thin)
+
 Fonts = {
     #"font1": font1,
     "font2": font2,
@@ -64,7 +69,8 @@ Fonts = {
     "font5": font5,
     "font6": font6,
     "font7": font7,
-    "font8": font8
+    "font8": font8,
+    "font9": font9
 }
 
 

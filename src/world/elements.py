@@ -197,6 +197,7 @@ class TeamRobot(Robot):
         self.entity = None
         self.timeLastResponse = None
         self.lastControlLinVel = 0
+        self.lastControlAngVel = 0
         self.direction = 1
 
         self.gammavels = (0,0,0)

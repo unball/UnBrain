@@ -53,12 +53,12 @@ class GoalKeeperControl(Control):
 
     # Velocidade linear é menor de todas
     v  = max(min(v1,v2, v3), 0)
-    if v == v1:
-        print('velocidade é v1')
-    elif v == v2:
-        print('velocidade é v2')
-    elif v == v3:
-        print('velocidade é v3')
+    # if v == v1:
+    #     print('v1')
+    # elif v == v2:
+    #     print('v2')
+    # elif v == v3:
+    #     print('v3')
     
     # Atualiza a última referência
     self.lastth = th

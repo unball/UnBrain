@@ -52,7 +52,7 @@ class UFC_Simple(Control):
       if phi != 0:
         v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
       if phi == 0:
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         v1 = self.amax / np.abs(omega)      
 
       # Velocidade limite das rodas
@@ -63,12 +63,12 @@ class UFC_Simple(Control):
 
       # Velocidade linear é menor de todas
       v  = max(min(v1,v2,v3), 0)
-      if v == v1:
-          print('velocidade é v1')
-      elif v == v2:
-          print('velocidade é v2')
-      elif v == v3:
-          print('velocidade é v3')
+      # if v == v1:
+      #     print('velocidade é v1')
+      # elif v == v2:
+      #     print('velocidade é v2')
+      # elif v == v3:
+      #     print('velocidade é v3')
     
 
       # Lei de controle da velocidade angular
@@ -83,6 +83,8 @@ class UFC_Simple(Control):
       # Atualiza a última referência
       self.lastth = th
       robot.lastControlLinVel = v
+      robot.lastControlAngVel = w
+
 
       if robot.spin == 0: return (v * robot.direction, w)
       else: return (0, 60 * robot.spin)

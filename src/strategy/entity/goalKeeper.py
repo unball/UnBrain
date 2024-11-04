@@ -106,6 +106,6 @@ class GoalKeeper(Entity):
             self.robot.field = AttractiveField((rg[0]+0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
             self.robot.field = UVFDefault(self.world, Pb , rr, direction=0, radius = 0.04, spiral = False, Kr = 0.03)
-        print(self.state)
-        print(self.robot.field)
+        # print(self.state)
+        # print(self.robot.field)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

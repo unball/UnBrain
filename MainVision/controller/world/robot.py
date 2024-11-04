@@ -29,6 +29,7 @@ class Robot(Element):
     self.lastAngError = 0
 
     self.lastControlLinVel = 0
+    self.lastControlAngVel = 0
 
     self.vref = 0
 

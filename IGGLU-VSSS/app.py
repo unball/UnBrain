@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.eyeIcon = QIcon()
         self.eyeIcon.addFile(u"assets/icons/mdi_eye.svg", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.unbrainLoop = None
+        self.unbrainLoopRunning = False
         self.unbrainThread = None
         
         self.updateTimer = QTimer(self)
@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
             self.ui.posSourceLabel.setText("Posicionamento do juiz manual")
 
     def executeUnbrain(self):
-        if self.unbrainLoop is None:
+        if not self.unbrainLoopRunning:
             self.robot_inds = [int(i) for i in (self.ui.nrobotsLineEdit.text()).split(",")] if self.ui.nrobotsLineEdit.text() else [0,1,2]
             
             # TODO: corrigir self.robots
@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
             nRobots = self.robot_inds
             mirror = self.ui.myTeamSideSwitch.isChecked()
 
-
+            self.unbrainLoopRunning = True
             self.unbrainLoop = Loop(team_yellow=teamYellow, firasim=firasim, mainvision=False, simulado=simulado, static_entities=staticEntities, mirror=mirror, n_robots=nRobots, vssvision=robocinVision)
             self.unbrainThread = threading.Thread(target=self.unbrainLoop.run)
             self.unbrainThread.daemon = True
@@ -135,8 +135,15 @@ class MainWindow(QMainWindow):
             signal.signal(signal.SIGINT, self.unbrainLoop.handle_SIGINT)
 
         else:
+            print("Unbrain pausado")
             self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
-            self.unbrainLoop = None
+            self.unbrainLoopRunning = False
+
+    def stopUnbrain(self):
+        print("Unbrain parado")
+        self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
+        self.unbrainLoop = None
+        self.unbrainLoopRunning = False
 
     def updateLoopInfos(self):
         if self.unbrainLoop is not None:
@@ -145,8 +152,20 @@ class MainWindow(QMainWindow):
             
             self.ui.ballPosValue.setText(f"x: {ball.pos[0]:.1f} y: {ball.pos[1]:.1f}")
             self.ui.ballSpeedValue.setText(f"{ball.velmod:.1f} m/s")
+            for ind in self.robot_inds:
+                robots[ind].status = "ON" if robots[ind].on else "OFF"
+                self.ui.robotInfoBoxArray[ind].robotRole.setText(robots[ind].entity.__class__.__name__)
+                self.ui.robotInfoBoxArray[ind].robotPosValue.setText(f"x: {robots[ind].x:.1f} y: {robots[ind].y:.1f}")
+                self.ui.robotInfoBoxArray[ind].robotAngleValue.setText(f"th: {robots[ind].th:.1f} graus")
+                self.ui.robotInfoBoxArray[ind].robotCommStatus.setText(f"<html><head/><body><p>Comunica\u00e7\u00e3o: <span style=\" color:#3e7239;\">{robots[ind].status}</span></p></body></html>")
+                self.ui.robotInfoBoxArray[ind].speedReadValue.setText(f"v: {robots[ind].velmod:.1f} w: {robots[ind].w:.1f}")
+                self.ui.robotInfoBoxArray[ind].speedSentValue.setText(f"v: {robots[ind].lastControlLinVel:.1f} w: {robots[ind].lastControlAngVel:.1f}")
             #self.ui.ballAccValue.setText(f"{ball.accmod:.1f}")
             # self.ui.ballAccValue.setText(f"{ball.accmod:.1f} m/s²")   accmod não implementado
+        else:
+            for ind in self.robot_inds:
+                self.ui.robotInfoBoxArray[ind].robotCommStatus.setText(f"<html><head/><body><p>Comunica\u00e7\u00e3o: <span style=\" color:#3e7239;\">OFF</span></p></body></html>")
+
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(prog="IGGLU - VSSS")

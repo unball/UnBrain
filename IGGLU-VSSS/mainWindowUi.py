@@ -511,17 +511,17 @@ class MainWindowUi(object):
 
         self.controlButtons.addWidget(self.prevButton)
 
-        self.stopButton = QPushButton(self.displaySettings)
-        self.stopButton.setObjectName(u"stopButton")
-        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.stopVideoButton = QPushButton(self.displaySettings)
+        self.stopVideoButton.setObjectName(u"stopVideoButton")
+        self.stopVideoButton.setCursor(QCursor(Qt.PointingHandCursor))
         
-        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopButton.sizePolicy().hasHeightForWidth())
-        self.stopButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
+        SizePolicies["Fixed_Fixed"].setHeightForWidth(self.stopVideoButton.sizePolicy().hasHeightForWidth())
+        self.stopVideoButton.setSizePolicy(SizePolicies["Fixed_Fixed"])
         
-        self.stopButton.setIcon(redStopIcon)
-        self.stopButton.setFlat(True)
+        self.stopVideoButton.setIcon(redStopIcon)
+        self.stopVideoButton.setFlat(True)
 
-        self.controlButtons.addWidget(self.stopButton)
+        self.controlButtons.addWidget(self.stopVideoButton)
 
         self.playButton = QPushButton(self.displaySettings)
         self.playButton.setObjectName(u"playButton")
@@ -757,9 +757,11 @@ class MainWindowUi(object):
         #######################################
         
         self.robotLayouts = {}
+        self.robotInfoBoxArray = []
 
         for i, robot in enumerate(self.robots):
                 robotInfoBox = RobotLayout(self.debugScrollContents, robot)
+                self.robotInfoBoxArray.append(robotInfoBox)
                 self.robotLayouts[f"robot{i}Layout"] = robotInfoBox
                 self.verticalLayout_17.addWidget(robotInfoBox)
         ########################################
@@ -4488,6 +4490,7 @@ class MainWindowUi(object):
         self.dynEntitiesRadio.clicked["bool"].connect(self.staticRobotsBox.setHidden)
         self.highLevelVisionButton.clicked["bool"].connect(self.visionSteps.setHidden)
         self.execButton.clicked.connect(MainWindow.executeUnbrain)
+        self.stopButton.clicked.connect(MainWindow.stopUnbrain)
         
         # Position Source
         self.posSourceSwitch.clicked["bool"].connect(self.posSourceLabel.setNum)
@@ -4579,7 +4582,7 @@ class MainWindowUi(object):
         self.execButton.setText(QCoreApplication.translate("MainWindow", u"Executar", None))
         self.imageDisplay.setText("")
         self.prevButton.setText("")
-        self.stopButton.setText("")
+        self.stopVideoButton.setText("")
         self.playButton.setText("")
         self.nextButton.setText("")
         self.speedSpinBox.setSuffix(QCoreApplication.translate("MainWindow", u"x", None))

@@ -1,6 +1,7 @@
 from ..entity import Entity
 from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
+from strategy.field.attractive import AttractiveField
 from strategy.field.areaAvoidance.avoidanceField import AvoidanceField
 from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
 from strategy.field.areaAvoidance.avoidRect import AvoidRect
@@ -135,11 +136,11 @@ class Attacker(Entity):
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
 
         # Muda o campo no gol caso a bola esteja lá
-        if self.world.ball.insideGoalArea():
+        if self.world.ball.x < -0.5:
             self.robot.vref = 0
-            self.robot.field = UVF(world=self.world, Pb=pose, robot=self.robot, direction=-np.sign(rb[1]))
+            self.robot.field = AttractiveField(Pb=(-0.3,0,0))
 
-        if any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
+        elif any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
             self.robot.field = UVF(world=self.world, robot=self.robot, Pb=(*pose[:2], angle), direction=-np.sign(rb[1]))

@@ -378,6 +378,8 @@ class MainWindowUi(object):
         self.execButton.setIcon(playIcon)
         self.execButton.setIconSize(QSize(16, 16))
         self.execButton.setCheckable(True)
+
+        self.execButton.toggled.connect(self.toggle_execButton)
         
         self.execButtonShadow = QFrame(self.execStart)
         self.execButtonShadow.setObjectName(u"execButtonShadow")
@@ -4828,3 +4830,10 @@ class MainWindowUi(object):
 #endif // QT_CONFIG(tooltip)
     # retranslateUi
 
+    def toggle_execButton(self, checked):
+        if checked:
+                self.execButton.setStyleSheet("color: #fff; background: #3E7239;")
+                self.execButton.setText("Rodando")
+        else:
+                self.execButton.setStyleSheet("color: #fff; background: #DACC00;")
+                self.execButton.setText("Pausado")

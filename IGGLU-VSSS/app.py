@@ -131,6 +131,7 @@ class MainWindow(QMainWindow):
             self.unbrainThread = threading.Thread(target=self.unbrainLoop.run)
             self.unbrainThread.daemon = True
             self.unbrainThread.start()
+            self.ui.execButton.setChecked(True)
 
             signal.signal(signal.SIGINT, self.unbrainLoop.handle_SIGINT)
 
@@ -138,6 +139,7 @@ class MainWindow(QMainWindow):
             print("Unbrain pausado")
             self.unbrainLoop.handle_SIGINT(None, None, shut_down=False)
             self.unbrainLoopRunning = False
+            self.ui.execButton.setChecked(False)
 
     def stopUnbrain(self):
         print("Unbrain parado")

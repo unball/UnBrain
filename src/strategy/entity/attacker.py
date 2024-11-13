@@ -102,7 +102,7 @@ class Attacker(Entity):
         vb = np.array(self.world.ball.v)
         rg = np.array(self.world.field.goalPos)
         vr = np.array(self.robot.v)
-        oneSpiralMargin = (self.world.marginPos[0], self.world.marginPos[1])
+        oneSpiralMargin = (self.world.marginPos[0] - 0.1, self.world.marginPos[1] - 0.2)
 
         self.robot.vref = 0
 
@@ -136,11 +136,11 @@ class Attacker(Entity):
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
 
         # Muda o campo no gol caso a bola esteja lá
-        if self.world.ball.x < -0.5:
+        if self.world.ball.x < -0.3:
             self.robot.vref = 0
-            self.robot.field = AttractiveField(Pb=(-0.3,0,0))
+            self.robot.field = AttractiveField(Pb=(-0.25,0,0))
 
-        elif any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
+        elif any(np.abs(rb) > oneSpiralMargin) and np.abs(rb[1]) >= 0.3:
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
             self.robot.field = UVF(world=self.world, robot=self.robot, Pb=(*pose[:2], angle), direction=-np.sign(rb[1]))

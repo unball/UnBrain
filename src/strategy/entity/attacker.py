@@ -119,7 +119,7 @@ class Attacker(Entity):
             pose, gammavels = goToGoal(rg, rr, vr)
             self.robot.gammavels = (0,0,0)
             self.robot.movState = 1
-            self.robot.vref = 999
+            self.robot.vref = 2*norml(vb) + 0.8
             Kr = 0.03
             pose = self.robot.ref
         # Se não, vai para a bola
@@ -127,7 +127,7 @@ class Attacker(Entity):
             # Vai para a bola saturada em -0.60m em x
             # rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
             pose, gammavels = goToBall(rb, rg, vb, self.world.marginPos)
-            self.robot.vref = 0
+            self.robot.vref = 0.8
             self.robot.gammavels = gammavels
             self.robot.movState = 0
             Kr = 0.04#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
@@ -136,9 +136,12 @@ class Attacker(Entity):
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
 
         # Muda o campo no gol caso a bola esteja lá
-        if self.world.ball.x < -0.3:
+        if self.world.ball.x < -0.3 and not self.slave:
             self.robot.vref = 0
-            self.robot.field = AttractiveField(Pb=(-0.25,0,0))
+            self.robot.field = AttractiveField(Pb=(-0.25,0.38,0))
+        elif self.world.ball.x < -0.3 and self.slave:
+            self.robot.vref = 0
+            self.robot.field = AttractiveField(Pb=(-0.25,-0.38,0))
 
         elif any(np.abs(rb) > oneSpiralMargin) and np.abs(rb[1]) >= 0.3:
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2

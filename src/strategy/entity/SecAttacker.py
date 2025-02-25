@@ -153,7 +153,7 @@ class SecAttacker(Entity):
 
             if np.abs(Pb[1]) > rl[1]:
                 self.robot.vref = math.inf
-                self.robot.field = UVF(world=self.world , Pb=Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
+                self.robot.field = UVF(world=self.world, robot= self.robot, Pb=Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
@@ -162,7 +162,7 @@ class SecAttacker(Entity):
                 Pbv = Pb
 
                 self.robot.vref = self.approximationSpeed + 2 * norml(vb)
-                self.robot.field = UVF(world=self.world, pose= Pbv, radius=self.spiralRadiusCorners)
+                self.robot.field = UVF(world=self.world, robot= self.robot, Pb= Pbv, radius=self.spiralRadiusCorners)
 
                 clientProvider().drawTarget(self.robot.id, Pbv[0], Pbv[1], Pbv[2])
 

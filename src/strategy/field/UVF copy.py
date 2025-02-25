@@ -109,25 +109,53 @@ class UVF(Field):
 
         R = [0,0,0,0]
         Vr = self.robot.v
-        Vo = np.array([[0,0],[0,0],[0,0],[0,0]])
-        Po = [0,0,0,0]
+        Vo = np.array([[0,0],[0,0]])
+        Po = [0,0]
+        v_aliado = [0,0]
+        pos_aliado=[0,0]
         Pr = self.robot.pos
-        Wall = [(Pr[0], self.wall_y), (Pr[0], -self.wall_y)]
+        Wall = [(self.wall_x, Pr[1]), (Pr[0], self.wall_y), (-self.wall_x, Pr[1]), (Pr[0], -self.wall_y)]
         
-        for i, robot in enumerate(self.world._team):
+        i=0
+        for robot in self.world._team:
             if robot is not None:
-                if (self.robot.id != robot.id):
-                    Vo[i+1] = np.array(robot.v)
-                    Po[i+1] = robot.pos
+                if self.robot.id != robot.id:
+                    v_aliado[i] = np.array(robot.v)
+                    pos_aliado[i] = robot.pos
+                    i+=1
 
         Po[0] = Wall[0]
         for pos in Wall:
             if norm(pos, P) < norm(Po[0], P):
                 Po[0] = pos
+        
+        if pos_aliado[0] != 0 and pos_aliado[1] == 0:
+            Po[1] = pos_aliado[0]
+        elif pos_aliado[1] != 0 and pos_aliado[0] == 0:
+            Po[1] = pos_aliado[1]
+        elif pos_aliado[0] != 0 and pos_aliado[1] != 0:
+            Po[1]  = pos_aliado[0] if norm(pos_aliado[0], P) < norm(pos_aliado[1], P) else pos_aliado[1]
 
+        if abs(self.robot.pos[1]) < 0.2:
+            Po[0] = Po[0] + (np.sign(Po[0][0])*0.1, 0)
+
+        if Po[0] == Wall[0] or Po[0] == Wall[2] or (Po[0][0] - np.sign(Po[0][0])*0.1, Po[0][1]) == Wall[0] or (Po[0][0] - np.sign(Po[0][0])*0.1, Po[0][1]) == Wall[2]:
+            Po[0] = [(Po[0][0]-0.02, Po[0][1]), (Po[0][0]-0.01, Po[0][1]), Po[0], (Po[0][0]+0.01, Po[0][1]), (Po[0][0]+0.02, Po[0][1])]
+        else:
+            Po[0] = [(Po[0][0], Po[0][1]-0.02),(Po[0][0], Po[0][1]-0.01), Po[0],(Po[0][0], Po[0][1]+0.01),(Po[0][0], Po[0][1]+0.02)]
+       
         for i, pos in enumerate(Po):
-            if pos != 0:
-                R[i] = norm(P,pos)
+            if pos != 0 and i == 1:
+                R[i] = norm(self.robot.pos,pos)
+            elif pos != 0:
+                init = norm(Po[0][2], self.robot.pos)
+                perto = Po[0][2]
+                for pose in pos:
+                    if norm(pose, self.robot.pos) < init:
+                        init = norm(pose, self.robot.pos)
+                        perto = pose
+                Po[0] = perto
+                R[0] = init
 
         Rmenor = R[0]
         ind = 0
@@ -135,7 +163,7 @@ class UVF(Field):
             if r < Rmenor and r != 0:
                 Rmenor = r
                 ind = i
-
+            
         if Rmenor > self.dmin[ind] and not Rmenor == 0:
             th = self.AUF(P, Po[ind],Pr,Vr,Vo[ind]) * self.G(Rmenor-self.dmin[ind],self.delta[ind]) + (self.TUF(P, Pb) * (1-self.G(norm(P,Pb)-self.dmin[1], self.delta_b)))
         elif not Rmenor == 0:                

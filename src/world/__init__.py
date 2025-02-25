@@ -2,13 +2,13 @@ from .elements import *
 from tools import RangeKutta
 class Field:
     def __init__(self, side):
-        self.width = 1.67
-        self.height = 1.23
+        self.width = 1.5
+        self.height = 1.3
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 
-        self.xmargin =  0.10
-        self.ymargin = 0.20
+        self.xmargin =  0.01
+        self.ymargin = 0.005
         self.side = side
 
         self.goalDepth = 0.1
@@ -30,11 +30,11 @@ class Field:
 
     @property
     def marginX(self):
-        return self.maxX - self.xmargin
+        return self.maxX
     
     @property
     def marginY(self):
-        return self.maxY - self.ymargin
+        return self.maxY
 
     @property
     def marginPos(self):
@@ -81,7 +81,7 @@ class World:
         self.delay_camera = 0
         self.t0 = time.time()
         self.execTime = 0
-
+        self.igglu = True
         
         self.team_yellow = team_yellow
 

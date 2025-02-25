@@ -1,6 +1,7 @@
 from ..entity import Entity
-from strategy.field.UVF import UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
+from strategy.field.attractive import AttractiveField
 from strategy.field.areaAvoidance.avoidanceField import AvoidanceField
 from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
 from strategy.field.areaAvoidance.avoidRect import AvoidRect
@@ -10,7 +11,6 @@ from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideE
 from tools.interval import Interval
 from control.UFC import UFC_Simple
 from control.goalKeeper import GoalKeeperControl
-from control.UFC_modified import UFC_New
 from client.gui import clientProvider
 import numpy as np
 import math
@@ -102,9 +102,9 @@ class Attacker(Entity):
         vb = np.array(self.world.ball.v)
         rg = np.array(self.world.field.goalPos)
         vr = np.array(self.robot.v)
-        oneSpiralMargin = (self.world.marginPos[0], self.world.marginPos[1])
+        oneSpiralMargin = (self.world.marginPos[0] - 0.1, self.world.marginPos[1] - 0.2)
 
-        self.robot.vref = 999
+        self.robot.vref = 0
 
 
         # Ângulo do robô até a bola
@@ -117,39 +117,40 @@ class Attacker(Entity):
             if self.robot.movState == 0:
                 self.robot.ref = (*(rr[:2] + 1000*unit(rr[2])), rr[2])
             pose, gammavels = goToGoal(rg, rr, vr)
-            self.robot.vref = 999
             self.robot.gammavels = (0,0,0)
             self.robot.movState = 1
-            Kr = None
+            self.robot.vref = 2*norml(vb) + 0.8
+            Kr = 0.03
             pose = self.robot.ref
-            singleObstacle = False
         # Se não, vai para a bola
         else:
             # Vai para a bola saturada em -0.60m em x
-            rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
-            pose, gammavels = goToBall(rbfiltered, rg, vb, self.world.marginPos)
-            self.robot.vref = 999
+            # rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
+            pose, gammavels = goToBall(rb, rg, vb, self.world.marginPos)
+            self.robot.vref = 0.8
             self.robot.gammavels = gammavels
             self.robot.movState = 0
-            Kr = 0.04
-            singleObstacle = False#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
+            Kr = 0.04#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
         
         # Decide quais espirais estarão no campo e compõe o campo
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
 
         # Muda o campo no gol caso a bola esteja lá
-        if self.world.ball.insideGoalArea():
+        if self.world.ball.x < -0.3 and not self.slave:
             self.robot.vref = 0
-            self.robot.field = UVFDefault(self.world, pose, rr, direction=-np.sign(rb[1]), radius=0, Kr=Kr, singleObstacle=singleObstacle, Vr=vr)
+            self.robot.field = AttractiveField(Pb=(-0.25,0.38,0))
+        elif self.world.ball.x < -0.3 and self.slave:
+            self.robot.vref = 0
+            self.robot.field = AttractiveField(Pb=(-0.25,-0.38,0))
 
-        if any(np.abs(rb) > oneSpiralMargin) and not (np.abs(rb[1]) < 0.3):
+        elif any(np.abs(rb) > oneSpiralMargin) and np.abs(rb[1]) >= 0.3:
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
-            self.robot.field = UVFDefault(self.world, (*pose[:2], angle), rr, direction=-np.sign(rb[1]), Kr=Kr, singleObstacle=singleObstacle, Vr=vr, radius=0.1)
+            self.robot.field = UVF(world=self.world, robot=self.robot, Pb=(*pose[:2], angle), direction=-np.sign(rb[1]))
         else: 
             #if howFrontBall(rb, rr, rg) > 0: radius = 0
             #else: radius = None
-            self.robot.field = UVFDefault(self.world, pose, rr, direction=0, Kr=Kr, singleObstacle=singleObstacle, Vr=vr)
+            self.robot.field = UVF(world=self.world, robot=self.robot, Pb=pose, direction=0)
 
 
 

@@ -1,6 +1,5 @@
 from ..entity import Entity
-from strategy.field.UVF import UVF, UVFDefault
-from strategy.field.UVF import UVF, UVFDefault
+from strategy.field.UVF import UVF
 from strategy.field.DirectionalField import DirectionalField
 from strategy.field.goalKeeper import GoalKeeperField
 from strategy.field.attractive import AttractiveField
@@ -17,7 +16,7 @@ class GoalKeeper(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = GoalKeeperControl(self.world)
+        self._control = UFC_Simple(self.world)
         self.lastChat = 0
         self.state = "Stable"
 
@@ -64,7 +63,7 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.12
+        rg[0] += 0.025
     
          # Aplica o movimento
         self.robot.vref = 0
@@ -105,7 +104,7 @@ class GoalKeeper(Entity):
             # self.robot.field = UVF(Pb, radius=0.02)
             self.robot.field = AttractiveField((rg[0]+0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
-            self.robot.field = UVFDefault(self.world, Pb , rr, direction=0, radius = 0.04, spiral = False, Kr = 0.03)
-        print(self.state)
-        print(self.robot.field)
+            self.robot.field = UVF(world= self.world, robot=self.robot, Pb= Pb, radius = 0.04, direction=0, spiral = False)
+        # print(self.state)
+        # print(self.robot.field)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

@@ -112,7 +112,7 @@ class UVF(Field):
         Vo = np.array([[0,0],[0,0],[0,0],[0,0]])
         Po = [0,0,0,0]
         Pr = self.robot.pos
-        Wall = [(Pr[0], self.wall_y), (Pr[0], -self.wall_y)]
+        Wall = [(self.wall_x, Pr[1]), (Pr[0], self.wall_y), (-self.wall_x, Pr[1]), (Pr[0], -self.wall_y)]
         
         for i, robot in enumerate(self.world._team):
             if robot is not None:

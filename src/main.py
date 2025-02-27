@@ -66,7 +66,7 @@ print(args.n_robots)
 
 # Instancia o programa principal
 loop = Loop(
-    draw_uvf=False, 
+    draw_uvf=True, 
     team_yellow=team_yellow,
     immediate_start=args.immediate_start,
     static_entities=args.static_entities,

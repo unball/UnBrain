@@ -63,7 +63,7 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.025
+        rg[0] += 0.05
     
          # Aplica o movimento
         self.robot.vref = 0
@@ -104,7 +104,7 @@ class GoalKeeper(Entity):
             # self.robot.field = UVF(Pb, radius=0.02)
             self.robot.field = AttractiveField((rg[0]+0.02, Pb[1], Pb[2]))
         elif self.state == "Far":
-            self.robot.field = UVF(world= self.world, robot=self.robot, Pb= Pb, radius = 0.04, direction=0, spiral = False)
-        # print(self.state)
-        # print(self.robot.field)
+            self.robot.field = UVF(Pb, radius = 0.04, direction=0, spiral = False, Kr = 0.03)
+        print(self.state)
+        print(self.robot.field)
         #self.robot.field = DirectionalField(Pb[2], Pb=Pb)

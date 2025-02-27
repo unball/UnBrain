@@ -2,13 +2,13 @@ from .elements import *
 from tools import RangeKutta
 class Field:
     def __init__(self, side):
-        self.width = 1.5
-        self.height = 1.3
+        self.width = 1.67
+        self.height = 1.23
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 
-        self.xmargin =  0.01
-        self.ymargin = 0.005
+        self.xmargin =  0.10
+        self.ymargin = 0.20
         self.side = side
 
         self.goalDepth = 0.1
@@ -30,11 +30,11 @@ class Field:
 
     @property
     def marginX(self):
-        return self.maxX
+        return self.maxX - self.xmargin
     
     @property
     def marginY(self):
-        return self.maxY
+        return self.maxY - self.ymargin
 
     @property
     def marginPos(self):

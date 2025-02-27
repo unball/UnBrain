@@ -14,7 +14,6 @@ import robosim
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arrow
 from matplotlib.lines import Line2D
-import os
 import numpy as np
 import logging
 import time
@@ -126,16 +125,7 @@ class Loop:
             # self.UVF_screen.initialiazeObjects()
 
     # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
-    def handle_SIGINT(self, signum, frame, shutdown=True):
-        '''
-        Função que trata o sinal de interrupção (ctrl + C)
-        ...
-        Parâmetros
-        ----------
-        shutdown: bool
-            Se True, o programa será encerrado
-            Se False, o programa continuará rodando
-        '''
+    def handle_SIGINT(self, signum, frame):
         if self.world.firasim:
             for i, id in enumerate(self.world.n_robots):
                 self.firasim.command.write(id, 0, 0)
@@ -153,9 +143,7 @@ class Loop:
             self.simulado.step([(0,0) for robot in self.world.team])
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
-
-        if shutdown:
-            sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+        sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
@@ -234,10 +222,7 @@ class Loop:
             message = self.pclient.receive()
             self.message = message if message is not None else self.message
             self.execute = self.message["running"]
-            if self.execute == False: # Se a visão parar de rodar, o robô para ao invés de continuar com o último comando
-                self.handle_SIGINT(0,0, shutdown=False)
-                
-            elif self.message is not None: 
+            if self.message is not None: 
                 self.world.update_main_vision(self.message)
 
         if self.world.simulado:
@@ -316,7 +301,7 @@ class Loop:
 
             robot_i=0
             field_dims=(170*4, 130*4)
-            arrow_spaces=20
+            arrow_spaces=16
 
             x = np.arange(-field_dims[0]/2, field_dims[0]/2, arrow_spaces)
             y = np.arange(-field_dims[1]/2, field_dims[1]/2, arrow_spaces)

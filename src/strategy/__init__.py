@@ -77,10 +77,10 @@ class MainStrategy(Strategy):
         return pose[:2]
 
     def formationDecider(self):
-        if self.world.ball.pos[0] < -0.25:
-            return [GoalKeeper, Attacker, Attacker]
+        if self.world.ball.pos[0] < -0.35:
+            return [GoalKeeper, Attacker, Defender]
         else:
-            return [Defender, Attacker, Attacker]
+            return [GoalKeeper, Attacker, Attacker]
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
@@ -125,7 +125,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[GoalKeeper,Attacker,GoalKeeper]
+            roles=[Attacker,Attacker,SecAttacker]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
@@ -146,21 +146,21 @@ class MainStrategy(Strategy):
 
             if GoalKeeper in formation:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
-            
-            hasMaster = False
-            if Attacker in formation:
-                formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
-                hasMaster = True
 
             if Defender in formation and len(toDecide) >= 1:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
+            hasMaster = False
+            if Attacker in formation and len(toDecide) >= 2:
+                formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
+                hasMaster = True
             
             if Attacker in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
                 self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
+
 
         for robot in self.world.team:
             if robot is not None:

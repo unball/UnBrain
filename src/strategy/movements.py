@@ -120,6 +120,8 @@ def blockBallElipse(rb, vb, rr, rm, a, b):
     #Qual o ponto de se ter vb como parametro? 
     #Altero aqui o nome da variável dentro do escopo vb->rb_
     #A variavel finalTarget é só uma repetição de rm (centro da elipse)
+    #O valor de retorno theta_ tg tem utilidade? 
+    #Se não, um produto escalar (np.dot(r,rr)) poderia poupar algumas linhas de código
 
     spin = 0
     e = np.array([1/a, 1/b]) #Normalizador de distâncias
@@ -132,11 +134,12 @@ def blockBallElipse(rb, vb, rr, rm, a, b):
     r = r_ + rm #Vetor da origem à borda da elipse
     theta = math.atan2(r_[1], r_[0])
     theta_eliptic = math.atan2(a*math.sin(theta), b*math.cos(theta)) #Angulo na forma elíptica
-    r_ort = (-a*math.sin(theta_eliptic), b*math.cos(theta_eliptic)) #Vetor normal a r_ na forma elíptica
-    r_ort_angle = math.atan2(r_ort[1], r_ort[0]) 
-    
-    if (rr[1] > r[1] and r_ort_angle > 0) or (rr[1] < r[1] and r_ort_angle < 0): #Alinha a direção ao alvo
-        r_ort_angle += np.pi
+    r_tg = (-a*math.sin(theta_eliptic), b*math.cos(theta_eliptic)) #Vetor tangente a r_ na forma elíptica
+    theta_tg = math.atan2(r_tg[1], r_tg[0]) 
+    orientation = rr[1] - r[1] #Define a orientação do robô em relação à borda
+
+    if (orientation*theta_tg > 0) : #Caso esteja na mesma direção da tangente
+        theta_tg += np.pi
 
     if not insideEllipse(rb, a, b, rm) and norm(rr, rb) < 0.09: #Gira caso próximo à bola
        spin = 1 if rr[1] > rb[1] else -1
@@ -144,7 +147,7 @@ def blockBallElipse(rb, vb, rr, rm, a, b):
     # if insideEllipse(rb, a, b, rm):
     #     return (r[0], -r[1], r_ort_angle), spin
     
-    return (r[0], r[1], r_ort_angle), spin
+    return (r[0], r[1], theta_tg), spin
     # return (r[0], r[1], r_ort_angle)
     
 def spinGoalKeeper(rb, rr, rm):

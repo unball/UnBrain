@@ -117,27 +117,28 @@ def goalkeep(rb, vb, rr, rg):
     return np.array([xGoal, ytarget, angle])
  
 def blockBallElipse(rb, vb, rr, rm, a, b):
-    e = np.array([1/a, 1/b])
+    #Qual o ponto de se ter vb como parametro? 
+    #Altero aqui o nome da variável dentro do escopo vb->rb_
+    #A variavel finalTarget é só uma repetição de rm (centro da elipse)
+
     spin = 0
+    e = np.array([1/a, 1/b]) #Normalizador de distâncias
     
-    d = norml(e*(rr[:2]-rm))
+    #d = norml(e*(rr[:2]-rm)) #Distancia normalizada ao centro da elipse (nao utilizado)
     #if np.abs(d-1) < 0.5: e = e / d
 
-    finalTarget = rm
-
-    vb = rb - finalTarget
-    k = 1/np.sqrt(np.dot(e*vb, e*vb)) #* np.sign(vb[0])
-    r = finalTarget + k *(vb)
-    r_ = r-rm
-    o = math.atan2(r_[1], r_[0])
-    t = math.atan2(a*math.sin(o), b*math.cos(o))
-    r_ort = (-a*math.sin(t), b*math.cos(t))
-    r_ort_angle = math.atan2(r_ort[1], r_ort[0])
+    rb_ = rb - rm #Vetor do centro da elipse à bola
+    r_ = rb_/np.sqrt(np.dot(e*rb_, e*rb_)) #* np.sign(vb[0]) # Normalização (Equação da elipse)
+    r = r_ + rm #Vetor da origem à borda da elipse
+    theta = math.atan2(r_[1], r_[0])
+    theta_eliptic = math.atan2(a*math.sin(theta), b*math.cos(theta)) #Angulo na forma elíptica
+    r_ort = (-a*math.sin(theta_eliptic), b*math.cos(theta_eliptic)) #Vetor normal a r_ na forma elíptica
+    r_ort_angle = math.atan2(r_ort[1], r_ort[0]) 
     
-    if rr[1] > r[1] and r_ort_angle > 0: r_ort_angle = r_ort_angle+np.pi
-    if rr[1] < r[1] and r_ort_angle < 0: r_ort_angle = r_ort_angle+np.pi
+    if (rr[1] > r[1] and r_ort_angle > 0) or (rr[1] < r[1] and r_ort_angle < 0): #Alinha a direção ao alvo
+        r_ort_angle += np.pi
 
-    if not insideEllipse(rb, a, b, rm) and norm(rr, rb) < 0.09:
+    if not insideEllipse(rb, a, b, rm) and norm(rr, rb) < 0.09: #Gira caso próximo à bola
        spin = 1 if rr[1] > rb[1] else -1
 
     # if insideEllipse(rb, a, b, rm):

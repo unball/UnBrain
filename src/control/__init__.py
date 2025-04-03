@@ -29,7 +29,7 @@ class Control(ABC):
     
     def actuateSimu(self, robot):
         if not robot.on: return (0,0)
-
+        if robot.entity.__class__.__name__ ==  "AI_Attacker": return self.output(robot)
         v, w = self.output(robot)
         robot.lastControlLinVel = v
         vr, vl = speeds2motors(v, self.world.field.side * w)

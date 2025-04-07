@@ -1,14 +1,19 @@
 from control import Control
 from ..entity import Entity
 
+import torch
+from network import FeedForwardNN
+import os
+import numpy as np
+
+DEVICE = "cpu"
 
 class AI_Attacker(Entity):
     def __init__(self, world, robot):
         Entity.__init__(self, world, robot)
         self.robot = robot
-        self.world = world
-        self.env = None
-        self._control = AI_Control(self.world)
+        self.env = Env(world)
+        self._control = AI_Control(world)
 
     @property
     def control(self):
@@ -38,7 +43,25 @@ class AI_Attacker(Entity):
 
     def isLocked(self):
         return False
-    
+
+
+
+def load_model_PPO(directory, actor_filename="actor.pth", critic_filename="critic.pth"):
+    env = get_env()
+    obs_dim = env.observation_space.shape[0]
+    act_dim = env.action_space.shape[0]
+    actor = FeedForwardNN(obs_dim, act_dim).to(DEVICE)
+    critic = FeedForwardNN(obs_dim, 1).to(DEVICE)
+    actor_path = os.path.join(directory, actor_filename)
+    critic_path = os.path.join(directory, critic_filename)
+    if os.path.exists(actor_path) and os.path.exists(critic_path):
+        actor.load_state_dict(torch.load(actor_path, map_location=DEVICE))
+        critic.load_state_dict(torch.load(critic_path, map_location=DEVICE))
+        print(f"Models loaded from {directory}")
+    else:
+        print(f"Model files not found in {directory}")
+
+
 
 class AI_Control(Control):
     def __init__(self, world):
@@ -47,10 +70,8 @@ class AI_Control(Control):
         self.observation = None
 
     def output(self, robot, obs):
-        # 1. Verificar se existe o model
-        # 2. Se existir:
-        # 3.     Fazer o get_action
-        # 4. Se não existir:
-        # 5.     Criar o model
-        # 6.     Fazer o get_action
-        pass
+        if self.model is None:
+            self.model = load_model_PPO() # TODO: colocar os argumentos
+        actions, _ = self.model.get_action(torch.tensor(obs, dtype=torch.float, device=DEVICE))
+        actions = actions.cpu().numpy()
+        return actions[0], actions[1]

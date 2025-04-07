@@ -8,6 +8,33 @@ import numpy as np
 
 DEVICE = "cpu"
 
+class Box:
+    def __init__(self, low, high, shape, dtype=np.float32):
+        """
+        Inicializa o espaço contínuo.
+
+        :param low: Valor mínimo permitido (float, int ou array)
+        :param high: Valor máximo permitido (float, int ou array)
+        :param shape: Formato do espaço (ex: (3,) para 3 variáveis)
+        :param dtype: Tipo de dado (padrão: np.float32)
+        """
+        self.low = np.full(shape, low, dtype=dtype) if np.isscalar(low) else np.array(low, dtype=dtype)
+        self.high = np.full(shape, high, dtype=dtype) if np.isscalar(high) else np.array(high, dtype=dtype)
+        self.shape = shape
+        self.dtype = dtype
+
+    def sample(self):
+        """Gera uma amostra aleatória dentro dos limites do espaço."""
+        return np.random.uniform(self.low, self.high).astype(self.dtype)
+
+    def contains(self, x):
+        """Verifica se um valor está dentro do espaço."""
+        x = np.array(x, dtype=self.dtype)
+        return x.shape == self.shape and np.all(x >= self.low) and np.all(x <= self.high)
+
+    def __repr__(self):
+        return f"Box(low={self.low}, high={self.high}, shape={self.shape}, dtype={self.dtype})"
+
 class AI_Attacker(Entity):
     def __init__(self, world, robot):
         Entity.__init__(self, world, robot)

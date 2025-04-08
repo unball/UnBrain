@@ -108,23 +108,16 @@ class AI_Attacker(Entity):
         Entity.__init__(self, world, robot)
         self.robot = robot
         self.env = Env(world, robot.id)
-        self._control = AI_Control(world, self.env)
+        self.observation = np.zeros(40)
+        self._control = AI_Control(world, self.env, self.observation)
 
     @property
     def control(self):
         return self._control
     
     def fieldDecider(self):
-        # 1. Verificar se existe e a env
-        # 2. Se existe:
-        # 3.     Atualizar o observation
-        # 4.     Realizar um step
-        # 5. Se não existe:
-        # 6.     Criar a env
-        # 7.     Atualizar o observation
-        # 8.     Realizar um step
-        # 9. Atualizar o control com o resultado do step
-        pass
+        action = self.control.output(self.robot)
+        self.observation = self.env.step(action)
 
     def directionDecider(self):
         # não será usado
@@ -142,15 +135,16 @@ class AI_Attacker(Entity):
 
 
 class AI_Control(Control):
-    def __init__(self, world, env):
+    def __init__(self, world, env, observation):
         Control.__init__(self, world)
         self.model = None
         self.env = env
+        self.observation = observation
 
-    def output(self, robot, obs):
+    def output(self, robot):
         if self.model is None:
             self.model = self.load_model_PPO() # TODO: colocar os argumentos
-        actions, _ = self.model.get_action(torch.tensor(obs, dtype=torch.float, device=DEVICE))
+        actions, _ = self.model.get_action(torch.tensor(self.observation, dtype=torch.float, device=DEVICE))
         actions = actions.cpu().numpy()
         return actions[0], actions[1]
     

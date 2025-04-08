@@ -34,9 +34,16 @@ class MainStrategy(Strategy):
         # States
         self.currentAttacker = None
         self.currentDefender = None
+        self.currentGoalkeeper = None
 
         # Variables
         self.static_entities = static_entities
+
+    def getEntity(self, robot):
+        if self.world.team[robot].entity != None:
+            return self.world.team[robot].entity.__class__.__name__
+        else:
+            return None
 
     def manageReferee(self, command):
         if command is None: 
@@ -88,6 +95,7 @@ class MainStrategy(Strategy):
 
     def decideBestGoalKeeper(self, formation, toDecide):
         nearest = self.nearestGoal(toDecide)
+        self.currentGoalkeeper = nearest
         self.world.team[nearest].updateEntity(GoalKeeper)
         
         toDecide.remove(nearest)
@@ -96,14 +104,21 @@ class MainStrategy(Strategy):
         return formation, toDecide
 
     def decideBestDefender(self, formation, toDecide):
-        target = self.ellipseTarget()
-        distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
+        old_formation = self.formationDecider()
+        if not GoalKeeper in self.formationDecider() and self.currentGoalkeeper != None:
+            self.currentDefender = self.currentGoalkeeper
+            self.world.team[self.currentDefender].updateEntity(Defender)
+            toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
+        else:
+            target = self.ellipseTarget()
+            distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
 
-        self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
-        self.world.team[self.currentDefender].updateEntity(Defender)
+            self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
+            self.world.team[self.currentDefender].updateEntity(Defender)
 
-        toDecide.remove(self.currentDefender)
-        formation.remove(Defender)
+            toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
 
         return formation, toDecide
 
@@ -112,8 +127,13 @@ class MainStrategy(Strategy):
         d2 = norm(self.world.team[toDecide[1]].pos, self.world.ball.pos)
 
         self.currentAttacker = bestWithHyst(self.currentAttacker, toDecide, [d1, d2], 0.20)
-    
-        self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+        if self.world.team[self.currentAttacker].entity != None and self.getEntity(self.currentAttacker) == 'Attacker':
+            if self.world.team[self.currentAttacker].entity.slave == False:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+            elif self.world.team[self.currentAttacker].entity.slave == True:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=True)
+        else:
+            self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
         toDecide.remove(self.currentAttacker)
         formation.remove(Attacker)
 
@@ -156,9 +176,15 @@ class MainStrategy(Strategy):
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             
-            if Attacker in formation and len(toDecide) >= 1:
+            if Attacker in formation and len(toDecide) == 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
-                self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                if self.world.team[toDecide[0]].entity != None and self.getEntity(toDecide[0]) == 'Attacker':
+                    if self.world.team[toDecide[0]].entity.slave == False:
+                        self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=False)
+                    elif self.world.team[toDecide[0]].entity.slave == True:
+                        self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                else:
+                    self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
 

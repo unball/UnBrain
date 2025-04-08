@@ -147,6 +147,15 @@ class AI_Control(Control):
         self.model = None
         self.env = env
         self.observation = observation
+        self.field_params ={'rbt_motor_max_rpm': 370.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.015, 'goal_depth': 0.1,
+        'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
+        'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}
+        self.max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
+        self.max_v = self.max_wheel_rad_s * self.field_params['rbt_wheel_radius']
+        # 0.045 = robot radius (0.04) + wheel thicknees (0.005)
+        self.max_w = np.rad2deg(self.max_v / 0.045)
+
+        self.v_wheel_deadzone = 0.05
 
     def output(self, robot):
         if self.model is None:
@@ -155,8 +164,31 @@ class AI_Control(Control):
         actions, _ = self.model.get_action(torch.tensor(self.observation, dtype=torch.float, device=DEVICE))
         self.observation = self.env.step(actions.cpu())
         actions = actions.cpu().numpy()
-        # TODO: converte a ação para o formato esperado pelo robô
-        return actions[1]*10, actions[0]*10 # FIXME: não é pra ser isso
+        return self._actions_to_v_wheels(actions)
+    
+    def _actions_to_v_wheels(self, actions):
+        left_wheel_speed = actions[0] * self.max_v
+        right_wheel_speed = actions[1] * self.max_v
+
+        left_wheel_speed, right_wheel_speed = np.clip(
+            (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v
+        )
+
+        # Deadzone
+        if -self.v_wheel_deadzone < left_wheel_speed < self.v_wheel_deadzone:
+            left_wheel_speed = 0
+
+        if -self.v_wheel_deadzone < right_wheel_speed < self.v_wheel_deadzone:
+            right_wheel_speed = 0
+
+        # Convert to rad/s
+        left_wheel_speed /= self.field_params['rbt_wheel_radius']
+        right_wheel_speed /= self.field_params['rbt_wheel_radius']
+
+        return left_wheel_speed*10, right_wheel_speed*10
+
+
+
 
 
 class PPO:

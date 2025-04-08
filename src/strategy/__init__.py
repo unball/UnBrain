@@ -5,6 +5,7 @@ from .entity.defender import Defender
 from .entity.midfielder import Midfielder
 from .entity.controlTest import ControlTester
 from .entity.SecAttacker import SecAttacker
+from .entity.AI_attacker import AI_Attacker
 from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 from client.referee import RefereeCommands
 from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
@@ -78,9 +79,9 @@ class MainStrategy(Strategy):
 
     def formationDecider(self):
         if self.world.ball.pos[0] < -0.25:
-            return [GoalKeeper, Attacker, Attacker]
+            return [GoalKeeper, Attacker, AI_Attacker]
         else:
-            return [Defender, Attacker, Attacker]
+            return [Defender, Attacker, AI_Attacker]
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
@@ -125,7 +126,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[GoalKeeper,Attacker,GoalKeeper]
+            roles=[GoalKeeper,Defender,AI_Attacker]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
@@ -156,9 +157,17 @@ class MainStrategy(Strategy):
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             
+            if AI_Attacker in formation and len(toDecide) >= 1:
+                #possível erro na mudança de role abaixo, checar mais tarde
+                # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                self.world.team[toDecide[0]].updateEntity(AI_Attacker)
+                toDecide.remove(toDecide[0])
+                formation.remove(AI_Attacker)
+
             if Attacker in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
-                self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                self.world.team[toDecide[0]].updateEntity(Attacker)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
 

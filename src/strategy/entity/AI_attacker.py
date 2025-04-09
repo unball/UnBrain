@@ -45,14 +45,14 @@ class Env():
     def __init__(self, world, robot_id):
         self.world = world  # Referência direta ao mundo
         self.robot_id = robot_id # ID do robô
+        self.NORM_BOUNDS = 1.2
         
         # Espaço de ação: controle das rodas do robô azul 0
         self.action_space = Box(low=-1, high=1, shape=(2,), dtype=np.float32)
         
         # Espaço de observação: estado normalizado [-1.25, 1.25]
-        self.observation_space = Box(low=-1.25, high=1.25, shape=(40,), dtype=np.float32)
+        self.observation_space = Box(low=-self.NORM_BOUNDS, high=self.NORM_BOUNDS, shape=(40,), dtype=np.float32)
 
-        self.NORM_BOUNDS = 1.2
         self.field_params ={'rbt_motor_max_rpm': 370.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.015, 'goal_depth': 0.1,
         'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
         'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}

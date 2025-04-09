@@ -201,9 +201,8 @@ class AI_Control(Control):
             self.observation = self.env.step(actions.cpu())
             self.time = time.time()
             self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.cpu())
-        # actions = actions.cpu().numpy()
-        # TODO: converte a ação para o formato esperado pelo robô
-        return self.v_wheel1, self.v_wheel0 # FIXME: não é pra ser isso
+            
+        return self.v_wheel1, self.v_wheel0
 
 
 class PPO:

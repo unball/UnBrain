@@ -6,7 +6,6 @@ import torch
 import os
 import numpy as np
 import torch.nn as nn
-import optuna
 from torch.distributions import MultivariateNormal
 from torch.optim import Adam
 import torch.nn.functional as F
@@ -49,9 +48,21 @@ class Env():
         
         # Espaço de ação: controle das rodas do robô azul 0
         self.action_space = Box(low=-1, high=1, shape=(2,), dtype=np.float32)
-
+        
         # Espaço de observação: estado normalizado [-1.25, 1.25]
         self.observation_space = Box(low=-1.25, high=1.25, shape=(40,), dtype=np.float32)
+
+        self.NORM_BOUNDS = 1.2
+        self.field_params ={'rbt_motor_max_rpm': 370.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.015, 'goal_depth': 0.1,
+        'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
+        'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}
+        max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
+        self.max_v = max_wheel_rad_s * self.field_params['rbt_wheel_radius']
+        # 0.045 = robot radius (0.04) + wheel thicknees (0.005)
+        self.max_w = np.rad2deg(self.max_v / 0.045)
+
+        self.v_wheel_deadzone = 0.05
+        self.max_pos = max(self.field_params['width'] / 2, (self.field_params['length'] / 2) + self.field_params['penalty_length'])
 
     def step(self, action):
         """
@@ -62,6 +73,27 @@ class Env():
         next_observation = self._get_observation()
         return next_observation  # Sem reward e done
 
+    def _actions_to_v_wheels(self, actions):
+        left_wheel_speed = actions[0] * self.max_v
+        right_wheel_speed = actions[1] * self.max_v
+
+        left_wheel_speed, right_wheel_speed = np.clip(
+            (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v
+        )
+
+        # Deadzone
+        if -self.v_wheel_deadzone < left_wheel_speed < self.v_wheel_deadzone:
+            left_wheel_speed = 0
+
+        if -self.v_wheel_deadzone < right_wheel_speed < self.v_wheel_deadzone:
+            right_wheel_speed = 0
+
+        # Convert to rad/s
+        left_wheel_speed /= self.field_params['rbt_wheel_radius']
+        right_wheel_speed /= self.field_params['rbt_wheel_radius']
+
+        return left_wheel_speed, right_wheel_speed
+
     def _get_observation(self):
         """
         Converte o estado do world em um vetor de observação.
@@ -70,10 +102,10 @@ class Env():
 
         # 🔹 1. Informações da bola
         obs[0:4] = np.array([
-            self.world.ball.x,
-            self.world.ball.y,
-            self.world.ball.vx,
-            self.world.ball.vy
+            self.norm_pos(self.world.ball.x),
+            self.norm_pos(self.world.ball.y),
+            self.norm_v(self.world.ball.vx),
+            self.norm_v(self.world.ball.vy)
         ])
 
         # 🔹 2. Informações dos robôs aliados (no treinamento. os azuis)
@@ -87,13 +119,13 @@ class Env():
             base = 4 + (7 * i)
             
             obs[base:base+7] = np.array([
-                allied_team[i].x,
-                allied_team[i].y,
-                np.sin(allied_team[i].th_raw),
-                np.cos(allied_team[i].th_raw),
-                allied_team[i].vx,
-                allied_team[i].vy,
-                allied_team[i].w_raw
+                self.norm_pos(allied_team[i].x),
+                self.norm_pos(allied_team[i].y),
+                np.sin(allied_team[i].th),
+                np.cos(allied_team[i].th),
+                self.norm_v(allied_team[i].vx),
+                self.norm_v(allied_team[i].vy),
+                self.norm_w(allied_team[i].w)
             ])
 
         # 🔹 3. Informações dos robôs inimigos (no treinamento, os amarelos)
@@ -107,7 +139,16 @@ class Env():
                 0.0
             ])
 
-        return obs
+        return np.array(obs, dtype=np.float32)
+    
+    def norm_pos(self, pos):
+        return np.clip(pos / self.max_pos, -self.NORM_BOUNDS, self.NORM_BOUNDS)
+
+    def norm_v(self, v):
+        return np.clip(v / self.max_v, -self.NORM_BOUNDS, self.NORM_BOUNDS)
+
+    def norm_w(self, w):
+        return np.clip(w / self.max_w, -self.NORM_BOUNDS, self.NORM_BOUNDS)
     
 
 class AI_Attacker(Entity):
@@ -147,48 +188,22 @@ class AI_Control(Control):
         self.model = None
         self.env = env
         self.observation = observation
-        self.field_params ={'rbt_motor_max_rpm': 370.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.015, 'goal_depth': 0.1,
-        'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
-        'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}
-        self.max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
-        self.max_v = self.max_wheel_rad_s * self.field_params['rbt_wheel_radius']
-        # 0.045 = robot radius (0.04) + wheel thicknees (0.005)
-        self.max_w = np.rad2deg(self.max_v / 0.045)
-
-        self.v_wheel_deadzone = 0.05
+        self.time = time.time() - 1/60
+        self.v_wheel0 = 0
+        self.v_wheel1 = 0
 
     def output(self, robot):
         if self.model is None:
             self.model = PPO(self.env)
-            self.model.load_model("PATH_TO_MODEL")
+            self.model.load_model("src/strategy/entity/ppo_models_behind_ball_24")
         actions, _ = self.model.get_action(torch.tensor(self.observation, dtype=torch.float, device=DEVICE))
-        self.observation = self.env.step(actions.cpu())
-        actions = actions.cpu().numpy()
-        return self._actions_to_v_wheels(actions)
-    
-    def _actions_to_v_wheels(self, actions):
-        left_wheel_speed = actions[0] * self.max_v
-        right_wheel_speed = actions[1] * self.max_v
-
-        left_wheel_speed, right_wheel_speed = np.clip(
-            (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v
-        )
-
-        # Deadzone
-        if -self.v_wheel_deadzone < left_wheel_speed < self.v_wheel_deadzone:
-            left_wheel_speed = 0
-
-        if -self.v_wheel_deadzone < right_wheel_speed < self.v_wheel_deadzone:
-            right_wheel_speed = 0
-
-        # Convert to rad/s
-        left_wheel_speed /= self.field_params['rbt_wheel_radius']
-        right_wheel_speed /= self.field_params['rbt_wheel_radius']
-
-        return left_wheel_speed*10, right_wheel_speed*10
-
-
-
+        if time.time() - self.time > 0.02:
+            self.observation = self.env.step(actions.cpu())
+            self.time = time.time()
+            self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.cpu())
+        # actions = actions.cpu().numpy()
+        # TODO: converte a ação para o formato esperado pelo robô
+        return self.v_wheel1, self.v_wheel0 # FIXME: não é pra ser isso
 
 
 class PPO:
@@ -235,10 +250,10 @@ class PPO:
     def _init_hyperparameters(self, hyperparams):
         # Default values got using optuna
         defaults = {
-            'timesteps_per_batch': 1200*3,
+            'timesteps_per_batch': 1000*3,
             'max_timesteps_per_episode': 1000,
             'n_updates_per_iteration': 4, 
-            'lr': 0.005,
+            'lr': 0.0,
             'gamma': 0.9311676192882882,
             'clip': 0.28252437747027603,
             'lam': 0.9899638989806914,
@@ -252,83 +267,12 @@ class PPO:
             if hyperparams is not None and hyperparams.get(key): defaults[key] = hyperparams[key]
             setattr(self, key, hyperparams.get(key) if hyperparams is not None and hyperparams.get(key) else value)
 
-    def calculate_gae(self, rewards, values, dones):
-        batch_advantages = []
-        for ep_rews, ep_vals, ep_dones in zip(rewards, values, dones):
-            advantages = []
-            last_advantage = 0
-            for t in reversed(range(len(ep_rews))):
-                if t + 1 < len(ep_rews):
-                    delta = ep_rews[t] + self.gamma * ep_vals[t + 1] * (1 - ep_dones[t + 1]) - ep_vals[t]
-                else:
-                    delta = ep_rews[t] - ep_vals[t]
-                advantage = delta + self.gamma * self.lam * (1 - ep_dones[t]) * last_advantage
-                last_advantage = advantage
-                advantages.insert(0, advantage)
-            batch_advantages.extend(advantages)
-        return torch.tensor(batch_advantages, dtype=torch.float, device=self.device)
-
-    def rollout(self):
-        # Batch data
-        batch_obs = []             # batch observations
-        batch_acts = []            # batch actions
-        batch_log_probs = []       # log probs of each action
-        batch_rews = []            # batch rewards
-        batch_vals = []
-        batch_dones = []
-        batch_lens = []           # episodic lengths in batch
-
-        ep_rews, ep_vals, ep_dones = [], [], []
-
-        t = 0
-        while t < self.timesteps_per_batch:
-            obs = self.env.reset()[0]
-            done = False
-            ep_rews, ep_vals, ep_dones = [], [], []
-            steps = 0
-            while not done:
-                t += 1
-                steps += 1
-                current_obs = obs
-                obs_tensor = torch.tensor(current_obs, dtype=torch.float, device=self.device)
-                action, log_prob = self.get_action(obs_tensor)
-                val = self.critic(obs_tensor).cpu().item()
-                obs, rew, terminated, truncated, _ = self.env.step(action.cpu())
-                done = terminated or truncated
-
-                batch_obs.append(current_obs)
-                batch_acts.append(action)
-                batch_log_probs.append(log_prob)
-                ep_rews.append(rew)
-                ep_vals.append(val)
-                ep_dones.append(done)
-
-            batch_lens.append(steps)
-            batch_rews.append(ep_rews)
-            batch_vals.append(ep_vals)
-            batch_dones.append(ep_dones)
-
-        batch_obs = torch.tensor(np.array(batch_obs), dtype=torch.float, device=self.device)
-        batch_acts = torch.stack(batch_acts).to(self.device)
-        batch_log_probs = torch.tensor(batch_log_probs, dtype=torch.float, device=self.device)
-
-        return batch_obs, batch_acts, batch_log_probs, batch_rews, batch_lens, batch_vals, batch_dones
-
     def get_action(self, obs):
         mean = self.actor(obs)
-        std = torch.exp(self.log_std)
-        dist = MultivariateNormal(mean, covariance_matrix=torch.diag(std))
+        dist = MultivariateNormal(mean, self.cov_mat)
         action = dist.sample()
         log_prob = dist.log_prob(action)
         return action.detach(), log_prob.detach()
-
-    def evaluate(self, batch_obs, batch_acts):
-        V = self.critic(batch_obs).view(-1)  # Changed from .squeeze()
-        mean = self.actor(batch_obs)
-        dist = MultivariateNormal(mean, self.cov_mat)
-        log_probs = dist.log_prob(batch_acts)
-        return V, log_probs, dist.entropy()
-
     
 class FeedForwardNN(nn.Module):
     def __init__(self, in_dim, out_dim):

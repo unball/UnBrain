@@ -32,7 +32,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=120,
+                loop_freq=60,
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -60,7 +60,7 @@ class Loop:
         yellow_robots_pos = []
         blue_robots_pos = []
         field_type = 0  # 0 for Division B, 1 for Division A
-        pos = [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]]
+        pos = [[-0.6, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.2, 0.0, 0.0]]
         if team_yellow:
             n_robots_yellow = len(n_robots)
             for i in n_robots:
@@ -88,7 +88,7 @@ class Loop:
             yellow_robots_pos,
         )
 
-        # field_params = self.simulado.get_field_params()
+        field_params = self.simulado.get_field_params()
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
@@ -208,7 +208,7 @@ class Loop:
                 if robot is not None: robot.turnOn()
                 
         # Desenha no ALP-GUI
-        # self.draw()
+        self.draw()
 
     def busyLoop(self):
 

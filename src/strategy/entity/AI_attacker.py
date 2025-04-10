@@ -202,7 +202,7 @@ class AI_Control(Control):
             self.time = time.time()
             self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.cpu())
             
-        return self.v_wheel1, self.v_wheel0
+        return self.v_wheel0, self.v_wheel1
 
 
 class PPO:

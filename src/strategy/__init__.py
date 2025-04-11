@@ -29,7 +29,7 @@ class Strategy(ABC):
         pass
 
 class MainStrategy(Strategy):
-    def __init__(self, world, static_entities=False):
+    def __init__(self, world, static_entities=False, AI_attacker=False):
         super().__init__(world)
 
         # States
@@ -38,6 +38,9 @@ class MainStrategy(Strategy):
 
         # Variables
         self.static_entities = static_entities
+
+        # AI
+        self.AI_attacker = AI_attacker
 
     def manageReferee(self, command):
         if command is None: 
@@ -126,7 +129,10 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[GoalKeeper,Defender,AI_Attacker]
+            if self.AI_attacker:
+                roles=[GoalKeeper,Defender,AI_Attacker]
+            else:
+                roles=[GoalKeeper,Defender,Attacker]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)

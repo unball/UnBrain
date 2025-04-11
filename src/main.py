@@ -47,6 +47,9 @@ parser.add_argument('--mirror', dest='mirror', action='store_const',
                     
 parser.add_argument('--n_robots', dest='n_robots', type=str, default="0,1,2" , help='Number of robots for each time in the match.')
 
+parser.add_argument('--AI', dest='AI_attacker', action='store_const',
+                    const=True, default=False, help='If you want to use AI_attacker strategy.')
+
 
 args = parser.parse_args()
 
@@ -79,7 +82,8 @@ loop = Loop(
     debug=args.debug,
     port=args.port,
     n_robots=args.n_robots,
-    mirror=mirror
+    mirror=mirror, 
+    AI_attacker=args.AI_attacker,
 )
 
 loop.run()

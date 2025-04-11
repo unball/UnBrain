@@ -47,6 +47,7 @@ class Loop:
                 port=5002,
                 mirror=False, 
                 n_robots=[0,1,2],
+                AI_attacker=False,
                 
             ):
         
@@ -71,7 +72,7 @@ class Loop:
             for i in n_robots:
                 blue_robots_pos += [pos[i]]
             n_robots_yellow = 0 
-        time_step_ms = 16 # time step in milliseconds
+        time_step_ms = 12 # time step in milliseconds
         # ball initial position [x, y, v_x, v_y] in meters and meter/s
         ball_pos = [0.0, 0.3, 0.0, 0.0]
 
@@ -106,7 +107,7 @@ class Loop:
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
         
         self.arp = AutomaticReplacer(self.world)
-        self.strategy = MainStrategy(self.world, static_entities=static_entities)
+        self.strategy = MainStrategy(self.world, static_entities=static_entities, AI_attacker=AI_attacker)
 
         # Variáveis
         self.message = None
@@ -169,7 +170,9 @@ class Loop:
 
         if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.mainvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
-        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
+        if self.world.firasim: 
+            print(robot.entity for robot in self.world.team)
+            control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
         if self.world.simulado: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
         if self.world.debug and constants.DEBUG_ACTUATE:

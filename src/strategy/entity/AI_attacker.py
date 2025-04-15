@@ -80,7 +80,7 @@ class Env():
         'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
         'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}
         max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
-        self.max_v = max_wheel_rad_s * self.field_params['rbt_wheel_radius']
+        self.max_v = 1 # max_wheel_rad_s * self.field_params['rbt_wheel_radius']
         # 0.045 = robot radius (0.04) + wheel thicknees (0.005)
         self.max_w = np.rad2deg(self.max_v / 0.045)
 
@@ -97,8 +97,8 @@ class Env():
         return next_observation  # Sem reward e done
 
     def _actions_to_v_wheels(self, actions):
-        left_wheel_speed = actions[0] * self.max_v
-        right_wheel_speed = actions[1] * self.max_v
+        left_wheel_speed = actions[0] * self.max_v / 10
+        right_wheel_speed = actions[1] * self.max_v / 10
 
         left_wheel_speed, right_wheel_speed = np.clip(
             (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v

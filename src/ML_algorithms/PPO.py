@@ -72,7 +72,8 @@ class PPO:
 
     def get_action(self, obs):
         mean = self.actor(obs)
-        dist = MultivariateNormal(mean, self.cov_mat)
+        std = torch.exp(self.log_std)
+        dist = MultivariateNormal(mean, covariance_matrix=torch.diag(std))
         action = dist.sample()
         log_prob = dist.log_prob(action)
         return action.detach(), log_prob.detach()

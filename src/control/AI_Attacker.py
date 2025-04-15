@@ -12,7 +12,7 @@ class AI_Control(Control):
         self.model = None
         self.env = env
         self.observation = observation
-        self.time = time.time() - 1/60
+        self.time = 0
         self.v_wheel0 = 0
         self.v_wheel1 = 0
 
@@ -21,7 +21,7 @@ class AI_Control(Control):
             self.model = PPO(self.env)
             self.model.load_model("src/strategy/entity/ppo_models_behind_ball_24")
         actions, _ = self.model.get_action(torch.tensor(self.observation, dtype=torch.float, device=self.model.device))
-        if time.time() - self.time > 0.02:
+        if time.time() - self.time > 1/120:
             self.observation = self.env.step(actions.cpu())
             self.time = time.time()
             self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.cpu())

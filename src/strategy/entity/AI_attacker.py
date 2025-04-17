@@ -1,4 +1,4 @@
-from ..entity import Entity
+from ..entity.attacker import Attacker
 
 from control.AI_Attacker import AI_Control
 
@@ -7,25 +7,31 @@ import numpy as np
 from gym.spaces import Box
 
 
-class AI_Attacker(Entity):
+class AI_Attacker(Attacker):
     def __init__(self, world, robot):
-        Entity.__init__(self, world, robot)
+        Attacker.__init__(self, world, robot)
         self.robot = robot
         self.env = Env(world, robot.id)
         self.observation = self.env._get_observation()
-        self._control = AI_Control(world, self.env, self.observation)
+        self._AI_control = AI_Control(world, self.env, self.observation)
 
     @property
     def control(self):
-        return self._control
+        if self.world.ball.pos[0] < 0.1 or self.robot.pos[0] < 0.1:
+            print("Attacker control")
+            return super().control
+        print("AI control")
+        return self._AI_control
     
     def fieldDecider(self):
-        # não será usado
-        pass
+        if self.world.ball.pos[0] < 0.1 or self.robot.pos[0] < 0.1:
+            super().fieldDecider()
+        
 
     def directionDecider(self):
-        # não será usado
-        pass
+        if self.world.ball.pos[0] < 0.1 or self.robot.pos[0] < 0.1:
+            super().directionDecider()
+        
 
     def equalsTo(self, otherEntityOfSameClass):
         return self.robot == otherEntityOfSameClass.robot

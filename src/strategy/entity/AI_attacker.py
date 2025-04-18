@@ -18,9 +18,7 @@ class AI_Attacker(Attacker):
     @property
     def control(self):
         if self.world.ball.pos[0] < 0.1 or self.robot.pos[0] < 0.1:
-            print("Attacker control")
             return super().control
-        print("AI control")
         return self._AI_control
     
     def fieldDecider(self):

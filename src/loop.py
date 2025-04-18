@@ -170,9 +170,7 @@ class Loop:
 
         if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.mainvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
-        if self.world.firasim: 
-            print(robot.entity for robot in self.world.team)
-            control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
+        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
         if self.world.simulado: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
         if self.world.debug and constants.DEBUG_ACTUATE:

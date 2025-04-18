@@ -65,7 +65,6 @@ else:
 
 args.n_robots = [int(e) for e in args.n_robots.split(",")]
 
-print(args.n_robots)
 
 # Instancia o programa principal
 loop = Loop(

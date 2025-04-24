@@ -130,7 +130,7 @@ class MainStrategy(Strategy):
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
             if self.AI_attacker:
-                roles=[GoalKeeper,Defender,AI_Attacker]
+                roles=[AI_Attacker,GoalKeeper,Defender]
             else:
                 roles=[GoalKeeper,Defender,Attacker]
             for robo in self.world.n_robots:

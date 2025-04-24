@@ -4,6 +4,7 @@ from strategy import MainStrategy
 from UVF_screen import UVFScreen
 from communication.serialWifi import SerialRadio
 from world import World
+from tools.training import DataCollector
 
 import threading
 
@@ -106,6 +107,8 @@ class Loop:
         team_side = -1 if mirror else 1
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
         
+        self.data_colector = DataCollector(self.world)
+
         self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities, AI_attacker=AI_attacker)
 
@@ -303,6 +306,7 @@ class Loop:
 
             # Executa o loop
             self.loop()
+            self.data_colector.collect()
 
             print(f"gfl{time.time()-tempo_zero:.2f}", end="\r", flush=True)
 

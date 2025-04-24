@@ -1,7 +1,7 @@
 from client.referee import RefereeCommands, RefereePlacement
 from client.gui import clientProvider
-from strategy import MainStrategy
-from UVF_screen import UVFScreen
+from strategy import MainStrategy, Attacker, Defender, GoalKeeper
+from UVF_screen import SystemTester
 from communication.serialWifi import SerialRadio
 from world import World
 
@@ -10,13 +10,27 @@ import threading
 # Importa interface com FiraSim
 from client import VSS
 
+import random
 import robosim
+
+# matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arrow
 from matplotlib.lines import Line2D
+from matplotlib.colors import LogNorm
+from matplotlib.colors import LinearSegmentedColormap
+
 import os
+import gc
 import numpy as np
+
+# logging + filas (p/ suporte a threading)
 import logging
+import queue
+from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
+from concurrent_log_handler import ConcurrentRotatingFileHandler
+import copy
+
 import time
 import sys
 import signal
@@ -33,7 +47,7 @@ class Loop:
 
     def __init__(self,
                 loop_freq=120,
-                draw_uvf=False,
+                draw_uvf=True,
                 team_yellow=False,
                 immediate_start=True,
                 static_entities=False,
@@ -47,12 +61,22 @@ class Loop:
                 port=5002,
                 mirror=False, 
                 n_robots=[0,1,2],
-                
+                test_type="heatmap_team"
             ):
         
         self.loop_thread = None
         self.ws_thread = None
         self.threadScreen = None
+        self.test_type = test_type
+
+        self.team_yellow = team_yellow
+        self.n_robots = n_robots
+        # self.referee = referee
+        # self.immediate_start = immediate_start
+        # self.control = control
+        # self.debug = debug
+        # self.mirror = mirror
+
 
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
@@ -78,15 +102,15 @@ class Loop:
         # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
         # Units are meters and degrees
         
-        self.simulado = robosim.VSS(
-            field_type,
-            n_robots_blue,
-            n_robots_yellow,
-            time_step_ms,
-            ball_pos,
-            blue_robots_pos,
-            yellow_robots_pos,
-        )
+        # self.simulado = robosim.VSS(
+        #     field_type,
+        #     n_robots_blue,
+        #     n_robots_yellow,
+        #     time_step_ms,
+        #     ball_pos,
+        #     blue_robots_pos,
+        #     yellow_robots_pos,
+        # )
 
         # field_params = self.simulado.get_field_params()
         # print(f"estado do campo:{self.simulado.get_state()}")
@@ -103,6 +127,7 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
+        self.team_side = team_side
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
         
         self.arp = AutomaticReplacer(self.world)
@@ -120,7 +145,7 @@ class Loop:
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
-        # if self.draw_uvf:
+        # if self.draw_uvf: # uso do UVFScreen legado
         #     self.UVF_screen = UVFScreen(self.world, index_uvf_robot=1)
             # self.UVF_screen.initialiazeScreen()
             # self.UVF_screen.initialiazeObjects()
@@ -200,6 +225,7 @@ class Loop:
         if self.world.simulado:
             for robot in self.world.raw_team:
                 if robot is not None: robot.turnOn()
+            self.control_output = control_output
             robos = control_output
             self.simulado.step(robos)
         
@@ -301,88 +327,197 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print(f"gfl{time.time()-tempo_zero:.2f}", end="\r", flush=True)
+            print(f"gfl {time.time()-tempo_zero:.2f}", end="\r", flush=True)
 
         logging.info("System stopped")
 
     def run(self):
-        if self.ws_thread is None and self.loop_thread is None:
-            # inicializa threads
-            self.ws_thread = threading.Thread(target=self.websocket_thread)
-            self.loop_thread = threading.Thread(target=self.run_loop)
+        self.run_loop()
 
-            self.ws_thread.start()
-            self.loop_thread.start() # inicia thread do loop
+    def run_parallel(self, tester, thread_id, entity, duracao=300):
+        logger = logging.getLogger(f"Thread-{thread_id}")
 
-            robot_i=0
-            field_dims=(170*4, 130*4)
-            arrow_spaces=20
+        t0 = 0
+        tempo_zero = time.time()
+        self.tempo_atual = time.time()-tempo_zero
+        self.x_positions = []
+        self.y_positions = []
+        
+        try:
+            numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13) # gera lista de 10 nums aleatorios
 
-            x = np.arange(-field_dims[0]/2, field_dims[0]/2, arrow_spaces)
-            y = np.arange(-field_dims[1]/2, field_dims[1]/2, arrow_spaces)
-            X, Y = np.meshgrid(x, y)
-            arrow_positions = np.array([X.flatten(), Y.flatten()]).T
-            positions = []
-            for i in range(arrow_positions.shape[0]):
-                positions.append(arrow_positions[i]/400)
+            field_type = 0 
+
+            time_step_ms = 16
+
+            last_ball_xs = []
+            last_ball_ys = []
+
+            # inicializa ambiente do simulado
+            self.simulado = robosim.VSS(
+                field_type,
+                3,
+                0,
+                time_step_ms,
+                [numeros[10], numeros[0], numeros[11], numeros[12]], # TODO: checar se bola tá de fato começando com alguma velocidade da bola diferente de 0
+                [[-numeros[1], numeros[2], numeros[3]], 
+                [-numeros[4], numeros[5], numeros[6]], 
+                [-numeros[7], numeros[8], numeros[9]]],
+                [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]],
+            )
+
+            ball_x, ball_y = self.simulado.get_state()[0], self.simulado.get_state()[1]
+            
+            logger.info("System is running")
+
+            cronometro_5s, cronometro_1s = self.tempo_atual, self.tempo_atual
+            last_reset_time = -1
+            while self.tempo_atual < duracao:
+                self.tempo_atual = time.time()-tempo_zero
+                flag_1s, flag_5s = False, False
+                numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13)
+                
+                if self.tempo_atual - cronometro_5s > 5:
+                    flag_5s = True
+                    cronometro_5s = self.tempo_atual
+                if self.tempo_atual - cronometro_1s > 1:
+                    flag_1s = True
+                    cronometro_1s = self.tempo_atual
+
+                if flag_1s:
+                    ball_x, ball_y = self.simulado.get_state()[0], self.simulado.get_state()[1]
+
+                    last_ball_xs.insert(0, ball_x)
+                    last_ball_ys.insert(0, ball_y)
+
+                    if len(last_ball_xs) > 5 or len(last_ball_ys) > 5:
+                        last_ball_xs.pop()
+                        last_ball_ys.pop()
+
+                if (int(self.tempo_atual != 0) and flag_5s) and (np.std(last_ball_xs) < 1e-4 and np.std(last_ball_ys) < 1e-4):
+                    logger.info(f"BOLA PARADA: Reset na thread {thread_id}")
+
+                    last_ball_xs, last_ball_ys = [], []
+
+                    moving_ball_time = self.tempo_atual - last_reset_time - 5 if last_reset_time != -1 else self.tempo_atual - last_reset_time + 1 - 5
+                    self.stuckball_register[thread_id].append(moving_ball_time)
+                    
+                    self.simulado.reset([numeros[10], numeros[0], numeros[11], numeros[12]],
+                                        [[-numeros[1], numeros[2], numeros[3]], 
+                                         [-numeros[4], numeros[5], numeros[6]], 
+                                         [-numeros[7], numeros[8], numeros[9]]], 
+                                         [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
+                    last_reset_time =  self.tempo_atual
+
+                if hasattr(self, 'simulado') and self.world.ball.x > 0.75:
+                    try:
+                        numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13, timeout=1.0) if flag == False else numeros, True  # tenta gerar matriz mais rápido se tentativa anterior tiver dado timeout
+                    except TimeoutError as e:
+                        logger.error(f"Timeout: {str(e)}", exc_info=True)
+                    except IndexError as e:
+                        logger.error(f"Index: {numeros}")
+                    except Exception as e:
+                        logger.error(f"Erro na geração: {str(e)}", exc_info=True)
+                    
+                    logger.info(f"GOL na thread {thread_id}")
+
+                    goal_interval = self.tempo_atual - last_reset_time if last_reset_time != -1 else self.tempo_atual - last_reset_time + 1
+                    self.goal_register[thread_id].append(goal_interval)
+                    # print(f"n_robots: {self.world.n_robots}")
+
+                    self.simulado.reset([numeros[10], numeros[0], numeros[11], numeros[12]],
+                                        [[-numeros[1], numeros[2], numeros[3]], 
+                                         [-numeros[4], numeros[5], numeros[6]], 
+                                         [-numeros[7], numeros[8], numeros[9]]], 
+                                         [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
+                    # self.simulado.reset([0.0, numeros[0], 0.0, 0.0], [[-numeros[1], numeros[2], numeros[3]], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]], [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
+                    last_reset_time = self.tempo_atual
+
+
+                self.busyLoop()
+                while time.time() - t0 < self.loopTime:
+                    self.busyLoop()
+                self.world.execTime = time.time() - t0
+                    
+                t0 = time.time()
+                self.loop()
+
+                # atualiza listas de posições
+                self.team_positions = [(round(robot.x, 3), round(robot.y, 3)) 
+                                    for robot in self.world.raw_team]
+                
+                for robot in self.world.raw_team:
+                    if (entity == None and (self.test_type != "heatmap_ball")) or (entity != None and (isinstance(robot.entity, entity))):
+                        self.x_positions.append(round(robot.x, 3))
+                        self.y_positions.append(round(robot.y, 3))
+                    elif (self.test_type == "heatmap_ball"):
+                        self.x_positions.append(round(ball_x, 3))
+                        self.y_positions.append(round(ball_y, 3))
+
+                self.all_positions[thread_id] = self.team_positions
+                self.positions_record.append([round(time.time()-tempo_zero, 2), 
+                                            self.all_positions])
+                
+                # logger otimizado (uma vez p segundo)
+                if flag_1s:
+                    logger.debug(f"gfl {round(time.time()-tempo_zero, 2)} {self.all_positions}")
+
+        finally:
+            self.runningtime_register.append(self.tempo_atual)
+            logger.info(f"System stopped, position list size: {len(self.x_positions)}")
+
+    def test(self, n_threads=20):
+            # inicializa testador
+            tester = SystemTester(self.world)
+            self.thread_envs = [[] for _ in range(n_threads)] # separação em threads para uso futuro, favor não desfazer isso
+            self.all_positions = copy.deepcopy(self.thread_envs)
+            self.goal_register = copy.deepcopy(self.thread_envs)
+            self.stuckball_register = copy.deepcopy(self.thread_envs)
+            self.runningtime_register = []
+            self.positions_record = []
+            # print(len(self.all_positions))
 
             if self.draw_uvf:
-                plt.ion()
-                plt.show(block=False)
-                while self.running:
-                    print(self.world.raw_team[0].field)
-                    robot = self.world.raw_team[robot_i]
-                    
-                    angles = list(map(robot.field.F, positions))
-                    
-                    
-                    pltuvf = plt.quiver(X, Y, np.cos(angles), np.sin(angles))
-                    ax_static = plt.gca()
-                    ax_dynamic = plt.gca()
-                    mid = Circle((0, 0), radius=3, color='black', alpha=1, zorder=10)
-                    ax_static.add_patch(mid)
+                # cria thread do loop, importante pois mesmo as threads não interagindo bem com o matplotlib isso permite que o loop rode normalmente.
+                self.loop_thread = threading.Thread(target=self.run_loop) 
+                self.loop_thread.start()
 
-                    marcas = [(-0.380*400,0.430*400),(0.380*400,0.430*400),(-0.380*400,-0.430*400),(0.380*400,-0.430*400)] #Marcas do campo
-                    limites = [[(-300, -256), (-300, 256)], [(-300, 256), (300, 256)], [(300, -256), (300, 256)], [(-300, -256), (300, -256)]] #Linhas do campo
-                    gol_amarelo = [[(340, -80), (340, 80)], [(300, -80), (300, 80)]] #Linhas do gol amarelo
-                    gol_azul = [[(-340, -80), (-340, 80)], [(-300, -80), (-300, 80)]] #Linhas do gol azul
-                    for pos in marcas:
-                        plt.gca().add_patch(Circle(xy=pos,radius=4, color="black", alpha=1, zorder=10))
-                    for pos in limites:
-                        ax_static.add_line(Line2D(*zip(pos[0],pos[1]), color="grey", linewidth=2))
-                    for pos in gol_amarelo:
-                        if self.world.team_yellow:
-                            ax_static.add_line(Line2D(*zip(pos[0],pos[1]), color="blue", linewidth=3))
-                        else:
-                            ax_static.add_line(Line2D(*zip(pos[0],pos[1]), color="yellow", linewidth=3))
-                    for pos in gol_azul:
-                        if self.world.team_yellow:
-                            ax_static.add_line(Line2D(*zip(pos[0],pos[1]), color="yellow", linewidth=3))
-                        else: 
-                            ax_static.add_line(Line2D(*zip(pos[0],pos[1]), color="yellow", linewidth=3))
-                    center_line = Line2D(*zip((0, -256), (0, 256)), color="gray", linewidth=1)
-                    center_circle = Circle((0, 0), 80, facecolor='None', edgecolor='grey', linewidth=1, zorder=10)
-                    ax_static.add_line(center_line)
-                    ax_static.add_patch(center_circle)
+                # O parâmetro render_uvf=True desacelera o render do matplotlib, esteja ciente disso ao habilitar
+                # Quanto mais setas no render do uvf, mais lento fica o render. Aumentar a quantidade de setas sem diminuir a loop_freq *não vai adiantar*, o render vai ficar lento.
+                tester.run_singletest(loop=self, robot_i=0, render_uvf=False)
 
-                    robot_color = "yellow" if self.world.team_yellow else "blue"
-                    robot_obj = Circle((robot.x*400, robot.y*400), 15, facecolor=robot_color, edgecolor= 'black', linewidth= 1.5, alpha=0.5, zorder=10)
-                    robot_face = Arrow(robot.x*400, robot.y*400, np.cos(robot.th)*30, np.sin(robot.th)*30, width=25, facecolor=robot_color, alpha= 0.5, edgecolor= 'black', linewidth= 1)
-                    ax_dynamic.add_patch(robot_obj)
-                    ax_dynamic.add_patch(robot_face)
+                self.loop_thread.join()
+            else:
+                loop_list = []
+                teams = []
+                for i in range(n_threads):
+                    # cria threads
+                    if self.test_type == "heatmap_attacker":
+                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, Attacker), daemon=True)
+                    elif self.test_type == "heatmap_defender":
+                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, Defender), daemon=True)
+                    elif self.test_type == "heatmap_goalkeeper":
+                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, GoalKeeper), daemon=True)
+                    else:
+                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, None), daemon=True)
+                    teams.append(self.world.raw_team)
+                    loop_thread.start() # inicia essa thread do loop
+                    loop_list.append(loop_thread)
 
-                    if not self.world.control:
-                        bola = Circle(xy=(self.world.ball.x*400, self.world.ball.y*400),radius=7, color='tab:orange', alpha=1, zorder=10)
-                        ax_dynamic.add_patch(bola)
+                for thread in loop_list:
+                    thread.join()
 
-                    plt.draw()
-                    plt.pause(1/60)
+                tester.gera_heatmap(self.x_positions, self.y_positions)
 
-                    pltuvf.remove()
-                    ax_dynamic.remove()
-                    del pltuvf
-                    del ax_dynamic
-                        
-            # espera threads
-            self.ws_thread.join()
-            self.loop_thread.join()
+                # cria dicionário de registros de dados da simulação
+                register_dict = {"runningtime": self.runningtime_register,
+                                 "goalcount": self.goal_register,
+                                 "stuckball": self.stuckball_register}
+                
+                data_dict = tester.gera_datadict(register_dict)
+
+                # print mais bonitinho dos dados
+                for key, value in data_dict.items():
+                    print(f"{key}: {value}")
+
+                plt.show()

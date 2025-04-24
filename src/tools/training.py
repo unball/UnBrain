@@ -65,7 +65,7 @@ class SimToRealWrapper:
 
 # Função para coletar dados de treino da simulação
 class DataCollector:
-    def __init__(self, world, filename = 'UnBrainDataSet.csv',steps_per_episode=60, num_episodes=60*4):
+    def __init__(self, world, filename = 'UnBrainDataSet.csv',steps_per_episode=60, num_episodes=60*5):
         self.steps = steps_per_episode
         self.tempo = 0
         self.prev_vl = 0.0
@@ -80,7 +80,7 @@ class DataCollector:
             f.write("vr_unbrain,vl_unbrain,prev_vl,prev_vr,vl_real,vr_real\n")
 
     def collect(self):
-        if time.time() - self.tempo > 1/self.steps and self.episodes < self.num_episodes and self.world.team[0].entity is not None:          
+        if self.world.team[0].entity is not None:          
             # for _ in range(self.num_episodes):
                 
             #     for _ in range(100):  # 100 steps por episódio
@@ -100,11 +100,9 @@ class DataCollector:
             self.tempo = time.time()
             # Atualizar velocidades anteriores
             self.prev_vl, self.prev_vr = vl_real, vr_real
-            self.contagem +=1
-            
             if self.contagem == 60:
-                self.episodes +=1
-                self.contagem = 0
+                self.episodes =+ 1
+            self.contagem += 1
 
         elif self.episodes > self.num_episodes:
             print("Fim da coleetagem de dados")

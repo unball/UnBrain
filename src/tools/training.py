@@ -99,7 +99,7 @@ class DataCollector:
 
             self.tempo = time.time()
             # Atualizar velocidades anteriores
-            self.prev_vl, self.prev_vr = vl_real, vr_real
+            self.prev_vl, self.prev_vr = vl_unbrain, vr_unbrain
             if self.contagem == 60:
                 self.episodes =+ 1
             self.contagem += 1

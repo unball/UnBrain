@@ -140,4 +140,6 @@ class UVF(Field):
             th = self.AUF(P, Po[ind],Pr,Vr,Vo[ind]) * self.G(Rmenor-self.dmin[ind],self.delta[ind]) + (self.TUF(P, Pb) * (1-self.G(norm(P,Pb)-self.dmin[1], self.delta_b)))
         elif not Rmenor == 0:                
             th = self.AUF(P, Po[ind],Pr,Vr,Vo[ind])
+        else:
+            th = 0 # provisório, não é pra ser assim isso aqui
         return th

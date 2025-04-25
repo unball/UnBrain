@@ -118,15 +118,24 @@ class Env():
         for i in range(3):  # três robôs do time aliado
             base = 4 + (7 * i)
             
-            obs[base:base+7] = np.array([
-                self.norm_pos(allied_team[i].x),
-                self.norm_pos(allied_team[i].y),
-                np.sin(allied_team[i].th),
-                np.cos(allied_team[i].th),
-                self.norm_v(allied_team[i].vx),
-                self.norm_v(allied_team[i].vy),
-                self.norm_w(allied_team[i].w)
-            ])
+            if i == 0:
+                obs[base:base+7] = np.array([
+                    self.norm_pos(allied_team[i].x),
+                    self.norm_pos(allied_team[i].y),
+                    np.sin(allied_team[i].th),
+                    np.cos(allied_team[i].th),
+                    self.norm_v(allied_team[i].vx),
+                    self.norm_v(allied_team[i].vy),
+                    self.norm_w(allied_team[i].w)
+                ])
+            else:
+                obs[base:base+5] = np.array([
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ])
 
         # 🔹 3. Informações dos robôs inimigos (no treinamento, os amarelos)
         for i in range(3):  # três robôs do time adversário

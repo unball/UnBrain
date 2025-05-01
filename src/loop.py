@@ -184,6 +184,13 @@ class Loop:
         if shutdown:
             sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
+    def throw_SIGSTP(self):
+        '''
+        Função que lança o sinal de stop (ctrl + Z)
+        '''
+        os.kill(os.getpid(), signal.SIGTSTP)
+
+
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
         # print("loop ALP:",(time.time()-self.t0)*1000)
@@ -315,6 +322,7 @@ class Loop:
 
         logging.info("System is running")
 
+        self.throw_SIGSTP()
         while self.running:
             
             # Executa o loop de visão e referee até dar o tempo de executar o resto

@@ -19,11 +19,10 @@ class AI_Control(Control):
     def output(self, robot):
         if self.model is None:
             self.model = PPO(self.env)
-            self.model.load_model("src/strategy/entity/ppo_models_behind_ball_24")
-        actions, _ = self.model.get_action(torch.tensor(self.observation, dtype=torch.float, device=self.model.device))
-        if time.time() - self.time > 1/120:
-            self.observation = self.env.step(actions.cpu())
-            self.time = time.time()
-            self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.cpu())
+            self.model.load_model(directory="src/strategy/entity/ppo_model_7")
+        actions = self.model.actor(torch.tensor(self.observation, dtype=torch.float, device=self.model.device))
+        self.observation = self.env.step(actions.detach().cpu().numpy())
+        self.time = time.time()
+        self.v_wheel0, self.v_wheel1 = self.env._actions_to_v_wheels(actions.detach().cpu().numpy())
             
         return self.v_wheel0, self.v_wheel1

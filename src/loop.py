@@ -72,7 +72,7 @@ class Loop:
             for i in n_robots:
                 blue_robots_pos += [pos[i]]
             n_robots_yellow = 0 
-        time_step_ms = 12 # time step in milliseconds
+        time_step_ms = 16 # time step in milliseconds
         # ball initial position [x, y, v_x, v_y] in meters and meter/s
         ball_pos = [0.0, 0.3, 0.0, 0.0]
 
@@ -295,7 +295,8 @@ class Loop:
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
-                self.busyLoop()
+                self.loop()
+
             self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop

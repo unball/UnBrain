@@ -49,13 +49,13 @@ class Env():
         # Espaço de observação: estado normalizado [-1.25, 1.25]
         self.observation_space = Box(low=-self.NORM_BOUNDS, high=self.NORM_BOUNDS, shape=(40,), dtype=np.float32)
 
-        self.field_params ={'rbt_motor_max_rpm': 370.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.015, 'goal_depth': 0.1,
+        self.field_params ={'rbt_motor_max_rpm': 440.0, 'goal_width': 0.4, 'ball_radius': 0.0215, 'penalty_width': 0.7, 'rbt_wheel_radius': 0.026, 'goal_depth': 0.1,
         'rbt_kicker_width': -1.0, 'penalty_length': 0.15, 'length': 1.5, 'rbt_distance_center_kicker': -1.0, 'rbt_kicker_thickness': -1.0, 
-        'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.04}
+        'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.0375}
         max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
-        self.max_v = 1 # max_wheel_rad_s * self.field_params['rbt_wheel_radius']
-        # 0.045 = robot radius (0.04) + wheel thicknees (0.005)
-        self.max_w = np.rad2deg(self.max_v / 0.045)
+        self.max_v = max_wheel_rad_s * self.field_params['rbt_wheel_radius']
+        # 0.045 = robot radius (0.0375) + wheel thicknees (0.0025)
+        self.max_w = np.rad2deg(self.max_v / 0.04)
 
         self.v_wheel_deadzone = 0.05
         self.max_pos = max(self.field_params['width'] / 2, (self.field_params['length'] / 2) + self.field_params['penalty_length'])
@@ -70,8 +70,10 @@ class Env():
         return next_observation  # Sem reward e done
 
     def _actions_to_v_wheels(self, actions):
-        left_wheel_speed = actions[0] * self.max_v / 10
-        right_wheel_speed = actions[1] * self.max_v / 10
+        left_wheel_speed = actions[0] * self.max_v 
+        right_wheel_speed = actions[1] * self.max_v 
+        # left_wheel_speed = self.max_v
+        # right_wheel_speed = self.max_v
 
         left_wheel_speed, right_wheel_speed = np.clip(
             (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v
@@ -107,22 +109,36 @@ class Env():
         # 🔹 2. Informações dos robôs aliados (no treinamento. os azuis)
         allied_team = self.world.team.copy()
         for robot in allied_team:
-            if robot.id == self.robot_id:
-                allied_team.remove(robot)
-                allied_team.insert(0, robot) # define o primeiro do time como o robô de IA_attacker em questão
+            if robot is not None:
+                if robot.id == self.robot_id:
+                    allied_team.remove(robot)
+                    allied_team.insert(0, robot) # define o primeiro do time como o robô de IA_attacker em questão
 
         for i in range(3):  # três robôs do time aliado
-            base = 4 + (7 * i)
-            
-            obs[base:base+7] = np.array([
-                self.norm_pos(allied_team[i].x),
-                self.norm_pos(allied_team[i].y),
-                np.sin(allied_team[i].th),
-                np.cos(allied_team[i].th),
-                self.norm_v(allied_team[i].vx),
-                self.norm_v(allied_team[i].vy),
-                self.norm_w(allied_team[i].w)
-            ])
+            if i == 0:
+                base = 4 + (7 * i)
+                
+                obs[base:base+7] = np.array([
+                    self.norm_pos(allied_team[i].x),
+                    self.norm_pos(allied_team[i].y),
+                    np.sin((allied_team[i].th)),
+                    np.cos((allied_team[i].th)),
+                    self.norm_v(allied_team[i].vx),
+                    self.norm_v(allied_team[i].vy),
+                    self.norm_w(allied_team[i].w)
+                ])
+            else:
+                base = 4 + (7 * i)
+                
+                obs[base:base+7] = np.array([
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                    ])
 
         # 🔹 3. Informações dos robôs inimigos (no treinamento, os amarelos)
         for i in range(3):  # três robôs do time adversário

@@ -46,7 +46,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=120,
+                loop_freq=60,
                 draw_uvf=True,
                 team_yellow=False,
                 immediate_start=True,
@@ -71,11 +71,11 @@ class Loop:
 
         self.team_yellow = team_yellow
         self.n_robots = n_robots
-        # self.referee = referee
-        # self.immediate_start = immediate_start
-        # self.control = control
-        # self.debug = debug
-        # self.mirror = mirror
+        self.referee = referee
+        self.immediate_start = immediate_start
+        self.control = control
+        self.debug = debug
+        self.mirror = mirror
 
 
         # Instancia interface com o simulador
@@ -102,17 +102,17 @@ class Loop:
         # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
         # Units are meters and degrees
         
-        # self.simulado = robosim.VSS(
-        #     field_type,
-        #     n_robots_blue,
-        #     n_robots_yellow,
-        #     time_step_ms,
-        #     ball_pos,
-        #     blue_robots_pos,
-        #     yellow_robots_pos,
-        # )
+        self.simulado = robosim.VSS(
+            field_type,
+            n_robots_blue,
+            n_robots_yellow,
+            time_step_ms,
+            ball_pos,
+            blue_robots_pos,
+            yellow_robots_pos,
+        )
 
-        # field_params = self.simulado.get_field_params()
+        field_params = self.simulado.get_field_params()
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
@@ -234,7 +234,7 @@ class Loop:
                 if robot is not None: robot.turnOn()
                 
         # Desenha no ALP-GUI
-        # self.draw()
+        self.draw()
 
     def busyLoop(self):
 
@@ -437,6 +437,7 @@ class Loop:
                 self.busyLoop()
                 while time.time() - t0 < self.loopTime:
                     self.busyLoop()
+                    self.loop()
                 self.world.execTime = time.time() - t0
                     
                 t0 = time.time()

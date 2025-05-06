@@ -56,7 +56,7 @@ parser.add_argument('--systemtest', dest='systemtest',type=str, choices=[
                                                                         "draw_uvf", # plot do jogo com/sem uvf
                                                                         "heatmap_team", "heatmap_attacker", "heatmap_defender", "heatmap_goalkeeper", "heatmap_ball" # heatmaps
                                                                      ],
-                    required=True, help='Run parallel system instances in test mode.')
+                    default=False, required=False, help='Run parallel system instances in test mode.')
 
 args = parser.parse_args()
 
@@ -102,32 +102,6 @@ if args.systemtest:
 
     loop.test()
 
-    # loop_list = []
-    # for i in range(10):
-    #     loop = Loop(
-    #     draw_uvf=False, 
-    #     team_yellow=team_yellow,
-    #     immediate_start=args.immediate_start,
-    #     static_entities=args.static_entities,
-    #     referee=args.referee,
-    #     firasim=args.firasim,
-    #     vssvision=args.vssvision,
-    #     mainvision=args.mainvision,
-    #     simulado=True,
-    #     control=args.control,
-    #     debug=args.debug,
-    #     port=args.port,
-    #     n_robots=args.n_robots,
-    #     mirror=mirror)
-
-    #     print(f"tesbols{i}")
-    #     loop_thread = threading.Thread(target=loop.run)
-    #     loop_list.append(loop_thread)
-    #     loop_thread.start() # inicia essa thread do loop
-    
-    # print(threading.active_count())
-    # print(len(loop_list))
-    # loop_thread.join()
 
 else:
     # Instancia o programa principal

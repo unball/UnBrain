@@ -38,6 +38,9 @@ class MainStrategy(Strategy):
         # Variables
         self.static_entities = static_entities
 
+    def getEntity(self, entity):
+        return entity.__class__.__name__
+
     def manageReferee(self, command):
         if command is None: 
             for robot in self.world.raw_team: 
@@ -96,14 +99,22 @@ class MainStrategy(Strategy):
         return formation, toDecide
 
     def decideBestDefender(self, formation, toDecide):
-        target = self.ellipseTarget()
-        distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
+        old_formation = self.formationDecider()
+        if not GoalKeeper in self.formationDecider() and self.currentGoalkeeper != None:
+            self.currentDefender = self.currentGoalkeeper
+            self.world.team[self.currentDefender].updateEntity(Defender)
+            if self.currentDefender in toDecide:
+                toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
+        else:
+            target = self.ellipseTarget()
+            distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
 
-        self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
-        self.world.team[self.currentDefender].updateEntity(Defender)
-
-        toDecide.remove(self.currentDefender)
-        formation.remove(Defender)
+            self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
+            self.world.team[self.currentDefender].updateEntity(Defender)
+            if self.currentDefender in toDecide:
+                toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
 
         return formation, toDecide
 
@@ -112,9 +123,15 @@ class MainStrategy(Strategy):
         d2 = norm(self.world.team[toDecide[1]].pos, self.world.ball.pos)
 
         self.currentAttacker = bestWithHyst(self.currentAttacker, toDecide, [d1, d2], 0.20)
-    
-        self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
-        toDecide.remove(self.currentAttacker)
+        if self.world.team[self.currentAttacker].entity != None and self.getEntity(self.currentAttacker) == 'Attacker':
+            if self.world.team[self.currentAttacker].entity.slave == False:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+            elif self.world.team[self.currentAttacker].entity.slave == True:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=True)
+        else:
+            self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+        if self.currentAttacker in toDecide:
+            toDecide.remove(self.currentAttacker)
         formation.remove(Attacker)
 
         return formation, toDecide
@@ -125,7 +142,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[GoalKeeper,Attacker,GoalKeeper]
+            roles=[GoalKeeper,Attacker,Defender]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)

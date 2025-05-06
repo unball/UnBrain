@@ -16,7 +16,7 @@ parser.add_argument('--team-color', dest='team_color',
                     type=str, choices=['yellow', 'blue'], required=True, help='Team color.')
 
 parser.add_argument('--immediate-start', dest='immediate_start',
-                    action='store_const', const=True, default=True, help='If robots should start moving without VSSReferee telling so.')
+                    action='store_const', const=True, default=False, help='If the system should start without being paused/interrupted.')
 
 parser.add_argument('--static-entities', dest='static_entities',
                     action='store_const', const=True, default=False, help='If strategy will keep robots with the same entities all the time.')

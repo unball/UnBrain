@@ -73,11 +73,11 @@ class Loop:
 
         self.team_yellow = team_yellow
         self.n_robots = n_robots
-        # self.referee = referee
-        # self.immediate_start = immediate_start
-        # self.control = control
-        # self.debug = debug
-        # self.mirror = mirror
+        self.referee = referee
+        self.immediate_start = immediate_start
+        self.control = control
+        self.debug = debug
+        self.mirror = mirror
 
 
         # Instancia interface com o simulador
@@ -322,7 +322,9 @@ class Loop:
 
         logging.info("System is running")
 
-        self.throw_SIGSTP()
+        if not self.immediate_start:
+            self.throw_SIGSTP()
+            
         while self.running:
             
             # Executa o loop de visão e referee até dar o tempo de executar o resto

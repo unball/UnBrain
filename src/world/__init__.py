@@ -57,8 +57,8 @@ class World:
         self.n_robots = n_robots
         self._team = [None,None,None]
         for i in self.n_robots:
-            self._team[i] = TeamRobot(self, i, on=immediate_start)
-        self.enemies = [TeamRobot(self, i, on=immediate_start) for i in self.n_robots]
+            self._team[i] = TeamRobot(self, i, on=True)
+        self.enemies = [TeamRobot(self, i, on=True) for i in self.n_robots]
         for robot in self.enemies:
             if robot is not None:
                 robot.xvec.add(1000000000000000)

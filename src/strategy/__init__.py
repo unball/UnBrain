@@ -34,6 +34,7 @@ class MainStrategy(Strategy):
         # States
         self.currentAttacker = None
         self.currentDefender = None
+        self.currentGoalkeeper = None
 
         # Variables
         self.static_entities = static_entities
@@ -165,14 +166,13 @@ class MainStrategy(Strategy):
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
             
             hasMaster = False
-            if Attacker in formation:
+            if Attacker in formation and len(toDecide) >= 2:
                 formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
                 hasMaster = True
 
             if Defender in formation and len(toDecide) >= 1:
                 formation, toDecide = self.decideBestDefender(formation, toDecide)
 
-            
             if Attacker in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
                 self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)

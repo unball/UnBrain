@@ -60,7 +60,7 @@ class Attacker(Entity):
         return self._control
 
     def equalsTo(self, otherAttacker):
-        return self.slave == otherAttacker.slave
+        return True
 
     def onExit(self):
         clientProvider().removeTarget(self.robot.id)

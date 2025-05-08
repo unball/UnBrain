@@ -1,4 +1,4 @@
-from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, L, unit, angl, norml, sats
+from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, get_Lr, unit, angl, norml, sats
 from tools.interval import Interval
 from control import Control
 import numpy as np
@@ -18,7 +18,7 @@ class SecAttackerControl(Control):
     self.mu = mu
     self.amax = self.mu * self.g
     self.vmax = vmax
-    self.L = L
+    self.L = get_Lr(self.world.mode)[0] # por algum motivo nessa entidade o L era diferente do que estava em tools
     self.kv = 10
     self.vbias = vbias
 

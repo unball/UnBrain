@@ -3,24 +3,39 @@ import numpy as np
 # Constantes físicas do robô
 wheel_reduction = 1
 
-# Supostamente devia ser
-#r = 0.0325
-#L = 0.075
 
-# O que realmente é
-r = 0.0159
-L = 0.0756
 wheel_reduction = 1
 wheel_w_max = 110
 conversion = 127 / wheel_w_max
+
+def get_Lr(mode: str) -> (float, float):
+  # Supostamente devia ser
+  #L = 0.075
+  #r = 0.0325
+
+  if mode == "vssvision":
+    L = 0.0756
+    r = 0.0159
+
+  elif mode == "firasim":
+    L = 0.08
+    r = 0.02
+
+  elif mode == "simulado":
+    L = 0.0775
+    r = 0.026
+  return L, r
+
 
 def deadzone(vin, up, down):
   if (vin!=0):
     return vin+up if (vin > 0) else vin-abs(down)
   return 0
 
-def speeds2motors(v: float, w: float) -> (int, int):
+def speeds2motors(v: float, w: float, mode: str) -> (int, int):
   """Recebe velocidade linear e angular e retorna velocidades para as duas rodas"""
+
+  L, r = get_Lr(mode)
 
   # Computa a velocidade angular de rotação de cada roda
   vr = (v + (L/2)*w) / r#/ (2*np.pi*r) * wheel_reduction
@@ -35,7 +50,10 @@ def speeds2motors(v: float, w: float) -> (int, int):
   
   return vr, vl
 
-def motors2linvel(vl: float, vr: float) -> float:
+def motors2linvel(vl: float, vr: float, mode: str) -> float:
+
+  L, r = get_Lr(mode)
+
   # Computa a velocidade angular de rotação de cada roda
   return (vr + vl) * (2*np.pi*r) / wheel_reduction / 2
 

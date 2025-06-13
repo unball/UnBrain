@@ -4,7 +4,7 @@ from . import Field
 
 
 class UVF(Field):
-    def __init__(self, world, Pb, robot, radius=0.1382, direction=0, spiral=True):
+    def __init__(self, world, Pb, robot, radius=0.1382, direction=0, spiral=True,Kr=0.2333):
         super().__init__(Pb)
 
         self.Pb = Pb
@@ -37,7 +37,7 @@ class UVF(Field):
         self.spiral = spiral
 
         # Constantes das espirais duplas
-        self.Kr = 0.2333
+        self.Kr = Kr
 
         self.Ko = 0.0003
 

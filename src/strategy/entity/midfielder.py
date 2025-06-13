@@ -6,7 +6,7 @@ from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
 from strategy.field.areaAvoidance.avoidRect import AvoidRect
 from strategy.field.areaAvoidance.avoidEllipse import AvoidEllipse
 from ..entity.attacker import Attacker
-from strategy.movements import goToBall, intercept
+from strategy.movements import goToBall, intercept, goToBallSec
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, sat, sats, unit
 from tools.interval import Interval
 from control.UFC import UFC_Simple
@@ -97,7 +97,7 @@ class Midfielder(Attacker):
 
         # Movimento de alinhamento
         if self.attackState == 0:
-            Pb = goToBall(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
+            Pb = goToBallSec(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
             Pb = np.array([Pb[0]-self.midfielderOffset,Pb[1],Pb[2]])
             
             if len(otherAttackers) > 0:
@@ -105,7 +105,7 @@ class Midfielder(Attacker):
 
                 if rro[0] > 0.4:
                     self.robot.vref = 0
-                    self.robot.field = UVF((0.4, sat(rb[1], 0.35), np.pi/2 * np.sign(rb[1]-rr[1])), radius=self.spiralRadius)
+                    self.robot.field = UVF(self.world, (0.4, sat(rb[1], 0.35), np.pi/2 * np.sign(rb[1]-rr[1])),self.robot, radius=self.spiralRadius)
                     #self.followLine = True
                     self.followLine = False
 
@@ -119,17 +119,17 @@ class Midfielder(Attacker):
                 if rb[0] > 0.6:
                     self.robot.vref = 0
                     PmidFilder = [0.1, -0.15 * np.sign(otherAttacker.y)]
-                    self.robot.field = UVF((*PmidFilder, ang(PmidFilder, goal)), radius=0.05)
+                    self.robot.field = UVF(self.world, (*PmidFilder, ang(PmidFilder, goal)), self.robot, radius=0.05)
                 else:
-                    Pb = goToBall(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
-                    self.robot.field = UVF(Pb, radius=self.spiralRadius, Kr=0.3)
+                    Pb = goToBallSec(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
+                    self.robot.field = UVF(self.world, Pb, self.robot, radius=self.spiralRadius, Kr=0.3)
 
-                # if np.abs(rb[1]) > rl[1]:
-                #     self.robot.vref = math.inf
-                #     self.robot.field = UVF(Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
-                # else:
-                #     self.robot.vref = self.approximationSpeed
-                #     self.robot.field = UVF(Pb, radius=self.spiralRadius)
+                if np.abs(rb[1]) > rl[1]:
+                    self.robot.vref = math.inf
+                    self.robot.field = UVF(self.world, Pb,self.robot, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
+                else:
+                    self.robot.vref = self.approximationSpeed
+                    self.robot.field = UVF(self.world, Pb, self.robot, radius=self.spiralRadius)
         
         # Movimento reto
         elif self.attackState == 1 or self.attackState == 2:
@@ -143,7 +143,7 @@ class Midfielder(Attacker):
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]
-        enemies = [robot for robot in self.world.enemies]
+        enemies = [robot for robot in self.world.teamEnemies]
 
         # Campo para evitar área inimiga
         if np.any([insideEllipse(robot.pos, a, b, rg) for robot in otherAllies]):

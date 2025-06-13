@@ -7,7 +7,7 @@ from .entity.controlTest import ControlTester
 from .entity.SecAttacker import SecAttacker
 from client.protobuf.vssref_common_pb2 import Foul, Quadrant
 from client.referee import RefereeCommands
-from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst
+from tools import sats, norml, unit, angl, angError, projectLine, howFrontBall, norm, bestWithHyst, insideEllipse
 from .movements import blockBallElipse
 from copy import copy
 import numpy as np
@@ -78,13 +78,18 @@ class MainStrategy(Strategy):
         
         pose, spin = blockBallElipse(rb, vb, rr, self.world.field.areaEllipseCenter, *self.world.field.areaEllipseSize)
 
-        return pose[:2]
+        return pose
 
     def formationDecider(self):
-        if self.world.ball.pos[0] < -0.25:
+        rm = self.world.field.areaEllipseCenter
+        a, b = self.world.field.areaEllipseSize
+        rb = np.array(self.world.ball.pos)
+
+        if insideEllipse(rb, a, b, rm):
             return [GoalKeeper, Attacker, Attacker]
         else:
-            return [Defender, Attacker, Attacker]
+            return [Defender, Midfielder, Attacker]
+        
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
@@ -108,7 +113,7 @@ class MainStrategy(Strategy):
                 toDecide.remove(self.currentDefender)
             formation.remove(Defender)
         else:
-            target = self.ellipseTarget()
+            target = self.ellipseTarget()[:2]
             distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
 
             self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
@@ -178,6 +183,12 @@ class MainStrategy(Strategy):
                 self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
+
+            if Midfielder in formation and len(toDecide) >= 1:
+                #possível erro na mudança de role abaixo, checar mais tarde
+                self.world.team[toDecide[0]].updateEntity(Midfielder)
+                toDecide.remove(toDecide[0])
+                formation.remove(Midfielder)
 
         for robot in self.world.team:
             if robot is not None:

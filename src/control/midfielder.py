@@ -1,4 +1,4 @@
-from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, L, unit, angl, norml
+from tools import norm, ang, angError, sat, speeds2motors, fixAngle, get_Lr, filt, unit, angl, norml
 from tools.interval import Interval
 from control import Control
 import numpy as np
@@ -7,7 +7,7 @@ import time
 
 class MidfielderControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=4, kp=20, mu=0.3, vmax=1.5, L=L, enableInjection=False):
+  def __init__(self, world, kw=4, kp=20, mu=0.3, vmax=1.5, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -16,7 +16,7 @@ class MidfielderControl(Control):
     self.mu = mu
     self.amax = self.mu * self.g
     self.vmax = vmax
-    self.L = L
+    self.L = get_Lr(self.world.mode)[0]
     self.kv = 10
     self.vbias = 0.2
     self.kapd = 3

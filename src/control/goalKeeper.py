@@ -7,7 +7,7 @@ import time
 
 class GoalKeeperControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=8, kp=150, mu=0.3, vmax=1.0, enableInjection=False):
+  def __init__(self, world, kw=6, kp=120, mu=0.15, vmax=1.0, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -68,4 +68,4 @@ class GoalKeeperControl(Control):
     self.eth = eth
     
     if robot.spin == 0: return (v * robot.direction, w)
-    else: return (0, 60 * robot.spin)
+    else: return (0, 65 * robot.spin)

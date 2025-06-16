@@ -321,11 +321,11 @@ class Ball(Element):
         """Retorna se a bola está na área do gol aliado ou não"""
         return insideRect(self.pos, self.world.allyGoalPos, self.world.goalAreaSize)
     
-    @property
-    def pos(self, step=3):
-        """Retorna a posição \\([x,y]\\) do objeto como uma lista."""
-        vx, vy = self.v
-        return [self.x+vx*self.world.dt*step, self.y+vy*self.world.dt*step]
+    # @property
+    # def pos(self, step=3):
+    #     """Retorna a posição \\([x,y]\\) do objeto como uma lista."""
+    #     vx, vy = self.v
+    #     return [self.x+vx*self.world.dt*step, self.y+vy*self.world.dt*step]
 
     # def setSpin(self, dir=1, timeout=0.25):
     #     if dir != 0: 

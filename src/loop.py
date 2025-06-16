@@ -319,6 +319,7 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
+                self.loop()
             self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop
@@ -327,7 +328,7 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print(f"gfl {time.time()-tempo_zero:.2f}", end="\r", flush=True)
+            print(f"gfl {time.time()-tempo_zero:.2f} FPS: {1/self.world.execTime}", end="\r", flush=True)
 
         logging.info("System stopped")
 

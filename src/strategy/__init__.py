@@ -88,7 +88,7 @@ class MainStrategy(Strategy):
         if insideEllipse(rb, a, b, rm):
             return [GoalKeeper, Attacker, Attacker]
         else:
-            return [Defender, Midfielder, Attacker]
+            return [GoalKeeper, Midfielder, Attacker]
         
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray

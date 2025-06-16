@@ -2133,7 +2133,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">end</property>
-                                        <property name="label" translatable="yes">Tempo total de loop:</property>
+                                        <property name="label" translatable="yes">FPS do Sistema:</property>
                                         <attributes>
                                           <attribute name="style" value="oblique"/>
                                         </attributes>
@@ -2148,7 +2148,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
-                                        <property name="label" translatable="yes">0 ms</property>
+                                        <property name="label" translatable="yes">0 FPS</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>

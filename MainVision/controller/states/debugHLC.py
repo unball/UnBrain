@@ -148,7 +148,7 @@ class DebugHLC(ParamsPattern, State):
     else: self.firstLoopRunning = True
 
     # Mais dados de debug
-    self.debugData["loopTime"] = (dt*1000)*0.1 + self.debugData["loopTime"]*0.9
+    self.debugData["loopTime"] = 1/dt
 
     if self.getParam("enableDebug"):
       self.debugData["controlV"] = speeds[0].v
@@ -210,7 +210,7 @@ class DebugHLC(ParamsPattern, State):
     # else: self._controller.communicationSystems.get().sendZero()
 
     # Garante que o tempo de loop é de no mínimo 16ms
-    time.sleep(max(0.011-(time.time()-self.t), 0))
+    # time.sleep(max(0.011-(time.time()-self.t), 0))
 
     # Incrementa o número de loops
     self.loops += 1

@@ -143,7 +143,7 @@ class Midfielder(Attacker):
 
         # Obtém outros aliados
         otherAllies = [robot for robot in self.world.team if robot != self.robot]
-        enemies = [robot for robot in self.world.teamEnemies]
+        # enemies = [robot for robot in self.world.teamEnemies]
 
         # Campo para evitar área inimiga
         if np.any([insideEllipse(robot.pos, a, b, rg) for robot in otherAllies]):

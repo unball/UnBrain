@@ -13,7 +13,7 @@ def get_Lr(mode: str) -> (float, float):
   #L = 0.075
   #r = 0.0325
 
-  if mode == "vssvision":
+  if mode == "fisico":
     L = 0.0756
     r = 0.0159
 

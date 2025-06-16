@@ -90,7 +90,7 @@ class World:
         self.updateCount = 0
 
         if self.firasim: self.mode = "firasim"
-        elif self.vssvision: self.mode = "vssvision"
+        elif self.vssvision or self.mainvision: self.mode = "fisico"
         elif self.simulado: self.mode = "simulado"
 
     def update_main_vision(self, message):

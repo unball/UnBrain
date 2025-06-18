@@ -46,6 +46,15 @@ class DebugHLC(ParamsPattern, State):
     self.t = time.time()
     """Tempo do início do loop anterior"""
 
+    self._desired_fps = 120
+    '''Frames que o sistema idealmente roda'''
+
+    self._frame_count = 0
+
+    self.fps = 0.0
+
+    self._fps_timer_start = time.perf_counter()
+
     self.loops = 0
     """Loops executados"""
 
@@ -73,7 +82,7 @@ class DebugHLC(ParamsPattern, State):
       "velRobotY": [],
       "velRobotMod": [],
       "replayData": {"time": [], "robot": [], "robot1": [], "robot2": [], "ball": []},
-      "loopTime": 0,
+      "loopTime": 0.0,
       "controlV": 0,
       "controlW": 0,
       "visionV": 0,
@@ -107,7 +116,7 @@ class DebugHLC(ParamsPattern, State):
     with open(filename, "w") as f:
       json.dump(self.debugData, f, indent=4)
 
-  def appendDebugData(self, reference, speeds, dt):
+  def appendDebugData(self, reference, speeds):
     """Alimenta os dados de debug com o estado atual das variáveis"""
 
     if self.world.running and self.getParam("enableDebug"):
@@ -147,8 +156,9 @@ class DebugHLC(ParamsPattern, State):
 
     else: self.firstLoopRunning = True
 
+
     # Mais dados de debug
-    self.debugData["loopTime"] = 1/dt
+    self.debugData["loopTime"] = self.fps
 
     if self.getParam("enableDebug"):
       self.debugData["controlV"] = speeds[0].v
@@ -161,8 +171,7 @@ class DebugHLC(ParamsPattern, State):
     """Função de loop do estado debugHLC"""
 
     # Computa o tempo desde o último loop e salva
-    dt = time.time()-self.t
-    self.t = time.time()
+    now = time.perf_counter()
 
     # Atualiza o mundo com a visão
     if self.getParam("runVision"):
@@ -176,6 +185,17 @@ class DebugHLC(ParamsPattern, State):
     # self.robots[0].controlSystem = self.HLCs.get()
     # self.robots[1].controlSystem = self.HLCs.get()
     # self.robots[2].controlSystem = self.HLCs.get()
+
+
+    self._frame_count += 1
+
+    elapsed = now - self._fps_timer_start
+
+    if elapsed >= 0.1:
+      self.fps = self._frame_count / elapsed
+      # Reset para o próximo intervalo de 1 segundo
+      self._fps_timer_start = now
+      self._frame_count = 0
     
     # Controle manual
     if self.getParam("enableManualControl"):
@@ -194,7 +214,7 @@ class DebugHLC(ParamsPattern, State):
     # reference = self.robots[0].field.F(self.robots[0].pose)
 
     # Adiciona dados de debug para gráficos e para salvar
-    self.appendDebugData(0, speeds, dt)
+    self.appendDebugData(0, speeds)
 
     # if self.world.running:
     #   # Envia mensagem ao robô
@@ -210,7 +230,11 @@ class DebugHLC(ParamsPattern, State):
     # else: self._controller.communicationSystems.get().sendZero()
 
     # Garante que o tempo de loop é de no mínimo 16ms
-    # time.sleep(max(0.011-(time.time()-self.t), 0))
+    target_period = 1.0 / self._desired_fps
+    work_time = time.perf_counter() - now
+    sleep_time = target_period - work_time
+    if sleep_time > 0:
+      time.sleep(sleep_time)
 
     # Incrementa o número de loops
     self.loops += 1

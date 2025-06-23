@@ -85,8 +85,10 @@ class MainStrategy(Strategy):
         a, b = self.world.field.areaEllipseSize
         rb = np.array(self.world.ball.pos)
 
-        if insideEllipse(rb, a, b, rm):
+        if self.world.ball.pos[0] < -0.25 and insideEllipse(rb, a, b, rm):
             return [GoalKeeper, Attacker, Attacker]
+        elif self.world.ball.pos[0] < -0.25:
+            return [GoalKeeper, Defender, Attacker]
         else:
             return [Defender, Attacker, Attacker]
         
@@ -114,9 +116,9 @@ class MainStrategy(Strategy):
             formation.remove(Defender)
         else:
             target = self.ellipseTarget()[:2]
-            distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
+            distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide if robotIndex != self.currentDefender]
 
-            self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
+            self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20) #Descobrir qual o melhor valor Hyst
             self.world.team[self.currentDefender].updateEntity(Defender)
             if self.currentDefender in toDecide:
                 toDecide.remove(self.currentDefender)
@@ -148,7 +150,7 @@ class MainStrategy(Strategy):
         #De repetição que tem range máximo o número de robôs e atualizaremos com base na prioridade (goleiro primeiro, atacante segundo) 
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
-            roles=[GoalKeeper,Attacker,Defender]
+            roles=[Attacker,GoalKeeper,Defender]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
@@ -170,19 +172,31 @@ class MainStrategy(Strategy):
             if GoalKeeper in formation:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
             
-            hasMaster = False
-            if Attacker in formation and len(toDecide) >= 2:
-                formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
-                hasMaster = True
+            if self.world.ball.pos[0] < -0.15:
+                if Defender in formation and len(toDecide) >= 1:
+                    formation, toDecide = self.decideBestDefender(formation, toDecide)
 
-            if Defender in formation and len(toDecide) >= 1:
-                formation, toDecide = self.decideBestDefender(formation, toDecide)
-
-            if Attacker in formation and len(toDecide) >= 1:
-                #possível erro na mudança de role abaixo, checar mais tarde
-                self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
-                toDecide.remove(toDecide[0])
-                formation.remove(Attacker)
+                hasMaster = False
+                if Attacker in formation and len(toDecide) >= 2:
+                    formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
+                    hasMaster = True
+                if Attacker in formation and len(toDecide) >= 1:
+                    #possível erro na mudança de role abaixo, checar mais tarde
+                    self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                    toDecide.remove(toDecide[0])
+                    formation.remove(Attacker)
+            else:
+                hasMaster = False
+                if Attacker in formation and len(toDecide) >= 2:
+                    formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
+                    hasMaster = True
+                if Attacker in formation and len(toDecide) >= 1:
+                    #possível erro na mudança de role abaixo, checar mais tarde
+                    self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                    toDecide.remove(toDecide[0])
+                    formation.remove(Attacker)
+                if Defender in formation and len(toDecide) >= 1:
+                    formation, toDecide = self.decideBestDefender(formation, toDecide)
 
             if Midfielder in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde

@@ -125,8 +125,8 @@ class Attacker(Entity):
         # Se não, vai para a bola
         else:
             # Vai para a bola saturada em -0.60m em x
-            # rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
-            pose, gammavels = goToBall(rb, rg, vb, self.world.marginPos)
+            rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
+            pose, gammavels = goToBall(rbfiltered, rg, vb, self.world.marginPos)
             self.robot.vref = 0.8
             self.robot.gammavels = gammavels
             self.robot.movState = 0

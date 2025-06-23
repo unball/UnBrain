@@ -7,7 +7,7 @@ import time
 
 class DefenderControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=9, kp=80, mu=0.75, vmax=1.2, enableInjection=False):
+  def __init__(self, world, kw=6, kp=100, mu=0.3, vmax=1.0, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8

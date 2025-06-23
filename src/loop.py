@@ -46,7 +46,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=60,
+                loop_freq=120,
                 draw_uvf=True,
                 team_yellow=False,
                 immediate_start=True,
@@ -319,6 +319,7 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.busyLoop()
+                self.loop()
             self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop
@@ -327,7 +328,7 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print(f"gfl {time.time()-tempo_zero:.2f}", end="\r", flush=True)
+            print(f"gfl {time.time()-tempo_zero:.2f}, FPS {1/self.world.execTime:.2f}", end="\r", flush=True)
 
         logging.info("System stopped")
 

@@ -328,7 +328,7 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print(f"gfl {time.time()-tempo_zero:.2f}", end="\r", flush=True)
+            print(f"gfl {time.time()-tempo_zero:.2f}, FPS {1/self.world.execTime:.2f}", end="\r", flush=True)
 
         logging.info("System stopped")
 

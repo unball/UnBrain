@@ -229,12 +229,12 @@ class DebugHLC(ParamsPattern, State):
     # Envia zero para os robôs
     # else: self._controller.communicationSystems.get().sendZero()
 
-    # Garante que o tempo de loop é de no mínimo 16ms
-    target_period = 1.0 / self._desired_fps
-    work_time = time.perf_counter() - now
-    sleep_time = target_period - work_time
-    if sleep_time > 0:
-      time.sleep(sleep_time)
+    # # Garante que o tempo de loop é de no mínimo 16ms
+    # target_period = 1.0 / self._desired_fps
+    # work_time = time.perf_counter() - now
+    # sleep_time = target_period - work_time
+    # if sleep_time > 0:
+    #   time.sleep(sleep_time)
 
     # Incrementa o número de loops
     self.loops += 1

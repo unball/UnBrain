@@ -65,65 +65,76 @@ class ControlTester(Entity):
         #Quad 4: X = -0.375 Y = -0.430
 
         #Andar para frente e para trás
-        if self.x == 1:
-            if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[-0.380,0.430]), Pb=(-0.380,0.430, 0))
-                
-            else: self.x = 2
-        if self.x == 2:
-            if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.380,0.430]), Pb=(0.380,0.430, np.pi/2))
-                
-            else: self.x = 3
-        if self.x == 3:
-            if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[0.380,-0.430]), Pb=(0.380,-0.430, 0))
-                
-            else: self.x = 4
-        if self.x == 4:
-            if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = DirectionalField(ang(rr,[-0.380,-0.430]), Pb=(-0.380,-0.430, np.pi/2))
-                
-            else: self.x = 5
-        if self.x == 5:
-            if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = AttractiveField(Pb=(-0.380,0.430,0))
-                
-            else: self.x = 6
-        if self.x == 6:
-            if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = AttractiveField(Pb=(0.380,0.430,np.pi/2))
-                
-            else: self.x = 7
-        if self.x == 7:
-            if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = AttractiveField(Pb=(0.380,-0.430, 0))
-                
-            else: self.x = 8
-        if self.x == 8:
-            if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = AttractiveField(Pb=(-0.380,-0.430, np.pi/2))
-                
-            else: self.x = 9
-        if self.x == 9:
-            if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = UVF(self.world, (-0.380,0.430, 0), robot=self.robot, direction=-1) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
-                
-            else: self.x = 10
-        if self.x == 10:
-            if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
-                self.robot.field = UVF(self.world, (0.380,0.430, np.pi), robot= self.robot, direction=-1) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
+        if isinstance(self.control, UFC_Simple):
+            if self.x == 1:
+                if not -0.390 < rr[0] < -0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = DirectionalField(ang(rr,[-0.380,0.430]), Pb=(-0.380,0.430, 0))
+                    
+                else: self.x = 2
+            if self.x == 2:
+                if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = DirectionalField(ang(rr,[0.380,0.430]), Pb=(0.380,0.430, np.pi/2))
+                    
+                else: self.x = 3
+            if self.x == 3:
+                if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = DirectionalField(ang(rr,[0.380,-0.430]), Pb=(0.380,-0.430, 0))
+                    
+                else: self.x = 4
+            if self.x == 4:
+                if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = DirectionalField(ang(rr,[-0.380,-0.430]), Pb=(-0.380,-0.430, np.pi/2))
+                    
+                else: self.x = 5
+            if self.x == 5:
+                if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = AttractiveField(Pb=(-0.380,0.430,0))
+                    
+                else: self.x = 6
+            if self.x == 6:
+                if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = AttractiveField(Pb=(0.380,0.430,np.pi/2))
+                    
+                else: self.x = 7
+            if self.x == 7:
+                if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = AttractiveField(Pb=(0.380,-0.430, 0))
+                    
+                else: self.x = 8
+            if self.x == 8:
+                if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = AttractiveField(Pb=(-0.380,-0.430, np.pi/2))
+                    
+                else: self.x = 9
+            if self.x == 9:
+                if not -0.370 > rr[0] > -0.390 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = UVF(self.world, (-0.380,0.430, 0), robot=self.robot, direction=-1) #AttractiveField(Pb=(-0.360,-0.380, np.pi)) 
+                    
+                else: self.x = 10
+            if self.x == 10:
+                if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = UVF(self.world, (0.380,0.430, np.pi), robot= self.robot, direction=1) #AttractiveField(Pb=(-0.360,-0.380, np.pi))
 
-            else: self.x = 11
-        if self.x == 11:
-            if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = UVF(self.world, (0.380,-0.430, 0), robot= self.robot, direction=1)
+                else: self.x = 11
+            if self.x == 11:
+                if not +0.390 > rr[0] > +0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = UVF(self.world, (0.380,-0.430, 0), robot= self.robot, direction=1)
 
-            else: self.x = 12
-        if self.x == 12:
-            if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
-                self.robot.field = UVF(self.world, (-0.380,-0.430, np.pi), robot= self.robot, direction=1)
-            else: self.x = 1
+                else: self.x = 12
+            if self.x == 12:
+                if not -0.390 < rr[0] < -0.370 or not -0.420 > rr[1] > -0.440: #Não chegou no lugar certo
+                    self.robot.field = UVF(self.world, (-0.380,-0.430, np.pi), robot= self.robot, direction=-1)
+                else: self.x = 1
+        if isinstance(self.control, DefenderControl):
+            if self.x == 1:
+                if not -0.390 < rr[0] < -0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                    self.robot.field = GoalKeeperField((-0.380, 0.430, np.pi/2), (-0.380))
+                else: 
+                    self.x = 2
+                    print(self.x)
+                if self.x == 2:
+                    if not +0.390 > rr[0] > +0.370 or not 0.420 < rr[1] < 0.440: #Não chegou no lugar certo
+                        self.robot.field = GoalKeeperField((0.380, 0.430, np.pi/2), (0.380))    
         # if rr[0] == 0.375 and rr[1] == 0.430:
         #     self.robot.field = DirectionalField(np.pi, Pb=(0.375,-0.430,np.pi))
         # if rr[0] == 0.375 and rr[1] == -0.430:

@@ -1,5 +1,6 @@
 from .elements import *
 from tools import RangeKutta
+from MainVision.model.paramsPattern import ParamsPattern
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -52,7 +53,7 @@ class Field:
     def goalAreaSize(self):
         return (self.goalAreaWidth, self.goalAreaHeight)
 
-class World:
+class World(ParamsPattern):
     def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, last_command=None):
         self.n_robots = n_robots
         self._team = [None,None,None]
@@ -83,6 +84,16 @@ class World:
         self.execTime = 0
         self.igglu = True
         
+        #MainVision
+        self.robots = self._team
+        self.fieldSide = side
+        self.running = False
+        self.checkBatteries = False
+        self.manualControlSpeedV = 0
+        self.manualControlSpeedW = 0
+        self.mus = [0.07, 0.07, 0.12, 0.07, 0.07]
+        self.edges = []
+        
         self.team_yellow = team_yellow
 
         self.allyGoals = 0
@@ -92,6 +103,23 @@ class World:
         if self.firasim: self.mode = "firasim"
         elif self.vssvision or self.mainvision: self.mode = "fisico"
         elif self.simulado: self.mode = "simulado"
+        
+        ParamsPattern.__init__(self, "worldConfig", {
+        "UVF_r": 0.05,
+        "UVF_Kr": 15,
+        "UVF_Kr_single": 0.1,
+        "UVF_horRepSize": 0.05,
+        "UVF_horMinDist": 0.1,
+        "UVF_verRepSize": 0.15,
+        "UVF_verGoalSize": 0.2,
+        "UVF_verMinDist": 0.15,
+        "UVF_ponRadius": 0.3,
+        "UVF_ponDistanceRadius": 0.1,
+        "UVF_ponMinAvoidanceAngle": 0.5
+        })
+
+    def setEdges(self, points):
+        self.edges = points
 
     def update_main_vision(self, message):
         if self.team_yellow: 

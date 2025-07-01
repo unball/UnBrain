@@ -20,6 +20,7 @@ from matplotlib.lines import Line2D
 from matplotlib.colors import LogNorm
 from matplotlib.colors import LinearSegmentedColormap
 
+from MainVision.controller.vision.mainVision import MainVision
 import os
 import gc
 import numpy as np
@@ -34,8 +35,12 @@ import copy
 import time
 import sys
 import signal
+
+#MainVision
 from vision.receiver import FiraClient
 from client.client_pickle import ClientPickle
+from MainVision.helpers import Mux
+from MainVision.controller.states import DummyState
 # from client.websocket import WebSocket
 
 
@@ -75,11 +80,13 @@ class Loop:
         self.immediate_start = immediate_start
         self.control = control
         self.debug = debug
+        self.execute = True
         self.mirror = mirror
 
 
         # Instancia interface com o simulador
         self.firasim = VSS(team_yellow=team_yellow)
+        
         
         yellow_robots_pos = []
         blue_robots_pos = []
@@ -133,6 +140,13 @@ class Loop:
         self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
+        #MainVision
+        self.visionSystem = MainVision(self.world, port)
+        self.communicationSystems = Mux([SerialRadio(self.world)])    
+        self.__events = queue.Queue()
+        """Eventos agendados. Essa fila é útil para que a view agende eventos a serem executados no momento oportuno pelo backend, evitando condições de corrida."""
+ 
+        
         # Variáveis
         self.message = None
         self.loopTime = 1.0 / loop_freq
@@ -140,8 +154,8 @@ class Loop:
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
 
-        if self.world.mainvision:
-            self.pclient = ClientPickle(port)
+        # if self.world.mainvision:
+        #     self.pclient = ClientPickle(port)
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -181,6 +195,22 @@ class Loop:
 
         if shutdown:
             sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
+
+    def stop(self):
+        """Faz a flag `__quitRequested` ser `True`, o que provocará a parada de `loop` na thread de controller."""
+        self.execute = False
+
+    def addEvent(self, method, *args, run_when_done_with_glib=None):
+        """Adiciona um evento a fila de eventos agendados para serem executados no início do próximo loop do backend. Se `run_when_done_with_glib` estiver definido como a tupla `(method,args)` o método dessa tupla será executado depois que o evento for executado."""
+        self.__events.put({"method": method, "args": args, "glib_run": run_when_done_with_glib})
+
+    def unsetState(self):
+        """Define que o estado a ser executado no `loop` é um estado que não faz nada."""
+        self.__state = DummyState(self)
+   
+    def setState(self, state):
+        """Define o estado que será executado no `loop`"""
+        self.__state = state
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
@@ -257,7 +287,8 @@ class Loop:
                 self.world.VSSVision_update(self.message.detection)
         if self.world.mainvision:
             # Atribuimos a mensagem que queremos passar para a função update_main_vision
-            message = self.pclient.receive()
+            # message = self.pclient.receive()
+            message = self.vision_system.update()
             self.message = message if message is not None else self.message
             self.execute = self.message["running"]
             if self.execute == False: # Se a visão parar de rodar, o robô para ao invés de continuar com o último comando

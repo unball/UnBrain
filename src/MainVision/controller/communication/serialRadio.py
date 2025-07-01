@@ -1,39 +1,31 @@
-from tools import encodeSpeeds
+from MainVision.controller.communication import Communication
+from MainVision.controller.tools.speedConverter import speeds2motors, encodeSpeeds
 from MainVision.model.paramsPattern import ParamsPattern
-import serial.tools.list_ports
 import serial
-import subprocess
-import world
-import constants
 import time
+import os.path
 
-class SerialRadio(ParamsPattern):
+class SerialRadio(ParamsPattern, Communication):
   """Implementa a comunicação usando simplesmente a interface serial"""
-  def __init__(self, control = False, debug = False):
-    ParamsPattern.__init__(self, "SerialWifi", {}, name="Serial+Wifi")
+  def __init__(self, world):
+    ParamsPattern.__init__(self, "SerialRadio", {}, name="Serial+Rádio")
+    Communication.__init__(self, world)
 
     self.serial = None
     self.failCount = 0
-    self.control = control
-    self.debug = debug
 
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
 
-  def send(self, n_robots, msg, waitack=True):
-    """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
+  def send(self, msg, waitack=True):
+    return
+    """Envia a mensagem via barramento serial em `/dev/ttyUSB0`."""
     try:
       if self.serial is None:
-        
-        porta = [port.device for port in serial.tools.list_ports.comports()][0]
-        subprocess.Popen("echo 'sua senha' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
-        print("Acessando a porta USB", porta)
-        self.serial = serial.Serial(porta, 115200)
+        self.serial = serial.Serial('/dev/ttyUSB0', 115200)
         self.serial.timeout = 0.100
-        
-    except Exception as e:
-      if(constants.SHOW_DEBUG_WIFI_ERROR):
-        print("FALHA AO ABRIR SERIAL, Erro:", e)
+    except:
+      #print("Falha ao abrir serial")
       return
 
     # Início da mensagem
@@ -43,17 +35,17 @@ class SerialRadio(ParamsPattern):
     checksum = 0
 
     # Vetor de dados
-    data = [0] * 6
+    data = [0] * 10
 
     # Adiciona as velocidades ao vetor de dados
+    for i,m in enumerate(msg):
 
-    for i,(v,w) in enumerate(msg):
-      if(self.debug and self.serial is not None):
-        print(f"ROBO {i} | v {v} | w {w}")
-      if i < len(n_robots):
-        v,w = encodeSpeeds(v, w)
-        data[n_robots[i]] = v
-        data[n_robots[i]+3] = w
+      # Converte para velocidade nos motores
+      v,w = encodeSpeeds(m.v, m.w)
+
+      # Coloca no vetor de dados
+      data[i] = v
+      data[i+5] = w
 
       # Computa o checksum
       checksum += v+w
@@ -74,16 +66,14 @@ class SerialRadio(ParamsPattern):
           result = list(map(lambda x:int(x), response.replace("\n","").split("\t")))
           if len(result) != 3: print("ACK de tamanho errado")
           else:
-            if result[0] != limitedChecksum or result[1] != data[0] or result[2] != data[3]:
-              print("Enviado:\t" + str(limitedChecksum) + "\t" + str(data[0]) + "\t" + str(data[3]))
-              print("Falha no checksum")
+            if result[0] != limitedChecksum or result[1] != data[0] or result[2] != data[5]:
+              print("Enviado:\t" + str(limitedChecksum) + "\t" + str(data[0]) + "\t" + str(data[5]))
               print("ACK:\t\t" + response)
         except:
           #print("Enviado:\t" + str(data[0]) + " " + str(data[5]) + " " + ' '.join([hex(c) for c in list(message)]))
           print(data)
           print(limitedChecksum)
           print("ACK:\t\t" + response)
-          
     except Exception as e:
       self.failCount += 1
       print("Falha ao enviar: " + str(self.failCount) + ", " + str(e))

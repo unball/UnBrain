@@ -28,7 +28,7 @@ python3.8 -m venv env
 source env/bin/activate
 
 #install requirements into it
-pip3 install -r requirements.txt
+'pip3 install -r requirements.txt'
 ```
 
 Depois de ativar o ambiente virtual, podemos instalar as dependências nele com o `pip3`

@@ -2,6 +2,11 @@ from loop import Loop
 import argparse
 import logging
 import client.gui
+from MainVision.view import View
+from MainVision.controller.vision.mainVision import MainVision
+from MainVision.controller import Controller
+from MainVision.model import Model
+import argparse
 import subprocess
 import sys
 import os
@@ -121,5 +126,11 @@ else:
         n_robots=args.n_robots,
         mirror=mirror
     )
+
+    view = View(loop)
+
+    view.run()
+
+    Model().flush()
 
     loop.run()

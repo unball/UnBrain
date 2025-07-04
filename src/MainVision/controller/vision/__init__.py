@@ -18,9 +18,9 @@ class Vision(ABC):
     """Mantém referência ao mundo"""
 
     self.usePastPositions = False
+    
     self.lastCandidateUse = 0
   
-    # self.server_pickle = ServerPickle(port)
 
   @abstractmethod
   def process(self, frame):
@@ -73,7 +73,7 @@ class Vision(ABC):
             "tau": self._world.robots[i].controlSystem.getParam("tau")
           }
         }
-        for i in range(self._world.n_robots)
+        for i in self._world.n_robots
       },
       "running": self._world.running,
       "check_batteries": self._world.checkBatteries,
@@ -81,7 +81,7 @@ class Vision(ABC):
       "manualControlSpeedW": self._world.manualControlSpeedW
     }
 
-    #self.server_pickle.send(message)
+    self.server_pickle.send(message)
 
     if self.usePastPositions is False:
       self.usePastPositions = True

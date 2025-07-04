@@ -126,11 +126,13 @@ else:
         n_robots=args.n_robots,
         mirror=mirror
     )
+    if args.mainvision:
+        controller = Controller(loop=loop, port=args.port, n_robots=args.n_robots)
 
-    view = View(loop)
+        view = View(loop, controller)
+        loop.initialize_pickle()
+        view.run()
 
-    view.run()
-
-    Model().flush()
-
-    loop.run()
+        Model().flush()
+    else:
+        loop.run()

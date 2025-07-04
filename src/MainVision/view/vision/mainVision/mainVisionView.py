@@ -16,10 +16,12 @@ import cv2
 class MainVisionView(StackSelector):
   """Classe que gerencia a view de configuração da visão"""
   
-  def __init__(self, controller, visionSystem, world, stack):
+  def __init__(self, controller, visionSystem, world, world_MS, stack):
     self.__controller = controller
     self.__visionSystem = visionSystem
-    self.__world = world
+    self.__world = world_MS
+    self.world = world
+
     super().__init__(stack, "configVision", "Visão")
   
   def ui(self):

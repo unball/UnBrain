@@ -76,7 +76,7 @@ class DebugHLCView(LoopThread, StackSelector):
     self.visionWLabel = builder.get_object("HLCvisionW")
     self.visionPoseLabel = builder.get_object("HLCvisionPose")
 
-    self.__renderer = HighLevelRenderer(self.__world, robotsGetter=self.robotsGetter, ballGetter=self.ballGetter, on_click=self.on_click, on_scroll=self.on_scroll)
+    self.__renderer = HighLevelRenderer(self.__controller, self.__world, robotsGetter=self.robotsGetter, ballGetter=self.ballGetter, on_click=self.on_click, on_scroll=self.on_scroll)
     """Instancia o renderizador, ele é do tipo GtkFrame"""
 
     # Adiciona o renderizador ao GtkBox

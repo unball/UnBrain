@@ -1,6 +1,7 @@
 from MainVision.controller.vision import Vision
 from MainVision.controller.vision.visionMessage import VisionMessage
 from MainVision.model.vision.mainVisionModel import MainVisionModel
+from MainVision.controller.communication.server_pickle import ServerPickle
 from MainVision.controller.tools.pixel2metric import pixel2meters, meters2pixel, normToAbs
 from MainVision.controller.tools import norm
 from MainVision.view.tools.drawing import Drawing
@@ -23,6 +24,10 @@ class MainVision(Vision):
     
     self.__angles = np.array([0, 90, 180, -90, -180])
     """Contém uma lista que corrige o ângulo do vetor que liga o centro de massa do detalhe ao centro de massa da camisa para o ângulo que o robô anda para frente"""
+    
+    self.server_pickle = ServerPickle(port)
+    print("ABACATE")
+
 
   @property
   def preto_hsv(self):
@@ -264,7 +269,7 @@ class MainVision(Vision):
     
     # Computa o identificador com base na forma e no número de contornos internos
     candidato = (0 if poligono == 3 else 2) + countInternalContours -1
-    if candidato >= self._world.n_robots: return None
+    if candidato >= len(self._world.n_robots): return None
     
     identificador = self.obterIdentificador(centerMeters, candidato)
 

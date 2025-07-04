@@ -63,13 +63,14 @@ class CortarCampo(FrameRenderer):
     
   def update_points(self, widget, event):
     """Se não estiver mostrando a imagem cortada, o clique adicionará o ponto clicado na lista de pontos clicados de homografia ou de corte retangular, a depender dea flag `use_homography` da visão. Se o número de pontos for suficiente para fazer o corte, atualiza a visão com esses pontos."""
-    if self.__show_warpped: return
-    
+    # Permite sempre a atualização dos pontos
     point = self.getRelPoint(widget, event)
-    
-    if len(self.__model.clicked_points_homography) == 4: self.__model.clicked_points_homography.clear()
+
+    if len(self.__model.clicked_points_homography) >= 4:
+        self.__model.clicked_points_homography.clear()
+
     self.__model.clicked_points_homography.append(point)
-      
+
     self.update_vision_points()
   
   def update_vision_points(self):

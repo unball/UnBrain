@@ -9,9 +9,10 @@ import cv2
 import itertools
 
 class HighLevelRenderer(cv2Renderer):
-  def __init__(self, world, robotsGetter=None, ballGetter=None, on_click=None, on_scroll=None):
+  def __init__(self, controller, world, robotsGetter=None, ballGetter=None, on_click=None, on_scroll=None):
     super().__init__(worker=self.renderer)
     
+    self.__controller = controller
     self.__world = world
     
     self.__robotsGetter = robotsGetter
@@ -174,7 +175,7 @@ class HighLevelRenderer(cv2Renderer):
       self.positions.append(robot.pos)
 
     # Só renderiza a parte interna do campo 
-    mask = self.visionSystem.get_polygon_mask(frame, self.__world.edges)
+    mask = self.__controller.visionSystem.get_polygon_mask(frame, self.__world.edges)
     frame = cv2.bitwise_and(frame, frame, mask=mask)
     
     return frame

@@ -20,7 +20,7 @@ from matplotlib.lines import Line2D
 from matplotlib.colors import LogNorm
 from matplotlib.colors import LinearSegmentedColormap
 
-from MainVision.controller.vision.mainVision import MainVision
+from gi.repository import GLib
 import os
 import gc
 import numpy as np
@@ -141,11 +141,11 @@ class Loop:
         self.strategy = MainStrategy(self.world, static_entities=static_entities)
 
         #MainVision
-        self.visionSystem = MainVision(self.world, port)
         self.communicationSystems = Mux([SerialRadio(self.world)])    
         self.__events = queue.Queue()
         """Eventos agendados. Essa fila é útil para que a view agende eventos a serem executados no momento oportuno pelo backend, evitando condições de corrida."""
- 
+        self.__quitRequested = False
+        """Flag que indica se o loop do backend deve terminar"""
         
         # Variáveis
         self.message = None
@@ -154,8 +154,8 @@ class Loop:
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
 
-        # if self.world.mainvision:
-        #     self.pclient = ClientPickle(port)
+        self.port = port
+        self.pclient = None
 
         # Interface gráfica para mostrar campos
         self.draw_uvf = draw_uvf
@@ -196,14 +196,18 @@ class Loop:
         if shutdown:
             sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
+    def initialize_pickle(self):
+        self.pclient = ClientPickle(self.port)
+        print("Client Inicializado.")
+
+
     def stop(self):
         """Faz a flag `__quitRequested` ser `True`, o que provocará a parada de `loop` na thread de controller."""
         self.execute = False
-
-    def addEvent(self, method, *args, run_when_done_with_glib=None):
-        """Adiciona um evento a fila de eventos agendados para serem executados no início do próximo loop do backend. Se `run_when_done_with_glib` estiver definido como a tupla `(method,args)` o método dessa tupla será executado depois que o evento for executado."""
-        self.__events.put({"method": method, "args": args, "glib_run": run_when_done_with_glib})
-
+        print("oiiiii")
+        self.running = False
+        self.handle_SIGINT(0,0, shutdown=False)
+        
     def unsetState(self):
         """Define que o estado a ser executado no `loop` é um estado que não faz nada."""
         self.__state = DummyState(self)
@@ -211,6 +215,34 @@ class Loop:
     def setState(self, state):
         """Define o estado que será executado no `loop`"""
         self.__state = state
+
+    def addEvent(self, method, *args, run_when_done_with_glib=None):
+        """Agrega um evento para execução posterior no próximo loop."""
+        self.__events.put({
+            "method": method,
+            "args": args,
+            "glib_run": run_when_done_with_glib
+        })
+
+    def runQueuedEvents(self):
+        """Despacha todos os eventos pendentes."""
+        while not self.__events.empty():
+            try:
+                ev = self.__events.get_nowait()
+                ev["method"](*ev["args"])
+                if ev["glib_run"] is not None:
+                    # se vier com callback para GLib, agenda no thread principal de GUI
+                    GLib.idle_add(ev["glib_run"][0], *ev["glib_run"][1:])
+            except Exception as e:
+                print(f"[World] falha ao rodar evento: {e}")
+
+    def setRunning(self, state):
+        """Recebe uma flag `state` indicando se o jogo está ou não rodando."""
+        self.running = state
+        if state is True:
+            for robot in self.world.robots:
+                robot.lastTimeAlive = time.time()
+                robot.spin = 0
 
     def loop(self):
         if self.world.updateCount == self.lastupdatecount: return
@@ -287,15 +319,15 @@ class Loop:
                 self.world.VSSVision_update(self.message.detection)
         if self.world.mainvision:
             # Atribuimos a mensagem que queremos passar para a função update_main_vision
-            # message = self.pclient.receive()
-            message = self.vision_system.update()
-            self.message = message if message is not None else self.message
-            self.execute = self.message["running"]
+            message = self.pclient.receive() if self.pclient else None
+            self.message = message if message else self.message
+            if self.message:
+                self.execute = self.message["running"]
             if self.execute == False: # Se a visão parar de rodar, o robô para ao invés de continuar com o último comando
                 self.handle_SIGINT(0,0, shutdown=False)
-                
-            elif self.message is not None: 
+            elif self.message is not None:
                 self.world.update_main_vision(self.message)
+                # roda aqui todos os eventos que foram agendados no mundo
 
         if self.world.simulado:
             message = self.simulado.get_state()
@@ -366,191 +398,3 @@ class Loop:
     def run(self):
         self.run_loop()
 
-    def run_parallel(self, tester, thread_id, entity, duracao=300):
-        logger = logging.getLogger(f"Thread-{thread_id}")
-
-        t0 = 0
-        tempo_zero = time.time()
-        self.tempo_atual = time.time()-tempo_zero
-        self.x_positions = []
-        self.y_positions = []
-        
-        try:
-            numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13) # gera lista de 10 nums aleatorios
-
-            field_type = 0 
-
-            time_step_ms = 16
-
-            last_ball_xs = []
-            last_ball_ys = []
-
-            # inicializa ambiente do simulado
-            self.simulado = robosim.VSS(
-                field_type,
-                3,
-                0,
-                time_step_ms,
-                [numeros[10], numeros[0], numeros[11], numeros[12]], # TODO: checar se bola tá de fato começando com alguma velocidade da bola diferente de 0
-                [[-numeros[1], numeros[2], numeros[3]], 
-                [-numeros[4], numeros[5], numeros[6]], 
-                [-numeros[7], numeros[8], numeros[9]]],
-                [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]],
-            )
-
-            ball_x, ball_y = self.simulado.get_state()[0], self.simulado.get_state()[1]
-            
-            logger.info("System is running")
-
-            cronometro_5s, cronometro_1s = self.tempo_atual, self.tempo_atual
-            last_reset_time = -1
-            while self.tempo_atual < duracao:
-                self.tempo_atual = time.time()-tempo_zero
-                flag_1s, flag_5s = False, False
-                numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13)
-                
-                if self.tempo_atual - cronometro_5s > 5:
-                    flag_5s = True
-                    cronometro_5s = self.tempo_atual
-                if self.tempo_atual - cronometro_1s > 1:
-                    flag_1s = True
-                    cronometro_1s = self.tempo_atual
-
-                if flag_1s:
-                    ball_x, ball_y = self.simulado.get_state()[0], self.simulado.get_state()[1]
-
-                    last_ball_xs.insert(0, ball_x)
-                    last_ball_ys.insert(0, ball_y)
-
-                    if len(last_ball_xs) > 5 or len(last_ball_ys) > 5:
-                        last_ball_xs.pop()
-                        last_ball_ys.pop()
-
-                if (int(self.tempo_atual != 0) and flag_5s) and (np.std(last_ball_xs) < 1e-4 and np.std(last_ball_ys) < 1e-4):
-                    logger.info(f"BOLA PARADA: Reset na thread {thread_id}")
-
-                    last_ball_xs, last_ball_ys = [], []
-
-                    moving_ball_time = self.tempo_atual - last_reset_time - 5 if last_reset_time != -1 else self.tempo_atual - last_reset_time + 1 - 5
-                    self.stuckball_register[thread_id].append(moving_ball_time)
-                    
-                    self.simulado.reset([numeros[10], numeros[0], numeros[11], numeros[12]],
-                                        [[-numeros[1], numeros[2], numeros[3]], 
-                                         [-numeros[4], numeros[5], numeros[6]], 
-                                         [-numeros[7], numeros[8], numeros[9]]], 
-                                         [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
-                    last_reset_time =  self.tempo_atual
-
-                if hasattr(self, 'simulado') and self.world.ball.x > 0.75:
-                    try:
-                        numeros, flag = tester.gera_randommatrix(a= -0.3, b= 0.3, size=13, timeout=1.0) if flag == False else numeros, True  # tenta gerar matriz mais rápido se tentativa anterior tiver dado timeout
-                    except TimeoutError as e:
-                        logger.error(f"Timeout: {str(e)}", exc_info=True)
-                    except IndexError as e:
-                        logger.error(f"Index: {numeros}")
-                    except Exception as e:
-                        logger.error(f"Erro na geração: {str(e)}", exc_info=True)
-                    
-                    logger.info(f"GOL na thread {thread_id}")
-
-                    goal_interval = self.tempo_atual - last_reset_time if last_reset_time != -1 else self.tempo_atual - last_reset_time + 1
-                    self.goal_register[thread_id].append(goal_interval)
-                    # print(f"n_robots: {self.world.n_robots}")
-
-                    self.simulado.reset([numeros[10], numeros[0], numeros[11], numeros[12]],
-                                        [[-numeros[1], numeros[2], numeros[3]], 
-                                         [-numeros[4], numeros[5], numeros[6]], 
-                                         [-numeros[7], numeros[8], numeros[9]]], 
-                                         [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
-                    # self.simulado.reset([0.0, numeros[0], 0.0, 0.0], [[-numeros[1], numeros[2], numeros[3]], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]], [[-0.2, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.6, 0.0, 0.0]])
-                    last_reset_time = self.tempo_atual
-
-
-                self.busyLoop()
-                while time.time() - t0 < self.loopTime:
-                    self.busyLoop()
-                    self.loop()
-                self.world.execTime = time.time() - t0
-                    
-                t0 = time.time()
-                self.loop()
-
-                # atualiza listas de posições
-                self.team_positions = [(round(robot.x, 3), round(robot.y, 3)) 
-                                    for robot in self.world.raw_team]
-                
-                for robot in self.world.raw_team:
-                    if (entity == None and (self.test_type != "heatmap_ball")) or (entity != None and (isinstance(robot.entity, entity))):
-                        self.x_positions.append(round(robot.x, 3))
-                        self.y_positions.append(round(robot.y, 3))
-                    elif (self.test_type == "heatmap_ball"):
-                        self.x_positions.append(round(ball_x, 3))
-                        self.y_positions.append(round(ball_y, 3))
-
-                self.all_positions[thread_id] = self.team_positions
-                self.positions_record.append([round(time.time()-tempo_zero, 2), 
-                                            self.all_positions])
-                
-                # logger otimizado (uma vez p segundo)
-                if flag_1s:
-                    logger.debug(f"gfl {round(time.time()-tempo_zero, 2)} {self.all_positions}")
-
-        finally:
-            self.runningtime_register.append(self.tempo_atual)
-            logger.info(f"System stopped, position list size: {len(self.x_positions)}")
-
-    def test(self, n_threads=20):
-            # inicializa testador
-            tester = SystemTester(self.world)
-            self.thread_envs = [[] for _ in range(n_threads)] # separação em threads para uso futuro, favor não desfazer isso
-            self.all_positions = copy.deepcopy(self.thread_envs)
-            self.goal_register = copy.deepcopy(self.thread_envs)
-            self.stuckball_register = copy.deepcopy(self.thread_envs)
-            self.runningtime_register = []
-            self.positions_record = []
-            # print(len(self.all_positions))
-
-            if self.draw_uvf:
-                # cria thread do loop, importante pois mesmo as threads não interagindo bem com o matplotlib isso permite que o loop rode normalmente.
-                self.loop_thread = threading.Thread(target=self.run_loop) 
-                self.loop_thread.start()
-
-                # O parâmetro render_uvf=True desacelera o render do matplotlib, esteja ciente disso ao habilitar
-                # Quanto mais setas no render do uvf, mais lento fica o render. Aumentar a quantidade de setas sem diminuir a loop_freq *não vai adiantar*, o render vai ficar lento.
-                tester.run_singletest(loop=self, robot_i=0, render_uvf=False)
-
-                self.loop_thread.join()
-            else:
-                loop_list = []
-                teams = []
-                for i in range(n_threads):
-                    # cria threads
-                    if self.test_type == "heatmap_attacker":
-                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, Attacker), daemon=True)
-                    elif self.test_type == "heatmap_defender":
-                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, Defender), daemon=True)
-                    elif self.test_type == "heatmap_goalkeeper":
-                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, GoalKeeper), daemon=True)
-                    else:
-                        loop_thread = threading.Thread(target=self.run_parallel, args=(tester, i, None), daemon=True)
-                    teams.append(self.world.raw_team)
-                    loop_thread.start() # inicia essa thread do loop
-                    loop_list.append(loop_thread)
-
-                for thread in loop_list:
-                    thread.join()
-
-                tester.gera_heatmap(self.x_positions, self.y_positions)
-
-                # cria dicionário de registros de dados da simulação
-                register_dict = {"runningtime": self.runningtime_register,
-                                 "goalcount": self.goal_register,
-                                 "stuckball": self.stuckball_register}
-                
-                data_dict = tester.gera_datadict(register_dict)
-
-                # print mais bonitinho dos dados
-                for key, value in data_dict.items():
-                    print(f"{key}: {value}")
-
-                plt.show()

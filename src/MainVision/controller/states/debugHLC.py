@@ -34,7 +34,7 @@ class DebugHLC(ParamsPattern, State):
     self.world = controller.world
     """Referência para o mundo"""
 
-    self.robots = self.world.raw_team
+    self.robots = self.world.robots
     """Referência para os robôs"""
 
     self.initialTime = time.time()
@@ -46,7 +46,7 @@ class DebugHLC(ParamsPattern, State):
     self.t = time.time()
     """Tempo do início do loop anterior"""
 
-    self._desired_fps = 120
+    self._desired_fps = 1000
     '''Frames que o sistema idealmente roda'''
 
     self._frame_count = 0
@@ -58,7 +58,7 @@ class DebugHLC(ParamsPattern, State):
     self.loops = 0
     """Loops executados"""
 
-    self.strategy = Strategy(controller.world, controller.world.raw_team)
+    self.strategy = Strategy(controller.world, controller.world.robots)
     """Instância da estratégia"""
 
     self.debugData = {
@@ -191,7 +191,7 @@ class DebugHLC(ParamsPattern, State):
 
     elapsed = now - self._fps_timer_start
 
-    if elapsed >= 0.1:
+    if elapsed >= 0.05:
       self.fps = self._frame_count / elapsed
       # Reset para o próximo intervalo de 1 segundo
       self._fps_timer_start = now
@@ -229,12 +229,12 @@ class DebugHLC(ParamsPattern, State):
     # Envia zero para os robôs
     # else: self._controller.communicationSystems.get().sendZero()
 
-    # # Garante que o tempo de loop é de no mínimo 16ms
-    # target_period = 1.0 / self._desired_fps
-    # work_time = time.perf_counter() - now
-    # sleep_time = target_period - work_time
-    # if sleep_time > 0:
-    #   time.sleep(sleep_time)
+    # Garante que o tempo de loop é de no máximo 1000FPS
+    target_period = 1.0 / self._desired_fps
+    work_time = time.perf_counter() - now
+    sleep_time = target_period - work_time
+    if sleep_time > 0:
+      time.sleep(sleep_time)
 
     # Incrementa o número de loops
     self.loops += 1

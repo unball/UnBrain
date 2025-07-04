@@ -14,7 +14,7 @@ class Field():
 class World(ParamsPattern):
   """Classe de mundo que armazena as posições dos robôs, velocidades, posição da bola, limites de campo e escore de jogo."""
   
-  def __init__(self, n_robots):
+  def __init__(self, loop, n_robots):
     ParamsPattern.__init__(self, "worldConfig", {
       "UVF_r": 0.05,
       "UVF_Kr": 15,
@@ -28,18 +28,19 @@ class World(ParamsPattern):
       "UVF_ponDistanceRadius": 0.1,
       "UVF_ponMinAvoidanceAngle": 0.5
     })
+    self.loop = loop
 
-    self.field_x_length = 1.75
-    self.field_y_length = 1.35
+    self.field_x_length = self.loop.world.field.width
+    self.field_y_length = self.loop.world.field.height  
     self.xmax = (self.field_x_length) / 2
     self.ymax = (self.field_y_length) / 2
-    self.xmaxmargin = self.xmax - 0.10
-    self.ymaxmargin = self.ymax - 0.20
+    self.xmaxmargin = self.xmax - 0.01
+    self.ymaxmargin = self.ymax - 0.005
     self.marginLimits = (self.xmaxmargin, self.ymaxmargin)
-    self.goalpos = (self.xmax, 0)
+    self.goalpos = self.loop.world.field.goalPos
     self.allyGoalPos = np.array([-self.xmax, 0])
-    self.rg = np.array([-0.75, 0])
-    self.goalAreaSize = np.array([0.3, 0.4])
+    self.rg = np.array(self.goalpos)
+    self.goalAreaSize = self.loop.world.field.goalAreaSize
     self.goalylength = 0.4
     self.n_robots = n_robots
     self.fieldSide = Field.RIGHT
@@ -48,7 +49,7 @@ class World(ParamsPattern):
     self.manualControlSpeedV = 0
     self.manualControlSpeedW = 0
     self.mus = [0.07, 0.07, 0.12, 0.07, 0.07]
-    self.robots = [Robot(self, i, self.mus[i]) for i in range(self.n_robots)]
+    self.robots = [Robot(self, i, self.mus[i]) for i in self.n_robots]
     self.enemyRobots = []
     self.edges = []
     self.ball = Ball(self)

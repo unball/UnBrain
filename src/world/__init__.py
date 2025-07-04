@@ -1,6 +1,9 @@
 from .elements import *
 from tools import RangeKutta
 from MainVision.model.paramsPattern import ParamsPattern
+from MainVision.controller.states import DummyState
+import queue
+from gi.repository import GLib
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -93,7 +96,7 @@ class World(ParamsPattern):
         self.manualControlSpeedW = 0
         self.mus = [0.07, 0.07, 0.12, 0.07, 0.07]
         self.edges = []
-        
+
         self.team_yellow = team_yellow
 
         self.allyGoals = 0
@@ -120,7 +123,7 @@ class World(ParamsPattern):
 
     def setEdges(self, points):
         self.edges = points
-
+  
     def update_main_vision(self, message):
         if self.team_yellow: 
             yellow = self.team
@@ -130,9 +133,12 @@ class World(ParamsPattern):
             blue = self.team
 
         robot_id = 0
-        for robot in range(message["n_robots"]):
-            if self.team_yellow: 
-                yellow[robot_id].update(
+        for robot in message["n_robots"]:
+            if self.team_yellow:
+                if self.debug:
+                    print(message["robots"][robot_id]["th"])
+                    print(f'Yellow - {robot} | x {message["robots"][robot_id]["pos_x"]} | y {message["robots"][robot_id]["pos_y"]} | th {message["robots"][robot_id]["th"]}')
+                yellow[robot].update(
                     message["robots"][robot_id]["pos_x"], 
                     message["robots"][robot_id]["pos_y"], 
                     message["robots"][robot_id]["th"], 
@@ -141,7 +147,7 @@ class World(ParamsPattern):
                     message["robots"][robot_id]["w"]
                 )
             else:
-                blue[robot_id].update(
+                blue[robot].update(
                     message["robots"][robot_id]["pos_x"], 
                     message["robots"][robot_id]["pos_y"], 
                     message["robots"][robot_id]["th"], 
@@ -155,7 +161,7 @@ class World(ParamsPattern):
         self.checkBatteries = message["check_batteries"]
         self.manualControlSpeedV = message["manualControlSpeedV"]
         self.manualControlSpeedW = message["manualControlSpeedW"]
-
+        
         self.updateCount += 1
      
     def update(self, message):
@@ -195,10 +201,6 @@ class World(ParamsPattern):
         self._referenceTime = time.time()
         self.updateCount += 1
 
-
-
-
-
     # segue explicação abaixo
     def VSSVision_update(self, message):
         if self.debug:
@@ -232,7 +234,6 @@ class World(ParamsPattern):
                         robot.orientation
                     )
                     yellow[self.n_robots[i]].calc_velocities(self.dt)
-                
 
         else:
             self.dt = time.time() - self._referenceTime
@@ -277,14 +278,9 @@ class World(ParamsPattern):
             self.ball.raw_update(self.field.side * new_pose[0],new_pose[1])
             self.ball.calc_velocities(delta_t)
 
-
-
         self.delay_camera = time.time()
         self._referenceTime = time.time()
-        self.updateCount += 1
-        
-
-                    
+        self.updateCount += 1                    
         
     def FIRASim_update(self, message):
         # teamPos = zip(message["ally_x"], message["ally_y"], message["ally_th"], message["ally_vx"], message["ally_vy"], message["ally_w"])

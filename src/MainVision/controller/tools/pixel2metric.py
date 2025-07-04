@@ -4,8 +4,8 @@ def pixel2meters(world, position, shape):
   """Recebe o mundo, uma posição e o tamanho do frame e converte a coordenada do pixel para uma coordenada no mundo físico com o centro no centro do campo. É a operação inversa do `meters2pixel`"""
   camera_x_length = shape[1]
   camera_y_length = shape[0]
-  field_x_length = world.field.width
-  field_y_length = world.field.height
+  field_x_length = world.field_x_length
+  field_y_length = world.field_y_length
   x_conversion = field_x_length / camera_x_length
   y_conversion = (field_y_length / camera_y_length) * -1
 
@@ -20,8 +20,8 @@ def meters2pixel(world, position, shape):
   """Recebe o mundo, uma posição do mundo físico e o tamanho do frame e converte a coordenada para a posição equivalente em pixels. É a operação inversa do `pixel2meters`"""
   camera_x_length = shape[1]
   camera_y_length = shape[0]
-  field_x_length = world.field.width
-  field_y_length = world.field.height
+  field_x_length = world.field_x_length
+  field_y_length = world.field_y_length
   x_conversion = camera_x_length / field_x_length
   y_conversion = (camera_y_length / field_y_length) * -1
 
@@ -36,8 +36,8 @@ def meters2pixelSize(world, size, shape):
   """Recebe o mundo, um tamanho do mundo físico físico e o tamanho do frame e converte para o tamanho equivalente em pixels."""
   camera_x_length = shape[1]
   camera_y_length = shape[0]
-  field_x_length = world.field.width
-  field_y_length = world.field.height
+  field_x_length = world.field_x_length
+  field_y_length = world.field_y_length
   x_conversion = camera_x_length / field_x_length
   y_conversion = (camera_y_length / field_y_length)
 

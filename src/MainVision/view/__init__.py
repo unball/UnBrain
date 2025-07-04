@@ -8,14 +8,17 @@ from pkg_resources import resource_filename
 
 from MainVision.view.vision.camerasView import CameraHandlerView
 from MainVision.view.vision.mainVision.mainVisionView import MainVisionView
+
 from MainVision.view.communication.communicationView import CommunicationHandlerView
 from MainVision.view.states.debugHLCView import DebugHLCView
 from MainVision.view.tools.viewThreads import ViewThreads
 
 class View:
-  def __init__(self, controller):
+  def __init__(self, controller, mainsystem):
     self.__controller = controller
     """Mantém uma referência ao controller"""
+
+    self.__mainsystem = mainsystem
     
     self.__threads = ViewThreads()
     """Contém uma lista de threads de view que poderão ser finalizadas quando o programa acabar"""
@@ -49,17 +52,17 @@ class View:
     window.connect("destroy", self.on_destroy)
     
     # Botão que gerencia as câmeras
-    CameraHandlerView(self.__controller, self.__controller.visionSystem.cameraHandler, builder.get_object("camerasMenuButton"))
+    CameraHandlerView(self.__mainsystem, self.__mainsystem.visionSystem.cameraHandler, builder.get_object("camerasMenuButton"))
     
     # Botão que gerencia o sistema de comunicação
-    CommunicationHandlerView(self.__controller, self.__controller.communicationSystems, builder.get_object("communicationMenuButton"))
+    CommunicationHandlerView(self.__mainsystem, self.__mainsystem.communicationSystems, builder.get_object("communicationMenuButton"))
 
     # Pilha do Gtk da página principal
     mainStack = builder.get_object("mainStack")
     
     # Adiciona a pilha a view de configuração da visão
-    MainVisionView(self.__controller, self.__controller.visionSystem, self.__controller.world, mainStack)
-    DebugHLCView(self.__controller, self.__controller.world, mainStack)
+    MainVisionView(self.__mainsystem, self.__mainsystem.visionSystem, self.__controller.world, self.__mainsystem.world, mainStack)
+    DebugHLCView(self.__mainsystem, self.__mainsystem.world, mainStack)
     
     # Loop principal do Gtk
     Gtk.main()

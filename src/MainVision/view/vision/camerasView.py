@@ -1,6 +1,8 @@
 from gi.repository import Gtk
 from pkg_resources import resource_filename
 
+
+
 class CameraHandlerView():
   """Classe que gerencia a view do gerenciador de câmeras"""
   

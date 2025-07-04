@@ -6,8 +6,8 @@ from gi.repository import GLib
 
 from MainVision.controller.vision.mainVision import MainVision
 from MainVision.controller.communication.rosRadio import RosRadio
-# from MainVision.controller.communication.serialRadio import SerialRadio
-from communication.serialWifi import SerialRadio
+from MainVision.controller.communication.serialRadio import SerialRadio
+# from communication.serialWifi import SerialRadio
 from MainVision.controller.communication.rosHandler import RosHandler
 from MainVision.controller.states import DummyState
 from MainVision.controller.world import World
@@ -16,9 +16,14 @@ from MainVision.helpers import Mux
 class Controller:
   """Classe que declara a thread do backend e define o estado do sistema"""
   
-  def __init__(self, port, n_robots):
+  def __init__(self, port, n_robots, loop):
+    self.__UnBrain = Thread(target=loop.run)
+    """Thread que executa o backend do UnBrain"""
+    
     self.__thread = Thread(target=self.loop)
     """Thread que executa o backend do sistema"""
+
+    self.__loop = loop
     
     self.__state = DummyState(self)
     """Estado atual do sistema"""
@@ -29,7 +34,7 @@ class Controller:
     self.__events = queue.Queue()
     """Eventos agendados. Essa fila é útil para que a view agende eventos a serem executados no momento oportuno pelo backend, evitando condições de corrida."""
     
-    self.world = World(n_robots=n_robots)
+    self.world = World(loop, n_robots=n_robots)
     """Essa é uma instância do mundo. O mundo contém informações sobre estado do campo como posição de robôs, velocidades, posição de bola e limites do campo."""
     
     self.visionSystem = MainVision(self.world, port)
@@ -39,6 +44,7 @@ class Controller:
     """Instância do sistema que se comunica com o rádio"""
     
     self.__thread.start()
+    self.__UnBrain.start()
   
   def addEvent(self, method, *args, run_when_done_with_glib=None):
     """Adiciona um evento a fila de eventos agendados para serem executados no início do próximo loop do backend. Se `run_when_done_with_glib` estiver definido como a tupla `(method,args)` o método dessa tupla será executado depois que o evento for executado."""
@@ -74,6 +80,8 @@ class Controller:
     while not self.__quitRequested:
       # Executa eventos agendados
       self.runQueuedEvents()
+
+      # self.__loop.run()
       
       # Executa o update do estado atual
       self.__state.update()

@@ -1,5 +1,7 @@
 from ..entity import Entity
 
+from tools import adjustAngle
+
 from control.AI_Attacker import AI_Control
 
 import numpy as np
@@ -11,7 +13,7 @@ class AI_Attacker(Entity):
     def __init__(self, world, robot):
         Entity.__init__(self, world, robot)
         self.robot = robot
-        self.env = Env(world, robot.id)
+        self.env = Env(world, robot.id, world.enemy_AI)
         self.observation = self.env._get_observation()
         self._control = AI_Control(world, self.env, self.observation)
 
@@ -31,17 +33,18 @@ class AI_Attacker(Entity):
         return self.robot == otherEntityOfSameClass.robot
 
     def onExit(self):
-        self.isLocked = False
+        pass
 
     def isLocked(self):
         return False
 
 
 class Env():
-    def __init__(self, world, robot_id):
+    def __init__(self, world, robot_id, enemy_AI):
         self.world = world  # Referência direta ao mundo
         self.robot_id = robot_id # ID do robô
         self.NORM_BOUNDS = 1.2
+        self.enemy_AI = enemy_AI
         
         # Espaço de ação: controle das rodas do robô azul 0
         self.action_space = Box(low=-1, high=1, shape=(2,), dtype=np.float32)
@@ -70,8 +73,13 @@ class Env():
         return next_observation  # Sem reward e done
 
     def _actions_to_v_wheels(self, actions):
-        left_wheel_speed = actions[0] * self.max_v 
-        right_wheel_speed = actions[1] * self.max_v 
+        if not self.enemy_AI:
+            left_wheel_speed = actions[0] * self.max_v
+            right_wheel_speed = actions[1] * self.max_v   
+        else:
+            #invertido para fazer contra o goleiro
+            left_wheel_speed = actions[1] * self.max_v
+            right_wheel_speed = actions[0] * self.max_v  
         # left_wheel_speed = self.max_v
         # right_wheel_speed = self.max_v
 
@@ -97,12 +105,15 @@ class Env():
         Converte o estado do world em um vetor de observação.
         """
         obs = np.zeros(40)  # Vetor de observação
+        if self.enemy_AI: c = -1 
+        else: c = 1
+            
 
         # 🔹 1. Informações da bola
         obs[0:4] = np.array([
-            self.norm_pos(self.world.ball.x),
+            self.norm_pos(c*self.world.ball.x),
             self.norm_pos(self.world.ball.y),
-            self.norm_v(self.world.ball.vx),
+            self.norm_v(c*self.world.ball.vx),
             self.norm_v(self.world.ball.vy)
         ])
 
@@ -119,13 +130,13 @@ class Env():
                 base = 4 + (7 * i)
                 
                 obs[base:base+7] = np.array([
-                    self.norm_pos(allied_team[i].x),
+                    self.norm_pos(c*allied_team[i].x),
                     self.norm_pos(allied_team[i].y),
-                    np.sin((allied_team[i].th)),
-                    np.cos((allied_team[i].th)),
-                    self.norm_v(allied_team[i].vx),
+                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.sin(adjustAngle(allied_team[i].th)),
+                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos(adjustAngle(allied_team[i].th)),
+                    self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
-                    self.norm_w(allied_team[i].w)
+                    self.norm_w(c*allied_team[i].w)
                 ])
             else:
                 base = 4 + (7 * i)

@@ -71,7 +71,7 @@ class Loop:
             n_robots_blue = len(n_robots)
             for i in n_robots:
                 blue_robots_pos += [pos[i]]
-            n_robots_yellow = 0 
+            n_robots_yellow = 0
         time_step_ms = 16 # time step in milliseconds
         # ball initial position [x, y, v_x, v_y] in meters and meter/s
         ball_pos = [0.0, 0.3, 0.0, 0.0]
@@ -126,7 +126,19 @@ class Loop:
             # self.UVF_screen.initialiazeScreen()
             # self.UVF_screen.initialiazeObjects()
 
-    # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )
+    def x_ball(self):
+        return random.uniform(-self.world.field.marginX + 0.1 , self.world.field.marginX - 0.1)
+
+    def x_robot(self):
+        return random.uniform(-self.world.field.marginX + 0.1, self.world.field.marginX - 0.1)
+
+    def y(self):
+        return random.uniform(-self.world.field.marginY + 0.1, self.world.field.marginY - 0.1)
+
+    def theta(self):
+        return random.uniform(0, 360)
+
+    # Função do sinal de interrupção (faz com que pare o robô imediatamente, (0,0) )    
     def handle_SIGINT(self, signum, frame, shutdown=True):
         '''
         Função que trata o sinal de interrupção (ctrl + C)
@@ -291,12 +303,21 @@ class Loop:
         logging.info("System is running")
 
         while self.running:
+            if self.world.simulado == True:
+                pos_robots = []
+                pos_ball = [self.x_ball(), self.y(), 0.0, 0.0]
+                for i in self.world.n_robots:
+                    pos_robots.append([self.x_robot(), self.y(), self.theta()]) #posiçao da bola
+                if self.world.ball.x > self.world.field.goalPos[0]:
+                    self.simulado.reset(pos_ball, pos_robots, [[]])
+                elif self.world.ball.x < -self.world.field.goalPos[0]:
+                    self.simulado.reset(pos_ball, pos_robots, [[]])
             
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.loop()
-
+                
             self.world.execTime = time.time() - t0
                 
             # Tempo inicial do loop
@@ -305,8 +326,7 @@ class Loop:
             # Executa o loop
             self.loop()
 
-            print(f"gfl{time.time()-tempo_zero:.2f}\n", end="\r", flush=True)
-            print(f"FPS: {1/self.world.execTime}")
+            print(f"gfl{time.time()-tempo_zero:.2f} FPS:{1/self.world.execTime}", end="\r", flush=True)
             # if time.time()-tempo_zero > 1:
             #     self.running = False
 
@@ -315,10 +335,10 @@ class Loop:
     def run(self):
         if self.ws_thread is None and self.loop_thread is None:
             # inicializa threads
-            self.ws_thread = threading.Thread(target=self.websocket_thread)
+            # self.ws_thread = threading.Thread(target=self.websocket_thread)
             self.loop_thread = threading.Thread(target=self.run_loop)
 
-            self.ws_thread.start()
+            # self.ws_thread.start()
             self.loop_thread.start() # inicia thread do loop
 
             robot_i=0

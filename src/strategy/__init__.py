@@ -81,10 +81,14 @@ class MainStrategy(Strategy):
         return pose[:2]
 
     def formationDecider(self):
-        if self.world.ball.pos[0] < -0.25:
+        if self.world.ball.pos[0] < -0.25 and not self.AI_attacker:
+            return [GoalKeeper, Attacker, Attacker]
+        elif self.world.ball.pos[0] < -0.25:
             return [GoalKeeper, Attacker, AI_Attacker]
-        else:
+        elif self.AI_attacker:
             return [Defender, Attacker, AI_Attacker]
+        else:
+            return [Defender, Attacker, Attacker]
 
     #alteramos para que ToDecide (a variável que instancia esta função) esteja em formato de lista e não em um np.ndarray
     def availableRobotIndexes(self):
@@ -123,6 +127,18 @@ class MainStrategy(Strategy):
 
         return formation, toDecide
 
+    def decideBestAI_AttackerBetweenTwo(self, formation, toDecide):
+        d1 = norm(self.world.team[toDecide[0]].pos, self.world.ball.pos)
+        d2 = norm(self.world.team[toDecide[1]].pos, self.world.ball.pos)
+
+        self.currentAttacker = bestWithHyst(self.currentAttacker, toDecide, [d1, d2], 0.30)
+    
+        self.world.team[self.currentAttacker].updateEntity(AI_Attacker)
+        toDecide.remove(self.currentAttacker)
+        formation.remove(AI_Attacker)
+
+        return formation, toDecide
+
     def update(self, world):
 
         #Como estamos trabalhando a partir de um número dado de quantos robôs temos, é melhor tratar esses updates em um ciclo
@@ -130,7 +146,7 @@ class MainStrategy(Strategy):
         #obs: (ficará comentado o que era antes)
         if self.static_entities:
             if self.AI_attacker:
-                roles=[GoalKeeper,Defender,AI_Attacker]
+                roles=[AI_Attacker,Attacker,Attacker]
             else:
                 roles=[GoalKeeper,Defender,Attacker]
             for robo in self.world.n_robots:
@@ -151,12 +167,30 @@ class MainStrategy(Strategy):
             formation = self.formationDecider()
             toDecide = self.availableRobotIndexes()
 
+            # if AI_Attacker in formation and len(toDecide) >= 1:
+            #     print(toDecide)
+            #     try:
+            #         print(time.time() - self.tempo)
+            #     except:
+            #         self.tempo = time.time()
+            #     #possível erro na mudança de role abaixo, checar mais tarde
+            #     # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+            #     if time.time() - self.tempo < 20:
+            #         self.world.team[toDecide[2]].updateEntity(AI_Attacker)
+            #         toDecide.remove(toDecide[2])
+            #         formation.remove(AI_Attacker)
+            #     else:
+            #         self.world.team[toDecide[0]].updateEntity(AI_Attacker)
+            #         toDecide.remove(toDecide[0])
+            #         formation.remove(AI_Attacker)
+                    
+
             if GoalKeeper in formation:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
             
             hasMaster = False
-            if Attacker in formation:
-                formation, toDecide = self.decideBestMasterAttackerBetweenTwo(formation, toDecide)
+            if AI_Attacker in formation and len(toDecide) >= 2:
+                formation, toDecide = self.decideBestAI_AttackerBetweenTwo(formation, toDecide)
                 hasMaster = True
 
             if Defender in formation and len(toDecide) >= 1:

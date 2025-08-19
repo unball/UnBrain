@@ -84,12 +84,13 @@ class PPO:
             setattr(self, key, hyperparams.get(key) if hyperparams is not None and hyperparams.get(key) else value)
 
     def get_action(self, obs):
-        mean = self.actor(obs)
-        std = torch.exp(self.log_std)
-        dist = MultivariateNormal(mean, covariance_matrix=torch.diag(std))
-        action = dist.sample()
-        log_prob = dist.log_prob(action)
-        return action.detach(), log_prob.detach()
+        with torch.no_grad():
+            mean = self.actor(obs)
+            std = torch.exp(self.log_std)
+            dist = MultivariateNormal(mean, covariance_matrix=torch.diag(std))
+            action = dist.sample()
+            log_prob = dist.log_prob(action)
+            return action.detach(), log_prob.detach()
     
 class FeedForwardNN(nn.Module):
     def __init__(self, in_dim, out_dim):

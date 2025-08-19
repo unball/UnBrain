@@ -50,6 +50,7 @@ class Loop:
                 mirror=False, 
                 n_robots=[0,1,2],
                 AI_attacker=False,
+                enemy_AI= False
                 
             ):
         
@@ -106,7 +107,7 @@ class Loop:
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror)
+        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror, enemy_AI=enemy_AI)
         
         self.arp = AutomaticReplacer(self.world)
         self.strategy = MainStrategy(self.world, static_entities=static_entities, AI_attacker=AI_attacker)

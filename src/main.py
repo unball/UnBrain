@@ -50,6 +50,9 @@ parser.add_argument('--n_robots', dest='n_robots', type=str, default="0,1,2" , h
 parser.add_argument('--AI', dest='AI_attacker', action='store_const',
                     const=True, default=False, help='If you want to use AI_attacker strategy.')
 
+parser.add_argument('--enemy_AI', dest='enemy_AI', action='store_const',
+                    const=True, default=False, help='If you want to use AI_attacker strategy as an enemy.')
+
 
 args = parser.parse_args()
 
@@ -84,6 +87,7 @@ loop = Loop(
     n_robots=args.n_robots,
     mirror=mirror, 
     AI_attacker=args.AI_attacker,
+    enemy_AI = args.enemy_AI
 )
 
 loop.run()

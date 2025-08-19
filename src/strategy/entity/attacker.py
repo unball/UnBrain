@@ -63,8 +63,7 @@ class Attacker(Entity):
         return self.slave == otherAttacker.slave
 
     def onExit(self):
-        clientProvider().removeTarget(self.robot.id)
-        clientProvider().removeLine(self.robot.id)
+        pass
 
     def isLocked(self):
         return self.attackState == 1 or self.attackState == 2

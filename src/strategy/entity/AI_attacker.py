@@ -132,8 +132,8 @@ class Env():
                 obs[base:base+7] = np.array([
                     self.norm_pos(c*allied_team[i].x),
                     self.norm_pos(allied_team[i].y),
-                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.sin(adjustAngle(allied_team[i].th)),
-                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos(adjustAngle(allied_team[i].th)),
+                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.sin((allied_team[i].th)),
+                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos((allied_team[i].th)),
                     self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
                     self.norm_w(c*allied_team[i].w)

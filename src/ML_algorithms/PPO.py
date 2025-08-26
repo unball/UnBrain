@@ -8,6 +8,9 @@ import numpy as np
 import os
 import time
 
+torch.manual_seed(5)
+torch.cuda.manual_seed_all(5)
+
 
 class PPO:
     def __init__(self, env, hyperparams=None, t_so_far = 0):
@@ -39,29 +42,27 @@ class PPO:
         self.cov_mat = torch.diag(self.cov_var).to(self.device)
 
     def load_model(self, directory, ppo_filename="ppo_full_checkpoint.pth"):
-        if directory == "src/strategy/entity/ppo_model_7" or directory == "src/strategy/entity/ppo_model_6" or directory == "src/strategy/entity/ppo_model_5":
-            ppo_path = os.path.join(directory, ppo_filename)
-            if os.path.exists(ppo_path):
-                checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device)
-                self.t_so_far = checkpoint['t_so_far']
-                self.actor.load_state_dict(checkpoint['actor'])
-                self.critic.load_state_dict(checkpoint['critic'])
-                self.actor_optim.load_state_dict(checkpoint['actor_optim'])
-                self.critic_optim.load_state_dict(checkpoint['critic_optim'])
-                self.log_std = checkpoint['log_std']
+        ppo_path = os.path.join(directory, ppo_filename)
+        if os.path.exists(ppo_path):
+            checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device)
+            self.actor.load_state_dict(checkpoint['actor'])
+            self.critic.load_state_dict(checkpoint['critic'])
+            self.actor_optim.load_state_dict(checkpoint['actor_optim'])
+            self.critic_optim.load_state_dict(checkpoint['critic_optim'])
+            self.log_std = checkpoint['log_std']
 
-                print(f"Models loaded from {directory} ppo_full_checkpoint")
-            else:
-                print(f"Model files not found in {directory} ppo_full_checkpoint")
+            print(f"Models loaded from {directory} ppo_full_checkpoint")
         else:
-            actor_path = os.path.join(directory, "actor.pth")
-            critic_path = os.path.join(directory, "critic.pth")
-            if os.path.exists(actor_path) and os.path.exists(critic_path):
-                self.actor.load_state_dict(torch.load(actor_path, map_location=self.device))
-                self.critic.load_state_dict(torch.load(critic_path, map_location=self.device))
-                print(f"Models loaded from {directory}")
-            else:
-                print(f"Model files not found in {directory}")
+            print(f"Model files not found in {directory} ppo_full_checkpoint")
+        # else:
+        #     actor_path = os.path.join(directory, "actor.pth")
+        #     critic_path = os.path.join(directory, "critic.pth")
+        #     if os.path.exists(actor_path) and os.path.exists(critic_path):
+        #         self.actor.load_state_dict(torch.load(actor_path, map_location=self.device))
+        #         self.critic.load_state_dict(torch.load(critic_path, map_location=self.device))
+        #         print(f"Models loaded from {directory}")
+        #     else:
+        #         print(f"Model files not found in {directory}")
 
     def _init_hyperparameters(self, hyperparams):
         # Default values got using optuna

@@ -66,7 +66,7 @@ class Loop:
                 n_robots=[0,1,2],
                 AI_attacker=False,
                 enemy_AI= False,
-                test_type="heatmap_team"
+                test_type=False
             ):
         
         self.loop_thread = None
@@ -334,15 +334,38 @@ class Loop:
         logging.info("System is running")
 
         while self.running:
-            if self.world.simulado == True:
-                pos_robots = []
-                pos_ball = [self.x(), self.y(), 0.0, 0.0]
-                for i in self.world.n_robots:
-                    pos_robots.append([self.x(), self.y(), self.theta()]) #posiçao da bola
-                if self.world.ball.x > self.world.field.goalPos[0]:
+            if self.world.simulado == True and not self.test_type:
+                if time.time() - self.tempo_repos > 30 and self.contagem == 100:
+                    pos_robots = []
+                    pos_ball = [self.x(), self.y(), 0.0, 0.0]
+                    for i in self.world.n_robots:
+                        pos_robots.append([self.x(), self.y(), self.theta()]) #posiçao da bola
+                    self.tempo_repos = time.time()
+                    self.contagem += 1
+                    print(f'\n{self.contagem}')
                     self.simulado.reset(pos_ball, pos_robots, [[]])
+                elif self.world.ball.x > self.world.field.goalPos[0]:
+                    pos_robots = []
+                    pos_ball = [self.x(), self.y(), 0.0, 0.0]
+                    for i in self.world.n_robots:
+                        pos_robots.append([self.x(), self.y(), self.theta()]) #posiçao da bola
+                    self.simulado.reset(pos_ball, pos_robots, [[]])
+                    self.tempo_repos = time.time()
+                    self.contagem += 1
+                    self.gol_a_favor += 1
+                    print(f'\n{self.contagem}')
                 elif self.world.ball.x < -self.world.field.goalPos[0]:
+                    pos_robots = []
+                    pos_ball = [self.x(), self.y(), 0.0, 0.0]
+                    for i in self.world.n_robots:
+                        pos_robots.append([self.x(), self.y(), self.theta()]) #posiçao da bola
                     self.simulado.reset(pos_ball, pos_robots, [[]])
+                    self.tempo_repos = time.time()
+                    self.contagem += 1
+                    self.gol_contra += 1
+                    print(f'\n{self.contagem}')
+                if self.contagem == 100:
+                    print(f'\nEm {self.contagem} testes, {self.gol_a_favor} gols feitos e {self.gol_contra} gols contra.')
             
             # Executa o loop de visão e referee até dar o tempo de executar o resto
             self.busyLoop()

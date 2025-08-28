@@ -335,7 +335,7 @@ class Loop:
 
         while self.running:
             if self.world.simulado == True and not self.test_type:
-                if time.time() - self.tempo_repos > 30 and self.contagem == 100:
+                if time.time() - self.tempo_repos > 30 and not self.contagem == 100:
                     pos_robots = []
                     pos_ball = [self.x(), self.y(), 0.0, 0.0]
                     for i in self.world.n_robots:
@@ -344,7 +344,7 @@ class Loop:
                     self.contagem += 1
                     print(f'\n{self.contagem}')
                     self.simulado.reset(pos_ball, pos_robots, [[]])
-                elif self.world.ball.x > self.world.field.goalPos[0]:
+                elif self.world.ball.x > self.world.field.goalPos[0] and not self.contagem == 100:
                     pos_robots = []
                     pos_ball = [self.x(), self.y(), 0.0, 0.0]
                     for i in self.world.n_robots:
@@ -354,7 +354,7 @@ class Loop:
                     self.contagem += 1
                     self.gol_a_favor += 1
                     print(f'\n{self.contagem}')
-                elif self.world.ball.x < -self.world.field.goalPos[0]:
+                elif self.world.ball.x < -self.world.field.goalPos[0] and not self.contagem == 100:
                     pos_robots = []
                     pos_ball = [self.x(), self.y(), 0.0, 0.0]
                     for i in self.world.n_robots:

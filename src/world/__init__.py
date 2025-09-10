@@ -53,7 +53,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, enemy_AI=False, last_command=None):
         self.n_robots = n_robots
         self._team = [None,None,None]
         for i in self.n_robots:
@@ -72,6 +72,7 @@ class World:
         self.debug = debug
         self.mirror = mirror
         self.control =  control
+        self.enemy_AI = enemy_AI
         self.last_command = last_command
         self._referenceTime = 0
         self.dt = 0
@@ -138,31 +139,35 @@ class World:
         robot_id = 0
         for robot in self.n_robots:
             if self.team_yellow:
-                yellow[robot].raw_update(
+                yellow[robot].updateSimu(
                     message[5+(6*robot)], 
                     message[6+(6*robot)], 
-                    message[7+(6*robot)]*np.pi/180
+                    np.deg2rad(message[7+(6*robot)]),
+                    message[8+(6*robot)],
+                    message[9+(6*robot)],
+                    message[10+(6*robot)]
                 )
                 
-                yellow[robot].calc_velocities(self.dt)
+        
 
             else:
-                print(message[7+(6*robot_id)]*np.pi/180)
-                blue[robot].raw_update(
+                blue[robot].updateSimu(
                     message[5+(6*robot)], 
                     message[6+(6*robot)], 
-                    message[7+(6*robot)]*np.pi/180
+                    np.deg2rad(message[7+(6*robot)]),
+                    message[8+(6*robot)],
+                    message[9+(6*robot)],
+                    message[10+(6*robot)]
                 )
+                if self.debug:
+                    print(f"Blue - {self.n_robots[robot]} | x {message[5+(6*robot)]:.2f} | y {message[6+(6*robot)]:.2f} | th {message[7+(6*robot)]:.2f} | vx {message[8+(6*robot)]:.2f} | vy {message[9+(6*robot)]:.2f} | vorientation {message[10+(6*robot)]:.2f}")
 
-                blue[robot].calc_velocities(self.dt)
+
             robot_id+=1
-        self.ball.raw_update(message[0], message[1])
-        
-        self.ball.calc_velocities(self.dt)
+        self.ball.update_element(message[0], message[1],message[3], message[4])
         self.dt = time.time() - self._referenceTime
         self._referenceTime = time.time()
         self.updateCount += 1
-
 
 
 
@@ -276,14 +281,14 @@ class World:
                     #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
                     if self.debug:
                         print(f"Yellow - {self.n_robots[i]} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
-                    yellow[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                    yellow[self.n_robots[i]].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
                     
         else:
             for i, robot in enumerate(message.frame.robots_blue):
                 if i < len(self.n_robots):
                     if self.debug:
                         print(f"Blue - {self.n_robots[i]} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
-                    blue[self.n_robots[i]].update_FIRASim(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                    blue[self.n_robots[i]].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)

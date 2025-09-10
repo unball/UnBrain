@@ -25,7 +25,7 @@ class Defender(Entity):
         return True
 
     def onExit(self):
-        clientProvider().removeEllipse(self.robot.id)
+        pass
         
     def directionDecider(self):
        if self.robot.field is not None:

@@ -228,10 +228,12 @@ class Loop:
 
         # Executa o controle
         if self.world.firasim:
-            for robot in self.world.raw_team: 
-                if robot is not None: robot.turnOn()
-            for i, id in enumerate(self.world.n_robots):
-                self.firasim.command.write(id, control_output[i][0], control_output[i][1])
+            if self.execute:
+                for robot in self.world.raw_team: 
+                    if robot is not None: robot.turnOn()   
+                self.firasim.command.writeMulti(control_output)
+            # for i, id in enumerate(self.world.n_robots):
+            #     self.firasim.command.write(id, control_output[i][0], control_output[i][1])
         if self.world.vssvision:   
             if self.execute:
                 for robot in self.world.raw_team: 
@@ -371,6 +373,7 @@ class Loop:
             self.busyLoop()
             while time.time() - t0 < self.loopTime:
                 self.loop()
+                self.busyLoop()
                 
             self.world.execTime = time.time() - t0
                 

@@ -119,8 +119,8 @@ class Element:
 
     @property
     def vx(self):
-        return self.vx_raw
-
+        return self.vx_raw * self.world.field.side 
+    
     @property
     def vy_raw(self):
         return self.linvel[1]

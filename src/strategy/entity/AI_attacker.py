@@ -136,7 +136,7 @@ class Env():
                     np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos((allied_team[i].th)),
                     self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
-                    self.norm_w(c*allied_team[i].w)
+                    self.norm_w(c*allied_team[i].w *-1 if self.world.firasim else c*allied_team[i].w)
                 ])
             else:
                 base = 4 + (7 * i)

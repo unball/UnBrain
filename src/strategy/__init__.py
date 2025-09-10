@@ -147,10 +147,10 @@ class MainStrategy(Strategy):
     
     def behind_ball(self, ball, robot):
         if ball[0] > 0.5 and abs(ball[1]) > 0.3: ball_shift = 0
-        else: ball_shift = 0.15
+        else: ball_shift = 0.2
         ball_pos = np.array([ball[0] - ball_shift, ball[1]])
         robot_pos = np.array([robot[0], robot[1]])
-        goal_pos = np.array([(self.world.field.width)/2+ 0.3, 0])  # Opponent's goal center
+        goal_pos = np.array([(self.world.field.width)/2 - 0.1, 0])  # Opponent's goal center
 
         # 1. Positional Alignment Reward -------------------------------------------
         # Vector calculations
@@ -197,8 +197,8 @@ class MainStrategy(Strategy):
             if AI_Attacker in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
                 # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
-                if (abs(self.world.ball.pos[0]) > self.world.field.width/2 - 0.07\
-                and abs(self.world.ball.pos[1]) > self.world.field.height/2 -0.07):
+                if (abs(self.world.ball.pos[0]) > self.world.field.width/2 - 0.2\
+                or abs(self.world.ball.pos[1]) > self.world.field.height/2 - 0.1):
                     self.world.team[toDecide[0]].updateEntity(AI_Attacker)
                     toDecide.remove(toDecide[0])
                 elif self.behind_ball(self.world.ball.pos, self.world.team[toDecide[0]].pos) < 0:#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)

@@ -49,7 +49,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=60,
+                loop_freq=70, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -213,7 +213,7 @@ class Loop:
         if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.mainvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
         if self.world.firasim: 
-            print(robot.entity for robot in self.world.team)
+            # print(robot.entity for robot in self.world.team)
             control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
         if self.world.simulado: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 

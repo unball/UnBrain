@@ -8,9 +8,6 @@ import numpy as np
 import os
 import time
 
-torch.manual_seed(5)
-torch.cuda.manual_seed_all(5)
-
 
 class PPO:
     def __init__(self, env, hyperparams=None, t_so_far = 0):

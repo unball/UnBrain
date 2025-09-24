@@ -22,6 +22,7 @@ class AI_Control(Control):
             robot.direction = 1
             self.observation = self.env._get_observation()
             self.model.load_model(directory="src/strategy/entity/ppo_model_7")
+        self.observation = self.env._get_observation()
         robot.direction = 1
         actions, _ = self.model.get_action(self.observation)
         self.observation = self.env.step(actions.cpu().numpy())

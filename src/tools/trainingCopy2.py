@@ -11,14 +11,10 @@ from tools import motors2speeds_from_vl_vr
 
 # --- Configurações Globais ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DATASET_FILENAME = 'UnBrainDataSet_translated.csv'
-MODEL_SAVE_PATH = "best_model_travesim.pth"
-
-SCALER_X_PATH = "scaler_x_travesim.pkl"
-SCALER_Y_PATH = "scaler_y_travesim.pkl"
-
-RSIM_WHEEL_RADIUS = 0.026
-RSIM_WHEEL_BASE_LENGTH = 0.08  # L
+DATASET_FILENAME = 'UnBrainDataSet_translated copy.csv'
+MODEL_SAVE_PATH = "best_translator_model.pth"
+SCALER_X_PATH = "scaler_x.pkl"
+SCALER_Y_PATH = "scaler_y.pkl"
 
 print(f"Usando dispositivo: {DEVICE}")
 
@@ -45,6 +41,7 @@ class CommandTranslatorNN(nn.Module):
     def forward(self, x, hidden=None):
         x = self.relu(self.fc1(x))
         if self.use_lstm:
+            # A LSTM espera uma dimensão de sequência: (batch, seq_len, features)
             x, hidden = self.lstm(x.unsqueeze(1), hidden)
             x = x.squeeze(1)
         x = self.relu(self.fc2(x))
@@ -54,21 +51,26 @@ class CommandTranslatorNN(nn.Module):
 # --- Wrapper para Execução em Tempo Real ---
 class SimToRealWrapper:
     """
-    Encapsula o modelo e os scalers. Carrega todos os recursos na inicialização.
+    Encapsula o modelo treinado e os scalers para uso em tempo real.
+    Recebe um comando de velocidade desejado (do sistema de referência)
+    e retorna o comando adaptado para o sistema alvo (travesim).
     """
     def __init__(self, model_path, scaler_x_path, scaler_y_path, use_lstm=True):
-        # 1. Carregar o modelo treinado UMA VEZ.
-        self.model = CommandTranslatorNN(use_lstm=use_lstm).to(DEVICE)
-        self.model.load_state_dict(torch.load(model_path, map_location=DEVICE, weights_only=True))
-        self.model.eval()  # Fundamental: desativa camadas como Dropout/BatchNorm
+        self.tradutor = CommandTranslatorNN(use_lstm=use_lstm).to(DEVICE)
+        self.model = None
+        self.model_path = model_path
+        
+        
+        self.scaler_x_path = scaler_x_path
+        self.scaler_y_path = scaler_y_path
+        self.scaler_X = None
+        self.scaler_y = None
+        if self.scaler_X == None or self.scaler_y == None:
+            with open(self.scaler_x_path, 'rb') as f:
+                self.scaler_X = pickle.load(f)
+            with open(self.scaler_y_path, 'rb') as f:
+                self.scaler_y = pickle.load(f)
 
-        # 2. Carregar os scalers UMA VEZ.
-        with open(scaler_x_path, 'rb') as f:
-            self.scaler_X = pickle.load(f)
-        with open(scaler_y_path, 'rb') as f:
-            self.scaler_y = pickle.load(f)
-
-        # 3. Inicializar o estado.
         self.prev_v_ref = 0.0
         self.prev_w_ref = 0.0
         self.hidden_state = None
@@ -77,24 +79,29 @@ class SimToRealWrapper:
         """
         Recebe o comando de referência e retorna o comando atuado.
         """
-        # Preparar e escalar a entrada
+        if self.model == None:
+            self.model = self.tradutor
+            self.model.load_state_dict(torch.load(self.model_path, map_location=DEVICE))
+            self.model.eval()  # Fundamental: desativa tradutor como Dropout/BatchNorm
+        # 1. Preparar e escalar a 
+
         input_data = np.array([[v_desired, w_desired, self.prev_v_ref, self.prev_w_ref]])
         input_scaled = self.scaler_X.transform(input_data)
         input_tensor = torch.FloatTensor(input_scaled).to(DEVICE)
         
         with torch.no_grad():
-            # Inferência do modelo
+            # 2. Inferência do modelo
             output_scaled, self.hidden_state = self.model(input_tensor, self.hidden_state)
             
-            # Desfazer a escala da saída
+            # 3. Desfazer a escala da saída para obter o comando real
             actuated_cmd_scaled = output_scaled.cpu().numpy()
             actuated_cmd_unscaled = self.scaler_y.inverse_transform(actuated_cmd_scaled)
             v_actuated, w_actuated = actuated_cmd_unscaled[0]
         
-        # Atualizar estado para a próxima iteração
+        # 4. Atualizar estado para a próxima iteração
         self.prev_v_ref, self.prev_w_ref = v_desired, w_desired
         return v_actuated, w_actuated
-    
+
 # --- Coleta e Preparação de Dados ---
 class DataCollector:
     """
@@ -109,32 +116,25 @@ class DataCollector:
         with open(self.filename, 'w') as f:
             f.write("v_ref,w_ref,prev_v_ref,prev_w_ref,v_act,w_act\n")
 
-    def collect(self, vl_AI, vr_AI):
+    def collect(self):
         if self.world.team[0].entity is not None:
-            # # Comando de REFERÊNCIA (o "desejo" da IA original, interpretado com parâmetros do rSim)
-            # vl_ref, vr_ref = self.world.team[0].entity.control.actuateSimu(self.world.team[0])
-            # Usa os parâmetros corretos e explícitos do rSim
-            v_ref, w_ref = motors2speeds_from_vl_vr(vl_AI, vr_AI, RSIM_WHEEL_RADIUS, RSIM_WHEEL_BASE_LENGTH)
+            # Comando de REFERÊNCIA (o "desejo" da IA original)
+            vl_ref, vr_ref = self.world.team[0].entity.control.actuateSimu(self.world.team[0])
+            r_ref = 0.026
+            L_ref = (0.0025 + 0.0375) * 2
+            v_ref, w_ref = motors2speeds_from_vl_vr(vl_ref, vr_ref, r_ref, L_ref)
             
             # Comando ATUADO (a velocidade observada no travesim como resultado)
-            v_actuated_raw = self.world.team[0].v_signed
+            v_actuated = self.world.team[0].v_signed
             w_actuated = self.world.team[0].w
-
-            v_actuated_corrected = np.copysign(np.abs(v_actuated_raw), v_ref)
-
-            # Se v_ref for muito próximo de zero, v_actuated também deve ser.
-            if np.abs(v_ref) < 0.01:
-                v_actuated_corrected = 0.0
-                
+            
             with open(self.filename, 'a') as f:
                 f.write(f"{v_ref:.10f},{w_ref:.10f},"
                         f"{self.prev_v_ref:.10f},{self.prev_w_ref:.10f},"
-                        # Salva a velocidade linear corrigida
-                        f"{v_actuated_corrected + np.random.normal(0, 0.1/2):.10f},{w_actuated + np.random.normal(0, 0.1/2):.10f}\n")
-                        # f"{v_actuated_corrected + np.random.normal(0, 0.1/2):.10f},{w_actuated + np.random.normal(0, 0.1/2):.10f}\n")
+                        f"{v_actuated:.10f},{w_actuated:.10f}\n")
 
             self.prev_v_ref, self.prev_w_ref = v_ref, w_ref
-            
+
 def load_and_preprocess_dataset(filename):
     """
     Carrega, pré-processa e divide o dataset para o treinamento.
@@ -162,7 +162,7 @@ def load_and_preprocess_dataset(filename):
     return X_train_scaled, y_train_scaled, X_val_scaled, y_val_scaled, scaler_X, scaler_y
 
 # --- Função de Treinamento ---
-def train_model(model, X_train, y_train, X_val, y_val, epochs=250, batch_size=128):
+def train_model(model, X_train, y_train, X_val, y_val, epochs=100, batch_size=128):
     train_dataset = torch.utils.data.TensorDataset(torch.FloatTensor(X_train), torch.FloatTensor(y_train))
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     
@@ -251,7 +251,7 @@ if __name__ == "__main__":
             use_lstm=True
         )
         
-        for _ in range(20):
+        for _ in range(5):
             v_desired_from_AI = np.random.uniform(-1.5, 1.5)
             w_desired_from_AI = np.random.uniform(-10, 10)
             

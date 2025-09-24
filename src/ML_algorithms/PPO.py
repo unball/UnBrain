@@ -41,7 +41,7 @@ class PPO:
     def load_model(self, directory, ppo_filename="ppo_full_checkpoint.pth"):
         ppo_path = os.path.join(directory, ppo_filename)
         if os.path.exists(ppo_path):
-            checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device)
+            checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device, weights_only=True)
             self.actor.load_state_dict(checkpoint['actor'])
             self.critic.load_state_dict(checkpoint['critic'])
             self.actor_optim.load_state_dict(checkpoint['actor_optim'])

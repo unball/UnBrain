@@ -4,12 +4,17 @@ import numpy as np
 wheel_reduction = 1
 
 # Supostamente devia ser
-#r = 0.0325
-#L = 0.075
+# r = 0.0325
+# L = 0.075
 
-# O que realmente é
-r = 0.0159
-L = 0.0756
+# # O que realmente é
+# r = 0.025 #travesim
+# L = 0.055 #travesim
+
+r = 0.02 #FIRAsim
+L = 0.08 #FIRAsim
+
+
 wheel_reduction = 1
 wheel_w_max = 110
 conversion = 127 / wheel_w_max
@@ -34,6 +39,14 @@ def speeds2motors(v: float, w: float) -> (int, int):
   # vl *= convertion
   
   return vr, vl
+
+def motors2speeds_from_vl_vr(vl: float, vr: float, r: float = r, L: float= L) -> (float, float):
+    """Entrada: vl, vr (rad/s). Retorna (v, w)."""
+    if L == 0:
+        raise ValueError("L (distância entre rodas) não pode ser zero.")
+    v = r * (vl + vr) / 2.0
+    w = r * (vr - vl) / L
+    return v, w
 
 def motors2linvel(vl: float, vr: float) -> float:
   # Computa a velocidade angular de rotação de cada roda

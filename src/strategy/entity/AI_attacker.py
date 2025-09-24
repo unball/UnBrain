@@ -57,7 +57,7 @@ class Env():
         'width': 1.3, 'rbt_wheel0_angle': 90.0, 'rbt_wheel1_angle': 270.0, 'rbt_wheel2_angle': -1.0, 'rbt_wheel3_angle': -1.0, 'rbt_radius': 0.0375}
         max_wheel_rad_s = (self.field_params['rbt_motor_max_rpm'] / 60) * 2 * np.pi
         self.max_v = max_wheel_rad_s * self.field_params['rbt_wheel_radius']
-        # 0.045 = robot radius (0.0375) + wheel thicknees (0.0025)
+        # 0.04 = robot radius (0.0375) + wheel thicknees (0.0025)
         self.max_w = np.rad2deg(self.max_v / 0.04)
 
         self.v_wheel_deadzone = 0.05
@@ -136,7 +136,7 @@ class Env():
                     np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos((allied_team[i].th)),
                     self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
-                    self.norm_w(c*allied_team[i].w *-1 if self.world.firasim else c*allied_team[i].w)
+                    self.norm_w(c*allied_team[i].w)
                 ])
             else:
                 base = 4 + (7 * i)

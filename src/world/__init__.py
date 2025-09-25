@@ -1,6 +1,6 @@
 from .elements import *
 from tools import RangeKutta
-from tools.training import DataCollector
+from tools.trainingCopy import DataCollector
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -9,7 +9,7 @@ class Field:
         self.goalAreaHeight = 0.7
 
         self.xmargin =  0.01
-        self.ymargin = 0.005
+        self.ymargin = 0.01
         self.side = side
 
         self.goalDepth = 0.1

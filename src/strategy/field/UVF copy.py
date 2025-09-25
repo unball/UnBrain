@@ -13,9 +13,9 @@ class UVF(Field):
 
         self.world = world
 
-        self.wall_x = self.world.field.marginX
+        self.wall_x = self.world.field.marginX - self.world.field.xmargin
 
-        self.wall_y = self.world.field.marginY
+        self.wall_y = self.world.field.marginY - self.world.field.ymargin
 
         self.dmin = [0.0274,0.0444,0.0444,0.0444]
 

@@ -12,10 +12,9 @@ from tools import motors2speeds_from_vl_vr
 # --- Configurações Globais ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DATASET_FILENAME = 'UnBrainDataSet_translated.csv'
-MODEL_SAVE_PATH = "best_model_travesim.pth"
-
-SCALER_X_PATH = "scaler_x_travesim.pkl"
-SCALER_Y_PATH = "scaler_y_travesim.pkl"
+MODEL_SAVE_PATH = "best_model_firasim.pth"
+SCALER_X_PATH = "scaler_x_firasim.pkl"
+SCALER_Y_PATH = "scaler_y_firasim.pkl"
 
 RSIM_WHEEL_RADIUS = 0.026
 RSIM_WHEEL_BASE_LENGTH = 0.08  # L
@@ -134,19 +133,109 @@ class DataCollector:
                         # f"{v_actuated_corrected + np.random.normal(0, 0.1/2):.10f},{w_actuated + np.random.normal(0, 0.1/2):.10f}\n")
 
             self.prev_v_ref, self.prev_w_ref = v_ref, w_ref
-            
+
+def clean_robot_dataset(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
+    """
+    Realiza uma limpeza autônoma em um dataset de controle de robô.
+
+    Args:
+        df (pd.DataFrame): O DataFrame original carregado do CSV.
+        verbose (bool): Se True, imprime o número de linhas removidas em cada etapa.
+
+    Returns:
+        pd.DataFrame: O DataFrame limpo e pronto para o treinamento.
+    """
+    initial_rows = len(df)
+    if verbose:
+        print(f"--- Iniciando Limpeza Autônoma do Dataset ---")
+        print(f"Número de amostras inicial: {initial_rows}")
+
+    # Cópia para evitar modificar o DataFrame original fora da função
+    cleaned_df = df.copy()
+
+    # --- Regra 1: Remover Inconsistências de Sinal ---
+    # Causa mais provável da instabilidade. Remove linhas onde o robô virou para
+    # o lado oposto ao comandado, o que é fisicamente anômalo (exceto perto de zero).
+    # Usamos uma pequena tolerância (threshold) para não penalizar pequenas flutuações.
+    sign_tolerance = 0.01
+    
+    # Condição para inconsistência em 'v'
+    v_sign_inconsistent = (np.sign(cleaned_df['v_ref']) != np.sign(cleaned_df['v_act'])) & \
+                          (np.abs(cleaned_df['v_ref']) > sign_tolerance) & \
+                          (np.abs(cleaned_df['v_act']) > sign_tolerance)
+                          
+    # Condição para inconsistência em 'w'
+    w_sign_inconsistent = (np.sign(cleaned_df['w_ref']) != np.sign(cleaned_df['w_act'])) & \
+                          (np.abs(cleaned_df['w_ref']) > sign_tolerance) & \
+                          (np.abs(cleaned_df['w_act']) > sign_tolerance)
+
+    # Remove as linhas que satisfazem qualquer uma das condições de inconsistência
+    inconsistent_rows = cleaned_df[v_sign_inconsistent | w_sign_inconsistent]
+    cleaned_df = cleaned_df.drop(inconsistent_rows.index)
+    
+    if verbose:
+        print(f"Etapa 1 (Inconsistência de Sinal): Removidas {len(inconsistent_rows)} amostras.")
+
+    # --- Regra 2: Remover Outliers Extremos (Z-score) ---
+    # Remove anomalias causadas por colisões ou falhas de sensor, onde a diferença
+    # entre o comando e o resultado é estatisticamente improvável.
+    
+    # Calcula o erro absoluto entre referência e real
+    cleaned_df['v_error'] = np.abs(cleaned_df['v_ref'] - cleaned_df['v_act'])
+    cleaned_df['w_error'] = np.abs(cleaned_df['w_ref'] - cleaned_df['w_act'])
+    
+    # Calcula o Z-score para os erros
+    cleaned_df['v_error_zscore'] = np.abs((cleaned_df['v_error'] - cleaned_df['v_error'].mean()) / cleaned_df['v_error'].std())
+    cleaned_df['w_error_zscore'] = np.abs((cleaned_df['w_error'] - cleaned_df['w_error'].mean()) / cleaned_df['w_error'].std())
+    
+    # Define um limiar de Z-score (3 é um valor comum, significando 3 desvios padrão)
+    z_score_threshold = 3.0
+    
+    # Identifica os outliers
+    outlier_rows = cleaned_df[(cleaned_df['v_error_zscore'] > z_score_threshold) | 
+                              (cleaned_df['w_error_zscore'] > z_score_threshold)]
+    cleaned_df = cleaned_df.drop(outlier_rows.index)
+    
+    if verbose:
+        print(f"Etapa 2 (Remoção de Outliers): Removidas {len(outlier_rows)} amostras.")
+
+    # Limpa as colunas auxiliares que foram criadas
+    cleaned_df = cleaned_df.drop(columns=['v_error', 'w_error', 'v_error_zscore', 'w_error_zscore'])
+
+    final_rows = len(cleaned_df)
+    removed_count = initial_rows - final_rows
+    removed_percent = (removed_count / initial_rows) * 100
+    
+    if verbose:
+        print(f"\nLimpeza Concluída.")
+        print(f"Total de amostras removidas: {removed_count} ({removed_percent:.2f}%)")
+        print(f"Número de amostras final: {final_rows}")
+        print("---------------------------------------------")
+        
+    return cleaned_df
+
 def load_and_preprocess_dataset(filename):
     """
     Carrega, pré-processa e divide o dataset para o treinamento.
     """
     df = pd.read_csv(filename)
-    # Limpeza básica de dados
+
+    df = clean_robot_dataset(df)
+
     df.dropna(inplace=True)
+
+    # Entradas (features): A velocidade que queremos ATINGIR no final.
+    # Usamos as colunas '_act' do dataset como nosso "alvo desejado".
+    X = df[['v_act', 'w_act']].values.astype(np.float32)
     
-    # Entradas (features): comandos de referência
-    X = df[['v_ref', 'w_ref', 'prev_v_ref', 'prev_w_ref']].values.astype(np.float32)
-    # Saídas (alvos): comandos atuados/observados
-    y = df[['v_act', 'w_act']].values.astype(np.float32)
+    # Saídas (alvos): O comando que precisamos ENVIAR para atingir o alvo.
+    # Usamos as colunas '_ref' como o comando que a rede deve aprender a gerar.
+    y = df[['v_ref', 'w_ref']].values.astype(np.float32)
+
+    # Para manter a memória de estado, precisamos adicionar as velocidades anteriores
+    # à entrada. A entrada agora será [v_alvo, w_alvo, v_comando_anterior, w_comando_anterior]
+    prev_refs = df[['prev_v_ref', 'prev_w_ref']].values.astype(np.float32)
+    X = np.concatenate([X, prev_refs], axis=1)
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2)
 
@@ -171,6 +260,7 @@ def train_model(model, X_train, y_train, X_val, y_val, epochs=250, batch_size=12
 
     model = model.to(DEVICE)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.1)
     criterion = nn.MSELoss()
 
     best_val_loss = float('inf')
@@ -201,6 +291,8 @@ def train_model(model, X_train, y_train, X_val, y_val, epochs=250, batch_size=12
         
         avg_train_loss = total_train_loss / len(train_loader)
         avg_val_loss = total_val_loss / len(val_loader)
+
+        scheduler.step(avg_val_loss)
         
         print(f"Época {epoch+1}/{epochs} -> Perda de Treino: {avg_train_loss:.6f}, Perda de Validação: {avg_val_loss:.6f}")
 
@@ -228,7 +320,7 @@ if __name__ == "__main__":
 
     # Etapa 2: Carregar, pré-processar e treinar o modelo
     try:
-        X_train, y_train, X_val, y_val, scaler_X, scaler_y = load_and_preprocess_dataset(DATASET_FILENAME)
+        X_train, y_train, X_val, y_val, scaler_X, scaler_y = load_and_preprocess_dataset("UnBrainDataSet_translated copy.csv")
         
         model_translator = CommandTranslatorNN(use_lstm=True)
         train_model(model_translator, X_train, y_train, X_val, y_val)

@@ -35,6 +35,7 @@ class MainStrategy(Strategy):
         # States
         self.currentAttacker = None
         self.currentDefender = None
+        self.currentGoalkeeper = None
 
         # Variables
         self.static_entities = static_entities
@@ -71,6 +72,12 @@ class MainStrategy(Strategy):
 
         return nearest
 
+    def getEntity(self, robot):
+        if self.world.team[robot].entity != None:
+            return self.world.team[robot].entity.__class__.__name__
+        else:
+            return None
+
     def ellipseTarget(self):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
@@ -96,6 +103,7 @@ class MainStrategy(Strategy):
 
     def decideBestGoalKeeper(self, formation, toDecide):
         nearest = self.nearestGoal(toDecide)
+        self.currentGoalkeeper = nearest
         self.world.team[nearest].updateEntity(GoalKeeper)
         
         toDecide.remove(nearest)
@@ -104,14 +112,22 @@ class MainStrategy(Strategy):
         return formation, toDecide
 
     def decideBestDefender(self, formation, toDecide):
-        target = self.ellipseTarget()
-        distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
+        old_formation = self.formationDecider()
+        if not GoalKeeper in old_formation and self.currentGoalkeeper != None:
+            self.currentDefender = self.currentGoalkeeper
+            self.world.team[self.currentDefender].updateEntity(Defender)
+            if self.currentDefender in toDecide:
+                toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
+        else:
+            target = self.ellipseTarget()
+            distances = [norm(target, self.world.team[robotIndex].pos) for robotIndex in toDecide]
 
-        self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
-        self.world.team[self.currentDefender].updateEntity(Defender)
+            self.currentDefender = bestWithHyst(self.currentDefender, toDecide, distances, 0.20)
+            self.world.team[self.currentDefender].updateEntity(Defender)
 
-        toDecide.remove(self.currentDefender)
-        formation.remove(Defender)
+            toDecide.remove(self.currentDefender)
+            formation.remove(Defender)
 
         return formation, toDecide
 
@@ -120,8 +136,13 @@ class MainStrategy(Strategy):
         d2 = norm(self.world.team[toDecide[1]].pos, self.world.ball.pos)
 
         self.currentAttacker = bestWithHyst(self.currentAttacker, toDecide, [d1, d2], 0.20)
-    
-        self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+        if self.world.team[self.currentAttacker].entity != None and self.getEntity(self.currentAttacker) == 'Attacker':
+            if self.world.team[self.currentAttacker].entity.slave == False:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
+            elif self.world.team[self.currentAttacker].entity.slave == True:
+                self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=True)
+        else:
+            self.world.team[self.currentAttacker].updateEntity(Attacker, ballShift=0, slave=False)
         toDecide.remove(self.currentAttacker)
         formation.remove(Attacker)
 
@@ -146,24 +167,28 @@ class MainStrategy(Strategy):
         return formation, toDecide
     
     def behind_ball(self, ball, robot):
-        if ball[0] > 0.5 and abs(ball[1]) > 0.3: ball_shift = 0
-        else: ball_shift = 0.2
-        ball_pos = np.array([ball[0] - ball_shift, ball[1]])
-        robot_pos = np.array([robot[0], robot[1]])
-        goal_pos = np.array([(self.world.field.width)/2 - 0.1, 0])  # Opponent's goal center
+        if robot[0] > ball[0] - 0.3:
+            return -1
+        else:
+            return 1
+        # if ball[0] > 0.5 and abs(ball[1]) > 0.3: ball_shift = 0
+        # else: ball_shift = 0.2
+        # ball_pos = np.array([ball[0] - ball_shift, ball[1]])
+        # robot_pos = np.array([robot[0], robot[1]])
+        # goal_pos = np.array([(self.world.field.width)/2 - 0.1, 0])  # Opponent's goal center
 
-        # 1. Positional Alignment Reward -------------------------------------------
-        # Vector calculations
-        ball_to_goal = goal_pos - ball_pos
-        ball_to_robot = ball_pos - robot_pos
+        # # 1. Positional Alignment Reward -------------------------------------------
+        # # Vector calculations
+        # ball_to_goal = goal_pos - ball_pos
+        # ball_to_robot = ball_pos - robot_pos
         
-        # Normalize vectors
-        ball_to_goal_norm = ball_to_goal / np.linalg.norm(ball_to_goal)
-        robot_to_ball_norm = ball_to_robot / np.linalg.norm(ball_to_robot)
+        # # Normalize vectors
+        # ball_to_goal_norm = ball_to_goal / np.linalg.norm(ball_to_goal)
+        # robot_to_ball_norm = ball_to_robot / np.linalg.norm(ball_to_robot)
 
-        # 1. Positional Reward (being behind the ball relative to goal)
-        pos_alignment = np.dot(robot_to_ball_norm, ball_to_goal_norm)
-        return pos_alignment
+        # # 1. Positional Reward (being behind the ball relative to goal)
+        # pos_alignment = np.dot(robot_to_ball_norm, ball_to_goal_norm)
+        # return pos_alignment
 
     def update(self, world):
         
@@ -175,7 +200,7 @@ class MainStrategy(Strategy):
             if self.AI_attacker:
                 roles=[AI_Attacker,GoalKeeper,Defender]
             else:
-                roles=[Attacker,Defender,Attacker]
+                roles=[Attacker,Defender,GoalKeeper]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)
@@ -197,20 +222,35 @@ class MainStrategy(Strategy):
             if AI_Attacker in formation and len(toDecide) >= 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
                 # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
-                if (abs(self.world.ball.pos[0]) > self.world.field.width/2 - 0.2\
-                or abs(self.world.ball.pos[1]) > self.world.field.height/2 - 0.1):
-                    self.world.team[toDecide[0]].updateEntity(AI_Attacker)
-                    toDecide.remove(toDecide[0])
-                elif self.behind_ball(self.world.ball.pos, self.world.team[toDecide[0]].pos) < 0:#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
+                if (self.world.team[toDecide[0]].pos[1] - self.world.ball.pos[1]) < 0 and self.world.ball.pos[1] > 0 :#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
                     self.world.team[toDecide[0]].updateEntity(Attacker)
                     toDecide.remove(toDecide[0])
-                # elif not self.behind_ball(self.world.team[toDecide[0]].pos, self.world.ball.pos):#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
-                #     self.world.team[toDecide[0]].updateEntity(Attacker)
-                #     toDecide.remove(toDecide[0])
+                elif (self.world.team[toDecide[0]].pos[1] - self.world.ball.pos[1]) > 0 and self.world.ball.pos[1] < 0 :#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
+                    self.world.team[toDecide[0]].updateEntity(Attacker)
+                    toDecide.remove(toDecide[0])
                 else:
                     self.world.team[toDecide[0]].updateEntity(AI_Attacker)
                     toDecide.remove(toDecide[0])
                 formation.remove(AI_Attacker)
+
+            # if AI_Attacker in formation and len(toDecide) >= 1:
+            #     #possível erro na mudança de role abaixo, checar mais tarde
+            #     # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True) 
+            #     #pos atacante > 0.65 - 0.1
+            #     if (abs(self.world.team[toDecide[0]].pos[0]) > self.world.field.width/2 - 0.1\
+            #     or abs(self.world.team[toDecide[0]].pos[1]) > self.world.field.height/2 - 0.2):
+            #         self.world.team[toDecide[0]].updateEntity(AI_Attacker)
+            #         toDecide.remove(toDecide[0])
+            #     elif self.behind_ball(self.world.ball.pos, self.world.team[toDecide[0]].pos) < 0 and not abs(self.world.team[toDecide[0]].pos[1]) :#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
+            #         self.world.team[toDecide[0]].updateEntity(Attacker)
+            #         toDecide.remove(toDecide[0])
+            #     # elif not self.behind_ball(self.world.team[toDecide[0]].pos, self.world.ball.pos):#or (abs(self.world.ball.pos[1]) > 0.4 and self.world.team[toDecide[0]].pos[1] > 0.4)
+            #     #     self.world.team[toDecide[0]].updateEntity(Attacker)
+            #     #     toDecide.remove(toDecide[0])
+            #     else:
+            #         self.world.team[toDecide[0]].updateEntity(AI_Attacker)
+            #         toDecide.remove(toDecide[0])
+            #     formation.remove(AI_Attacker)
 
             if GoalKeeper in formation and len(toDecide) >= 1:
                 formation, toDecide = self.decideBestGoalKeeper(formation, toDecide)
@@ -243,10 +283,15 @@ class MainStrategy(Strategy):
                     toDecide.remove(toDecide[0])
                 formation.remove(AI_Attacker)
 
-            if Attacker in formation and len(toDecide) >= 1:
+            if Attacker in formation and len(toDecide) == 1:
                 #possível erro na mudança de role abaixo, checar mais tarde
-                # self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
-                self.world.team[toDecide[0]].updateEntity(Attacker)
+                if self.world.team[toDecide[0]].entity != None and self.getEntity(toDecide[0]) == 'Attacker':
+                    if self.world.team[toDecide[0]].entity.slave == False:
+                        self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=False)
+                    elif self.world.team[toDecide[0]].entity.slave == True:
+                        self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
+                else:
+                    self.world.team[toDecide[0]].updateEntity(Attacker, ballShift=0.15 if hasMaster else 0, slave=True)
                 toDecide.remove(toDecide[0])
                 formation.remove(Attacker)
         for robot in self.world.team:

@@ -79,12 +79,12 @@ class FIRASimVision:
     #     self._run = False
 
 class FIRASimCommand:
-    def __init__(self, host=constants.HOST_FIRASIM_COMMAND, port=constants.PORT_FIRASIM_COMMAND, team_yellow = False):
+    def __init__(self, host=constants.HOST_FIRASIM_COMMAND, team_yellow = False):
         self.host = host
-        self.port = port
+        self.port = constants.port_fira(team_yellow)
         self.team_yellow = team_yellow
 
-        self.socket = self.createSocket(host, port)
+        self.socket = self.createSocket(self.host, self.port)
 
     def createSocket(self, host, port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

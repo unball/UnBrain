@@ -25,3 +25,8 @@ HOST_FIRASIM_VISION = "224.0.0.1"
 HOST_FIRASIM_COMMAND = "127.0.0.1"
 PORT_FIRASIM_VISION = 10002
 PORT_FIRASIM_COMMAND = 20013 #lembrar de mudar de firasim para travesim e azul e amarelo
+def port_fira(team_yellow):
+    if team_yellow == True:
+        return 20012
+    else:
+        return 20013

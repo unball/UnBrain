@@ -3,11 +3,11 @@ from tools.interval import Interval
 from control import Control
 import numpy as np
 import math
-import time 
+import time
 
 class UFC_Simple(Control):
     """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-    def __init__(self, world, kw=10, kp=100, mu=0.95, vmax=1.6, L=L, enableInjection=False):
+    def __init__(self, world, kw=10, kp=100, mu=0.4, vmax=3.0, L=L, enableInjection=False):
       Control.__init__(self, world)
 
       self.g = 9.8
@@ -38,7 +38,7 @@ class UFC_Simple(Control):
 
       # Derivada da referência
       dth = angError(th, self.lastth) / dt
-      
+
       # Computa phi
       phi = robot.field.phi(robot.pose)
 
@@ -53,7 +53,7 @@ class UFC_Simple(Control):
         v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
       if phi == 0:
         # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        v1 = self.amax / np.abs(omega)      
+        v1 = self.amax / np.abs(omega)
 
       # Velocidade limite das rodas
       v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
@@ -69,17 +69,17 @@ class UFC_Simple(Control):
       #     print(v, ': velocidade é v2')
       # elif v == v3:
       #     print(v, ': velocidade é v3')
-    
+
 
       # Lei de controle da velocidade angular
       w = v * phi + omega
 
       # Considera resposta lenta
       #if tau != 0: w = (w - w0 * tau/dt * (1-np.exp(-dt/tau))) / (1-tau/dt * (1-np.exp(-dt/tau)))
-      
+
       # Satura w caso ultrapasse a mudança máxima permitida
       #w  = lastspeed.w + sat(w-lastspeed.w, motorangaccelmax * r * interval / L)
-      
+
       # Atualiza a última referência
       self.lastth = th
       robot.lastControlLinVel = v

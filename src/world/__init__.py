@@ -14,7 +14,7 @@ class Field:
 
         self.goalDepth = 0.1
 
-        self.areaEllipseSize = (0.27, 0.45)
+        self.areaEllipseSize = (0.3, 0.45)
         self.areaEllipseCenter = (-self.maxX + 0.07, 0)
 
     @property
@@ -282,15 +282,15 @@ class World:
                 if i < len(self.n_robots):
                     #yellow[robot_id].update(message.robots_yellow[robot_id].x,message.robots_yellow[robot_id].y, message.robots_yellow[robot_id].orientation)
                     if self.debug:
-                        print(f"Yellow - {self.n_robots[i]} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
-                    yellow[self.n_robots[i]].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                        print(f"Yellow - {i} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
+                    yellow[i].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
                     
         else:
             for i, robot in enumerate(message.frame.robots_blue):
                 if i < len(self.n_robots):
                     if self.debug:
-                        print(f"Blue - {self.n_robots[i]} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
-                    blue[self.n_robots[i]].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
+                        print(f"Blue - {i} | x {robot.x:.2f} | y {robot.y:.2f} | th {robot.orientation:.2f} | vx {robot.vx:.2f} | vy {robot.vy:.2f} | vorientation {robot.vorientation:.2f}")
+                    blue[i].updateSimu(robot.x, robot.y, robot.orientation, robot.vx, robot.vy, robot.vorientation)
 
 
         # for robot, pos in zip(self.team, teamPos): robot.update(*pos)

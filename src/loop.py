@@ -85,40 +85,40 @@ class Loop:
 
 
         # Instancia interface com o simulador
-        self.firasim = VSS(team_yellow=team_yellow)
-        
-        yellow_robots_pos = []
-        blue_robots_pos = []
-        field_type = 0  # 0 for Division B, 1 for Division A
-        pos = [[-0.6, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.2, 0.0, 0.0]]
-        if team_yellow:
-            n_robots_yellow = len(n_robots)
-            for i in n_robots:
-                yellow_robots_pos += [pos[i]]
-            n_robots_blue = 0 
-        else:
-            n_robots_blue = len(n_robots)
-            for i in n_robots:
-                blue_robots_pos += [pos[i]]
-            n_robots_yellow = 0
-        time_step_ms = 16 # time step in milliseconds
-        # ball initial position [x, y, v_x, v_y] in meters and meter/s
-        ball_pos = [0.0, 0.3, 0.0, 0.0]
+        if firasim: self.firasim = VSS(team_yellow=team_yellow)
+        if simulado:
+            yellow_robots_pos = []
+            blue_robots_pos = []
+            field_type = 0  # 0 for Division B, 1 for Division A
+            pos = [[-0.6, 0.0, 0.0], [-0.4, 0.0, 0.0], [-0.2, 0.0, 0.0]]
+            if team_yellow:
+                n_robots_yellow = len(n_robots)
+                for i in n_robots:
+                    yellow_robots_pos += [pos[i]]
+                n_robots_blue = 0 
+            else:
+                n_robots_blue = len(n_robots)
+                for i in n_robots:
+                    blue_robots_pos += [pos[i]]
+                n_robots_yellow = 0
+            time_step_ms = 16 # time step in milliseconds
+            # ball initial position [x, y, v_x, v_y] in meters and meter/s
+            ball_pos = [0.0, 0.3, 0.0, 0.0]
 
-        # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
-        # Units are meters and degrees
-        
-        self.simulado = robosim.VSS(
-            field_type,
-            n_robots_blue,
-            n_robots_yellow,
-            time_step_ms,
-            ball_pos,
-            blue_robots_pos,
-            yellow_robots_pos,
-        )
+            # robots initial positions [[x, y, angle], [x, y, angle]...], where [[id_0], [id_1]...]
+            # Units are meters and degrees
+            
+            self.simulado = robosim.VSS(
+                field_type,
+                n_robots_blue,
+                n_robots_yellow,
+                time_step_ms,
+                ball_pos,
+                blue_robots_pos,
+                yellow_robots_pos,
+            )
 
-        field_params = self.simulado.get_field_params()
+            field_params = self.simulado.get_field_params()
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
@@ -127,13 +127,8 @@ class Loop:
         except ValueError:
             print("tentou chamar signal fora da thread principal")
         # Instancia interfaces com o referee
-        random.seed(5)
-        torch.manual_seed(5)
-        torch.cuda.manual_seed_all(5)
-        
-        self.rc = RefereeCommands()
-        self.rp = RefereePlacement(team_yellow=team_yellow)
-        self.visionclient = FiraClient()
+    
+        if vssvision: self.visionclient = FiraClient()
         # Instancia o mundo e a estratégia
 
         team_side = -1 if mirror else 1
@@ -142,7 +137,10 @@ class Loop:
         
         self.data_colector = DataCollector(self.world)
 
-        self.arp = AutomaticReplacer(self.world)
+        if referee:
+                self.rc = RefereeCommands()
+                self.rp = RefereePlacement(team_yellow=team_yellow)
+
         self.strategy = MainStrategy(self.world, static_entities=static_entities, AI_attacker=AI_attacker)
 
         # Variáveis
@@ -315,7 +313,7 @@ class Loop:
                 self.world.setLastCommand(command) 
                 # obedece o comando e sai do busy loop
             else:
-                self.strategy.manageReferee(self.arp, self.world.last_command)
+                self.strategy.manageReferee(self.world.last_command)
 
     def draw(self):
         for robot in [r for r in self.world.team if r is not None]:

@@ -4,7 +4,6 @@ from strategy import MainStrategy, Attacker, Defender, GoalKeeper, AI_Attacker
 from UVF_screen import SystemTester
 from communication.serialWifi import SerialRadio
 from world import World
-from tools.training import DataCollector
 
 import threading
 
@@ -50,7 +49,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=70, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
+                loop_freq=120, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -134,8 +133,6 @@ class Loop:
         team_side = -1 if mirror else 1
         self.team_side = team_side
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror, enemy_AI=enemy_AI)
-        
-        self.data_colector = DataCollector(self.world)
 
         if referee:
                 self.rc = RefereeCommands()
@@ -375,6 +372,7 @@ class Loop:
             while time.time() - t0 < self.loopTime:
                 self.loop()
                 self.busyLoop()
+                # self.data_colector.collect()
                 
             self.world.execTime = time.time() - t0
                 
@@ -383,9 +381,8 @@ class Loop:
 
             # Executa o loop
             self.loop()
-            self.data_colector.collect()
 
-            print(f"gfl {time.time()-tempo_zero:.2f} FPS:{1/self.world.execTime}", end="\r", flush=True)
+            print(f"gfl {time.time()-tempo_zero:.2f} FPS:{1/self.world.execTime:.2f}", end="\r", flush=True)
             # if time.time()-tempo_zero > 1:
             #     self.running = False
 

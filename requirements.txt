@@ -6,8 +6,9 @@ pyserial
 matplotlib
 protobuf==3.20.2
 scipy
-dubins
 opencv-python
+torch
+scikit-learn
 vext
 pandas
 pycairo 

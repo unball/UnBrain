@@ -90,7 +90,7 @@ class MainStrategy(Strategy):
 
     def formationDecider(self):
         if self.world.ball.pos[0] < -0.25 and not self.AI_attacker:
-            return [GoalKeeper, Defender, Attacker]
+            return [GoalKeeper, Attacker, Attacker]
         elif self.world.ball.pos[0] < -0.25:
             return [GoalKeeper, Defender, AI_Attacker]
         elif self.AI_attacker:

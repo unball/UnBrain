@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from tools import speeds2motors, deadzone, sat, motors2speeds_from_vl_vr
 from tools.training import SimToRealWrapper
 
-Controller = SimToRealWrapper(
-            model_path="best_model_travesim.pth",
-            scaler_x_path="scaler_x_travesim.pkl",
-            scaler_y_path="scaler_y_travesim.pkl",
-            use_lstm=True
-        )
+# Controller = SimToRealWrapper(
+            # model_path="best_model_travesim.pth",
+            # scaler_x_path="scaler_x_travesim.pkl",
+            # scaler_y_path="scaler_y_travesim.pkl",
+            # use_lstm=True
+        # )
 
 class Control(ABC):
     def __init__(self, world):

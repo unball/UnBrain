@@ -1,6 +1,5 @@
 from .elements import *
 from tools import RangeKutta
-from tools.training import DataCollector
 class Field:
     def __init__(self, side):
         self.width = 1.5
@@ -84,7 +83,6 @@ class World:
         self.t0 = time.time()
         self.execTime = 0
         self.igglu = True
-        self.data_collector = DataCollector(self)
         
         self.team_yellow = team_yellow
 

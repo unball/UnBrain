@@ -130,7 +130,11 @@ def deadZone(x, w):
   return x-np.sign(x)*w if np.abs(x) > w else 0
 
 def deadZoneDisc(x, w):
-  return x if np.abs(x) > w else 0
+  try:
+    return x if np.abs(x) > w else 0
+  except Exception as e:
+    print(f"deadZoneDisc recebeu algo esquisito: {e}")
+    return 0
 
 def distToBall(pa, pb, pc):
   """ Retorna a distância entre ponto c e reta que passa por a e b"""

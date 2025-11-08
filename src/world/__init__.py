@@ -90,6 +90,10 @@ class World:
         self.allyGoals = 0
         self.enemyGoals = 0
         self.updateCount = 0
+        if self.AI_attacker:
+            robot = self.team[self.n_robots[0]]
+            robot.updateEntity(AI_Attacker)
+            robot.entity._control.output(robot)
 
         if self.firasim: self.mode = "firasim"
         elif self.vssvision or self.mainvision: self.mode = "fisico"

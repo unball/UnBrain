@@ -19,6 +19,29 @@ wheel_reduction = 1
 wheel_w_max = 110
 conversion = 127 / wheel_w_max
 
+def get_Lr(mode: str) -> (float, float):
+  # Supostamente devia ser
+  #L = 0.075
+  #r = 0.0325
+  if mode == "robocin":
+    
+    L = 0.8
+    r = 0.016
+
+  elif mode == "fisico":
+    L = 0.0756
+    r = 0.0159
+
+  elif mode == "firasim":
+    L = 0.08
+    r = 0.02
+
+  elif mode == "simulado":
+    L = 0.0775
+    r = 0.026
+  return L, r
+
+
 def deadzone(vin, up, down):
   if (vin!=0):
     return vin+up if (vin > 0) else vin-abs(down)

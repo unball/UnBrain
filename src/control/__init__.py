@@ -30,7 +30,7 @@ class Control(ABC):
         if robot.entity.__class__.__name__ ==  "AI_Attacker": 
             vl, vr = self.output(robot)
             # self.world.data_collector.collect(vl_AI=vl,vr_AI=vr)
-            v, w = motors2speeds_from_vl_vr(vl, vr, self.world.mode)
+            v, w = motors2speeds_from_vl_vr(vl, vr, "robocin")
             return v, w
 
         v, w = self.output(robot)

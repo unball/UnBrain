@@ -1,4 +1,4 @@
-from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, L, unit, angl, norml, sats
+from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, unit, angl, norml, get_Lr
 from tools.interval import Interval
 from control import Control
 import numpy as np
@@ -9,7 +9,7 @@ import time
 
 class SecAttackerControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=60, mu=0.75, vbias=0.1, vmax=1.2, L=0.0605, enableInjection=False):
+  def __init__(self, world, kw=5, kp=60, mu=0.75, vbias=0.1, vmax=1.2, enableInjection=False):
     Control.__init__(self, world)
 
     self.g = 9.8
@@ -18,7 +18,7 @@ class SecAttackerControl(Control):
     self.mu = mu
     self.amax = self.mu * self.g
     self.vmax = vmax
-    self.L = L
+    self.L = get_Lr(self.world.mode)[0]
     self.kv = 10
     self.vbias = vbias
 

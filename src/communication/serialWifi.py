@@ -25,7 +25,7 @@ class SerialRadio():
       if self.serial is None:
         
         porta = [port.device for port in serial.tools.list_ports.comports()][-1]
-        subprocess.Popen("echo 'sua senha' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen("echo 'unball1' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
         print("Acessando a porta USB", porta)
         self.serial = serial.Serial(porta, 115200)
         self.serial.timeout = 0.100

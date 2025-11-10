@@ -30,7 +30,7 @@ class Control(ABC):
         if robot.entity.__class__.__name__ ==  "AI_Attacker": 
             vl, vr = self.output(robot)
             # self.world.data_collector.collect(vl_AI=vl,vr_AI=vr)
-            v, w = motors2speeds_from_vl_vr(vl, vr)
+            v, w = motors2speeds_from_vl_vr(vl, vr, self.world.mode)
             return v, w
 
         v, w = self.output(robot)
@@ -51,12 +51,12 @@ class Control(ABC):
         #     vl, vr = self.output(robot) #Vr e Vl da Inteligencia Artificial
         #     v, w = motors2speeds_from_vl_vr(vl, vr, 0.026, 0.08)
         #     v, w = Controller.step(v,w)
-        #     vl, vr = speeds2motors(v, w)
+        #     vr, vl = speeds2motors(v, w, self.world.mode)
             
         #     return vl, vr
         else:
             v, w = self.output(robot)
             robot.lastControlLinVel = v
-            vl, vr = speeds2motors(v, self.world.field.side * w)
+            vl, vr = speeds2motors(v, self.world.field.side * w, self.world.mode)
 
         return vl, vr

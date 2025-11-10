@@ -11,8 +11,8 @@ wheel_reduction = 1
 # r = 0.025 #travesim
 # L = 0.055 #travesim
 
-r = 0.025 #FIRAsim
-L = 0.055 #FIRAsim
+# r = 0.025 #FIRAsim
+# L = 0.055 #FIRAsim
 
 
 wheel_reduction = 1
@@ -33,8 +33,8 @@ def get_Lr(mode: str) -> (float, float):
     r = 0.0159
 
   elif mode == "firasim":
-    L = 0.08
-    r = 0.02
+    L = 0.055
+    r = 0.025
 
   elif mode == "simulado":
     L = 0.0775
@@ -47,8 +47,10 @@ def deadzone(vin, up, down):
     return vin+up if (vin > 0) else vin-abs(down)
   return 0
 
-def speeds2motors(v: float, w: float) -> (int, int):
+def speeds2motors(v: float, w: float, mode:str) -> (int, int):
   """Recebe velocidade linear e angular e retorna velocidades para as duas rodas"""
+
+  L, r = get_Lr(mode)
 
   # Computa a velocidade angular de rotação de cada roda
   vr = (v + (L/2)*w) / r#/ (2*np.pi*r) * wheel_reduction
@@ -74,8 +76,11 @@ def motors2speeds_from_vl_vr(vl: float, vr: float, mode: str) -> (float, float):
     w = r * (vr - vl) / L
     return v, w
 
-def motors2speeds_from_vl_vr(vl: float, vr: float, r: float = r, L: float= L) -> (float, float):
+def motors2speeds_from_vl_vr(vl: float, vr: float, mode: str) -> (float, float):
     """Entrada: vl, vr (rad/s). Retorna (v, w)."""
+
+    L, r = get_Lr(mode)
+
     if L == 0:
         raise ValueError("L (distância entre rodas) não pode ser zero.")
     v = r * (vl + vr) / 2.0

@@ -134,7 +134,7 @@ class Loop:
 
         team_side = -1 if mirror else 1
         self.team_side = team_side
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror,AI_Attacker=AI_Attacker, enemy_AI=enemy_AI)
+        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror,AI_attacker=AI_attacker, enemy_AI=enemy_AI)
 
         if referee:
                 self.rc = RefereeCommands()

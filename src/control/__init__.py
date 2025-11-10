@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from tools import speeds2motors, deadzone, sat, motors2speeds_from_vl_vr
-from tools.training import SimToRealWrapper
+# from tools.training import SimToRealWrapper
 
 # Controller = SimToRealWrapper(
             # model_path="best_model_travesim.pth",

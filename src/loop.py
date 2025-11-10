@@ -144,6 +144,7 @@ class Loop:
         self.message = None
         self.loopTime = 1.0 / loop_freq
         self.running = True
+        self.execute = False
         self.lastupdatecount = 0
         self.radio = SerialRadio(control = control, debug = self.world.debug)
 

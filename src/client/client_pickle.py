@@ -9,13 +9,22 @@ class ClientPickle:
         self.psocket.connect((self.host, self.port))
         #while True:
         #    self.receive()
+        # self.psocket.setblocking(False)
+        
 
     def receive(self):
-        socket.setdefaulttimeout(1/30)
-        data = self.psocket.recv(15000)
-        message = pickle.loads(data)
-        #print('Received from server: <type> -> ', type(message), '\n',str(message))
-        return message
+        try:
+            socket.setdefaulttimeout(1/30)
+            data = self.psocket.recv(15000)
+            message = pickle.loads(data)
+            #print('Received from server: <type> -> ', type(message), '\n',str(message))
+            return message
+        except BlockingIOError:
+            # nenhum dado disponível no momento (não bloqueante)
+            return None
+        except:
+            # servidor desconectou abruptamente
+            raise ConnectionError("Conexão resetada pelo servidor")
 
     def end(self):
         self.psocket.close()

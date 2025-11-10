@@ -278,12 +278,15 @@ class Loop:
                 self.world.VSSVision_update(self.message.detection)
         if self.world.mainvision:
             # Atribuimos a mensagem que queremos passar para a função update_main_vision
-            message = self.pclient.receive()
-            self.message = message if message is not None else self.message
-            self.execute = self.message["running"]
+            try:
+                message = self.pclient.receive()
+                self.message = message if message is not None else self.message
+                self.execute = self.message["running"] if self.message is not None else False
+                # print(self.message)
+            except ConnectionError:
+                self.handle_SIGINT(0,0, shutdown=True)     
             if self.execute == False: # Se a visão parar de rodar, o robô para ao invés de continuar com o último comando
                 self.handle_SIGINT(0,0, shutdown=False)
-                
             elif self.message is not None: 
                 self.world.update_main_vision(self.message)
 

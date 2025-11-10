@@ -18,6 +18,7 @@ class SerialRadio():
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
 
+  #Se quiser testar usando ACK, ligar 'waitack'
   def send(self, n_robots, msg, waitack=False):
     """Envia a mensagem via barramento serial em `/dev/ttyUSB*`."""
     try:
@@ -66,6 +67,7 @@ class SerialRadio():
     # Envia
     try:
       self.serial.write(message)
+      self.serial.flush()
       if waitack:
         response = self.serial.readline().decode()
         try:

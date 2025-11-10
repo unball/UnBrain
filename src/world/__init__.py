@@ -3,8 +3,8 @@ from tools import RangeKutta
 from strategy import AI_Attacker
 class Field:
     def __init__(self, side):
-        self.width = 1.5
-        self.height = 1.3
+        self.width = 1.75
+        self.height = 1.35
         self.goalAreaWidth = 0.15
         self.goalAreaHeight = 0.7
 

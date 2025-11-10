@@ -29,8 +29,8 @@ class World(ParamsPattern):
       "UVF_ponMinAvoidanceAngle": 0.5
     })
 
-    self.field_x_length = 1.5
-    self.field_y_length = 1.3
+    self.field_x_length = 1.75
+    self.field_y_length = 1.35
     self.xmax = (self.field_x_length) / 2
     self.ymax = (self.field_y_length) / 2
     self.xmaxmargin = self.xmax - 0.10

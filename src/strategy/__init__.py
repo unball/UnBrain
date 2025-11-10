@@ -44,6 +44,9 @@ class MainStrategy(Strategy):
         # AI
         self.AI_attacker = AI_attacker
 
+    def getEntity(self, entity):
+        return entity.__class__.__name__
+
     def manageReferee(self, command):
         if command is None: 
             for robot in self.world.raw_team: 

@@ -15,6 +15,8 @@ import robosim
 import torch
 
 # matplotlib
+
+# matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arrow
 from matplotlib.lines import Line2D
@@ -49,7 +51,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=120, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
+                loop_freq=300, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -117,7 +119,7 @@ class Loop:
                 yellow_robots_pos,
             )
 
-            field_params = self.simulado.get_field_params()
+        # field_params = self.simulado.get_field_params()
         # print(f"estado do campo:{self.simulado.get_state()}")
 
         # Instancia de sinal caso haja interrupções no processo (ctrl + C)
@@ -132,7 +134,7 @@ class Loop:
 
         team_side = -1 if mirror else 1
         self.team_side = team_side
-        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror, enemy_AI=enemy_AI)
+        self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror,AI_Attacker=AI_Attacker, enemy_AI=enemy_AI)
 
         if referee:
                 self.rc = RefereeCommands()

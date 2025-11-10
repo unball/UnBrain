@@ -53,7 +53,7 @@ class Field:
         return (self.goalAreaWidth, self.goalAreaHeight)
 
 class World:
-    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, enemy_AI=False, last_command=None):
+    def __init__(self, n_robots=[0,1,2], side=1, team_yellow=False, immediate_start=False, referee=False, firasim=False, vssvision=False, mainvision=False, simulado=False, debug=False, mirror=False, control=False, AI_Attacker=False, enemy_AI=False, last_command=None):
         self.n_robots = n_robots
         self._team = [None,None,None]
         for i in self.n_robots:
@@ -72,6 +72,7 @@ class World:
         self.debug = debug
         self.mirror = mirror
         self.control =  control
+        self.AI_attacker = AI_Attacker
         self.enemy_AI = enemy_AI
         self.last_command = last_command
         self._referenceTime = 0
@@ -89,6 +90,10 @@ class World:
         self.allyGoals = 0
         self.enemyGoals = 0
         self.updateCount = 0
+
+        if self.firasim: self.mode = "firasim"
+        elif self.vssvision or self.mainvision: self.mode = "fisico"
+        elif self.simulado: self.mode = "simulado"
 
     def update_main_vision(self, message):
         if self.team_yellow: 

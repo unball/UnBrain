@@ -54,6 +54,7 @@ class Controller:
           GLib.idle_add(event["glib_run"][0], *event["glib_run"][1:])
       except:
         print("Failed to run queued event")
+        print(f'event: {self.__events.get_nowait()}')
             
   def stop(self):
     """Faz a flag `__quitRequested` ser `True`, o que provocará a parada de `loop` na thread de controller."""

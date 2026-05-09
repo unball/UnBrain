@@ -83,6 +83,7 @@ class DebugHLC(ParamsPattern, State):
       "velRobotMod": [],
       "replayData": {"time": [], "robot": [], "robot1": [], "robot2": [], "ball": []},
       "loopTime": 0,
+      "FPS": 0,
       "controlV": 0,
       "controlW": 0,
       "visionV": 0,
@@ -158,6 +159,7 @@ class DebugHLC(ParamsPattern, State):
 
     # Mais dados de debug
     self.debugData["loopTime"] = (dt*1000)*0.1 + self.debugData["loopTime"]*0.9
+    self.debugData["FPS"] = (self.fps)*0.05 + self.debugData["FPS"]*0.95
 
     if self.getParam("enableDebug"):
       self.debugData["controlV"] = speeds[0].v
@@ -168,6 +170,9 @@ class DebugHLC(ParamsPattern, State):
   
   def update(self):
     """Função de loop do estado debugHLC"""
+
+    # Computa o tempo desde o último loop e salva
+    now = time.perf_counter()
 
     # Computa o tempo desde o último loop e salva
     dt = time.time()-self.t

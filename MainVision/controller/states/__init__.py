@@ -24,5 +24,5 @@ class DummyState(State):
 
   def update(self):
     """Este método apenas faz dormir por 30ms"""
-    time.sleep(0.03)
-    #self._controller.visionSystem.update()
+    # time.sleep(0.03)
+    # self._controller.visionSystem.update()

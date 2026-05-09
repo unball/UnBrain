@@ -1,16 +1,24 @@
-from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, unit, angl, norml, get_Lr
+from tools import norm, ang, angError, sat, speeds2motors, fixAngle, filt, get_Lr, unit, angl, norml, sats
 from tools.interval import Interval
 from control import Control
 import numpy as np
 import math
 import time 
 
+PLOT_CONTROL = False
+if PLOT_CONTROL:
+  import matplotlib.pyplot as plt
+
+def close_event():
+  plt.close() 
 
 
 class SecAttackerControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=5, kp=60, mu=0.75, vbias=0.1, vmax=1.2, enableInjection=False):
+  def __init__(self, world, kw=15, kp=35, mu=0.75, vmax=2.0, enableInjection=False):
     Control.__init__(self, world)
+
+    self.v_a = None
 
     self.g = 9.8
     self.kw = kw
@@ -20,14 +28,14 @@ class SecAttackerControl(Control):
     self.vmax = vmax
     self.L = get_Lr(self.world.mode)[0]
     self.kv = 10
-    self.vbias = vbias
+    self.vbias = 0.1
 
     self.sd_min = 1e-4
-    self.sd_max = 0.5
+    self.sd_max = 2
 
     self.lastth = [0,0,0,0]
     self.lastdth = 0
-    self.interval = Interval(filter=False, initial_dt=0.016)
+    self.interval = Interval(filter=True, initial_dt=0.001)
     self.lastnorm = 0
     self.enableInjection = enableInjection
     self.lastwref = 0
@@ -77,25 +85,34 @@ class SecAttackerControl(Control):
 
     # Derivada da referência
     dth = filt(0.5 * (th - self.lastth[-1]) / dt + 0.2 * (th - self.lastth[-2]) / (2*dt) + 0.2 * (th - self.lastth[-3]) / (3*dt) + 0.1 * (th - self.lastth[-4]) / (4*dt), 10)
-    #dth = filt((th - self.lastth) / dt, 10)
+    # dth = filt((th - np.mean(self.lastth)) / dt, 10)
 
     # Erro de velocidade angular
-    ew = self.lastwref - robot.w
+    # ew = self.lastwref - robot.w
 
     # Lei de controle da velocidade angular
     w = dth + self.kw * np.sqrt(abs(eth)) * np.sign(eth) #* (robot.velmod + 1)
     #w = self.kw * eth + 0.3 * ew
 
-    # Velocidade limite de deslizamento
+    # Computa phi
+    phi = robot.field.phi(robot.pose)
+
+    # Computa gamma
+    gamma = robot.field.gamma(dth, robot.velmod, phi)
+
+    # Computa omega
+    omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
+
+    # # Velocidade limite de deslizamento
     v1 = self.amax / np.abs(w)
 
     # Velocidade limite das rodas
-    v2 = self.vmax - self.L * np.abs(w) / 2
+    v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))
 
     # Velocidade limite de aproximação
-    v3 = self.kp * norm(robot.pos, robot.field.Pb) ** 2 
+    v3 = self.kp * norm(robot.pos, robot.field.Pb) ** 2 + robot.vref
 
-    # v4 = self.kv / abs(eth) + self.vbias
+    v4 = self.kv / abs(eth) + self.vbias
 
     # Velocidade linear é menor de todas
     sd = self.abs_path_dth(robot.pose, eth, robot.field)
@@ -135,13 +152,22 @@ class SecAttackerControl(Control):
       injection = 0
 
     v5 = self.vbias + (self.vmax-self.vbias) * self.controlLine(np.log(sd), np.log(self.sd_max), np.log(self.sd_min))
-    v  = min(v5, v3) + sat(injection, 1)
-
-    if v == v3:
-      print('velocidade = v3')
-    elif v == v5:
-      print('velocidade = v5')
-
+    v  = min(v1, v2, v3, v5) + sat(injection, 1)
+    if v == v1 and self.v_a != "v1": 
+      self.v_a = "v1"
+      print("v1 :", v)
+    if v == v2 and self.v_a != "v2": 
+      self.v_a = "v2"
+      print("v2 :", v)
+    if v == v3 and self.v_a != "v3": 
+      self.v_a = "v3"
+      print("v3 :", v)
+    if v == v4 and self.v_a != "v4": 
+      self.v_a = "v4"
+      print("v4 :", v)
+    if v == v5 and self.v_a != "v5": 
+      self.v_a = "v5"
+      print("v5 :", v)
     #print(vtarget)
     #v  = max(min(self.vbias + (self.vmax-self.vbias) * np.exp(-self.kapd * sd), v3), self.loadedInjection * vtarget)#max(min(v1, v2, v3, v4), 0)
     #ev = self.lastvref - robot.velmod
@@ -161,6 +187,54 @@ class SecAttackerControl(Control):
     self.lastvref = v
     self.vPb = 0.90 * self.vPb + 0.10 * (Pb - self.lastPb) / dt
     self.lastPb = Pb
+
+    if PLOT_CONTROL:
+      self.plots["eth"].append(eth * 180 / np.pi)
+      self.plots["ref"].append(th * 180 / np.pi)
+      self.plots["out"].append(robot.th * 180 / np.pi)
+      self.plots["vref"].append(abs(v))
+      self.plots["wref"].append(w)
+      self.plots["v"].append(robot.velmod)
+      self.plots["w"].append(robot.w)
+      self.plots["sd"].append(sd)
+      self.plots["injection"].append(injection)
+      self.plots["dth"].append(dth)
+
+      if len(self.plots["eth"]) >= 300 and robot.id == 0:
+        t = np.linspace(0, 300 * 0.016, 300)
+        fig = plt.figure()
+        #timer = fig.canvas.new_timer(interval = 5000) 
+        #timer.add_callback(close_event)
+        plt.subplot(7,1,1)
+        plt.plot(t, self.plots["eth"], label='eth')
+        plt.plot(t, np.zeros_like(t), '--')
+        plt.legend()
+        plt.subplot(7,1,2)
+        plt.plot(t, self.plots["ref"], '--', label='th_ref')
+        plt.plot(t, self.plots["out"], label='th')
+        plt.legend()
+        plt.subplot(7,1,3)
+        plt.plot(t, self.plots["vref"], '--', label='vref')
+        plt.plot(t, self.plots["v"], label='v')
+        plt.legend()
+        plt.subplot(7,1,4)
+        plt.plot(t, self.plots["wref"], '--', label='wref')
+        plt.plot(t, self.plots["w"], label='w')
+        plt.legend()
+        plt.subplot(7,1,5)
+        plt.plot(t, self.plots["sd"], label='sd')
+        plt.legend()
+        plt.subplot(7,1,6)
+        plt.plot(t, self.plots["injection"], label='injection')
+        plt.legend()
+        plt.subplot(7,1,7)
+        plt.plot(t, self.plots["dth"], label='dth')
+        plt.legend()
+        #timer.start()
+        robot.stop()
+        plt.show()
+        #timer.stop()
+        for plot in self.plots.keys(): self.plots[plot] = []
     
     #return (0,0)
     if robot.spin == 0: return (v * robot.direction, w)

@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 def main():
   """Função principal que instancia os componentes base, abre a interface gráfica e faz o flush dos dados em memória permanente ao terminar"""
-  controller = Controller(port=args.port, n_robots=3)
+  controller = Controller(port=args.port, n_robots=args.n_robots)
   view = View(controller)
   
   view.run()

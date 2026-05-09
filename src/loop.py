@@ -84,7 +84,6 @@ class Loop:
         self.debug = debug
         self.mirror = mirror
 
-
         # Instancia interface com o simulador
         if firasim: self.firasim = VSS(team_yellow=team_yellow)
         if simulado:

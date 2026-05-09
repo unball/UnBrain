@@ -138,7 +138,7 @@ class DebugHLCView(LoopThread, StackSelector):
       self.__controller.addEvent(self.__controllerState.setFinalPoint, finalPoint)
 
   def view_worker(self):
-    GLib.idle_add(self.loopTimeLabel.set_text, "{:.2f} ms".format(self.__controllerState.debugData["loopTime"]))
+    GLib.idle_add(self.loopTimeLabel.set_text, "{:.2f} FPS".format(self.__controllerState.debugData["FPS"]))
     GLib.idle_add(self.controlVLabel.set_text, "{:.2f} m/s".format(self.__controllerState.debugData["controlV"]))
     GLib.idle_add(self.controlWLabel.set_text, "{:.2f} rad/s".format(self.__controllerState.debugData["controlW"]))
     GLib.idle_add(self.visionVLabel.set_text, "{:.2f} m/s".format(self.__controllerState.debugData["visionV"]))

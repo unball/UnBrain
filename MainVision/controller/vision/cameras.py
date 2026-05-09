@@ -95,7 +95,7 @@ class CameraHandler():
       #Codec da câmera atual
       fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
       cap.set(cv2.CAP_PROP_FOURCC, fourcc)
-      cap.set(cv2.CAP_PROP_FPS, 90)
+      cap.set(cv2.CAP_PROP_FPS, 120)
       self.__cap = cap
     
     self.__model.current_camera = index

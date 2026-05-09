@@ -211,7 +211,7 @@ class MainStrategy(Strategy):
             if self.AI_attacker:
                 roles=[AI_Attacker,GoalKeeper,Defender]
             else:
-                roles=[Attacker,Defender,GoalKeeper]
+                roles=[Attacker,SecAttacker,GoalKeeper]
             for robo in self.world.n_robots:
                 self.world.team[robo].updateEntity(roles[robo])
             #self.world.team[0].updateEntity(Attacker)

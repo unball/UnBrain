@@ -109,24 +109,24 @@ class World:
             blue = self.team
 
         robot_id = 0
-        for robot in range(message["n_robots"]):
+        for robot in self.n_robots:
             if self.team_yellow: 
-                yellow[robot_id].update(
-                    message["robots"][robot_id]["pos_x"], 
-                    message["robots"][robot_id]["pos_y"], 
-                    message["robots"][robot_id]["th"], 
-                    message["robots"][robot_id]["vel_x"], 
-                    message["robots"][robot_id]["vel_y"], 
-                    message["robots"][robot_id]["w"]
+                yellow[robot].update(
+                    message["robots"][robot]["pos_x"], 
+                    message["robots"][robot]["pos_y"], 
+                    message["robots"][robot]["th"], 
+                    message["robots"][robot]["vel_x"], 
+                    message["robots"][robot]["vel_y"], 
+                    message["robots"][robot]["w"]
                 )
             else:
-                blue[robot_id].update(
-                    message["robots"][robot_id]["pos_x"], 
-                    message["robots"][robot_id]["pos_y"], 
-                    message["robots"][robot_id]["th"], 
-                    message["robots"][robot_id]["vel_x"], 
-                    message["robots"][robot_id]["vel_y"], 
-                    message["robots"][robot_id]["w"]
+                blue[robot].update(
+                    message["robots"][robot]["pos_x"], 
+                    message["robots"][robot]["pos_y"], 
+                    message["robots"][robot]["th"], 
+                    message["robots"][robot]["vel_x"], 
+                    message["robots"][robot]["vel_y"], 
+                    message["robots"][robot]["w"]
                 )
             robot_id+=1
        

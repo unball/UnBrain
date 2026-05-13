@@ -7,10 +7,10 @@ import time
 
 class UFC_Simple(Control):
     """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-    def __init__(self, world, kw=15, kp=50, mu=0.75, vmax=3.0, enableInjection=False):
+    def __init__(self, world, kw=9, kp=25, mu=0.75, vmax=3.0, enableInjection=False):
       Control.__init__(self, world)
 
-      self.g = 9.8
+      self.g = 9.87
       self.kw = kw
       self.kp = kp
       self.mu = mu
@@ -52,7 +52,7 @@ class UFC_Simple(Control):
       if phi != 0:
         v1 = (-np.abs(omega) + np.sqrt(omega**2 + 4 * np.abs(phi) * self.amax)) / (2*np.abs(phi))
       if phi == 0:
-        v1 = self.amax / np.abs(omega)      
+        v1 = self.amax / np.abs(omega)
 
       # Velocidade limite das rodas
       v2 = (2*self.vmax - self.L * np.abs(omega)) / (2 + self.L * np.abs(phi))

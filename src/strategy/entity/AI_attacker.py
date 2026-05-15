@@ -100,6 +100,12 @@ class Env():
 
         return left_wheel_speed, right_wheel_speed
 
+    def get_pose(robot):
+        if robot is not None and hasattr(robot, "pose_est") and robot.pose_est is not None:
+            x, y, th = robot.pose_est
+            return x, y, th
+        return robot.x, robot.y, robot.th
+
     def _get_observation(self):
         """
         Converte o estado do world em um vetor de observação.
@@ -126,14 +132,15 @@ class Env():
                     allied_team.insert(0, robot) # define o primeiro do time como o robô de IA_attacker em questão
 
         for i in range(3):  # três robôs do time aliado
+            rx, ry, rth = self.get_pose(allied_team[i])
             if i == 0:
                 base = 4 + (7 * i)
                 
                 obs[base:base+7] = np.array([
-                    self.norm_pos(c*allied_team[i].x),
-                    self.norm_pos(allied_team[i].y),
-                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.sin((allied_team[i].th)),
-                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos((allied_team[i].th)),
+                    self.norm_pos(c*rx),
+                    self.norm_pos(ry),
+                    np.sin(adjustAngle((np.pi - rth))) if self.enemy_AI else np.sin((rth)),
+                    np.cos(adjustAngle((np.pi - rth))) if self.enemy_AI else np.cos((rth)),
                     self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
                     self.norm_w(c*allied_team[i].w)

@@ -43,6 +43,8 @@ from client.client_pickle import ClientPickle
 
 import random
 
+from state_predictor_project import CommandLogger, FrameLogger, StatePredictor
+import time
 
 from strategy.automaticReplacer import AutomaticReplacer
 
@@ -83,6 +85,15 @@ class Loop:
         self.control = control
         self.debug = debug
         self.mirror = mirror
+
+        self.cmd_logger = CommandLogger()
+        self.frame_logger = FrameLogger()
+        self.predictor = StatePredictor(
+            cmd_logger=self.cmd_logger,
+            frame_logger=self.frame_logger,
+            tau_act=0.02,        # chute inicial
+            use_residual=False,  # começa sem rede
+        )
 
         # Instancia interface com o simulador
         if firasim: self.firasim = VSS(team_yellow=team_yellow)
@@ -201,12 +212,17 @@ class Loop:
             sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
     def loop(self):
-        if self.world.updateCount == self.lastupdatecount: return
+        # if self.world.updateCount == self.lastupdatecount: return
         # print("loop ALP:",(time.time()-self.t0)*1000)
 
         self.t0 = time.time()
         self.lastupdatecount = self.world.updateCount
-        
+        t_now = time.monotonic()
+        for robot in self.world.raw_team:
+            if robot is None:
+                continue
+            pose_est = self.predictor.estimate_now(robot.id, t_now)
+            robot.pose_est = pose_est  # atributo novo “solto”
         # Executa estratégia
         self.strategy.update(self.world)
 
@@ -243,6 +259,9 @@ class Loop:
             if self.execute:
                 for robot in self.world.raw_team: 
                     if robot is not None: robot.turnOn()   
+                t_send = time.monotonic()
+                for rid, (v_cmd, w_cmd) in zip(self.world.n_robots, control_output):
+                    self.cmd_logger.push(rid, v_cmd, w_cmd, t_send)
                 self.radio.send(self.world.n_robots, control_output)
         if self.world.simulado:
             for robot in self.world.raw_team:
@@ -290,6 +309,11 @@ class Loop:
                 self.handle_SIGINT(0,0, shutdown=False)
             elif self.message is not None: 
                 self.world.update_main_vision(self.message)
+                t_frame = time.monotonic()  # ideal: timestamp da captura; se não tiver, use recepção
+                for robot in self.world.raw_team:
+                    if robot is None: 
+                        continue
+                    self.frame_logger.push(robot.id, robot.x, robot.y, robot.th, t_frame)
 
         if self.world.simulado:
             message = self.simulado.get_state()

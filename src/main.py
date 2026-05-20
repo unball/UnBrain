@@ -60,6 +60,7 @@ parser.add_argument('--enemy_AI', dest='enemy_AI', action='store_const',
 
 parser.add_argument('--systemtest', dest='systemtest',type=str, choices=[
                                                                         "draw_uvf", # plot do jogo com/sem uvf
+                                                                        "firasim_ab", #test preditor                                                                        
                                                                         "heatmap_team", "heatmap_attacker_ia", "heatmap_attacker", "heatmap_defender", "heatmap_goalkeeper", "heatmap_ball" # heatmaps
                                                                      ],
                     default=False, help='Run parallel system instances in test mode.')
@@ -80,7 +81,7 @@ args.n_robots = [int(e) for e in args.n_robots.split(",")]
 
 print(args.n_robots)
 
-if args.systemtest:
+if args.systemtest and not args.systemtest == "firasim_ab":
     original_argv = sys.argv.copy()
     if '--systemtest' in original_argv:
         original_argv.remove('--systemtest')
@@ -138,6 +139,7 @@ if args.systemtest:
     # loop_thread.join()
 
 else:
+    test_type = args.systemtest
     # Instancia o programa principal
     loop = Loop(
         draw_uvf=True, 
@@ -154,6 +156,7 @@ else:
         port=args.port,
         n_robots=args.n_robots,
         mirror=mirror, 
+        test_type=test_type,
         AI_attacker=args.AI_attacker,
         enemy_AI = args.enemy_AI
     )

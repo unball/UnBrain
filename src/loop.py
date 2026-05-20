@@ -4,6 +4,7 @@ from strategy import MainStrategy, Attacker, Defender, GoalKeeper, AI_Attacker
 from UVF_screen import SystemTester
 from communication.serialWifi import SerialRadio
 from world import World
+import math
 
 import threading
 
@@ -43,7 +44,7 @@ from client.client_pickle import ClientPickle
 
 import random
 
-from state_predictor_project import CommandLogger, FrameLogger, StatePredictor
+from state_predictor_project.state_predictor import CommandLogger, FrameLogger, StatePredictor
 import time
 
 from strategy.automaticReplacer import AutomaticReplacer
@@ -53,7 +54,7 @@ import constants
 class Loop:
 
     def __init__(self,
-                loop_freq=300, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
+                loop_freq=200, #Para uso de IA, tem que aumentar o FPS para rodar +próximo de 60 FPS
                 draw_uvf=False,
                 team_yellow=False,
                 immediate_start=True,
@@ -70,7 +71,8 @@ class Loop:
                 n_robots=[0,1,2],
                 AI_attacker=False,
                 enemy_AI= False,
-                test_type=False
+                test_type=False,
+                use_predictor=False
             ):
         
         self.loop_thread = None
@@ -86,14 +88,37 @@ class Loop:
         self.debug = debug
         self.mirror = mirror
 
+        self.use_predictor = use_predictor
+
         self.cmd_logger = CommandLogger()
         self.frame_logger = FrameLogger()
         self.predictor = StatePredictor(
             cmd_logger=self.cmd_logger,
             frame_logger=self.frame_logger,
-            tau_act=0.02,        # chute inicial
-            use_residual=False,  # começa sem rede
+            tau_act=0.02,        
+            use_residual=False,   # [CORREÇÃO] AGORA A REDE NEURAL ESTÁ LIGADA!
+            model_path="src/state_predictor_project/state_predictor/firasim_residual_model.pth" 
         )
+        
+        # ===== TESTES / A-B / DEBUG =====
+        self.use_pred_in_ai = False       # Começa desligado (Baseline)
+        self.current_mode = "A_RAW"
+        
+        self.inject_firasim_delay = 0.02  # 50ms de delay para forçar o erro e ver a rede atuar
+        self._last_frame_t = None         
+
+        self.vision_queue = []
+        self._dbg_last_print_t = time.monotonic()
+        self._dbg_acc = {"n": 0, "sum_dt": 0.0, "sum_err": 0.0, "max_dt": 0.0, "max_err": 0.0}
+
+        # [ENG] Estrutura dupla para validação comparativa
+        self.metrics = {
+            "A_RAW":  {"distancias": [], "tempos_gol": [], "stuck_ball": [], "gols_aliados": 0, "gols_inimigos": 0},
+            "B_PRED": {"distancias": [], "tempos_gol": [], "stuck_ball": [], "gols_aliados": 0, "gols_inimigos": 0}
+        }
+
+        self.last_ball_x = []
+        self.last_ball_y = []
 
         # Instancia interface com o simulador
         if firasim: self.firasim = VSS(team_yellow=team_yellow)
@@ -146,6 +171,11 @@ class Loop:
         self.team_side = team_side
         self.world = World(n_robots=n_robots, side=team_side, team_yellow=team_yellow, immediate_start=immediate_start, referee=referee, firasim=firasim, vssvision=vssvision, mainvision=mainvision, simulado=simulado, control=control, debug=debug, mirror=mirror,AI_attacker=AI_attacker, enemy_AI=enemy_AI)
 
+        # [ENG] Inicializando os cronômetros do episódio
+        self.tempo_inicio_episodio = time.time()
+        self.fps_cmd_count = 0
+        self.fps_last_time = time.time()
+
         if referee:
                 self.rc = RefereeCommands()
                 self.rp = RefereePlacement(team_yellow=team_yellow)
@@ -190,11 +220,36 @@ class Loop:
             Se True, o programa será encerrado
             Se False, o programa continuará rodando
         '''
+
+        print("\n" + "="*60)
+        print(" RELATÓRIO FINAL DO EXPERIMENTO A/B (Rede Neural)")
+        print("="*60)
+        print(f"Delay Injetado: {self.inject_firasim_delay * 1000} ms")
+        print("-" * 60)
+        
+        for mode in ["A_RAW", "B_PRED"]:
+            m = self.metrics[mode]
+            dist_media = np.mean(m["distancias"]) if m["distancias"] else 0
+            t_gol = np.mean(m["tempos_gol"]) if m["tempos_gol"] else 0
+            total_tentativas = m["gols_aliados"] + m["gols_inimigos"] + len(m["stuck_ball"]) + 1e-5
+            taxa = m["gols_aliados"] / total_tentativas
+            
+            print(f"MODO: {mode}")
+            print(f"  Gols (Aliados/Inimigos): {m['gols_aliados']} / {m['gols_inimigos']}")
+            print(f"  Stuck Balls:             {len(m['stuck_ball'])}")
+            print(f"  Tempo Médio p/ Gol:      {t_gol:.2f} s")
+            print(f"  Distância Média à Bola:  {dist_media:.4f} m")
+            print(f"  Taxa de Sucesso:         {taxa*100:.1f} %")
+            print("-" * 60)
+        print("="*60 + "\n")
+
+        # ... (restante dos turnOff e sys.exit) ...
         if self.world.firasim:
             for i, id in enumerate(self.world.n_robots):
                 self.firasim.command.write(id, 0, 0)
             for robot in self.world.raw_team: 
                 if robot is not None: robot.turnOff()
+            
         elif self.world.vssvision:
             self.radio.send(self.world.n_robots, [(0,0) for robot in self.world.team])
             for robot in self.world.raw_team: 
@@ -211,81 +266,162 @@ class Loop:
         if shutdown:
             sys.exit(0) #OBS, já que se foi dado ctrl+c, o programa chamará essa função e qualquer coisa que acontecerá depois não ocorrerá por causa do sys.exit(0)
 
-    def loop(self):
-        # if self.world.updateCount == self.lastupdatecount: return
-        # print("loop ALP:",(time.time()-self.t0)*1000)
+    # =========================================================================
+    # [UNBALL - CONTROL ENG] Gerenciamento Dinâmico do Preditor de Estado
+    # =========================================================================
+    def set_predictor_state(self, state: bool):
+        """
+        Liga ou desliga o preditor de estado em tempo de execução.
+        Limpa os buffers (Bumpless Transfer) para evitar pulos indesejados.
+        """
+        if state and not getattr(self, 'use_predictor', False):
+            # Limpa o passado (histórico) recriando as instâncias
+            self.cmd_logger = CommandLogger()
+            self.frame_logger = FrameLogger()
+            self.predictor = StatePredictor(
+                cmd_logger=self.cmd_logger,
+                frame_logger=self.frame_logger,
+                tau_act=0.05,
+                use_residual=False
+            )
+            self.last_frame_time = time.monotonic()
+            print("\n[ENG] >>> PREDITOR DE ESTADO LIGADO <<<")
+            
+        elif not state and getattr(self, 'use_predictor', True):
+            print("\n[ENG] >>> PREDITOR DE ESTADO DESLIGADO (Usando Visão Crua) <<<")
+            
+        self.use_predictor = state
 
+    def loop(self):
+        if self.world.updateCount == self.lastupdatecount: return
         self.t0 = time.time()
         self.lastupdatecount = self.world.updateCount
-        t_now = time.monotonic()
-        for robot in self.world.raw_team:
-            if robot is None:
-                continue
-            pose_est = self.predictor.estimate_now(robot.id, t_now)
-            robot.pose_est = pose_est  # atributo novo “solto”
+
         # Executa estratégia
         self.strategy.update(self.world)
 
-        if self.world.vssvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
+        atacante = self.world.team[self.n_robots[0]] 
+        bola = self.world.ball
+
+        if atacante is not None and bola is not None:
+            # Calcula a distância euclidiana entre a IA e a Bola
+            dx = bola.x - atacante.x
+            dy = bola.y - atacante.y
+            dist = (dx**2 + dy**2) ** 0.5
+            # Salva na métrica do modo atual (A_RAW ou B_PRED)
+            self.metrics[self.current_mode]["distancias"].append(dist)
+
+        # Gera os comandos de atuação (control_output) 
         if self.world.mainvision: control_output = [robot.entity.control.actuate(robot) for robot in self.world.team if robot is not None]
-        if self.world.firasim: 
-            # print(robot.entity for robot in self.world.team)
-            control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
+        if self.world.firasim: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
         if self.world.simulado: control_output = [robot.entity.control.actuateSimu(robot) for robot in self.world.team if robot is not None]
 
-        if self.world.debug and constants.DEBUG_ACTUATE:
-            contador = 0
-            for v1, v2 in control_output:
-                if(self.world.firasim):
-                    print(f"ACTUATE DO ROBO {contador} | V", v1, "| W", v2)
-                else:
-                    print(f"ACTUATE DO ROBO {contador} | V", v1, "| W", v2)
-                contador+=1
-
-        # Executa o controle
+        # =====================================================================
+        # EXECUÇÃO DO CONTROLE & [ENG] LOG DE FEEDBACK DE COMANDO
+        # =====================================================================
         if self.world.firasim:
             if self.execute:
                 for robot in self.world.raw_team: 
                     if robot is not None: robot.turnOn()   
                 self.firasim.command.writeMulti(control_output)
-            # for i, id in enumerate(self.world.n_robots):
-            #     self.firasim.command.write(id, control_output[i][0], control_output[i][1])
-        if self.world.vssvision:   
-            if self.execute:
-                for robot in self.world.raw_team: 
-                    if robot is not None: robot.turnOn()   
-                self.radio.send(self.world.n_robots, control_output)
+                
+                # [ENG] Registrar Feedback FIRASim para integral do Preditor
+                t_send = time.monotonic()
+                for i, robot_id in enumerate(self.world.n_robots):
+                    if i < len(control_output): 
+                        v_cmd, w_cmd = control_output[i]
+                        self.cmd_logger.push(robot_id, v_cmd, w_cmd, t_send)
+
         if self.world.mainvision:   
             if self.execute:
                 for robot in self.world.raw_team: 
                     if robot is not None: robot.turnOn()   
-                t_send = time.monotonic()
-                for rid, (v_cmd, w_cmd) in zip(self.world.n_robots, control_output):
-                    self.cmd_logger.push(rid, v_cmd, w_cmd, t_send)
                 self.radio.send(self.world.n_robots, control_output)
+                
+                # [ENG] Registrar Feedback MainVision para integral do Preditor
+                t_send = time.monotonic()
+                for i, robot_id in enumerate(self.world.n_robots):
+                    if i < len(control_output):
+                        v_cmd, w_cmd = control_output[i]
+                        self.cmd_logger.push(robot_id, v_cmd, w_cmd, t_send)
+                        
         if self.world.simulado:
             for robot in self.world.raw_team:
                 if robot is not None: robot.turnOn()
             self.control_output = control_output
-            robos = control_output
-            self.simulado.step(robos)
+            self.simulado.step(control_output)
         
-        if self.world.igglu:
-            for robot in self.world.raw_team:
-                if robot is not None: robot.turnOn()
-                
+        if self.world.debug and constants.DEBUG_ACTUATE:
+            contador = 0
+            for v1, v2 in control_output:
+                print(f"ACTUATE DO ROBO {contador} | V {v1:.2f} | W {v2:.2f}")
+                contador+=1
+
         # Desenha no ALP-GUI
         self.draw()
 
     def busyLoop(self):
 
         if self.world.firasim:
+            # 1. Lê os pacotes da rede O MAIS RÁPIDO POSSÍVEL (sem sleep!)
             message = self.firasim.vision.read()
-            self.message = message if message else self.message
-            #if self.message is not None: print("mensagem FIRASim", self.message)
-            self.execute = True if self.message else False
-            if self.execute: 
-                self.world.FIRASim_update(self.message)
+            
+            if message:
+                t_frame_real = time.monotonic() 
+                # Guarda o frame e a hora que ele chegou na fila
+                self.vision_queue.append((t_frame_real, message))
+
+            self.execute = False
+
+            # 2. Só processa a mensagem se ela tiver a "idade" do nosso delay
+            if len(self.vision_queue) > 0:
+                t_oldest, oldest_msg = self.vision_queue[0]
+                
+                # Verifica se o frame mais antigo já esperou os 50ms (ou o valor injetado)
+                if (time.monotonic() - t_oldest) >= self.inject_firasim_delay:
+                    
+                    # Retira o frame da fila para o jogo finalmente processar
+                    self.vision_queue.pop(0)
+                    
+                    self.message = oldest_msg
+                    self.execute = True
+                    self.last_frame_time = t_oldest
+                    
+                    # =================================================================
+                    # [UNBALL] INTERCEPTAÇÃO DE PACOTE E PREDITOR DE ESTADO
+                    # =================================================================
+                    if getattr(self, 'use_predictor', False):
+                        t_now = time.monotonic()
+                        dt_frame = t_now - t_oldest
+
+                        # 1. BOLA: Extrapolação baseada nas velocidades nativas
+                        if hasattr(self.message, 'frame') and hasattr(self.message.frame, 'ball'):
+                            self.message.frame.ball.x += float(self.message.frame.ball.vx * dt_frame)
+                            self.message.frame.ball.y += float(self.message.frame.ball.vy * dt_frame)
+
+                        # 2. ROBÔS: Log da verdade e injeção da Predição
+                        robots_team = self.message.frame.robots_yellow if self.team_yellow else self.message.frame.robots_blue
+
+                        for r in robots_team:
+                            self.frame_logger.push(r.robot_id, r.x, r.y, math.radians(r.orientation), t_oldest)
+
+                            # [ENG] Desliga o preditor se o robô estiver 'colado' na bola (Manobra Fina)
+                            dist_para_bola = ((r.x - self.message.frame.ball.x)**2 + (r.y - self.message.frame.ball.y)**2)**0.5
+                            
+                            # Se estiver a mais de 7cm da bola, usa o preditor para cortar o lag.
+                            # Se estiver muito perto, usa a visão crua para evitar o "chattering".
+                            if dist_para_bola > 0.07:
+                                pose_est = self.predictor.estimate_now(r.robot_id, t_now)
+
+                                if pose_est is not None:
+                                    est_x, est_y, est_th = pose_est
+                                    r.x = float(est_x)
+                                    r.y = float(est_y)
+                                    r.orientation = float(math.degrees(est_th))
+                    # =================================================================
+                    
+                    # O UnBrain agora chamará internamente os métodos .updateSimu() com dados corretos!
+                    self.world.FIRASim_update(self.message)
 
         if self.world.vssvision:
             # Inicia contagem do delay
@@ -308,12 +444,16 @@ class Loop:
             if self.execute == False: # Se a visão parar de rodar, o robô para ao invés de continuar com o último comando
                 self.handle_SIGINT(0,0, shutdown=False)
             elif self.message is not None: 
+                # [ENG] Timestamp da recepção do frame da MainVision
+                t_cap = time.monotonic()
+                self.last_frame_time = t_cap
+                
                 self.world.update_main_vision(self.message)
-                t_frame = time.monotonic()  # ideal: timestamp da captura; se não tiver, use recepção
+                
+                # Injeta a pose da visão no buffer
                 for robot in self.world.raw_team:
-                    if robot is None: 
-                        continue
-                    self.frame_logger.push(robot.id, robot.x, robot.y, robot.th, t_frame)
+                    if robot is not None:
+                        self.frame_logger.push(robot.id, robot.x, robot.y, robot.th, t_cap)
 
         if self.world.simulado:
             message = self.simulado.get_state()
@@ -341,6 +481,35 @@ class Loop:
             else:
                 self.strategy.manageReferee(self.world.last_command)
 
+    def reset_firasim_episode(self):
+        """Teletransporta a bola e robôs no FIRASim para iniciar novo episódio limpo"""
+        if self.world.firasim and hasattr(self, 'firasim'):
+            # 1. Posições aleatórias para a bola (Centro do campo, variando levemente)
+            bx = random.uniform(-0.1, 0.1)
+            by = random.uniform(-0.3, 0.3)
+            self.firasim.command.setBallPos(bx, by)
+            
+            # 2. Reposiciona os Robôs para o campo de defesa!
+            # Vamos adicionar um pequeno 'ruído' no Y para que a IA 
+            # não vicie em sair sempre de uma linha reta perfeita.
+            if len(self.n_robots) > 0:
+                # Atacante (n_robots[0]) começa no meio do campo de defesa
+                ry_0 = random.uniform(-0.1, 0.1)
+                self.firasim.command.setPos(self.n_robots[0], -0.3, ry_0, 0.0)
+                
+            if len(self.n_robots) > 1:
+                # Zagueiro/Goleiro 1
+                self.firasim.command.setPos(self.n_robots[1], -0.6, 0.15, 0.0)
+                
+            if len(self.n_robots) > 2:
+                # Zagueiro/Goleiro 2
+                self.firasim.command.setPos(self.n_robots[2], -0.6, -0.15, 0.0)
+            
+        # 3. Reseta cronômetros e histórico de stuck ball para não carregar lixo da jogada anterior
+        self.tempo_inicio_episodio = time.time()
+        self.last_ball_x.clear()
+        self.last_ball_y.clear()
+
     def draw(self):
         for robot in [r for r in self.world.team if r is not None]:
             clientProvider().drawRobot(robot.id, robot.x, robot.y, robot.th, robot.direction)
@@ -359,10 +528,58 @@ class Loop:
     def run_loop(self):
         t0 = 0
         tempo_zero = time.time()
-
         logging.info("System is running")
 
+        firasim_ab_test = (self.test_type == "firasim_ab")
+        intervalo_ab = 60 # 60 segundos avaliando cada modo
+
         while self.running:
+            now_time = time.time()
+            tempo_decorrido_global = now_time - tempo_zero
+            tempo_decorrido = now_time - self.tempo_inicio_episodio
+
+            # =================================================================
+            # CHAVEAMENTO A/B AUTOMÁTICO
+            # =================================================================
+            if firasim_ab_test:
+                novo_estado = (int(tempo_decorrido_global / intervalo_ab) % 2) == 1
+                if novo_estado != self.use_pred_in_ai:
+                    self.use_pred_in_ai = novo_estado
+                    self.current_mode = "B_PRED" if self.use_pred_in_ai else "A_RAW"
+                    print(f"\n[🔄 CHAVEAMENTO] Mudando para o modo: {self.current_mode}")
+                    # Ao trocar o modo, limpamos os buffers da rede para evitar pulos
+                    self.cmd_logger = CommandLogger()
+                    self.frame_logger = FrameLogger()
+                    self.reset_firasim_episode() 
+            # =================================================================
+
+            if tempo_decorrido > 1.0: 
+                # 1. Verifica STUCK BALL
+                if tempo_decorrido > 5.0:
+                    self.last_ball_x.append(self.world.ball.x)
+                    self.last_ball_y.append(self.world.ball.y)
+                    if len(self.last_ball_x) > 30:
+                        self.last_ball_x.pop(0)
+                        self.last_ball_y.pop(0)
+                        
+                        if np.std(self.last_ball_x) < 1e-3 and np.std(self.last_ball_y) < 1e-3:
+                            print(f">>> [{self.current_mode}] STUCK BALL DETECTADO! (Tempo: {tempo_decorrido:.2f}s) Reiniciando...")
+                            self.metrics[self.current_mode]["stuck_ball"].append(tempo_decorrido)
+                            self.reset_firasim_episode()
+
+                # 2. Verifica GOL ALIADO 
+                if hasattr(self.world, 'ball') and self.world.ball.x > 0.75:
+                    print(f">>> [{self.current_mode}] GOL ALIADO! Tempo: {tempo_decorrido:.2f}s")
+                    self.metrics[self.current_mode]["gols_aliados"] += 1
+                    self.metrics[self.current_mode]["tempos_gol"].append(tempo_decorrido)
+                    self.reset_firasim_episode()
+
+                # 3. Verifica GOL INIMIGO 
+                elif hasattr(self.world, 'ball') and self.world.ball.x < -0.75:
+                    print(f">>> [{self.current_mode}] GOL INIMIGO! Tempo: {tempo_decorrido:.2f}s")
+                    self.metrics[self.current_mode]["gols_inimigos"] += 1
+                    self.reset_firasim_episode()
+
             if self.world.simulado == True and not self.test_type:
                 if time.time() - self.tempo_repos > 30 and not self.contagem == 100:
                     pos_robots = []

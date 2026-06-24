@@ -21,7 +21,7 @@ class AI_Control(Control):
             self.model = PPO(self.env)
             robot.direction = 1
             self.observation = self.env._get_observation()
-            self.model.load_model(directory="src/strategy/entity/ppo_model_7")
+            self.model.load_model(directory="/home/maranhas/UnBall/Attacker-AI-Training/PPO/ppo_models/selfplay_1v1_&_1v2_curriculum_learning")
         self.observation = self.env._get_observation()
         robot.direction = 1
         actions, _ = self.model.get_action(self.observation)

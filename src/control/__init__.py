@@ -44,7 +44,9 @@ class Control(ABC):
         if not robot.on: return (0,0)
         if robot.entity.__class__.__name__ ==  "AI_Attacker": 
             vl, vr = self.output(robot)
-            self.world.data_collector.collect(vl_AI=vl,vr_AI=vr)
+            v, w = motors2speeds_from_vl_vr(vl, vr, "simulado")
+            # print(self.world.mode)
+            vl, vr = speeds2motors(v, w, self.world.mode)
             return vl, vr
         
         # if robot.entity.__class__.__name__ ==  "AI_Attacker":

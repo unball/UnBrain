@@ -25,7 +25,7 @@ def get_Lr(mode: str) -> (float, float):
   #r = 0.0325
   if mode == "robocin":
     
-    L = 0.8
+    L = 0.08
     r = 0.016
 
   elif mode == "fisico":
@@ -33,8 +33,8 @@ def get_Lr(mode: str) -> (float, float):
     r = 0.0159
 
   elif mode == "firasim":
-    L = 0.055
-    r = 0.025
+    L = 0.075
+    r = 0.026
 
   elif mode == "simulado":
     L = 0.0775

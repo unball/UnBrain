@@ -19,6 +19,8 @@ class RefereeCommands:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setblocking(blocking)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if hasattr(socket, 'SO_REUSEPORT'):
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32) 
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
         sock.bind((host, port))
@@ -45,6 +47,12 @@ class RefereeCommands:
             return None        
         except:
             return None
+
+    def __del__(self):
+        try:
+            self.socket.close()
+        except Exception:
+            pass
 
 class RefereePlacement:
     def __init__(self, host=constants.HOST_REFEREE, port=constants.PORT_REFEREE_REPLACEMENT, team_yellow = False):
@@ -73,6 +81,12 @@ class RefereePlacement:
             robot.orientation = pos[2]
 
         self.socket.send(placement.SerializeToString())
+
+    def __del__(self):
+        try:
+            self.socket.close()
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

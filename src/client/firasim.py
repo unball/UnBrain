@@ -30,6 +30,8 @@ class FIRASimVision:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setblocking(blocking)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if hasattr(socket, 'SO_REUSEPORT'):
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32) 
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
         sock.bind((host, port))
@@ -42,16 +44,31 @@ class FIRASimVision:
 
     def read(self):
         try:
-            socket.setdefaulttimeout(1/30)
-            data = self.socket.recv(512)
+            self.socket.settimeout(0.0) # Non-blocking para drenar o buffer instantaneamente
             
-            if len(data) > 0:
-                environment = packet_pb2.Environment()
-                environment.ParseFromString(data)
-                return environment
-            return None        
-        except:
+            messages = []
+            while True:
+                try:
+                    data = self.socket.recv(65536)
+                    if len(data) > 0:
+                        env = packet_pb2.Environment()
+                        env.ParseFromString(data)
+                        messages.append(env)
+                except (BlockingIOError, socket.timeout, Exception):
+                    break
+
+            if messages:
+                return messages
             return None
+        except Exception as e:
+            print("Vision error: ", e)
+            return None
+
+    def __del__(self):
+        try:
+            self.socket.close()
+        except Exception:
+            pass
 
     # def loop(self):
     #     while self._run:
@@ -79,15 +96,44 @@ class FIRASimVision:
     #     self._run = False
 
 class FIRASimCommand:
-    def __init__(self, host=constants.HOST_FIRASIM_COMMAND, team_yellow = False):
+    def __init__(self, host=constants.HOST_FIRASIM_COMMAND, team_yellow = False, is_travesim = False):
         self.host = host
-        self.port = constants.port_fira(team_yellow)
-        self.team_yellow = team_yellow
+        self._team_yellow = team_yellow
+        self.is_travesim = is_travesim
+        
+        self.setup_sockets()
 
+    @property
+    def team_yellow(self):
+        return self._team_yellow
+
+    @team_yellow.setter
+    def team_yellow(self, value):
+        if self._team_yellow != value:
+            self._team_yellow = value
+            self.setup_sockets()
+
+    def setup_sockets(self):
+        if hasattr(self, 'socket') and self.socket:
+            try: self.socket.close()
+            except Exception: print("FiraSim connection refused! Is the simulator running on port?" )
+            
+        if hasattr(self, 'socket_replacer') and self.socket_replacer and self.socket_replacer != getattr(self, 'socket', None):
+            try: self.socket_replacer.close()
+            except Exception: print("FiraSim connection refused! Is the simulator running on port?" )
+            
+        self.port = constants.port_fira(self._team_yellow, self.is_travesim)
         self.socket = self.createSocket(self.host, self.port)
+
+        self.replacer_port = 20011 if self.is_travesim else self.port
+        if self.replacer_port == self.port:
+            self.socket_replacer = self.socket
+        else:
+            self.socket_replacer = self.createSocket(self.host, self.replacer_port)
 
     def createSocket(self, host, port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setblocking(False)
         sock.connect((host, port))
 
         return sock
@@ -101,27 +147,37 @@ class FIRASimCommand:
         command.wheel_left = vl
         command.wheel_right = vr
 
-        self.socket.send(packet.SerializeToString())
+        try:
+            self.socket.send(packet.SerializeToString())
+        except BlockingIOError:
+            pass
+        except ConnectionRefusedError:
+            print("FiraSim connection refused! Is the simulator running on port?" )
 
-    def writeMulti(self, actions):
+    def writeMulti(self, actions, robot_ids=None):
         packet = packet_pb2.Packet()
-
         for i, (vl, vr) in enumerate(actions):
-            command = packet.cmd.robot_commands.add()
+            if i < len(robot_ids):
+                command = packet.cmd.robot_commands.add()
 
-            command.yellowteam = self.team_yellow
-            command.id = i
-            command.wheel_left = vl
-            command.wheel_right = vr
-        
-        self.socket.send(packet.SerializeToString())
+                command.yellowteam = self.team_yellow
+                command.id = robot_ids[i]
+                command.wheel_left = float(vl)
+                command.wheel_right = float(vr)
+        try:
+            self.socket.send(packet.SerializeToString())
+        except BlockingIOError:
+            pass
+        except ConnectionRefusedError:
+            # FiraSim não está rodando; ignora silenciosamente em vez de crashar
+            print("FiraSim connection refused! Is the simulator running on port?" )
 
-    def setPos(self, index, x, y, th):
+    def setPos(self, index, x, y, th, is_enemy=False):
         packet = packet_pb2.Packet()
         robotReplacement = packet.replace.robots.add()
         robot = robotReplacement.position
 
-        robotReplacement.yellowteam = self.team_yellow
+        robotReplacement.yellowteam = (not self.team_yellow) if is_enemy else self.team_yellow
         robotReplacement.turnon = True
 
         robot.robot_id = index
@@ -132,7 +188,10 @@ class FIRASimCommand:
         robot.vy = 0
         robot.vorientation = 0
 
-        self.socket.send(packet.SerializeToString())
+        try:
+            self.socket_replacer.send(packet.SerializeToString())
+        except BlockingIOError:
+            pass
         
 
     def setBallPos(self, x, y):
@@ -141,8 +200,20 @@ class FIRASimCommand:
 
         ballReplacement.x = x
         ballReplacement.y = y
+        try:
+            self.socket_replacer.send(packet.SerializeToString())
+        except BlockingIOError:
+            pass
+        except ConnectionRefusedError:
+            print("FiraSim Replacer connection refused!", file=sys.stderr)
 
-        self.socket.send(packet.SerializeToString())
+    def __del__(self):
+        try:
+            self.socket.close()
+            if hasattr(self, 'socket_replacer') and self.socket_replacer and self.socket_replacer != getattr(self, 'socket', None):
+                self.socket_replacer.close()
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     command = FIRASimCommand()
@@ -156,8 +227,10 @@ if __name__ == "__main__":
     t0 = time.time()
     while True:
         packet = vision.read()
-        if packet is not None:
-            t1 = time.time()
+        try:
+            self.socket_replacer.send(packet.SerializeToString())
+        except ConnectionRefusedError:
+            print("FiraSim Replacer connection refused!", file=sys.stderr)
             print(packet)
             print((t1 - t0)*1000)
             t0 = t1

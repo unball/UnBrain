@@ -19,15 +19,37 @@ class ClientClass:
         self.ip = ip
         self.port = port
         self.socket = None
+        self.is_batching = False
+        self.batch = []
 
     def start(self):
-        if not disabled: self.socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        if not disabled: 
+            self.socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            self.socket.setblocking(False)
 
     def __send__(self, data: bytes):
-        self.socket.sendto(data, (self.ip, self.port))
+        if self.socket is None:
+            return
+        try:
+            self.socket.sendto(data, (self.ip, self.port))
+        except BlockingIOError:
+            pass
 
-    def send(self, data: dict):
-        if not disabled: self.__send__(str.encode(json.dumps(data)))
+    def begin_batch(self):
+        self.is_batching = True
+        self.batch = []
+
+    def end_batch(self):
+        self.is_batching = False
+        if self.batch:
+            if not disabled: self.__send__(str.encode(json.dumps(self.batch)))
+            self.batch = []
+
+    def send(self, data: list):
+        if self.is_batching:
+            self.batch.extend(data)
+        elif not disabled:
+            self.__send__(str.encode(json.dumps(data)))
 
     def robotPallete(self):
         return {0: (0.5, 0.5, 1), 1: (0.5, 1, 0.5), 2: (1, 0.5, 0.5)}

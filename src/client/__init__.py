@@ -128,13 +128,14 @@ class VSS:
         portVision=constants.PORT_FIRASIM_VISION, 
         hostCommand=constants.HOST_FIRASIM_COMMAND, 
         portCommand=constants.PORT_FIRASIM_COMMAND, 
-        team_yellow=False
+        team_yellow=False,
+        is_travesim=False
     ):
         #self.lib = CDLL("./lib/vss.so")
         #self.vision = Vision(self, hostVision, portVision, team_yellow)
         #self.command = Command(self, hostCommand, portCommand, team_yellow)
         self.vision = firasim.FIRASimVision()
-        self.command = firasim.FIRASimCommand(team_yellow=team_yellow)
+        self.command = firasim.FIRASimCommand(team_yellow=team_yellow, is_travesim=is_travesim)
 
         #self.vision.start()
         #signal.signal(signal.SIGINT, self.signal_handler)

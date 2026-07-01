@@ -14,6 +14,8 @@ class SerialRadio():
     self.failCount = 0
     self.control = control
     self.debug = debug
+    self._last_port_tried = None
+    self._spam_counter = 0
 
   def closeSerial(self):
     if self.serial is not None: self.serial.close()
@@ -24,15 +26,25 @@ class SerialRadio():
     try:
       if self.serial is None:
         
-        porta = [port.device for port in serial.tools.list_ports.comports()][-1]
-        subprocess.Popen("echo 'unball1' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
-        print("Acessando a porta USB", porta)
+        ports = serial.tools.list_ports.comports()
+        if len(ports) == 0: return
+        
+        porta = [port.device for port in ports][-1]
+        
+        if porta != self._last_port_tried or self._spam_counter % 200 == 0:
+          subprocess.Popen("echo '' | sudo -S  chmod a+rw "+porta , stdout=subprocess.PIPE, shell=True)
+          print(f"[SERIAL] Tentando acessar a porta USB: {porta}")
+        
+        self._last_port_tried = porta
+        self._spam_counter += 1
+        
         self.serial = serial.Serial(porta, 115200)
         self.serial.timeout = 0.100
+        print(f"[SERIAL] Porta {porta} acessada com sucesso!")
         
     except Exception as e:
-      if(constants.SHOW_DEBUG_WIFI_ERROR):
-        print("FALHA AO ABRIR SERIAL, Erro:", e)
+      if(constants.SHOW_DEBUG_WIFI_ERROR and self._spam_counter % 200 == 0):
+        print("[SERIAL] FALHA AO ABRIR SERIAL, Erro:", e)
       return
 
     # Início da mensagem

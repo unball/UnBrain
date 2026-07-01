@@ -38,29 +38,32 @@ class FiraClient:
 
     def receive_frame(self):
         """Receive package and decode."""
-        data = None
+        last_data = None
         self.verify_vision = False
         
+        # Drena o buffer UDP inteiro sem bloquear, pegando sempre a foto mais recente
+        self.vision_sock.settimeout(0.0)
         while True:
             try:
-                socket.setdefaulttimeout(1/30)
-                self.verify_vision = False
                 data, _ = self.vision_sock.recvfrom(1024)
+                last_data = data
                 self.verify_vision = True
-
-                
-                
-            except Exception as e:
-                self.verify_vision = False
-                print(e)
-            if data != None:
+            except BlockingIOError:
                 break
-                       
-        if self.verify_vision == False and data == None:
-            print("**** no data received from vision ****")
+            except Exception as e:
+                # Trata eventuais outros erros silenciosamente para não floodar
+                break
+                
+        if not self.verify_vision and last_data is None:
+            pass
         
-        if data != None:
-            decoded_data = wr.SSL_WrapperPacket().FromString(data)
-        else: decoded_data = None
-        return(decoded_data)
+        if last_data is not None:
+            try:
+                decoded_data = wr.SSL_WrapperPacket().FromString(last_data)
+            except Exception:
+                decoded_data = None
+        else:
+            decoded_data = None
+            
+        return decoded_data
     

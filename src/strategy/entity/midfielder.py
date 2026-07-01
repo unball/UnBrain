@@ -6,7 +6,7 @@ from strategy.field.areaAvoidance.avoidCircle import AvoidCircle
 from strategy.field.areaAvoidance.avoidRect import AvoidRect
 from strategy.field.areaAvoidance.avoidEllipse import AvoidEllipse
 from ..entity.attacker import Attacker
-from strategy.movements import goToBall, intercept
+from strategy.movements import goToBall, goToBallSec, intercept
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, sat, sats, unit
 from tools.interval import Interval
 from control.UFC import UFC_Simple
@@ -16,10 +16,16 @@ import time
 
 class Midfielder(Attacker):
     def __init__(self, world, robot,
-                 midfielderOffset = 0.35
+                 midfielderOffset = 0.35,
+                 spiralRadius = 0.12,
+                 spiralRadiusCorners = 0.08,
+                 ballOffset = -0.07
         ):
 
-        Attacker.__init__(self, world, robot)
+        Attacker.__init__(self, world, robot,
+                          spiralRadius=spiralRadius,
+                          spiralRadiusCorners=spiralRadiusCorners,
+                          ballOffset=ballOffset)
         
         # Params
         self.midfielderOffset = midfielderOffset
@@ -27,7 +33,7 @@ class Midfielder(Attacker):
         # States
         self.followLine = False
 
-        self._control = UFC_Simple(self.world, enableInjection=False)
+        self._control = UFC_Simple(self.world, kp=30, mu=0.6, enableInjection=False)
 
     def directionDecider(self):
         rr = np.array(self.robot.pos)
@@ -36,17 +42,17 @@ class Midfielder(Attacker):
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
 
-            if  time.time()-self.lastChat > .3 and (not self.followLine and abs(angError(ref_th, rob_th)) > 90 * np.pi / 180 or \
-                   self.followLine and abs(angError(ref_th, rob_th)) >  90 * np.pi / 180):
-                self.robot.direction *= -1
-                self.lastChat = time.time()
+            if time.time() - self.lastChat > 0.5:
+                threshold = 105 * np.pi / 180 if self.robot.direction == 1 else 75 * np.pi / 180
+                if abs(angError(ref_th, rob_th)) > threshold:
+                    self.robot.direction *= -1
+                    self.lastChat = time.time()
             
             # Inverter a direção se o robô ficar preso em algo
             elif not self.robot.isAlive() and self.robot.spin == 0:
-                if time.time()-self.lastChat > .3:
+                if time.time() - self.lastChat > 0.5:
                     self.lastChat = time.time()
                     self.robot.direction *= -1
-                # self.robot.setSpin(1 if rr[1] > rb[1] else -1, timeOut = 0.13)
     
     def fieldDecider(self):
         # Variáveis úteis
@@ -58,17 +64,17 @@ class Midfielder(Attacker):
         rl = np.array(self.world.field.size) - np.array([0, 0.14])
 
         otherAttackers = [robot for robot in self.world.team if type(robot.entity) == Attacker]
-        otherAttacker = otherAttackers[0]
+        otherAttacker = otherAttackers[0] if len(otherAttackers) > 0 else None
 
-        goal = [rg[0], 0.10 * np.sign(otherAttacker.y)]
-        #print(goal)
+        sign_y = np.sign(otherAttacker.y) if otherAttacker else np.sign(rr[1])
+        goal = [rg[0], 0.10 * sign_y]
         # Atualiza histórico de velocidade do robô
         self.vravg = 0.995 * self.vravg + 0.005 * norml(vr)
 
         # Define estado do movimento
         # Ir até a bola
         if self.attackState == 0:
-            if otherAttacker.entity.attackState == 1: self.attackState = 0
+            if otherAttacker and otherAttacker.entity.attackState == 1: self.attackState = 0
             else:
                 #if self.alignedToGoal(rb, rr, rg):
                 if intercept(rr, rb, unit(self.robot.th), goal, vb, vrref=0.5) or self.alignedToGoal(rb, rr, rg):
@@ -97,7 +103,7 @@ class Midfielder(Attacker):
 
         # Movimento de alinhamento
         if self.attackState == 0:
-            Pb = goToBall(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
+            Pb = goToBallSec(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
             Pb = np.array([Pb[0]-self.midfielderOffset,Pb[1],Pb[2]])
             
             if len(otherAttackers) > 0:
@@ -105,7 +111,7 @@ class Midfielder(Attacker):
 
                 if rro[0] > 0.4:
                     self.robot.vref = 0
-                    self.robot.field = UVF((0.4, sat(rb[1], 0.35), np.pi/2 * np.sign(rb[1]-rr[1])), radius=self.spiralRadius)
+                    self.robot.field = UVF(self.world, (0.4, sat(rb[1], 0.35), np.pi/2 * np.sign(rb[1]-rr[1])), self.robot, radius=self.spiralRadius, Kr=self.spiralRadius)
                     #self.followLine = True
                     self.followLine = False
 
@@ -118,11 +124,12 @@ class Midfielder(Attacker):
 
                 if rb[0] > 0.6:
                     self.robot.vref = 0
-                    PmidFilder = [0.1, -0.15 * np.sign(otherAttacker.y)]
-                    self.robot.field = UVF((*PmidFilder, ang(PmidFilder, goal)), radius=0.05)
+                    sign_y2 = np.sign(otherAttacker.y) if otherAttacker else np.sign(rr[1])
+                    PmidFilder = [0.1, -0.15 * sign_y2]
+                    self.robot.field = UVF(self.world, (*PmidFilder, ang(PmidFilder, goal)), self.robot, radius=0.05)
                 else:
-                    Pb = goToBall(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
-                    self.robot.field = UVF(Pb, radius=self.spiralRadius, Kr=0.3)
+                    # Pb = goToBallSec(rb, vb, rg, rr, rl, self.vravg, self.ballOffset)
+                    self.robot.field = UVF(self.world, Pb, self.robot, radius=self.spiralRadius, Kr=self.spiralRadius)
 
                 # if np.abs(rb[1]) > rl[1]:
                 #     self.robot.vref = math.inf

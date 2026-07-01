@@ -20,10 +20,10 @@ class SecAttacker(Entity):
                  perpBallLimiarAtackState = 0.075 * 2, 
                  alignmentAngleTrackState = 30, 
                  alignmentAngleAtackState = 90, 
-                 spiralRadius = 0.07, 
-                 spiralRadiusCorners = 0.05, 
+                 spiralRadius = 0.12, 
+                 spiralRadiusCorners = 0.08, 
                  approximationSpeed = 0.8, 
-                 ballOffset = -0.03,
+                 ballOffset = -0.07,
                  ballShift = 0,
                  slave = False
         ):
@@ -70,18 +70,35 @@ class SecAttacker(Entity):
         if self.robot.field is not None:
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
+            erro_angular = abs(angError(ref_th, rob_th))
 
-            if time.time()-self.lastChat > 0.5:
-                if abs(angError(ref_th, rob_th)) >  135 * np.pi / 180:
-                    self.robot.direction *= -1
+            # Como self.robot.th (rob_th) já incorpora a inversão da marcha a ré,
+            # erro_angular é sempre o erro do lado do robô que está liderando o movimento.
+            # Apenas aplica a histerese se não estivermos no período de carência do Anti-Stuck.
+            # Sem isso, o Anti-Stuck inverte a direção, e a histerese imediatamente inverte de volta
+            # no frame seguinte (porque o robô ainda não teve tempo de virar).
+            if time.time() - getattr(self, 'lastChat', 0) > 0.5:
+                if self.robot.direction == 1:
+                    # Se está de frente, exige um erro grande para desistir e dar ré
+                    if erro_angular > 110 * np.pi / 180:
+                        self.robot.direction = -1
+                else:
+                    # Se está de ré, volta para frente assim que a frente ficar viável
+                    # (Se o erro da traseira for > 80, o erro da frente é < 100)
+                    if erro_angular > 80 * np.pi / 180:
+                        self.robot.direction = 1
+
+            # Anti-Stuck: Inverte a direção se ficar preso, garantindo que ele tenha 
+            # tempo para sair do lugar (keepAlive) antes de checar novamente.
+            if not self.robot.isAlive() and self.robot.spin == 0:
+                if time.time() - self.lastChat > 0.5:
                     self.lastChat = time.time()
-                
-                # Inverter a direção se o robô ficar preso em algo
-                elif not self.robot.isAlive() and self.robot.spin == 0:
-                    self.lastChat = time.time()
                     self.robot.direction *= -1
+                    if hasattr(self.robot, 'keepAlive'):
+                        self.robot.keepAlive(0.5)
     
-    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
+    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=None):
+        if xgoal is None: xgoal = self.world.field.maxX
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange
 
     def alignedToGoal(self, rb, rr, rg):
@@ -100,8 +117,8 @@ class SecAttacker(Entity):
         rl = np.array(self.world.field.size) - np.array([0, 0.12])
 
         # Obtém outros aliados
-        otherAllies = [robot for robot in self.world.team if robot != self.robot]
-        enemies = [robot for robot in self.world.enemies]
+        otherAllies = [robot for robot in self.world.team if robot is not None and robot != self.robot]
+        enemies = [robot for robot in self.world.enemies if robot is not None]
 
         # Atualiza histórico de velocidade do robô
         self.vravg = 0.995 * self.vravg + 0.005 * np.dot(vr, unit(ang(rr, rb)))
@@ -157,7 +174,7 @@ class SecAttacker(Entity):
 
             if np.abs(Pb[1]) > rl[1]:
                 self.robot.vref = math.inf
-                self.robot.field = UVF(Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners)
+                self.robot.field = UVF(Pb, direction=-np.sign(rb[1]), radius=self.spiralRadiusCorners, Kr=self.spiralRadiusCorners)
 
                 clientProvider().drawTarget(self.robot.id, Pb[0], Pb[1], Pb[2])
             else:
@@ -166,7 +183,7 @@ class SecAttacker(Entity):
                 Pbv = Pb
 
                 self.robot.vref = self.approximationSpeed + 2 * norml(vb)
-                self.robot.field = UVF(Pbv, radius=self.spiralRadius, Kr=0.03)
+                self.robot.field = UVF(Pbv, radius=self.spiralRadius, Kr=self.spiralRadius)
 
                 clientProvider().drawTarget(self.robot.id, Pbv[0], Pbv[1], Pbv[2])
 

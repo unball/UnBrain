@@ -98,21 +98,24 @@ def goToGoal(rg, rr, vr):
 
     return np.array([*rg[:2], angle]), (0,0,-dth)
 
-def goalkeep(rb, vb, rr, rg):
+def goalkeep(rb, vb, rr, rg, field):
     xGoal = rg[0]
 
     #projeta a velocidade da bola 
-    # ytarget = projectLine(rb, vb, xGoal+0.05)
     ytarget = projectLine(rb, vb, xGoal)
     if ((vb[0]) < -0.1): #and  (rb[0]) > .15) and np.abs(ytarget) < 0.2: (verifica se a projeção está no gol)
-        ytarget = sat(ytarget, 0.17)
+        ytarget = sat(ytarget, field.goalAreaHeight / 2)
         angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
         return (xGoal, ytarget, angle)
 
     #Se não, acompanha o y
-    #xGoal = rg[0] - 0.175 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)
-    ytarget = sat(rb[1], 0.14 + 0.21 * (rb[0] < -0.6 and abs(rb[1]) < 0.35)) #(permite que o goleiro avance na área do gol)
-    #ytarget = sat(rb[1], 0.17) #(permite que o goleiro avance na área do gol)
+    # Verifica se a bola está na região de defesa (dentro ou perto da área de pênalti)
+    in_defense_zone = (rb[0] < -field.maxX + field.penaltyAreaDepth) and (abs(rb[1]) < field.penaltyAreaWidth / 2)
+    
+    # Se a bola entrar na quina de defesa, o goleiro abre o leque de 14cm até 35cm (boca da área)
+    limit_y = 0.14 + (field.penaltyAreaWidth / 2 - 0.14) * in_defense_zone
+    ytarget = sat(rb[1], limit_y)
+
     angle = np.pi/2 if rr[1] < ytarget else -np.pi/2
     return np.array([xGoal, ytarget, angle])
  
@@ -167,18 +170,21 @@ def intercept(rr, rb, direction, rg, vb, vrref=0.5, arref=1.4):
     ])
 
     try:
-        tvec = scipy.linalg.solve(A, B)
-        #if tvec[0] < 0: return False
-
-        t1 = tvec[0]#np.sqrt(2 * tvec[0])
-        t2 = tvec[1]
-
-        r = rb + t2 * vb
-        #print([t1, t2])
-        if abs(t1 - t2) < 0.09 and t1 >= 0 and r[0] < rg[0] - 0.1 and r[0] >= 0:
-            return True
-        else:
-            return False
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            tvec = scipy.linalg.solve(A, B)
+            #if tvec[0] < 0: return False
+    
+            t1 = tvec[0]#np.sqrt(2 * tvec[0])
+            t2 = tvec[1]
+    
+            r = rb + t2 * vb
+            #print([t1, t2])
+            if abs(t1 - t2) < 0.09 and t1 >= 0 and r[0] < rg[0] - 0.1 and r[0] >= 0:
+                return True
+            else:
+                return False
     except:
         return False
 

@@ -10,6 +10,7 @@ from strategy.movements import goToBall, goToGoal, howFrontBall, howPerpBall, go
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm, insideEllipse, angl, unit, projectLine
 from tools.interval import Interval
 from control.UFC import UFC_Simple
+from control.UFC_Robust import UFC_Robust
 from control.goalKeeper import GoalKeeperControl
 from client.gui import clientProvider
 import numpy as np
@@ -54,7 +55,8 @@ class Attacker(Entity):
         
         self.lastChat = 0
 
-        self._control = UFC_Simple(self.world)
+        # self._control = UFC_Simple(self.world)
+        self._control = UFC_Robust(self.world)
     @property
     def control(self):
         return self._control
@@ -72,20 +74,35 @@ class Attacker(Entity):
         if self.robot.field is not None:
             ref_th = self.robot.field.F(self.robot.pose)
             rob_th = self.robot.th
+            erro_angular = abs(angError(ref_th, rob_th))
 
-            if time.time()-self.lastChat > 0.5:
-                if abs(angError(ref_th, rob_th)) > 120 * np.pi / 180:
-                    self.robot.direction *= -1
-                    self.lastChat = time.time()
-                
-                # Inverter a direção se o robô ficar preso em algo
-                if not self.robot.isAlive() and self.robot.spin == 0:
-                    self.lastChat = time.time()
-                    self.robot.direction *= -1
+            # Como self.robot.th (rob_th) já incorpora a inversão da marcha a ré,
+            # erro_angular é sempre o erro do lado do robô que está liderando o movimento.
+            # Apenas aplica a histerese se não estivermos no período de carência do Anti-Stuck.
+            # Sem isso, o Anti-Stuck inverte a direção, e a histerese imediatamente inverte de volta
+            # no frame seguinte (porque o robô ainda não teve tempo de virar).
+            if time.time() - getattr(self, 'lastChat', 0) > 1.5:
+                if self.robot.direction == 1:
+                    # Se está de frente, exige um erro grande para desistir e dar ré
+                    if erro_angular > 110 * np.pi / 180:
+                        self.robot.direction = -1
+                else:
+                    # Se está de ré, volta para frente assim que a frente ficar viável
+                    # (Se o erro da traseira for > 80, o erro da frente é < 100)
+                    if erro_angular > 80 * np.pi / 180:
+                        self.robot.direction = 1
 
-                    
+            # Anti-Stuck: Inverte a direção se ficar preso, garantindo que ele tenha 
+            # tempo para sair do lugar (keepAlive) antes de checar novamente.
+            if not self.robot.isAlive() and self.robot.spin == 0:
+                if time.time() - self.lastChat > 1.5:
+                    self.lastChat = time.time()
+                    self.robot.direction *= -1
+                    if hasattr(self.robot, 'keepAlive'):
+                        self.robot.keepAlive(1.5)
     
-    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=0.75):
+    def inAttackRegion(self, rb, rr, rg, yrange=0.25, xgoal=None):
+        if xgoal is None: xgoal = self.world.field.maxX
         return np.abs(rr[1] + (xgoal - rr[0]) / (rb[0] - rr[0]) * (rb[1] - rr[1])) < yrange
 
     def alignedToGoal(self, rb, rr, rg):
@@ -109,40 +126,54 @@ class Attacker(Entity):
         # Ângulo do robô até a bola
         robotBallAngle = ang(rr, rb)
 
-        # Se estiver atrás da bola, estiver em uma faixa de distância "perpendicular" da bola, estiver com ângulo para o gol com erro menor que 30º vai para o gol
-        #if howFrontBall(rb, rr, rg) < -0.03*(1-self.movState) and abs(howPerpBall(rb, rr, rg)) < 0.045 + self.movState*0.1 and abs(angError(ballGoalAngle, rr[2])) < (30+self.movState*60)*np.pi/180:
-        if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) + 0.10*self.robot.movState and (self.robot.movState == 1 or abs(howPerpBall(rb, rr, rg)) < 0.1) and abs(angError(robotBallAngle, rr[2])) < (20+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.22 + self.robot.movState*0.4:
-            #if howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) and abs(angError(robotBallAngle, rr[2])) < (30+self.robot.movState*60)*np.pi/180 and np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.25:
+        # AVALIAÇÃO DE ALINHAMENTO COM HISTERESE EXPANDIDA (Evita o chaveamento / oscilação de estados)
+        # 1. Distância atrás da bola (se em ataque, tolera a bola escapar um pouco para frente)
+        is_behind_ball = howFrontBall(rb, rr, rg) < -0.03*(1-self.robot.movState) + 0.15*self.robot.movState
+        # 2. Alinhamento perpendicular com a bola
+        is_aligned_perp = (self.robot.movState == 1 or abs(howPerpBall(rb, rr, rg)) < 0.1)
+        # 3. Ângulo do robô para a bola
+        is_pointing_to_ball = abs(angError(robotBallAngle, rr[2])) < (20+self.robot.movState*70)*np.pi/180
+        # 4. Projeção da mira na linha do gol (relaxado para não dropar quando já está chutando)
+        is_aiming_at_goal = np.abs(projectLine(rr[:2], unit(rr[2]), rg[0])) <= 0.25 + self.robot.movState*0.8
+
+        if is_behind_ball and is_aligned_perp and is_pointing_to_ball and is_aiming_at_goal:
             if self.robot.movState == 0:
                 self.robot.ref = (*(rr[:2] + 1000*unit(rr[2])), rr[2])
             pose, gammavels = goToGoal(rg, rr, vr)
             self.robot.gammavels = (0,0,0)
             self.robot.movState = 1
-            self.robot.vref = 2*norml(vb) + 0.8
+            self.robot.vref = 2*norml(vb) + 1.0 # Aceleração bônus no chute final
             Kr = 0.03
             pose = self.robot.ref
         # Se não, vai para a bola
         else:
-            # Vai para a bola saturada em -0.60m em x
-            # rbfiltered = np.array([rb[0] if rb[0] > -0.40 else -0.40, rb[1]])
             pose, gammavels = goToBall(rb, rg, vb, self.world.marginPos)
-            self.robot.vref = 0.8
+            
+            # [ATAQUE AGRESSIVO E CONTÍNUO]: A velocidade escala de 0.8 a 1.8 dependendo do alinhamento.
+            # Se ele está de frente para a bola E a bola está de frente para o gol, ele acelera pra 1.8
+            robot_to_ball_ang = ang(rr, rb)
+            ball_to_goal_ang = ang(rb, rg)
+            align_error = abs(angError(robot_to_ball_ang, ball_to_goal_ang)) + abs(angError(rr[2], robot_to_ball_ang))
+            # Normalizando o erro (0 a ~pi) para uma penalidade de velocidade
+            speed_boost = 1.0 * max(0, 1 - (align_error / (np.pi/2)))
+            self.robot.vref = 0.8 + speed_boost
+
             self.robot.gammavels = gammavels
             self.robot.movState = 0
-            Kr = 0.04#self.auxRobot is not None and type(self.auxRobot.entity) == Defender
+            Kr = 0.04
         
         # Decide quais espirais estarão no campo e compõe o campo
         #if abs(rb[0]) > self.world.xmaxmargin: self.world.goalpos = (-self.world.goalpos[0], self.world.goalpos[1])
 
-        # Muda o campo no gol caso a bola esteja lá
-        if self.world.ball.x < -0.3 and not self.slave:
-            self.robot.vref = 0
-            self.robot.field = AttractiveField(Pb=(-0.25,0.38,0))
-        elif self.world.ball.x < -0.3 and self.slave:
-            self.robot.vref = 0
-            self.robot.field = AttractiveField(Pb=(-0.25,-0.38,0))
+        # # Muda o campo no gol caso a bola esteja lá
+        # if self.world.ball.x < -0.3 and not self.slave:
+        #     self.robot.vref = 0
+        #     self.robot.field = AttractiveField(Pb=(-0.25,0.38,0))
+        # elif self.world.ball.x < -0.3 and self.slave:
+        #     self.robot.vref = 0
+        #     self.robot.field = AttractiveField(Pb=(-0.25,-0.38,0))
 
-        elif any(np.abs(rb) > oneSpiralMargin) and np.abs(rb[1]) >= 0.3:
+        if any(np.abs(rb) > oneSpiralMargin) and np.abs(rb[1]) >= 0.3:
             angle = -np.sign(rb[1]) / (1 + np.exp(-(rb[0]-oneSpiralMargin[0]) / 0.03)) * np.pi/2
             self.robot.gammavels = (0,0,0)
             self.robot.field = UVF(world=self.world, robot=self.robot, Pb=(*pose[:2], angle), direction=-np.sign(rb[1]))

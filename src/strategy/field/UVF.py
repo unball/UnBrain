@@ -4,7 +4,7 @@ from . import Field
 
 
 class UVF(Field):
-    def __init__(self, world, Pb, robot, radius=0.1382, direction=0, spiral=True):
+    def __init__(self, world, Pb, robot, radius=0.1382, direction=0, spiral=True, avoid_obstacles=True, Kr=0.2333):
         super().__init__(Pb)
 
         self.Pb = Pb
@@ -13,9 +13,9 @@ class UVF(Field):
 
         self.world = world
 
-        self.wall_x = self.world.field.marginX - self.world.field.xmargin
+        self.wall_x = self.world.field.marginX # - self.world.field.xmargin
 
-        self.wall_y = self.world.field.marginY - self.world.field.ymargin
+        self.wall_y = self.world.field.marginY # - self.world.field.ymargin
 
         self.dmin = [0.0274,0.0444,0.0444,0.0444]
 
@@ -33,26 +33,49 @@ class UVF(Field):
         # Direção da espiral, 0 para duas espirais
         self.direction = direction
 
-        # Habilita espiral interna, caso contrário são retas 
+        # Habilita espiral interna, caso contrário são retas
         self.spiral = spiral
 
         # Constantes das espirais duplas
-        self.Kr = 0.2333
+        self.Kr = Kr
 
         self.Ko = 0.0003
 
+        self.Vo = np.zeros((5, 2))
+        self.Po = np.zeros((5, 2))
+        self.avoid_obstacles = avoid_obstacles
 
-    def F(self, P):
-        return self.th(P, np.array(self.Pb))
+        # [HLC] Override opcional vindo da interface: sobrepõe as variáveis REAIS do UVF
+        # que o usuário editou. Dict vazio/ausente = comportamento do artigo intacto.
+        _ov = getattr(world, 'hlc_uvf_overrides', None)
+        if _ov:
+            if _ov.get('UVF_radius')     is not None: self.r = float(_ov['UVF_radius'])
+            if _ov.get('UVF_Kr')         is not None: self.Kr = float(_ov['UVF_Kr'])
+            if _ov.get('UVF_Ko')         is not None: self.Ko = float(_ov['UVF_Ko'])
+            if _ov.get('UVF_dmin_wall')  is not None: self.dmin[0] = float(_ov['UVF_dmin_wall'])
+            if _ov.get('UVF_dmin_robot') is not None: self.dmin[1:] = [float(_ov['UVF_dmin_robot'])] * 3
+            if _ov.get('UVF_delta_wall') is not None: self.delta[0] = float(_ov['UVF_delta_wall'])
+            if _ov.get('UVF_delta_robot')is not None: self.delta[1:] = [float(_ov['UVF_delta_robot'])] * 3
+            if _ov.get('UVF_delta_b')    is not None: self.delta_b = float(_ov['UVF_delta_b'])
+    def F(self, P, probe=False):
+        # probe=True: avalia o campo COMO SE o robô estivesse em P (obstáculos/parede
+        # relativos ao ponto amostrado). Usado só para a visualização do overlay, para
+        # o desvio de parede aparecer no campo todo. No controle (P = pose do robô)
+        # probe é irrelevante, então o comportamento da estratégia fica intacto.
+        return self.th(P, np.array(self.Pb), probe=probe)
 
     def TUF(self, P, Pb):
         
         P = P.copy()
 
         # Ajusta o sistema de coordenadas
-        P[:2] = P[:2]-Pb[:2]
-        rotMatrix = np.array([[np.cos(Pb[2]), np.sin(Pb[2])],[-np.sin(Pb[2]), np.cos(Pb[2])]])
-        P[:2] = np.matmul(rotMatrix, P[:2])
+        cos_b = np.cos(Pb[2])
+        sin_b = np.sin(Pb[2])
+        dx = P[0] - Pb[0]
+        dy = P[1] - Pb[1]
+        
+        P[0] = dx * cos_b + dy * sin_b
+        P[1] = -dx * sin_b + dy * cos_b
 
         # Peso das espirais
         yl = -P[1] + self.r
@@ -91,7 +114,7 @@ class UVF(Field):
                 return 0
 
     def G(self, r, delta):
-        return np.exp(-(r**2/2*delta**2))
+        return np.exp(-0.5 * (r**2) * (delta**2))
     
     def AUF(self, P, Po, Pr, Vr, Vo):
 
@@ -105,39 +128,52 @@ class UVF(Field):
         
         return ang(Pvo, P)
     
-    def th(self, P, Pb):
+    def th(self, P, Pb, probe=False):
 
-        R = [0,0,0,0]
+        if not self.avoid_obstacles:
+            return self.TUF(P, Pb)
+
         Vr = self.robot.v
-        Vo = np.array([[0,0],[0,0],[0,0],[0,0]])
-        Po = [0,0,0,0]
-        Pr = self.robot.pos
-        Wall = [(Pr[0], self.wall_y), (Pr[0], -self.wall_y)]
-        
-        for i, robot in enumerate(self.world._team):
-            if robot is not None:
-                if (self.robot.id != robot.id):
-                    Vo[i+1] = np.array(robot.v)
-                    Po[i+1] = robot.pos
+        # Na visualização (probe), ancora parede/obstáculos no ponto amostrado P, para
+        # o desvio aparecer em todo o campo. No controle P == pose do robô -> idêntico.
+        Pr = np.array(P[:2]) if probe else self.robot.pos
 
-        Po[0] = Wall[0]
+        # Candidatos de obstáculo: (pos, vel, dmin, delta). Reproduz exatamente o artigo
+        # para o controle (parede índice 0 + companheiros de time índice 1); o desvio dos
+        # inimigos é adicionado APENAS na visualização (probe) — o controle real não muda.
+        Wall = [np.array([Pr[0], self.wall_y]), np.array([Pr[0], -self.wall_y])]
+        wall_pt = Wall[0]
         for pos in Wall:
-            if norm(pos, P) < norm(Po[0], P):
-                Po[0] = pos
+            if norm(pos, P) < norm(wall_pt, P):
+                wall_pt = pos
+        obstacles = [(wall_pt, np.zeros(2), self.dmin[0], self.delta[0])]
 
-        for i, pos in enumerate(Po):
-            if pos != 0:
-                R[i] = norm(P,pos)
+        # Companheiros de time (obstáculos reais, também no controle)
+        for robot in self.world._team:
+            if robot is not None and self.robot.id != robot.id:
+                obstacles.append((np.array(robot.pos), np.array(robot.v), self.dmin[1], self.delta[1]))
 
-        Rmenor = R[0]
-        ind = 0
-        for i, r in enumerate(R):
-            if r < Rmenor and r != 0:
+        # Inimigos: só na visualização. Usa o mesmo dmin/delta de robô.
+        if probe:
+            for enemy in getattr(self.world, 'enemies', []) or []:
+                if enemy is not None:
+                    obstacles.append((np.array(enemy.pos), np.array(enemy.v), self.dmin[1], self.delta[1]))
+
+        # Obstáculo mais próximo de P (empate fica com o anterior, como no artigo)
+        Rmenor = float('inf')
+        nearest = None
+        for cand in obstacles:
+            r = norm(P, cand[0])
+            if r < Rmenor:
                 Rmenor = r
-                ind = i
+                nearest = cand
 
-        if Rmenor > self.dmin[ind] and not Rmenor == 0:
-            th = self.AUF(P, Po[ind],Pr,Vr,Vo[ind]) * self.G(Rmenor-self.dmin[ind],self.delta[ind]) + (self.TUF(P, Pb) * (1-self.G(norm(P,Pb)-self.dmin[1], self.delta_b)))
-        elif not Rmenor == 0:                
-            th = self.AUF(P, Po[ind],Pr,Vr,Vo[ind])
+        th = self.TUF(P, Pb)  # Default fallback
+        if nearest is not None and Rmenor != 0:
+            Po_n, Vo_n, dmin_n, delta_n = nearest
+            if Rmenor > dmin_n:
+                th = self.AUF(P, Po_n, Pr, Vr, Vo_n) * self.G(Rmenor - dmin_n, delta_n) + (self.TUF(P, Pb) * (1 - self.G(norm(P, Pb) - self.dmin[1], self.delta_b)))
+            else:
+                th = self.AUF(P, Po_n, Pr, Vr, Vo_n)
+
         return th

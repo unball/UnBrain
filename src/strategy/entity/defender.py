@@ -7,6 +7,7 @@ from strategy.movements import goalkeep, blockBallElipse, spinGoalKeeper
 from tools import angError, howFrontBall, howPerpBall, ang, norml, norm
 from tools.interval import Interval
 from control.UFC import UFC_Simple
+from control.UFC_Robust import UFC_Robust
 from control.defender import DefenderControl
 from client.gui import clientProvider
 import numpy as np
@@ -16,7 +17,7 @@ class Defender(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = UFC_Simple(self.world, vmax= 1.0) #Verificar qual melhor controle para o robo Defensor
+        self._control = DefenderControl(self.world)
     @property
     def control(self):
         return self._control
@@ -54,11 +55,13 @@ class Defender(Entity):
         if norm(rr, rg) < norm(rb, rg):
             self.robot.setSpin(spinGoalKeeper(rb, rr, rg), timeOut = 0.13)
 
-        if np.sign(rb[1]) > 0 and rb[1] > rr[1] and rb[0] < -0.60 and rr[1] > 0.25 and np.abs(rr[0]-rb[0]) < 0.07:
+        defense_zone_x = -self.world.field.maxX + self.world.field.penaltyAreaDepth
+
+        if np.sign(rb[1]) > 0 and rb[1] > rr[1] and rb[0] < defense_zone_x and rr[1] > 0.25 and np.abs(rr[0]-rb[0]) < 0.07:
             pose = (rr[0], rb[1], np.pi/2)
             self.robot.field = GoalKeeperField(pose, rb[0])
             self.robot.vref = 999
-        elif np.sign(rb[1]) < 0 and rb[1] < rr[1] and rb[0] < -0.60 and rr[1] < -0.25 and np.abs(rr[0]-rb[0]) < 0.07:
+        elif np.sign(rb[1]) < 0 and rb[1] < rr[1] and rb[0] < defense_zone_x and rr[1] < -0.25 and np.abs(rr[0]-rb[0]) < 0.07:
             pose = (rr[0], rb[1], -np.pi/2)
             self.robot.field = GoalKeeperField(pose, rb[0])
             self.robot.vref = 999

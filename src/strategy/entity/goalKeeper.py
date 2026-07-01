@@ -16,7 +16,7 @@ class GoalKeeper(Entity):
     def __init__(self, world, robot, side=1):
         super().__init__(world, robot)
 
-        self._control = UFC_Simple(self.world)
+        self._control = GoalKeeperControl(self.world)
         self.lastChat = 0
         self.state = "Stable"
 
@@ -63,14 +63,15 @@ class GoalKeeper(Entity):
         rb = np.array(self.world.ball.pos)
         vb = np.array(self.world.ball.v)
         rg = -np.array(self.world.field.goalPos)
-        rg[0] += 0.15
+        # Posiciona o goleiro na boca do gol (5cm à frente da linha do gol)
+        rg[0] += 0.05
     
          # Aplica o movimento
         self.robot.vref = 0
 
         self.robot.setSpin(spinGoalKeeper(rb, rr, rg), timeOut = 0.13)
 
-        Pb = goalkeep(rb, vb, rr, rg)
+        Pb = goalkeep(rb, vb, rr, rg, self.world.field)
         # print(Pb)
         # print('isAlive:' , self.robot.isAlive())
         # print(f"angulo: {thr}")

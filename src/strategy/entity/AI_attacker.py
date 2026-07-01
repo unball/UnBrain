@@ -6,7 +6,10 @@ from control.AI_Attacker import AI_Control
 
 import numpy as np
 
-from gym.spaces import Box
+try:
+    from gymnasium.spaces import Box
+except ImportError:
+    from gym.spaces import Box
 
 
 class AI_Attacker(Entity):
@@ -73,31 +76,28 @@ class Env():
         return next_observation  # Sem reward e done
 
     def _actions_to_v_wheels(self, actions):
-        if not self.enemy_AI:
-            left_wheel_speed = actions[0] * self.max_v
-            right_wheel_speed = actions[1] * self.max_v   
-        else:
-            #invertido para fazer contra o goleiro
-            left_wheel_speed = actions[1] * self.max_v
-            right_wheel_speed = actions[0] * self.max_v  
-        # left_wheel_speed = self.max_v
-        # right_wheel_speed = self.max_v
-
-        left_wheel_speed, right_wheel_speed = np.clip(
-            (left_wheel_speed, right_wheel_speed), -self.max_v, self.max_v
-        )
-
-        # Deadzone
-        if -self.v_wheel_deadzone < left_wheel_speed < self.v_wheel_deadzone:
-            left_wheel_speed = 0
-
-        if -self.v_wheel_deadzone < right_wheel_speed < self.v_wheel_deadzone:
-            right_wheel_speed = 0
-
+        # Scale actions to max wheel speed in rad/s
+        v_0 = np.clip(actions[0] * self.max_v, -self.max_v, self.max_v)
+        v_1 = np.clip(actions[1] * self.max_v, -self.max_v, self.max_v)
+        
         # Convert to rad/s
-        left_wheel_speed /= self.field_params['rbt_wheel_radius']
-        right_wheel_speed /= self.field_params['rbt_wheel_radius']
-
+        v_0 /= self.field_params['rbt_wheel_radius']
+        v_1 /= self.field_params['rbt_wheel_radius']
+        
+        # Lógica de Espelhamento Cinemático:
+        # Se estamos fisicamente no lado direito (side = -1), a roda esquerda
+        # do mundo refletido corresponde à roda direita do mundo real!
+        # A flag enemy_AI também inverte a perspectiva.
+        effective_side = self.world.field.side * (-1 if self.enemy_AI else 1)
+        
+        if effective_side == -1:
+            # O mundo real está espelhado, então as rodas trocam de lugar
+            left_wheel_speed = v_1
+            right_wheel_speed = v_0
+        else:
+            left_wheel_speed = v_0
+            right_wheel_speed = v_1
+            
         return left_wheel_speed, right_wheel_speed
 
     def _get_observation(self):
@@ -132,11 +132,11 @@ class Env():
                 obs[base:base+7] = np.array([
                     self.norm_pos(c*allied_team[i].x),
                     self.norm_pos(allied_team[i].y),
-                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.sin((allied_team[i].th)),
-                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if self.enemy_AI else np.cos((allied_team[i].th)),
+                    np.sin(adjustAngle((np.pi - allied_team[i].th))) if c == -1 else np.sin((allied_team[i].th)),
+                    np.cos(adjustAngle((np.pi - allied_team[i].th))) if c == -1 else np.cos((allied_team[i].th)),
                     self.norm_v(c*allied_team[i].vx),
                     self.norm_v(allied_team[i].vy),
-                    self.norm_w(c*allied_team[i].w)
+                    self.norm_w(c*np.rad2deg(allied_team[i].w))
                 ])
             else:
                 base = 4 + (7 * i)
@@ -152,15 +152,30 @@ class Env():
                     ])
 
         # 🔹 3. Informações dos robôs inimigos (no treinamento, os amarelos)
-        for i in range(3):  # três robôs do time adversário
+        # A observação só expõe os slots de inimigo que o MODELO está acostumado a ver:
+        #   - train_n_enemies: com quantos inimigos a rede foi treinada (detectado no load).
+        #   - episode_n_enemies: quantos inimigos estão fisicamente no campo agora.
+        # Preenche o min dos dois e zera o resto (modelo 1v1 nunca recebe inimigos; 1v3 recebe 3).
+        # Se train_n_enemies for None (não inferível), assume o comportamento de treino padrão
+        # (sem inimigos na obs) para não introduzir shift de distribuição inadvertido.
+        train_n_enemies = getattr(self, 'train_n_enemies', None)
+        if train_n_enemies is None:
+            train_n_enemies = 0
+        n_ep_enemies = getattr(self.world, 'episode_n_enemies', 0)
+        n_visible = min(train_n_enemies, n_ep_enemies)
+        for i in range(3):
             base = 25 + (5 * i)
-            obs[base:base+5] = np.array([
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0
-            ])
+            enemy = self.world.enemies[i] if i < len(self.world.enemies) else None
+            if i < n_visible and enemy is not None:
+                obs[base:base+5] = np.array([
+                    self.norm_pos(c * enemy.x),
+                    self.norm_pos(enemy.y),
+                    self.norm_v(c * enemy.vx),
+                    self.norm_v(enemy.vy),
+                    self.norm_w(np.rad2deg(enemy.w))
+                ])
+            else:
+                obs[base:base+5] = 0.0
 
         return np.array(obs, dtype=np.float32)
     

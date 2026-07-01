@@ -41,16 +41,50 @@ class PPO:
     def load_model(self, directory, ppo_filename="ppo_full_checkpoint.pth"):
         ppo_path = os.path.join(directory, ppo_filename)
         if os.path.exists(ppo_path):
-            checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device, weights_only=True)
-            self.actor.load_state_dict(checkpoint['actor'])
-            self.critic.load_state_dict(checkpoint['critic'])
+            import sys
+            import numpy as np
+            if 'numpy._core' not in sys.modules:
+                sys.modules['numpy._core'] = sys.modules.get('numpy.core', np.core)
+            if 'numpy._core.multiarray' not in sys.modules:
+                sys.modules['numpy._core.multiarray'] = sys.modules.get('numpy.core.multiarray', np.core.multiarray)
+           
+            checkpoint = torch.load(os.path.join(directory, ppo_filename), map_location=self.device, weights_only=False)
+            try:
+                self.actor.load_state_dict(checkpoint['actor'], strict=False)
+                self.critic.load_state_dict(checkpoint['critic'], strict=False)
+            except RuntimeError as e:
+                print(f"[WARNING] Size Mismatch ao carregar tensores: {e}")
             self.actor_optim.load_state_dict(checkpoint['actor_optim'])
             self.critic_optim.load_state_dict(checkpoint['critic_optim'])
             self.log_std = checkpoint['log_std']
+            self.ewc_fisher = checkpoint.get('ewc_fisher', None)
+            self.ewc_means = checkpoint.get('ewc_means', None)
+            self.ewc_lambda = checkpoint.get('ewc_lambda', 2000)
+            
+            # Puxa o tempo salvo (se existir)
+            self.t_so_far = checkpoint.get('t_so_far', 0)
 
-            print(f"Models loaded from {directory} ppo_full_checkpoint")
+            # HOT-SWAP RECOVERY: Se t_so_far for 0 (checkpoint da versão antiga), tenta ler do dataset.csv
+            if self.t_so_far == 0:
+                dataset_path = os.path.join(directory, 'dataset.csv')
+                if os.path.exists(dataset_path):
+                    try:
+                        import csv
+                        with open(dataset_path, 'r') as f:
+                            reader = csv.DictReader(f)
+                            last_row = None
+                            for row in reader:
+                                last_row = row
+                            
+                            if last_row and 't_so_far' in last_row:
+                                self.t_so_far = float(last_row['t_so_far'])
+                                print(f"[HOT-SWAP] Sistema recuperou o tempo (t_so_far = {self.t_so_far}) lendo o CSV antigo!", flush=True)
+                    except Exception as e:
+                        print(f"[HOT-SWAP] Erro ao tentar recuperar t_so_far do CSV: {e}")
+
+            print(f"Models loaded from {directory} (Resumed from {self.t_so_far} steps)")
         else:
-            print(f"Model files not found in {directory} ppo_full_checkpoint")
+            print(f"Model files not found in {directory}")
         # else:
         #     actor_path = os.path.join(directory, "actor.pth")
         #     critic_path = os.path.join(directory, "critic.pth")

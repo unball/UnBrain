@@ -4,18 +4,7 @@ from tools import adjustAngle, norml, derivative, angularDerivative, unit, angl,
 from control.UFC import UFC_Simple
 import numpy as np
 import math
-import os
-if os.environ.get('UNBRAIN_HEADLESS') == '1':
-    class KalmanFilter:
-        def __init__(self): pass
-        def update(self, *args, **kwargs): return args[0]
-    class KalmanFilterAngular(KalmanFilter): pass
-else:
-    from main_system.controller.tools.kalman import KalmanFilter, KalmanFilterAngular
-    try:
-        from state_estimator.wrapper import StateEstimatorWrapper
-    except ImportError:
-        pass
+from main_system.controller.tools.kalman import KalmanFilter
 
 class EntriesVec:
     def __init__(self, past=20):
@@ -38,15 +27,6 @@ class Element:
         self.linvel = (0,0)
         self.angvel = 0
         self.interval = Interval(initial_dt=0.016)
-
-        self._raw_x = 0
-        self._raw_y = 0
-        self._raw_th = 0
-        self._prev_raw_x = 0
-        self._prev_raw_y = 0
-        self._prev_raw_th = 0
-        self._dprev_raw_x = 0
-        self._dprev_raw_y = 0
 
         self.inst_x = 0
         """Posição x atual"""
@@ -71,12 +51,6 @@ class Element:
         
         self.dprev_y = 0
         """Posição y anterior anterior"""
-        
-        self.vx_ant = [.0]*10
-        self.vy_ant = [.0]*10
-        self.ax_ant = [.0]*10
-        self.ay_ant = [.0]*10
-        
         self.inst_vx = 0
         """Estimativa da velocidade na direção x"""
     
@@ -86,18 +60,28 @@ class Element:
         self.inst_w = 0
         """Estimativa da velocidade angular"""
         
+        self.vx_ant = [.0]*10
+        """Valores das últimas 10 velocidades na direção x"""
+
+        self.vy_ant = [.0]*10
+        """Valores das últimas 10 velocidades na direção y"""
+
+        self.inst_ax = 0
+        """Estimativa da aceleração na direção x"""
+        
+        self.inst_ay = 0
+        """Estimativa da aceleração na direção y"""
+        
+        self.ax_ant = [.0]*10
+        """Valores das últimas 10 acelerações na direção x"""
+
+        self.ay_ant = [.0]*10
+        """Valores das últimas 10 acelerações na direção y"""
+        
         self.kf_x = KalmanFilter()
         self.kf_y = KalmanFilter()
-        self.kf_th = KalmanFilterAngular()
-        
-        self.neural_estimator = None
-
         self.updated_this_cycle = False
         self.poseDefined = False
-        
-        self.unwrap_offset = 0.0
-        self.last_raw_th = 0.0
-        self.unwrapped_th = 0.0
 
     def raw_update(self, x=0, y=0, th=0):
         """Atualiza a posição do objeto, atualizando também o valor das posições anteriores."""
@@ -106,16 +90,6 @@ class Element:
         self.prev_x = self.inst_x
         self.prev_y = self.inst_y
         self.prev_th = self.inst_th
-        
-        self._dprev_raw_x = self._prev_raw_x
-        self._dprev_raw_y = self._prev_raw_y
-        self._prev_raw_x = self._raw_x
-        self._prev_raw_y = self._raw_y
-        self._prev_raw_th = self._raw_th
-        self._raw_x = x
-        self._raw_y = y
-        self._raw_th = th
-
         self.inst_th = th
         self.inst_x = self.x
         self.inst_y = self.y
@@ -125,113 +99,31 @@ class Element:
         self.interval.update()
         
         if not self.poseDefined:
-            self.last_raw_th = th
-            self.unwrap_offset = 0.0
-            self.unwrapped_th = th
-
-        delta = th - self.last_raw_th
-        if delta > np.pi:
-            self.unwrap_offset -= 2 * np.pi
-        elif delta < -np.pi:
-            self.unwrap_offset += 2 * np.pi
-            
-        self.last_raw_th = th
-        self.unwrapped_th = th + self.unwrap_offset
-        
-        if not self.poseDefined:
-            self.kf_x.setInitialPos(x)
+            self.kf_x.setInitialPos(self.world.field.side * x)
             self.kf_y.setInitialPos(y)
-            self.kf_th.setInitialPos(self.unwrapped_th)
             self.poseDefined = True
         
         self.updated_this_cycle = True
     
         
-    def update_element(self, x, y, vx, vy, w=0, raw_x=None, raw_y=None, raw_th=0):
-        if raw_x is None: raw_x = x
-        if raw_y is None: raw_y = y
-        
-        self._dprev_raw_x = self._prev_raw_x
-        self._dprev_raw_y = self._prev_raw_y
-        self._prev_raw_x = self._raw_x
-        self._prev_raw_y = self._raw_y
-        self._prev_raw_th = self._raw_th
-        
+    def update_element(self, x, y, vx, vy, w=0):
         self.xvec.add(self.world.field.side * x)
         self.yvec.add(y)
         self.linvel = (vx, vy)
         self.angvel = w
         self.interval.update()
-        
-        self.inst_x = self.world.field.side * x
-        self.inst_y = y
-        self._raw_x = raw_x
-        self._raw_y = raw_y
-        self._raw_th = raw_th
-        
-        if not self.poseDefined:
-            self.last_raw_th = raw_th
-            self.unwrap_offset = 0.0
-            self.unwrapped_th = raw_th
-            self.kf_x.setInitialPos(x)
-            self.kf_y.setInitialPos(y)
-            self.kf_th.setInitialPos(self.unwrapped_th)
-            self.poseDefined = True
-        else:
-            delta = raw_th - self.last_raw_th
-            if delta > np.pi:
-                self.unwrap_offset -= 2 * np.pi
-            elif delta < -np.pi:
-                self.unwrap_offset += 2 * np.pi
-            self.last_raw_th = raw_th
-            self.unwrapped_th = raw_th + self.unwrap_offset
-            
-        self.updated_this_cycle = True
 
     @property
     def x(self):
-        if getattr(self.world, 'flag_use_neural_estimator', False) and getattr(self, 'neural_estimator', None):
-            return self.inst_x
         return self.xvec.value
 
     @property
-    def raw_x(self):
-        return self._raw_x
-
-    @raw_x.setter
-    def raw_x(self, val):
-        self._raw_x = val
-
-
-    @property
     def y(self):
-        if getattr(self.world, 'flag_use_neural_estimator', False) and getattr(self, 'neural_estimator', None):
-            return self.inst_y
         return self.yvec.value
-
-    @property
-    def raw_y(self):
-        return self._raw_y
-
-    @raw_y.setter
-    def raw_y(self, val):
-        self._raw_y = val
-
 
     @property
     def pos(self):
         return [self.x, self.y]
-
-    @property
-    def th_raw(self):
-        if getattr(self.world, 'flag_use_neural_estimator', False) and getattr(self, 'neural_estimator', None):
-            return float(self.inst_th)
-        return float(self.thvec_raw.value) if hasattr(self.thvec_raw, 'value') else float(getattr(self, 'unwrapped_th', 0.0))
-
-    @property
-    def th(self):
-        """Retorna o ângulo do objeto, refletido se o campo for espelhado."""
-        return float(self.th_raw if self.world.field.side == 1 else adjustAngle(np.pi - self.th_raw))
 
     @property
     def vx_raw(self):
@@ -239,7 +131,7 @@ class Element:
 
     @property
     def vx(self):
-        return float(self.vx_raw * self.world.field.side)
+        return self.vx_raw * self.world.field.side 
     
     @property
     def vy_raw(self):
@@ -248,11 +140,16 @@ class Element:
     @property
     def vy(self):
         return self.vy_raw
+    
+    @property
+    def th(self):
+        """Retorna o ângulo do objeto"""
+        return self.th_raw if self.world.field.side == 1 else adjustAngle(np.pi - self.th_raw)
 
 
     @property
     def v(self):
-        return [float(self.vx), float(self.vy)]
+        return [self.vx, self.vy]
 
     @property
     def velmod(self):
@@ -260,57 +157,31 @@ class Element:
     
     def calc_velocities(self, dt, dtalpha=0.5, thalpha=0.8, accalpha=0.2):
         """Estima a velocidade do objeto por meio do pose atual, pose anterior e o intervalo de tempo passado `dt`. A velocidade computada é suavizada por uma média exponencial: \\(v[k] = v_{\\text{estimado}} \\cdot \\alpha + v[k-1] \\cdot (1-\\alpha)\\) onde \\(v_{\\text{estimado}} = \\frac{r[k]-r[k-1]}{dt}\\)"""
+    
+        vx = (self.inst_x-self.prev_x) / dt
+        vy = (self.inst_y-self.prev_y) / dt
 
-        vx = (self._raw_x - self._prev_raw_x) / dt
-        vy = (self._raw_y - self._prev_raw_y) / dt
-        ax = (self._raw_x - 2*self._prev_raw_x + self._dprev_raw_x) / dt**2
-        ay = (self._raw_y - 2*self._prev_raw_y + self._dprev_raw_y) / dt**2
+        ax = (self.inst_x-2*self.prev_x+self.dprev_x) / dt**2
+        ay = (self.inst_y-2*self.prev_y+self.dprev_y) / dt**2
 
-        if not getattr(self.world, 'flag_use_kalman', False) and not getattr(self.world, 'flag_use_neural_estimator', False):
+        if not getattr(self.world, 'flag_use_kalman', False):
             self.inst_vx = (vx + sum(self.vx_ant)) / 11.0
             self.inst_vy = (vy + sum(self.vy_ant)) / 11.0
             self.inst_ax = (ax + sum(self.ax_ant)) / 11.0
             self.inst_ay = (ay + sum(self.ay_ant)) / 11.0
-        elif getattr(self.world, 'flag_use_neural_estimator', False) and self.neural_estimator:
-            # DTC + Neural Noise Filter
-            if getattr(self, 'updated_this_cycle', False) and self.poseDefined:
-                # Recebemos frame novo
-                state_x, state_y, state_th, state_vx, state_vy, state_vw = self.neural_estimator.estimate(self._raw_x, self._raw_y, self.unwrapped_th)
-            elif not getattr(self, 'updated_this_cycle', False) and self.poseDefined:
-                # Pula frame (blindness), usa inércia do modelo
-                state_x, state_y, state_th, state_vx, state_vy, state_vw = self.neural_estimator.predictOnly(dt)
-            
-            if self.poseDefined:
-                # O state_x e state_y já saem na métrica certa.
-                self.inst_x = self.world.field.side * state_x
-                self.inst_y = state_y
-                self.inst_th = adjustAngle(state_th)
-                
-                # Assumir as velocidades físicas nativamente previstas pela rede (PINN)
-                self.inst_vx = self.world.field.side * state_vx
-                self.inst_vy = state_vy
-                self.angvel = state_vw
-                
-                self.inst_ax = 0.0
-                self.inst_ay = 0.0
         else:
             if getattr(self, 'updated_this_cycle', False) and self.poseDefined:
-                state_x = self.kf_x.estimate(np.array([[self._raw_x]]), dt)
-                state_y = self.kf_y.estimate(np.array([[self._raw_y]]), dt)
-                state_th = self.kf_th.estimate(np.array([[self.unwrapped_th]]), dt)
+                state_x = self.kf_x.estimate(np.array([[self.inst_x]]), dt)
+                state_y = self.kf_y.estimate(np.array([[self.inst_y]]), dt)
             elif not getattr(self, 'updated_this_cycle', False) and self.poseDefined:
                 state_x = self.kf_x.predictOnly(dt)
                 state_y = self.kf_y.predictOnly(dt)
-                state_th = self.kf_th.predictOnly(dt)
                 
             if self.poseDefined:
-                self.inst_x = self.world.field.side * float(state_x[0][0])
+                self.inst_x = float(state_x[0][0])
                 self.inst_y = float(state_y[0][0])
-                self.inst_th = adjustAngle(float(state_th[0][0]))
-                self.inst_vx = self.world.field.side * float(state_x[1][0])
+                self.inst_vx = float(state_x[1][0])
                 self.inst_vy = float(state_y[1][0])
-                self.angvel = float(state_th[1][0])
-                
                 self.inst_ax = float(state_x[2][0])
                 self.inst_ay = float(state_y[2][0])
 
@@ -318,12 +189,12 @@ class Element:
 
         self.vx_ant = self.shift(vx, self.vx_ant)
         self.vy_ant = self.shift(vy, self.vy_ant)
+
         self.ax_ant = self.shift(ax, self.ax_ant)
         self.ay_ant = self.shift(ay, self.ay_ant)
 
         self.linvel = [self.inst_vx, self.inst_vy]
-        if not getattr(self.world, 'flag_use_kalman', False):
-            self.angvel = (angError(self._raw_th, self._prev_raw_th)/dt)*thalpha + (self.inst_w)*(1-thalpha)
+        self.angvel = (angError(self.inst_th, self.prev_th)/dt)*thalpha + (self.inst_w)*(1-thalpha)
 
     def shift(self, data, array):
         return [data] + array[:-1]
@@ -334,17 +205,13 @@ class Robot(Element):
         super().__init__(world)
         self.id = id
 
-    def update(self, x, y, th, vx, vy, w, raw_x=None, raw_y=None, raw_th=None):
-        if raw_th is None: raw_th = th
+    def update(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
-        self.inst_th = th
-        super().update_element(x,y,vx,vy,w, raw_x, raw_y, raw_th)
+        super().update_element(x,y,vx,vy,w)
         
-    def updateSimu(self, x, y, th, vx, vy, w, raw_x=None, raw_y=None, raw_th=None):
-        if raw_th is None: raw_th = th
+    def updateSimu(self, x, y, th, vx, vy, w):
         self.thvec_raw.add(th)
-        self.inst_th = th
-        super().update_element(x,y,vx,vy,w, raw_x, raw_y, raw_th)
+        super().update_element(x,y,vx,vy,w)
     
 class TeamRobot(Robot):
     def __init__(self, world, id, control=None, on=False):
@@ -370,14 +237,6 @@ class TeamRobot(Robot):
         self.spinTimeOut = 0.05
         self.forcedAliveTime = 0
         self.forcedAliveTimeTimeOut = 0
-        
-        try:
-            from state_estimator.wrapper import StateEstimatorWrapper
-            import os
-            model_path = os.path.join(os.path.dirname(__file__), '..', 'state_estimator', 'neural_estimator_jit.pth')
-            self.neural_estimator = StateEstimatorWrapper(model_path=model_path)
-        except ImportError:
-            self.neural_estimator = None
 
     @property
     def on(self):
@@ -415,9 +274,7 @@ class TeamRobot(Robot):
 
     @property
     def th_raw(self):
-        if getattr(self.world, 'flag_use_neural_estimator', False) and getattr(self, 'neural_estimator', None):
-            return float(self.inst_th + (np.pi if self.direction == -1 else 0))
-        return float(self.thvec[0])
+        return self.thvec[0]
 
 
     @property
@@ -431,7 +288,7 @@ class TeamRobot(Robot):
 
     @property
     def w(self):
-        return float(self.world.field.side * self.w_raw)
+        return self.world.field.side * self.w_raw
     
     @property
     def v_signed(self):

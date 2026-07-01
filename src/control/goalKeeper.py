@@ -38,6 +38,11 @@ class GoalKeeperControl(Control):
     # Lei de controle da velocidade angular
     w = dth + self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) #+ self.kw/100.0 * self.ieth 
 
+    # [PROTEÇÃO ANTI-DEADLOCK]: Satura w para que v2 NUNCA fique negativo.
+    # A fórmula de v2 exige: vmax - L*|w|/2 > 0 -> |w| < 2*vmax / L
+    max_safe_w = (2 * self.vmax) / self.L
+    w = sat(w, max_safe_w * 0.95)
+
     # Velocidade limite de deslizamento
     v1 = self.amax / np.abs(w) if w != 0 else math.inf
 
@@ -47,9 +52,11 @@ class GoalKeeperControl(Control):
     # Velocidade limite de aproximação
     dTarget = norm(robot.pos, robot.field.Pb) if robot.pos[0] > -.6 else np.abs(robot.field.Pb[1] - robot.pos[1])
     e = (dTarget-0.015) ** 2
-    self.iep = self.iep + dt*e if self.iep < 1.5 else 0
+    
+    # Removido Integral Windup para deixar o goleiro estável com Preditor
+    self.iep = 0 
 
-    v3 = self.kp * e + self.kp/80 * self.iep  + robot.vref if dTarget > 0.015 else 0
+    v3 = self.kp * e + robot.vref if dTarget > 0.015 else 0
 
     # Velocidade linear é menor de todas
     v  = max(min(v1,v2, v3), 0)

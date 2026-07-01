@@ -15,7 +15,7 @@ def close_event():
 
 class SecAttackerControl(Control):
   """Controle unificado para o Univector Field, utiliza o ângulo definido pelo campo como referência \\(\\theta_d\\)."""
-  def __init__(self, world, kw=15, kp=35, mu=0.75, vmax=2.0, enableInjection=False):
+  def __init__(self, world, kw=10, kp=35, mu=0.75, vmax=2.0, enableInjection=False):
     Control.__init__(self, world)
 
     self.v_a = None
@@ -54,13 +54,13 @@ class SecAttackerControl(Control):
 
   def abs_path_dth(self, initial_pose, error, field, step = 0.01, n = 10):
     pos = np.array(initial_pose[:2])
-    thlist = np.array([])
+    thlist = np.zeros(n)
 
     count = 0
 
     for i in range(n):
       th = field.F(pos)
-      thlist = np.append(thlist, th)
+      thlist[i] = th
       pos = pos + step * unit(th)
       count += 1
 
@@ -90,8 +90,14 @@ class SecAttackerControl(Control):
     # Erro de velocidade angular
     # ew = self.lastwref - robot.w
 
+    abs_eth = np.abs(eth)
+    if abs_eth < 10 * np.pi / 180:
+        eth_term = eth / np.sqrt(10 * np.pi / 180)
+    else:
+        eth_term = np.sqrt(abs_eth) * np.sign(eth)
+
     # Lei de controle da velocidade angular
-    w = dth + self.kw * np.sqrt(abs(eth)) * np.sign(eth) #* (robot.velmod + 1)
+    w = dth + self.kw * eth_term #* (robot.velmod + 1)
     #w = self.kw * eth + 0.3 * ew
 
     # Computa phi
@@ -101,7 +107,7 @@ class SecAttackerControl(Control):
     gamma = robot.field.gamma(dth, robot.velmod, phi)
 
     # Computa omega
-    omega = self.kw * np.sign(eth) * np.sqrt(np.abs(eth)) + gamma
+    omega = self.kw * eth_term + gamma
 
     # # Velocidade limite de deslizamento
     v1 = self.amax / np.abs(w)

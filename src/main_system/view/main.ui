@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <requires lib="gtk+" version="3.20" />
+  <object class="GtkWindow" id="mainWindow">
+    <property name="width_request">600</property>
+    <property name="height_request">400</property>
+    <property name="can_focus">False</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">1</property>
+        <property name="show_close_button">True</property>
+        <child>
+          <object class="GtkImage" id="headerLogoImage">
+            <property name="visible">True</property>
+            <property name="margin_start">5</property>
+          </object>
+          <packing>
+            <property name="pack_type">start</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child type="title">
+          <object class="GtkStackSwitcher">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="stack">mainStack</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkMenuButton" id="camerasMenuButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">camera-web-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="communicationMenuButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">mail-send-receive-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="teamColorButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">Amarelo</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="saveConfigButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Salvar configurações da interface</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">document-save-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child><object class="GtkBox" id="mainHorizontalBox"><property name="visible">True</property><property name="can_focus">False</property><property name="orientation">horizontal</property><child><object class="GtkBox" id="sidePanelBox"><property name="visible">True</property><property name="can_focus">False</property><property name="orientation">vertical</property><property name="spacing">5</property><property name="margin_start">10</property><property name="margin_end">10</property><property name="margin_top">10</property><property name="width_request">200</property><child><object class="GtkLabel"><property name="visible">True</property><property name="label">&lt;b&gt;Opções src/main.py&lt;/b&gt;</property><property name="use_markup">True</property><property name="margin_bottom">5</property></object></child><child><object class="GtkCheckButton" id="refereeCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Referee</property></object></child><child><object class="GtkCheckButton" id="debugCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Debug Mode</property></object></child><child><object class="GtkCheckButton" id="ppoCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">PPO (AI)</property></object></child><child><object class="GtkCheckButton" id="enemyAiCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Enemy AI</property></object></child><child><object class="GtkCheckButton" id="recordCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Record Dataset</property></object></child><child><object class="GtkCheckButton" id="mirrorCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Mirror Vision</property></object></child><child><object class="GtkCheckButton" id="usePredictorCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Use Predictor</property></object></child><child><object class="GtkCheckButton" id="kalmanFilterCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Use Kalman Filter</property></object></child><child><object class="GtkCheckButton" id="neuralEstimatorCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Neural Estimator</property></object></child><child><object class="GtkCheckButton" id="visionNoiseCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Vision Noise Simulator</property></object></child><child><object class="GtkCheckButton" id="disableAiCheckButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Disable AI</property></object></child><child><object class="GtkBox"><property name="visible">True</property><property name="orientation">horizontal</property><property name="spacing">5</property><child><object class="GtkLabel"><property name="visible">True</property><property name="label">N Robots:</property></object></child><child><object class="GtkEntry" id="nRobotsEntry"><property name="visible">True</property><property name="can_focus">True</property><property name="text">0,1,2</property></object></child></object></child><child><object class="GtkLabel"><property name="visible">True</property><property name="label">&lt;b&gt;Simulador&lt;/b&gt;</property><property name="use_markup">True</property><property name="margin_top">15</property><property name="margin_bottom">5</property></object></child><child><object class="GtkComboBoxText" id="simuladorComboBox"><property name="visible">True</property><items><item id="none">Nenhum</item><item id="firasim">FiraSim</item><item id="travesim">TraveSim</item><item id="rsim">RSim</item><item id="simulado">Simulado (robosim antigo)</item><item id="mainsystem">Main Vision</item></items></object></child><child><object class="GtkButton" id="startUnbrainButton"><property name="visible">True</property><property name="can_focus">True</property><property name="label">▶ Iniciar UnBrain</property><property name="margin_top">15</property></object></child><child><object class="GtkLabel"><property name="visible">True</property><property name="label">&lt;b&gt;Formações&lt;/b&gt;</property><property name="use_markup">True</property><property name="margin_top">15</property><property name="margin_bottom">5</property></object></child><child><object class="GtkButton" id="teleportFormation1Btn"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Posicionar Atacante</property></object></child><child><object class="GtkButton" id="teleportFormation2Btn"><property name="visible">True</property><property name="can_focus">True</property><property name="label">Posicionar Defesa</property></object></child></object><packing><property name="expand">False</property><property name="fill">True</property><property name="position">0</property></packing></child><child><object class="GtkStack" id="mainStack">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="transition_type">slide-left-right</property>
+        <child>
+          <placeholder />
+        </child>
+      </object>
+    <packing><property name="expand">True</property><property name="fill">True</property><property name="position">1</property></packing></child></object></child></object>
+</interface>

@@ -25,20 +25,34 @@ def get_Lr(mode: str) -> (float, float):
   #r = 0.0325
   if mode == "robocin":
     
-    L = 0.8
-    r = 0.016
+    L = 0.075
+    r = 0.026
 
   elif mode == "fisico":
+
     L = 0.0756
     r = 0.0159
 
   elif mode == "firasim":
+
+    L = 0.075
+    r = 0.02
+
+  elif mode == "travesim":
+    
     L = 0.055
     r = 0.025
 
-  elif mode == "simulado":
-    L = 0.0775
+  elif mode == "rsim":
+    
+    L = 0.075
     r = 0.026
+
+  elif mode == "simulado":
+
+    L = 0.075
+    r = 0.026
+  
   return L, r
 
 
@@ -64,17 +78,6 @@ def speeds2motors(v: float, w: float, mode:str) -> (int, int):
   # vl *= convertion
   
   return vl, vr
-
-def motors2speeds_from_vl_vr(vl: float, vr: float, mode: str) -> (float, float):
-    """Entrada: vl, vr (rad/s). Retorna (v, w)."""
-
-    L, r = get_Lr(mode)
-    
-    if L == 0:
-        raise ValueError("L (distância entre rodas) não pode ser zero.")
-    v = r * (vl + vr) / 2.0
-    w = r * (vr - vl) / L
-    return v, w
 
 def motors2speeds_from_vl_vr(vl: float, vr: float, mode: str) -> (float, float):
     """Entrada: vl, vr (rad/s). Retorna (v, w)."""

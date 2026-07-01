@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkBox" id="TeleportBox">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkPaned" id="paned1">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="orientation">horizontal</property>
+        <child>
+          <!-- Área de Renderização -->
+          <object class="GtkFrame">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="shadow_type">none</property>
+            <child>
+              <object class="GtkAlignment" id="TeleportRender">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="xscale">1</property>
+                <property name="yscale">1</property>
+                <child>
+                  <placeholder />
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+        <child>
+          <!-- Área de Controles de Teleporte -->
+          <object class="GtkBox" id="teleportControls">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <property name="margin">10</property>
+            <property name="width-request">250</property>
+            
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">&lt;b&gt;Configuração da Falta&lt;/b&gt;</property>
+                <property name="use-markup">True</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkComboBoxText" id="foulTypeCombo">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="active-id">KICKOFF</property>
+                <items>
+                  <item id="KICKOFF" translatable="yes">Kickoff</item>
+                  <item id="PENALTY_KICK" translatable="yes">Penalty Kick</item>
+                  <item id="FREE_BALL" translatable="yes">Free Ball</item>
+                  <item id="GOAL_KICK" translatable="yes">Goal Kick</item>
+                  <item id="FREE_KICK" translatable="yes">Free Kick</item>
+                </items>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkComboBoxText" id="kickerTeamCombo">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="active-id">ALLY</property>
+                <items>
+                  <item id="ALLY" translatable="yes">Nosso Time (Kicker)</item>
+                  <item id="ENEMY" translatable="yes">Adversário (Kicker)</item>
+                </items>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkComboBoxText" id="quadrantCombo">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="active-id">1</property>
+                <items>
+                  <item id="1" translatable="yes">Quadrante 1</item>
+                  <item id="2" translatable="yes">Quadrante 2</item>
+                  <item id="3" translatable="yes">Quadrante 3</item>
+                  <item id="4" translatable="yes">Quadrante 4</item>
+                </items>
+              </object>
+            </child>
+            
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="btnDriveAlly">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="label" translatable="yes">Drive Aliados</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="btnDriveEnemy">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="label" translatable="yes">Drive Inimigos</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="btnPlaceBall">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="label" translatable="yes">Reposicionar Bola (Simulador)</property>
+              </object>
+            </child>
+            
+            <child>
+              <object class="GtkButton" id="btnStopDrive">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="label" translatable="yes">Parar Drive (Voltar ao Jogo)</property>
+              </object>
+            </child>
+
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

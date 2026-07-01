@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+
+  <object class="GtkAdjustment" id="adj_kw">
+    <property name="lower">0</property>
+    <property name="upper">100</property>
+    <property name="step_increment">0.1</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_kp">
+    <property name="lower">0</property>
+    <property name="upper">100</property>
+    <property name="step_increment">0.1</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_mu">
+    <property name="lower">0</property>
+    <property name="upper">1</property>
+    <property name="step_increment">0.01</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_vmax">
+    <property name="lower">0</property>
+    <property name="upper">5</property>
+    <property name="step_increment">0.1</property>
+  </object>
+
+  <object class="GtkBox" id="ControlBox">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="orientation">horizontal</property>
+    <child>
+      <object class="GtkPaned">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="position">600</property>
+        <child>
+          <object class="GtkFrame">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="shadow_type">none</property>
+            <child>
+              <object class="GtkAlignment" id="ControlRender">
+                <property name="visible">True</property>
+                  <property name="can_focus">False</property>
+                  <property name="hexpand">True</property>
+                  <property name="vexpand">True</property>
+                  <property name="xscale">1</property>
+                <property name="yscale">1</property>
+                <child>
+                  <placeholder />
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="propagate_natural_width">True</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">10</property>
+                    <property name="margin_left">20</property>
+                    <property name="margin_right">20</property>
+                    <property name="margin_top">20</property>
+                    <property name="margin_bottom">20</property>
+
+                    <!-- Seletor de Controle -->
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="spacing">10</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">Selecione o Controlador:</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="controlSelector">
+                            <property name="visible">True</property>
+                            <items>
+                              <item id="UFC_Simple">UFC_Simple</item>
+                              <item id="UFC_Robust">UFC_Robust</item>
+                            </items>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+
+                    <!-- Spinners de Parâmetros -->
+                    <child>
+                      <object class="GtkGrid">
+                        <property name="visible">True</property>
+                        <property name="row_spacing">10</property>
+                        <property name="column_spacing">10</property>
+
+                        <!-- kw -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">kw (Ganho Angular):</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="spin_kw">
+                            <property name="visible">True</property>
+                            <property name="adjustment">adj_kw</property>
+                            <property name="digits">2</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+
+                        <!-- kp -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">kp (Ganho Proporcional):</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="spin_kp">
+                            <property name="visible">True</property>
+                            <property name="adjustment">adj_kp</property>
+                            <property name="digits">2</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+
+                        <!-- mu -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">μ (Coef. Atrito):</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="spin_mu">
+                            <property name="visible">True</property>
+                            <property name="adjustment">adj_mu</property>
+                            <property name="digits">2</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+
+                        <!-- vmax -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">Velocidade Máxima (vmax):</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="spin_vmax">
+                            <property name="visible">True</property>
+                            <property name="adjustment">adj_vmax</property>
+                            <property name="digits">2</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="visible">True</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">10</property>
+                      </object>
+                    </child>
+
+                    <!-- Control Tester Checkbox -->
+                    <child>
+                      <object class="GtkCheckButton" id="controlTesterCheckButton">
+                        <property name="visible">True</property>
+                        <property name="label">Ativar Control Tester</property>
+                      </object>
+                    </child>
+
+                    <!-- Seletor de Teste por Robô -->
+                    <child>
+                      <object class="GtkGrid">
+                        <property name="visible">True</property>
+                        <property name="row_spacing">10</property>
+                        <property name="column_spacing">10</property>
+
+                        <!-- Robot 0 Test -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">Robô 0 Teste:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="robot0TestSelector">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <items>
+                              <item id="None">Nenhum</item>
+                              <item id="ControlTester">ControlTester</item>
+                              <item id="ControlTesterRobust">ControlTesterRobust</item>
+                              <item id="AttackerTester">AttackerTester</item>
+                              <item id="DefenderTester">DefenderTester</item>
+                              <item id="GoalKeeperTester">GoalKeeperTester</item>
+                              <item id="MidfielderTester">MidfielderTester</item>
+                              <item id="AI_AttackerTester">AI_AttackerTester</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="camisaCtrlImage0">
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+
+                        <!-- Robot 1 Test -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">Robô 1 Teste:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="robot1TestSelector">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <items>
+                              <item id="None">Nenhum</item>
+                              <item id="ControlTester">ControlTester</item>
+                              <item id="ControlTesterRobust">ControlTesterRobust</item>
+                              <item id="AttackerTester">AttackerTester</item>
+                              <item id="DefenderTester">DefenderTester</item>
+                              <item id="GoalKeeperTester">GoalKeeperTester</item>
+                              <item id="MidfielderTester">MidfielderTester</item>
+                              <item id="AI_AttackerTester">AI_AttackerTester</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="camisaCtrlImage1">
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+
+                        <!-- Robot 2 Test -->
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label">Robô 2 Teste:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="robot2TestSelector">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <items>
+                              <item id="None">Nenhum</item>
+                              <item id="ControlTester">ControlTester</item>
+                              <item id="ControlTesterRobust">ControlTesterRobust</item>
+                              <item id="AttackerTester">AttackerTester</item>
+                              <item id="DefenderTester">DefenderTester</item>
+                              <item id="GoalKeeperTester">GoalKeeperTester</item>
+                              <item id="MidfielderTester">MidfielderTester</item>
+                              <item id="AI_AttackerTester">AI_AttackerTester</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="camisaCtrlImage2">
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+
+                    <!-- Status -->
+                    <child>
+                      <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <property name="label">Telemetria (Estimada)</property>
+                        <property name="margin_top">20</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <property name="margin">10</property>
+                            
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="label">V linear (vx):</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label_v">
+                                    <property name="visible">True</property>
+                                    <property name="label">0.00 m/s</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="label">W angular:</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label_w">
+                                    <property name="visible">True</property>
+                                    <property name="label">0.00 rad/s</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

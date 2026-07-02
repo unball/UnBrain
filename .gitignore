@@ -128,6 +128,7 @@ client/__pycache__
 # Mídia e artefatos pesados
 # ------------------------------------------------------------------
 *.mp4
+!test_videos/*.mp4
 *.csv
 *.jsonl
 /data/

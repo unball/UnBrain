@@ -1,10 +1,103 @@
 import cv2
 import time
 import threading
+import subprocess
+import numpy as np
 from pkg_resources import resource_filename
 from os import listdir
 
 from main_system.model.vision.camerasModel import CameraHandlerModel
+
+
+class FFmpegCameraCapture:
+  """Captura frames de uma câmera V4L2 via um processo `ffmpeg` externo, em vez do
+  `cv2.VideoCapture`. Existe porque o backend V4L2 do OpenCV, empiricamente, não
+  consegue sustentar o FPS negociado nesta câmera (trava perto de 30fps mesmo com
+  MJPG 640x480@120fps aceito pelo driver via cap.set/cap.get) — enquanto o mesmo
+  modo, capturado com `ffmpeg` como processo externo, sustenta 120fps reais
+  (confirmado com `ffmpeg ... -f null -` e conferido via dmesg sem nenhum aviso de
+  banda/negociação). Expõe a mesma interface mínima usada pelo `_camera_drain_loop`
+  (`read`/`isOpened`/`release`) para não precisar mexer no resto do pipeline.
+
+  Uma thread própria lê continuamente do pipe do ffmpeg e guarda só o frame mais
+  recente — do mesmo jeito que o CAP_PROP_BUFFERSIZE=1 fazia no cv2.VideoCapture —
+  para não acumular latência caso o consumidor (o drain loop) fique mais lento que
+  os 120fps que o ffmpeg entrega.
+  """
+
+  WIDTH = 640
+  HEIGHT = 480
+  FRAME_BYTES = WIDTH * HEIGHT * 3  # bgr24, sem padding
+
+  def __init__(self, index):
+    cmd = [
+      "ffmpeg", "-hide_banner", "-loglevel", "error",
+      "-f", "v4l2", "-input_format", "mjpeg",
+      "-video_size", f"{self.WIDTH}x{self.HEIGHT}", "-framerate", "120",
+      "-i", f"/dev/video{index}",
+      "-pix_fmt", "bgr24", "-f", "rawvideo", "-an", "pipe:1",
+    ]
+    self.__proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    self.__lock = threading.Lock()
+    self.__latest_frame = None
+    # Sinaliza quando um frame NOVO chega — sem isso, read() poderia devolver o
+    # mesmo frame em cache várias vezes por chamada, inflando artificialmente a
+    # contagem de FPS de quem consome via um loop apertado tipo
+    # `_camera_drain_loop` (cada chamada bem-sucedida a .read() conta como 1
+    # frame). O cv2.VideoCapture.read() original bloqueava até o próximo frame
+    # real; replicamos esse contrato aqui.
+    self.__frame_ready = threading.Event()
+    self.__running = True
+    self.__reader_thread = threading.Thread(target=self.__read_loop, daemon=True)
+    self.__reader_thread.start()
+
+  def __read_loop(self):
+    stdout = self.__proc.stdout
+    try:
+      while self.__running:
+        buf = bytearray()
+        while len(buf) < self.FRAME_BYTES:
+          chunk = stdout.read(self.FRAME_BYTES - len(buf))
+          if not chunk:
+            self.__running = False
+            return
+          buf.extend(chunk)
+        frame = np.frombuffer(bytes(buf), dtype=np.uint8).reshape((self.HEIGHT, self.WIDTH, 3))
+        with self.__lock:
+          self.__latest_frame = frame
+        self.__frame_ready.set()
+    except Exception:
+      self.__running = False
+
+  def isOpened(self):
+    return self.__running and self.__proc.poll() is None
+
+  def read(self):
+    """Bloqueia até o próximo frame NOVO (não repete o último em cache), igual o
+    cv2.VideoCapture.read() original — importante pra contagem de FPS ficar correta."""
+    if not self.isOpened():
+      return False, None
+    got_new_frame = self.__frame_ready.wait(timeout=1.0)
+    if not got_new_frame:
+      return False, None
+    with self.__lock:
+      frame = self.__latest_frame
+      self.__frame_ready.clear()
+    if frame is None:
+      return False, None
+    return True, frame
+
+  def release(self):
+    self.__running = False
+    if self.__proc.poll() is None:
+      self.__proc.terminate()
+      try:
+        self.__proc.wait(timeout=1.0)
+      except subprocess.TimeoutExpired:
+        self.__proc.kill()
+    if self.__proc.stdout:
+      self.__proc.stdout.close()
+
 
 class CameraHandler():
   """Classe que gerencia as câmeras do sistema permitindo rápida troca e retorno simples de frames"""
@@ -84,16 +177,18 @@ class CameraHandler():
                 cap = cv2.VideoCapture(video_path)
                 self.__cap = cap
             elif target_index != -1:
-                cap = cv2.VideoCapture(target_index)
-                cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-                fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
-                cap.set(cv2.CAP_PROP_FOURCC, fourcc)
-                cap.set(cv2.CAP_PROP_FPS, 120)
-                # Buffer de 1 frame: entrega sempre o frame mais recente em vez de
-                # acumular frames antigos (reduz latência de visão e a torna constante).
-                cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                self.__cap = cap
+                # cv2.VideoCapture (backend V4L2) negocia corretamente MJPG
+                # 640x480@120fps (cap.get confirma), mas empiricamente não sustenta
+                # esse FPS de verdade nesta câmera (trava perto de 30fps). O mesmo
+                # modo, capturado via processo `ffmpeg` externo, sustenta 120fps
+                # reais — confirmado com `ffmpeg -f v4l2 ... -f null -` e sem
+                # nenhum aviso de banda/negociação no dmesg. Ver FFmpegCameraCapture.
+                try:
+                    cap = FFmpegCameraCapture(target_index)
+                    self.__cap = cap
+                except Exception as e:
+                    print(f"[CameraHandler] Falha ao iniciar ffmpeg para câmera {target_index}: {e}")
+                    self.__cap = None
 
         # Leitura da câmera ativa
         if self.__cap is not None and self.__cap.isOpened():

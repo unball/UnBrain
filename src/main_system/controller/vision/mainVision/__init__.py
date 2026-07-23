@@ -6,6 +6,7 @@ from main_system.controller.tools import norm
 from main_system.view.tools.drawing import Drawing
 import cv2
 import numpy as np
+import time
 
 class MainVision(Vision):
   """Classe que implementa a visão principal da UnBall, que utiliza segmentação por única cor e faz a identificação por forma."""
@@ -23,6 +24,23 @@ class MainVision(Vision):
     
     self.__angles = np.array([0, 90, 180, -90, -180])
     """Contém uma lista que corrige o ângulo do vetor que liga o centro de massa do detalhe ao centro de massa da camisa para o ângulo que o robô anda para frente"""
+
+    self._angle_filter_deg = {}
+    """Estado (graus, domínio DESEMBRULHADO/contínuo) da média móvel exponencial
+    de ângulo por identificador. Ver `_finalize_angle`."""
+
+    self._last_seen_time = {}
+    """Timestamp (time.time()) da última vez que cada id foi reclamado com
+    sucesso em `_assign_ids`. Usado para "rebaixar" um robô perdido de volta a
+    NÃO-VISTO após `LOST_TIMEOUT_S` sem casamento por posição — sem isso,
+    `poseDefined` nunca voltava a False e um robô ocluso por tempo suficiente
+    para se deslocar >MAX_TRACK_DIST_M ficava permanentemente sem dono (nem
+    posição nem forma o recuperavam): o robô "sumia" da interface."""
+
+    self.__undistort_cache = None
+    """Cache dos mapas de `cv2.initUndistortRectifyMap` usados por `apply_undistort`.
+    Guarda (w, h, K, D, map1, map2); é invalidado só quando K, D ou o tamanho do
+    frame mudam (ex.: recalibração de lente ou troca de resolução de câmera)."""
 
   @property
   def preto_hsv(self):
@@ -94,9 +112,26 @@ class MainVision(Vision):
       
     return np.array(K, dtype=np.float32), np.array(D, dtype=np.float32)
 
+  def _get_undistort_maps(self, K, D, shape):
+    """Retorna os mapas de undistort cacheados para `(K, D, shape)`, recalculando
+    só quando algum desses três mudar. `cv2.undistort` por baixo dos panos chama
+    `initUndistortRectifyMap` (caro: monta um mapa pixel-a-pixel) toda vez que é
+    invocado; aqui isso é feito uma única vez e reaproveitado via `cv2.remap`
+    (que só faz a reamostragem, sem recalcular o mapa) em cada frame."""
+    h, w = shape[:2]
+    cache = self.__undistort_cache
+    if (cache is not None and cache[0] == w and cache[1] == h
+        and np.array_equal(cache[2], K) and np.array_equal(cache[3], D)):
+      return cache[4], cache[5]
+
+    map1, map2 = cv2.initUndistortRectifyMap(K, D, None, K, (w, h), cv2.CV_16SC2)
+    self.__undistort_cache = (w, h, K.copy(), D.copy(), map1, map2)
+    return map1, map2
+
   def apply_undistort(self, frame):
     K, D = self.get_camera_params(frame.shape)
-    return cv2.undistort(frame, K, D)
+    map1, map2 = self._get_undistort_maps(K, D, frame.shape)
+    return cv2.remap(frame, map1, map2, interpolation=cv2.INTER_LINEAR)
 
   def updateInternalPolygon(self, points):
     self.__model.internalPolygonPoints = points
@@ -292,64 +327,206 @@ class MainVision(Vision):
         
     return 4 if ratioRect > self.__model.cont_rect_area_ratio else 3
     
-  def obterIdentificador(self, center, candidate):
-    """
-    .. todo:: Falta fazer usar o centro como base para saber se o candidato é ou não razoável
-    Retorna o identificador com base no centro do robô e na identificação instantânea da camisa (devida somente ao frame atual) e retorna qual deve ser o identificador mais provável.
-    """
-    if not self.usePastPositions: return candidate
-    
-    n = self._world.n_robots
-    if n == 0: return candidate
-    nearestIdx = np.argmin([norm(x.raw_pos, center) for x in self._world.robots[:n]])
-    return nearestIdx
-  
-  def detectarTime(self, componentTeamMask, center, rectangleAngle, centerMeters):
-    """Com base na máscara do detalhe do time extrai identifica qual é o robô aliado e obtém o ângulo total"""
-    
-    # Encontra os contornos internos com área maior que um certo limiar e ordena
+  def analisarTime(self, componentTeamMask, center, centerMeters):
+    """Extrai a FORMA (candidato) e o VETOR de orientação de um blob aliado, SEM
+    decidir o id — a atribuição de id é GLOBAL e acontece em `_assign_ids`
+    depois de todos os blobs do frame terem sido coletados. Retorna None se o
+    componente não for do nosso time (sem contorno da cor do time)."""
     internalContours,_ = cv2.findContours(componentTeamMask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    internalContours = [countor for countor in internalContours if cv2.contourArea(countor)>=self.__model.min_internal_area_contour]
-    
-    countInternalContours = len(internalContours)
-    
-    # Não é do nosso time
-    if countInternalContours == 0:
+    internalContours = [c for c in internalContours if cv2.contourArea(c) >= self.__model.min_internal_area_contour]
+    if len(internalContours) == 0:
       return None
-    
-    # Seleciona a forma principal
+
     mainShape = max(internalContours, key=cv2.contourArea)
-    
-    # Calcula o centro do contorno principal
     M = cv2.moments(mainShape)
-    if M["m00"] == 0: return None
-    
+    if M["m00"] == 0:
+      return None
     cX = M["m10"] / M["m00"]
     cY = M["m01"] / M["m00"]
-    # Define qual o polígono da figura principal
-    poligono = self.definePoly(mainShape)
-    
-    # Computa o identificador com base na forma e no número de contornos internos
-    candidato = (0 if poligono == 3 else 2) + countInternalContours -1
-    if candidato >= self._world.n_robots: return None
-    
-    identificador = self.obterIdentificador(centerMeters, candidato)
 
-    # Calcula o ângulo com base no vetor entre o centro do contorno principal e o centro da camisa
-    calculatedAngle = 180.0/np.pi *np.arctan2(-(center[1]-cY), center[0]-cX)
-    estimatedAngle = calculatedAngle + self.__model.robot_angle_offsets[identificador]
-    
-    # Normaliza entre -180 e 180 graus
-    estimatedAngle = (estimatedAngle + 180) % 360 - 180
-    calculatedAngle = (calculatedAngle + 180) % 360 - 180
-    return identificador, estimatedAngle, internalContours, calculatedAngle
-  
+    poligono = self.definePoly(mainShape)
+    candidato = (0 if poligono == 3 else 2) + len(internalContours) - 1
+    if candidato >= self._world.n_robots:
+      # Forma inválida como seed, mas o blob É aliado — mantém como candidato de
+      # TRACK (por posição). Antes virava "adversário", perdendo um robô real.
+      candidato = None
+
+    # ÂNGULO ROBUSTO: centróide de TODA a máscara da cor do time (momentos da
+    # máscara inteira), não do maior contorno isolado. Com a segmentação
+    # fragmentada (faixa HSV estreita) "o maior contorno" pisca entre fragmentos
+    # frame a frame e joga o centróide — e o ângulo — para todo lado. A máscara
+    # inteira é estável a isso. Se não houver massa, mantém o centróide do maior
+    # contorno (cX,cY).
+    Mfull = cv2.moments(componentTeamMask, binaryImage=True)
+    if Mfull["m00"] > 0:
+      cX = Mfull["m10"] / Mfull["m00"]
+      cY = Mfull["m01"] / Mfull["m00"]
+
+    # Vetor detalhe(cor do time) -> centro da camisa (y invertido p/ coords de
+    # imagem). Convenção de "frente" preservada; só a estabilidade mudou.
+    dx = center[0] - cX
+    dy = -(center[1] - cY)
+    mag = float(np.hypot(dx, dy))
+
+    return {"centerMeters": centerMeters, "candidato": candidato,
+            "internalContours": internalContours, "dx": dx, "dy": dy, "mag": mag}
+
+  def _assign_ids(self, blobs):
+    """Atribuição 1-para-1 GLOBAL blob->id.
+
+    O que causava a troca constante: a atribuição anterior (argmin/greedy) era
+    dependente da ORDEM dos componentes conectados, que muda de frame a frame;
+    com dois robôs próximos, quem é processado primeiro "ganha" o id e a
+    identidade pisca. Aqui montamos a matriz de distâncias blob×robô e
+    resolvemos por MENOR distância primeiro (global, independente de ordem):
+    cada blob e cada id são usados no máximo uma vez.
+
+    IMPORTANTE (regressão corrigida): o gate SEED/TRACK é POR ROBÔ, não global.
+    Uma versão anterior usava `seeded = all(robôs poseDefined)` — enquanto
+    QUALQUER robô ainda não tivesse sido visto, TODOS os blobs (inclusive os já
+    rastreados corretamente por posição) voltavam a ser classificados por
+    FORMA a cada frame. Como a classificação de forma é ruidosa com a
+    calibração atual (`cont_rect_area_ratio` quase sempre dá "retângulo"), um
+    robô já identificado corretamente podia ser reclassificado para o id
+    errado só porque o terceiro robô ainda não apareceu — pior que o código
+    original (que usava forma só no 1º frame processado, nunca mais depois).
+
+    RECUPERAÇÃO DE ROBÔ "PERDIDO" (2ª regressão corrigida): `poseDefined` do
+    `Element` nunca volta a False sozinho — uma vez visto, um robô fica
+    "conhecido" PARA SEMPRE. Combinado com o teto de distância abaixo, um robô
+    ocluso (por outro robô, pela bola, por uma mão) tempo suficiente para se
+    deslocar mais que o teto ficava sem dono: não casa por posição (longe
+    demais do `raw_pos` congelado) nem por forma (não está mais em `unknown`)
+    — o robô "sumia" da interface até, por sorte, reaparecer bem perto de onde
+    sumiu. Agora, todo id conhecido não reclamado neste frame tem seu tempo
+    desde a última vez visto checado: passado `LOST_TIMEOUT_S`, ele é
+    REBAIXADO (poseDefined=False) e volta a ser elegível para semeadura por
+    forma no PASSO 2 deste mesmo frame.
+
+    Agora:
+    - Robôs JÁ VISTOS (`poseDefined`) só são casados por POSIÇÃO (nearest-
+      neighbor global, nunca mais por forma) — a menos que tenham acabado de
+      ser rebaixados por timeout.
+    - Robôs AINDA NÃO VISTOS (ou recém rebaixados) só são semeados por FORMA
+      (candidato), usando os blobs que sobraram após o casamento por posição."""
+    n = self._world.n_robots
+    assign = {}
+    if n == 0:
+      return assign
+
+    now = time.time()
+    LOST_TIMEOUT_S = 1.0  # tempo sem casamento por posição até rebaixar p/ "não visto"
+
+    known = [i for i in range(n) if self._world.robots[i].poseDefined]
+    unknown = [i for i in range(n) if not self._world.robots[i].poseDefined]
+
+    if not blobs:
+      return assign
+
+    # 1) Robôs já vistos: casamento global por posição (menor distância primeiro),
+    # com TETO de distância. Sem teto, com só 1 blob e 1 robô conhecido restando,
+    # o casamento greedy forçava o par mesmo a quase 1m de distância — roubando
+    # o id de um robô conhecido de um blob que na verdade era outro robô ainda
+    # não visto. O teto (bem maior que o deslocamento real entre frames, mas
+    # bem menor que o campo) deixa esses blobs caírem para o passo 2 (forma).
+    MAX_TRACK_DIST_M = 0.30
+    usadosB, usadosI = set(), set()
+    if known:
+      pares = []
+      for bi, b in enumerate(blobs):
+        for i in known:
+          d = norm(b["centerMeters"], self._world.robots[i].raw_pos)
+          if d <= MAX_TRACK_DIST_M:
+            pares.append((d, bi, i))
+      pares.sort(key=lambda t: t[0])
+      for _, bi, i in pares:
+        if bi in usadosB or i in usadosI:
+          continue
+        assign[bi] = i
+        usadosB.add(bi)
+        usadosI.add(i)
+
+    # 1b) Rebaixa por timeout quem ficou "conhecido" mas não foi reclamado.
+    for i in known:
+      if i in usadosI:
+        continue
+      if now - self._last_seen_time.get(i, now) > LOST_TIMEOUT_S:
+        self._world.robots[i].poseDefined = False
+        unknown.append(i)
+
+    # 2) Robôs não vistos (ou recém rebaixados): semeados por FORMA, só com os
+    # blobs que sobraram do passo 1.
+    for bi, b in enumerate(blobs):
+      if bi in usadosB:
+        continue
+      c = b["candidato"]
+      if c is not None and c in unknown and c not in usadosI:
+        assign[bi] = c
+        usadosB.add(bi)
+        usadosI.add(c)
+
+    for i in usadosI:
+      self._last_seen_time[i] = now
+
+    return assign
+
+  def _finalize_angle(self, identificador, dx, dy, mag):
+    """Finaliza o ângulo do robô `identificador` a partir do vetor de
+    orientação (detalhe->centro da camisa), suavizado por uma média móvel
+    exponencial no domínio DESEMBRULHADO (contínuo, sem limite de ±180°), com
+    peso proporcional à magnitude do vetor em pixels. Retorna (est, base) em
+    graus, normalizados em [-180,180].
+
+    REGRESSÃO CORRIGIDA (2ª rodada): a versão anterior CONGELAVA o ângulo
+    (reusava o último valor bom para sempre) sempre que `mag` ficasse abaixo de
+    um limiar fixo (3px). Para camisas cujo detalhe de cor fica fisicamente
+    perto do centro geométrico da camisa, essa condição é quase SEMPRE
+    verdadeira — o ângulo nunca mais era atualizado, reproduzindo o mesmo
+    sintoma do latch antigo em world.py (robô físico giranco infinitamente,
+    interface mostrando ângulo constante), só que nascendo aqui.
+
+    Agora nenhuma leitura é descartada: cada frame entra na média com peso
+    proporcional a `mag` (leituras de vetor curto — mais suscetíveis a ruído
+    de segmentação, já que erro angular ~ atan(ruído_px / mag_px) cresce muito
+    quando mag é pequeno — pesam pouco, mas nunca ZERO). O ângulo sempre
+    acompanha a rotação real (inclusive muitas voltas seguidas, pois a média é
+    feita no domínio desembrulhado), só que mais suavizado quando o sinal geo-
+    métrico é fraco."""
+    raw = 180.0 / np.pi * np.arctan2(dy, dx)
+
+    REFERENCE_PX = 8.0   # magnitude (px) a partir da qual a leitura já é 100% confiável
+    MIN_ALPHA = 0.05     # piso: mesmo um vetor bem curto ainda pesa um pouco,
+                         # para o ângulo NUNCA travar de vez
+
+    prev = self._angle_filter_deg.get(identificador)
+    if prev is None or mag < 1e-6:
+      # Primeira leitura deste id, ou vetor verdadeiramente nulo (direção
+      # indefinida): usa o valor cru como ponto de partida, sem suavizar.
+      calc = raw if prev is None else prev
+      self._angle_filter_deg[identificador] = calc
+    else:
+      # Desembrulha `raw` para o valor mais próximo de `prev` (continuidade
+      # através da virada ±180°) antes de suavizar.
+      delta = ((raw - prev + 180) % 360) - 180
+      raw_unwrapped = prev + delta
+      # alpha vai até 1.0 (SEM lag, valor cru) assim que mag>=REFERENCE_PX —
+      # só suaviza de fato (e só então introduz atraso) quando o sinal é
+      # fraco. Isso evita o lag artificial de girar rápido com leitura boa.
+      alpha = MIN_ALPHA + (1.0 - MIN_ALPHA) * min(1.0, mag / REFERENCE_PX)
+      calc = prev + alpha * (raw_unwrapped - prev)
+      self._angle_filter_deg[identificador] = calc
+
+    est = calc + self.__model.robot_angle_offsets[identificador]
+    est = (est + 180) % 360 - 180
+    calc = (calc + 180) % 360 - 180
+    return est, calc
+
   def process(self, frame):
     """Implementa o `process` da classe mãe compondo a mensagem de alteração da visão"""
     
     # Mensagem de retorno
     mensagem = VisionMessage(self._world.n_robots)
-    
+
     # Corta o campo
     img_warpped = self.warp(frame)
     
@@ -358,7 +535,16 @@ class MainVision(Vision):
     
     # Segmenta o que não é o fundo
     fgMask = self.obterMascaraElementos(img_hsv)
-    
+
+    # Cacheia o frame warpado e a máscara de elementos deste frame para que
+    # consumidores de DISPLAY (ex.: ParametrosVisao, VisaoAltoNivel) não
+    # precisem recalcular warp+HSV+máscara só para desenhar por cima do
+    # resultado — antes disso, cada um deles refazia esse pipeline inteiro e
+    # AINDA chamava `process()` de novo (que o refaz mais uma vez), triplicando
+    # o trabalho de CV no mesmo frame quando a aba de visão estava aberta.
+    self.last_warpped_frame = img_warpped
+    self.last_elements_mask = fgMask
+
     # Segmenta o time
     teamMask = self.obterMascaraTime(img_hsv)
     
@@ -377,27 +563,33 @@ class MainVision(Vision):
     
     #print([x.meanId for x in self._world.robots])
 
-    # Itera por cada elemento conectado
+    # 1ª passada: coleta os blobs aliados (com forma + vetor de ângulo, ainda
+    # SEM id) e envia os não-aliados como adversários.
+    allyBlobs = []
     for componentMask in components:
-        
-      # Obtém dados do componente como uma camisa
       camisa = self.detectarCamisa(componentMask)
-      
-      # Camisa tem área pequena
-      if camisa is None: continue
-      
+      if camisa is None:
+        continue
       centro, centerMeters, angulo, camisaContours = camisa
-      
-      # Máscara dos componentes internos do elemento
       componentTeamMask = componentMask & teamMask
-      
-      # Extrai do detalhe o robô a qual a camisa pertence, seu ângulo e os contornos de detalhe interno
-      aliado = self.detectarTime(componentTeamMask, centro, angulo, centerMeters)
-      if aliado is None:
-        # Adiciona camisa como adversário
+      dados = self.analisarTime(componentTeamMask, centro, centerMeters)
+      if dados is None:
         mensagem.setEnemyRobot((*centerMeters, angulo*np.pi/180), extContour=camisaContours)
       else:
-        identificador, estAngulo, internalContours, baseAngle = aliado
-        mensagem.setRobot(identificador, (centerMeters[0], centerMeters[1], estAngulo*np.pi/180.0), internalContours, baseAngle*np.pi/180.0)
+        allyBlobs.append(dados)
+
+    # 2ª passada: atribuição GLOBAL blob->id (independente da ordem dos
+    # componentes) e emissão da pose de cada robô identificado.
+    assign = self._assign_ids(allyBlobs)
+    for bi, dados in enumerate(allyBlobs):
+      identificador = assign.get(bi)
+      if identificador is None:
+        continue  # blob aliado sem id livre (excedente/ruído): ignora
+      estAngulo, baseAngle = self._finalize_angle(
+          identificador, dados["dx"], dados["dy"], dados["mag"])
+      cm = dados["centerMeters"]
+      mensagem.setRobot(
+          identificador, (cm[0], cm[1], estAngulo * np.pi / 180.0),
+          dados["internalContours"], baseAngle * np.pi / 180.0)
 
     return mensagem

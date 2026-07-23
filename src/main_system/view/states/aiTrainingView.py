@@ -16,145 +16,311 @@ class AITrainingView(Gtk.Box):
     def __init__(self, controller, world, mainStack):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.set_border_width(10)
-        
+
         mainStack.add_titled(self, "aiTraining", "AI Training")
-        
+
         self.controller = controller
         self.world = world
         self.worker = AITrainingWorker()
         self.timeout_id = None
-        
+
+        # Caixa lateral com as opções desta aba: substitui o sidePanelBox
+        # padrão (via leftPanelStack) enquanto "AI Training" estiver visível,
+        # ligado em main_system/view/__init__.py.
+        self.options_scrolled = Gtk.ScrolledWindow()
+        self.options_scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.options_scrolled.set_propagate_natural_width(False)
+        self.options_scrolled.set_propagate_natural_height(False)
+        self.options_scrolled.set_min_content_height(100)
+        self.options_scrolled.show()
+
+        self.options_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.options_box.set_border_width(10)
+        self.options_box.set_size_request(150, -1)
+        self.options_scrolled.add_with_viewport(self.options_box)
+
+        lbl_options = Gtk.Label()
+        lbl_options.set_markup("<b>Opções AI Training</b>")
+        lbl_options.set_margin_bottom(5)
+        self.options_box.pack_start(lbl_options, False, False, 0)
+
         # Title
         lbl_title = Gtk.Label()
         lbl_title.set_markup("<span size='x-large' weight='bold'>AI Training (EWC + Sim-to-Real)</span>")
         self.pack_start(lbl_title, False, False, 10)
-        
-        # Config options
-        hbox_cfg = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        
-        self.chk_vision_noise = Gtk.CheckButton(label="Apply Vision Noise (Domain Randomization)")
-        self.chk_vision_noise.set_active(True)
-        hbox_cfg.pack_start(self.chk_vision_noise, False, False, 0)
 
-        self.chk_apply_delay = Gtk.CheckButton(label="Apply Network Delay (~50ms)")
+        # Config options
+        self.chk_vision_noise = Gtk.CheckButton(label="Vision Noise (Domain Randomization)")
+        self.chk_vision_noise.set_active(False)
+        self.options_box.pack_start(self.chk_vision_noise, False, False, 0)
+
+        self.chk_apply_delay = Gtk.CheckButton(label="Vision/Network Delay")
         self.chk_apply_delay.set_active(True)
-        hbox_cfg.pack_start(self.chk_apply_delay, False, False, 0)
-        
+        self.chk_apply_delay.set_tooltip_text(
+            "Delay de visão em modo SEM curriculum (stage fixo 4).\n"
+            "Com curriculum, use os botões 'Curriculum (com/sem delay)'.")
+        self.options_box.pack_start(self.chk_apply_delay, False, False, 0)
+
         self.chk_allies = Gtk.CheckButton(label="Train AI + Classic Entities (3 Robots)")
         self.chk_allies.set_active(False)
-        hbox_cfg.pack_start(self.chk_allies, False, False, 0)
+        self.options_box.pack_start(self.chk_allies, False, False, 0)
 
         self.chk_render_hlc = Gtk.CheckButton(label="Draw HLC (Render rSoccer Field)")
         self.chk_render_hlc.set_active(False)
         self.chk_render_hlc.connect("toggled", self.on_chk_render_hlc_toggled)
-        hbox_cfg.pack_start(self.chk_render_hlc, False, False, 0)
-        
-        self.pack_start(hbox_cfg, False, False, 5)
-        
+        self.options_box.pack_start(self.chk_render_hlc, False, False, 0)
+
+        # Curriculum Learning: desligado por padrão para testes limpos (stage fixo 4).
+        # Os dois botões ligam o curriculum completo, com ou sem delay de visão.
+        lbl_curr = Gtk.Label()
+        lbl_curr.set_markup("<b>Curriculum Learning</b>")
+        lbl_curr.set_margin_top(10)
+        lbl_curr.set_halign(Gtk.Align.START)
+        self.options_box.pack_start(lbl_curr, False, False, 0)
+
+        self.radio_curr_off = Gtk.RadioButton.new_with_label_from_widget(None, "Desligado (stage 4 direto)")
+        self.radio_curr_off.set_active(True)
+        self.options_box.pack_start(self.radio_curr_off, False, False, 0)
+
+        self.radio_curr_no_delay = Gtk.RadioButton.new_with_label_from_widget(
+            self.radio_curr_off, "Curriculum (sem delay)")
+        self.options_box.pack_start(self.radio_curr_no_delay, False, False, 0)
+
+        self.radio_curr_delay = Gtk.RadioButton.new_with_label_from_widget(
+            self.radio_curr_off, "Curriculum (com delay)")
+        self.radio_curr_delay.set_tooltip_text(
+            "Delay por stage: 0 (stages 1-2), 1 frame (stage 3), aleatório U[1..5] (stage 4).\n"
+            "Se 'Delay frames' for preenchido, o valor fixo entra a partir do stage 4.")
+        self.options_box.pack_start(self.radio_curr_delay, False, False, 0)
+
+        hbox_delay_frames = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_delay_frames = Gtk.Label(label="Delay frames:")
+        hbox_delay_frames.pack_start(lbl_delay_frames, False, False, 0)
+
+        self.entry_delay_frames = Gtk.Entry()
+        self.entry_delay_frames.set_width_chars(6)
+        self.entry_delay_frames.set_placeholder_text("vazio = U[1..5]")
+        self.entry_delay_frames.set_tooltip_text(
+            "Nº de frames de delay (1 frame = 25ms). Vazio = aleatório U[1..5] por episódio.\n"
+            "Valor manual só é aplicado a partir do stage 4.")
+        hbox_delay_frames.pack_start(self.entry_delay_frames, True, True, 0)
+        self.options_box.pack_start(hbox_delay_frames, False, False, 0)
+
+        self.chk_anneal_shaping = Gtk.CheckButton(label="Anneal Shaping (stage 4)")
+        self.chk_anneal_shaping.set_active(False)
+        self.chk_anneal_shaping.set_tooltip_text(
+            "Anneal v2 (stage 4): encolhe o shaping inteiro ×0.3 — positivos\n"
+            "(move, shot_on_goal) E penalidades (lost_ball, wall, ball_wall) —\n"
+            "e amplia o gol ×2.5 (+50/−25). Objetivo: gol dominar o gradiente\n"
+            "(antes o shaping era ~30× o gol). Energy fica intacta.\n"
+            "Atenção: muda a escala do avg_return (plots ficam incomparáveis).")
+        self.options_box.pack_start(self.chk_anneal_shaping, False, False, 0)
+
+        self.chk_augment_obs = Gtk.CheckButton(label="Obs + ações (delay)")
+        self.chk_augment_obs.set_active(False)
+        self.chk_augment_obs.set_tooltip_text(
+            "Aumenta o observador de estado: anexa à observação as últimas ações não-observadas\n"
+            "+ indicador de delay (40 -> 40+2Δ+1 dims) — restaura a propriedade de\n"
+            "Markov sob delay. EXIGE modelo com entrada expandida: use\n"
+            "expand_obs_checkpoint.py para migrar um modelo 40-dim sem perda,\n"
+            "ou treine do zero. Modelos antigos: deixe OFF.")
+        self.options_box.pack_start(self.chk_augment_obs, False, False, 0)
+
+        self.chk_pbrs_move = Gtk.CheckButton(label="Move PBRS")
+        self.chk_pbrs_move.set_active(False)
+        self.chk_pbrs_move.set_tooltip_text(
+            "Troca o move por diferença de potencial (PBRS, Ng et al. 1999):\n"
+            "recompensa a REDUÇÃO de distância ao alvo em vez de velocidade na\n"
+            "direção — a soma telescopa (orbitar rende ~0), eliminando o farming\n"
+            "sem mudar a política ótima. Muda a composição do avg_return.")
+        self.options_box.pack_start(self.chk_pbrs_move, False, False, 0)
+
         # Self-Play config
-        hbox_sp = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        self.pack_start(hbox_sp, False, False, 5)
-        
+        lbl_sp = Gtk.Label()
+        lbl_sp.set_markup("<b>Self-Play / EWC</b>")
+        lbl_sp.set_margin_top(10)
+        lbl_sp.set_halign(Gtk.Align.START)
+        self.options_box.pack_start(lbl_sp, False, False, 0)
+
         self.chk_self_play = Gtk.CheckButton(label="Enable 1v1 Self-Play")
         self.chk_self_play.set_active(True)
-        hbox_sp.pack_start(self.chk_self_play, False, False, 0)
-        
+        self.options_box.pack_start(self.chk_self_play, False, False, 0)
+
         self.chk_self_play_1v2 = Gtk.CheckButton(label="Self Play 1v2")
         self.chk_self_play_1v2.set_active(False)
-        hbox_sp.pack_start(self.chk_self_play_1v2, False, False, 0)
-        
-        lbl_sp_interval = Gtk.Label(label="Save Interval (Iterations):")
-        hbox_sp.pack_start(lbl_sp_interval, False, False, 0)
-        
+        self.options_box.pack_start(self.chk_self_play_1v2, False, False, 0)
+
+        hbox_sp_interval = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_sp_interval = Gtk.Label(label="Save Interval:")
+        hbox_sp_interval.pack_start(lbl_sp_interval, False, False, 0)
+
         self.entry_self_play_interval = Gtk.Entry()
-        self.entry_self_play_interval.set_text("5")
+        self.entry_self_play_interval.set_text("10")
         self.entry_self_play_interval.set_width_chars(5)
-        hbox_sp.pack_start(self.entry_self_play_interval, False, False, 0)
-        
-        hbox_cfg2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        self.pack_start(hbox_cfg2, False, False, 5)
-        
+        hbox_sp_interval.pack_start(self.entry_self_play_interval, True, True, 0)
+        self.options_box.pack_start(hbox_sp_interval, False, False, 0)
+
+        hbox_ewc = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_ewc = Gtk.Label(label="EWC λ:")
+        hbox_ewc.pack_start(lbl_ewc, False, False, 0)
+
+        self.entry_ewc_lambda = Gtk.Entry()
+        self.entry_ewc_lambda.set_width_chars(7)
+        self.entry_ewc_lambda.set_placeholder_text("do ckpt")
+        self.entry_ewc_lambda.set_tooltip_text(
+            "Peso da âncora EWC. Vazio = usa o do checkpoint (2000).\n"
+            "λ=2000 travou a adaptação ao reward novo (política congelada 26M steps);\n"
+            "para sessões de ADAPTAÇÃO use ~10-50, ou marque Reset EWC.")
+        hbox_ewc.pack_start(self.entry_ewc_lambda, True, True, 0)
+        self.options_box.pack_start(hbox_ewc, False, False, 0)
+
+        self.chk_reset_ewc = Gtk.CheckButton(label="Reset EWC anchor")
+        self.chk_reset_ewc.set_active(False)
+        self.chk_reset_ewc.set_tooltip_text(
+            "Descarta fisher/means do checkpoint: a sessão treina livre da âncora\n"
+            "antiga e a próxima consolidação re-ancora na política nova.\n"
+            "Seguro: o modelo base continua salvo no diretório original.")
+        self.options_box.pack_start(self.chk_reset_ewc, False, False, 0)
+
+        # Avaliação vs âncoras congeladas: métrica comparável entre sessões
+        # (self-play puro tem alvo móvel — saldo oscila em torno de 0 por
+        # construção e não diz se a política realmente melhorou).
+        lbl_eval = Gtk.Label()
+        lbl_eval.set_markup("<b>Eval Anchors</b>")
+        lbl_eval.set_margin_top(10)
+        lbl_eval.set_halign(Gtk.Align.START)
+        self.options_box.pack_start(lbl_eval, False, False, 0)
+
+        self.entry_eval_anchors = Gtk.Entry()
+        self.entry_eval_anchors.set_placeholder_text(
+            "vazio = sem avaliação; ex: ppo_models/A/ppo_full_checkpoint.pth, ppo_models/B/...")
+        self.entry_eval_anchors.set_tooltip_text(
+            "Caminhos de checkpoints .pth (separados por vírgula) usados como\n"
+            "oponentes CONGELADOS de referência. A cada N iterações, a política\n"
+            "atual joga contra cada âncora com ação determinística (sem sampling)\n"
+            "e o resultado (win-rate, saldo) é gravado em eval_history.csv — a\n"
+            "métrica que dá para comparar entre sessões de treino diferentes.")
+        self.options_box.pack_start(self.entry_eval_anchors, False, False, 0)
+
+        hbox_eval_interval = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_eval_interval = Gtk.Label(label="a cada (it.):")
+        hbox_eval_interval.pack_start(lbl_eval_interval, False, False, 0)
+
+        self.entry_eval_interval = Gtk.Entry()
+        self.entry_eval_interval.set_text("20")
+        self.entry_eval_interval.set_width_chars(5)
+        hbox_eval_interval.pack_start(self.entry_eval_interval, True, True, 0)
+        self.options_box.pack_start(hbox_eval_interval, False, False, 0)
+
+        hbox_eval_episodes = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_eval_episodes = Gtk.Label(label="episódios/âncora:")
+        hbox_eval_episodes.pack_start(lbl_eval_episodes, False, False, 0)
+
+        self.entry_eval_episodes = Gtk.Entry()
+        self.entry_eval_episodes.set_text("10")
+        self.entry_eval_episodes.set_width_chars(4)
+        hbox_eval_episodes.pack_start(self.entry_eval_episodes, True, True, 0)
+        self.options_box.pack_start(hbox_eval_episodes, False, False, 0)
+
+        lbl_run = Gtk.Label()
+        lbl_run.set_markup("<b>Execução</b>")
+        lbl_run.set_margin_top(10)
+        lbl_run.set_halign(Gtk.Align.START)
+        self.options_box.pack_start(lbl_run, False, False, 0)
+
+        hbox_steps = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         lbl_steps = Gtk.Label(label="Timesteps:")
-        hbox_cfg2.pack_start(lbl_steps, False, False, 0)
-        
+        hbox_steps.pack_start(lbl_steps, False, False, 0)
+
         self.entry_steps = Gtk.Entry()
         self.entry_steps.set_text("100000")
-        hbox_cfg2.pack_start(self.entry_steps, False, False, 0)
-        
+        hbox_steps.pack_start(self.entry_steps, True, True, 0)
+        self.options_box.pack_start(hbox_steps, False, False, 0)
+
+        hbox_envs = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         lbl_envs = Gtk.Label(label="Parallel Envs:")
-        hbox_cfg2.pack_start(lbl_envs, False, False, 0)
-        
+        hbox_envs.pack_start(lbl_envs, False, False, 0)
+
         self.spin_envs = Gtk.SpinButton.new_with_range(1, 32, 1)
         self.spin_envs.set_value(1)
-        hbox_cfg2.pack_start(self.spin_envs, False, False, 0)
+        hbox_envs.pack_start(self.spin_envs, True, True, 0)
+        self.options_box.pack_start(hbox_envs, False, False, 0)
 
-        
         # Model Selection (Retrain)
         lbl_model = Gtk.Label(label="Retrain Model:")
-        hbox_cfg2.pack_start(lbl_model, False, False, 0)
-        
+        lbl_model.set_halign(Gtk.Align.START)
+        self.options_box.pack_start(lbl_model, False, False, 0)
+
         self.combo_model = Gtk.ComboBoxText()
         self.combo_model.append_text("None (Train from scratch)")
         self.combo_model.set_active(0)
-        
+
         base_ppo = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../Attacker-AI-Training/PPO'))
         int_models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../src/strategy/entity'))
-        
+
         mdirs = [
             os.path.join(base_ppo, 'ppo_models'),
             int_models_dir
         ]
-        
+
         for mdir in mdirs:
             if os.path.exists(mdir):
                 for d in os.listdir(mdir):
                     if os.path.isdir(os.path.join(mdir, d)):
                         self.combo_model.append_text(d)
-        
-        hbox_cfg2.pack_start(self.combo_model, False, False, 0)
-        
+
+        self.options_box.pack_start(self.combo_model, False, False, 0)
+
         # New Model Name
-        hbox_cfg3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         lbl_new_name = Gtk.Label(label="Save Model As:")
-        hbox_cfg3.pack_start(lbl_new_name, False, False, 0)
-        
+        lbl_new_name.set_halign(Gtk.Align.START)
+        lbl_new_name.set_margin_top(5)
+        self.options_box.pack_start(lbl_new_name, False, False, 0)
+
         self.entry_new_name = Gtk.Entry()
         self.entry_new_name.set_text("unbrain_sim2real_model")
-        hbox_cfg3.pack_start(self.entry_new_name, False, False, 0)
-        
-        self.pack_start(hbox_cfg3, False, False, 0)
-        
+        self.options_box.pack_start(self.entry_new_name, False, False, 0)
+
         # Actions
-        hbox_actions = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        
         self.btn_start = Gtk.Button(label="Start Training (GPU)")
         self.btn_start.connect("clicked", self.on_start_clicked)
-        hbox_actions.pack_start(self.btn_start, True, True, 0)
-        
+        self.btn_start.set_margin_top(10)
+        self.options_box.pack_start(self.btn_start, False, False, 0)
+
         self.btn_stop = Gtk.Button(label="Stop / Save Model")
         self.btn_stop.connect("clicked", self.on_stop_clicked)
         self.btn_stop.set_sensitive(False)
-        hbox_actions.pack_start(self.btn_stop, True, True, 0)
-        
-        self.pack_start(hbox_actions, False, False, 10)
-        
+        self.options_box.pack_start(self.btn_stop, False, False, 0)
+
         # Status / Progress
         self.lbl_status = Gtk.Label(label="Status: Idle")
-        self.pack_start(self.lbl_status, False, False, 0)
-        
+        self.lbl_status.set_line_wrap(True)
+        self.options_box.pack_start(self.lbl_status, False, False, 5)
+
+        self.options_box.show_all()
+
+        # ---> Criando o divisor ajustável (Gtk.Paned) <---
+        paned = Gtk.Paned(orientation=Gtk.Orientation.VERTICAL)
+        # O divisor vai expandir para preencher a tela
+        self.pack_start(paned, True, True, 0) 
+
+        # ---> Container da Parte Superior (Gráfico + Controles) <---
+        graph_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+
         # Matplotlib Graph
-        self.fig = Figure(figsize=(5, 3), dpi=100)
+        self.fig = Figure(figsize=(5, 3), dpi=90, constrained_layout=True)
         self.ax = self.fig.add_subplot(111)
         self.ax.set_title("Training Returns")
         self.ax.set_xlabel("Timesteps")
         self.ax.set_ylabel("Avg Return")
+        self.ax.grid(True, linestyle='--', alpha=0.7)
         self.line, = self.ax.plot([], [], 'b-', alpha=0.3, label='Raw')
         self.line_ma, = self.ax.plot([], [], 'r-', linewidth=2, label='Moving Avg')
         self.ax.legend(loc='upper left', fontsize=8)
 
         self.canvas = FigureCanvas(self.fig)
-        self.canvas.set_size_request(-1, 200)
-        self.pack_start(self.canvas, True, True, 0)
+        self.canvas.set_size_request(-1, 300)
+        graph_vbox.pack_start(self.canvas, True, True, 0)
 
         # Moving average window control
         hbox_ma = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -172,23 +338,20 @@ class AITrainingView(Gtk.Box):
         self.btn_load_csv.connect("clicked", self._on_load_csv_clicked)
         hbox_ma.pack_start(self.btn_load_csv, False, False, 0)
 
-        # Export current buffer to CSV (without stopping training)
+        # Export current buffer to CSV
         self.btn_export_csv = Gtk.Button(label="💾 Exportar dados atuais")
         self.btn_export_csv.connect("clicked", self._on_export_csv_clicked)
         hbox_ma.pack_start(self.btn_export_csv, False, False, 0)
 
-        self.pack_start(hbox_ma, False, False, 0)
-
+        graph_vbox.pack_start(hbox_ma, False, False, 0)
         
-        # Data for plot
-        self.plot_x = []
-        self.plot_y = []
-        self.versions = []
-        self._autosave_counter = 0
-        self._autosave_interval = 10  # salva a cada 10 batches
+        # Adiciona a caixa do gráfico na metade de cima do divisor
+        paned.pack1(graph_vbox, resize=True, shrink=False)
 
-        # Log view
+        # ---> Container da Parte Inferior (Log view) <---
         scrolled = Gtk.ScrolledWindow()
+        scrolled.set_propagate_natural_width(False)
+        scrolled.set_propagate_natural_height(False)
         scrolled.set_hexpand(True)
         scrolled.set_vexpand(True)
         scrolled.set_size_request(-1, 150)
@@ -198,7 +361,16 @@ class AITrainingView(Gtk.Box):
         self.textbuffer = self.textview.get_buffer()
         scrolled.add(self.textview)
         
-        self.pack_start(scrolled, True, True, 0)
+        # Adiciona os logs na metade de baixo do divisor
+        paned.pack2(scrolled, resize=True, shrink=False)
+        
+        # Data for plot
+        self.plot_x = []
+        self.plot_y = []
+        self.versions = []
+        self._autosave_counter = 0
+        self._autosave_interval = 10  # salva a cada 10 batches
+        
         self.show_all()
 
     def log(self, text):
@@ -416,9 +588,32 @@ class AITrainingView(Gtk.Box):
         retrain_selection = self.combo_model.get_active_text()
         retrain_model = retrain_selection if retrain_selection and not retrain_selection.startswith("None") else None
             
+        # Curriculum: só ativo pelos botões dedicados; eles também mandam no delay.
+        # Sem curriculum, o delay segue o checkbox (stage fixo 4 -> delay pleno).
+        use_curriculum = not self.radio_curr_off.get_active()
+        if self.radio_curr_delay.get_active():
+            apply_delay = True
+        elif self.radio_curr_no_delay.get_active():
+            apply_delay = False
+        else:
+            apply_delay = self.chk_apply_delay.get_active()
+        delay_txt = self.entry_delay_frames.get_text().strip()
+
         config = {
             'use_vision_noise': self.chk_vision_noise.get_active(),
-            'apply_delay': self.chk_apply_delay.get_active(),
+            'apply_delay': apply_delay,
+            'use_curriculum': use_curriculum,
+            'delay_frames': int(delay_txt) if delay_txt.isdigit() else None,
+            'max_random_delay': 5,
+            'anneal_shaping': self.chk_anneal_shaping.get_active(),
+            'goal_reward_scale': 2.5 if self.chk_anneal_shaping.get_active() else 1.0,
+            'ewc_lambda': float(self.entry_ewc_lambda.get_text()) if self.entry_ewc_lambda.get_text().strip().replace('.', '', 1).isdigit() else None,
+            'reset_ewc': self.chk_reset_ewc.get_active(),
+            'augment_delay_actions': self.chk_augment_obs.get_active(),
+            'pbrs_move': self.chk_pbrs_move.get_active(),
+            'eval_anchors': [p.strip() for p in self.entry_eval_anchors.get_text().split(',') if p.strip()],
+            'eval_interval_iterations': int(self.entry_eval_interval.get_text()) if self.entry_eval_interval.get_text().isdigit() else 20,
+            'eval_n_episodes': int(self.entry_eval_episodes.get_text()) if self.entry_eval_episodes.get_text().isdigit() else 10,
             'train_with_allies': self.chk_allies.get_active(),
             'render_hlc': self.chk_render_hlc.get_active(),
             'self_play_enabled': self.chk_self_play.get_active(),

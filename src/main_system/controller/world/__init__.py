@@ -116,20 +116,21 @@ class World(ParamsPattern):
     for i,allyPose in enumerate(visionMessage.allyPoses):
       if not allyPose[3]: continue
       
-      # O ângulo do robô não pode variar absurdamente, nem sua posição (saltos de >30cm)
+      # Gate de posição: rejeita só saltos irreais (>1.5m). O gate de ÂNGULO
+      # foi removido: ele descartava qualquer medição de theta que diferisse
+      # >44° do valor JÁ ARMAZENADO e mantinha o antigo — como comparava sempre
+      # contra o valor guardado, um único frame ruim travava o ângulo para
+      # sempre (medições seguintes passavam a diferir >44° do valor preso e
+      # eram rejeitadas). Era a causa direta de "a camisa fica fixa enquanto o
+      # robô gira". A robustez do ângulo agora vem da FONTE (detectarTime usa o
+      # eixo do retângulo da camisa), não de um gate que trava. O unwrapping
+      # contínuo do ângulo é feito em Element.raw_update.
       if self.robots[i].poseDefined:
           dist = np.hypot(allyPose[0] - self.robots[i].x, allyPose[1] - self.robots[i].y)
           if dist > 1.50:
               continue  # Salto irreal (>1.5m): pula a medição. (Era 0.30, mas impedia de mover o robô com a mão)
-              
-          if np.arccos(np.cos(allyPose[2]-self.robots[i].th)) > 0.49*np.pi/2:
-              theta = self.robots[i].th
-          else:
-              theta = allyPose[2]
-      else:
-          theta = allyPose[2]
-      
-      self.robots[i].raw_update(allyPose[0], allyPose[1], theta)
+
+      self.robots[i].raw_update(allyPose[0], allyPose[1], allyPose[2])
 
     # Atualiza a lista de robôs adversários
     self.enemyRobots = visionMessage.advPos

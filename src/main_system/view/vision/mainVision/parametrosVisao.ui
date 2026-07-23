@@ -67,22 +67,47 @@
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_width_chars">7</property>
-                <property name="adjustment">adj_min_area_internal_contour</property>
-                <property name="climb_rate">1</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_width_chars">7</property>
+                    <property name="adjustment">adj_min_area_internal_contour</property>
+                    <property name="climb_rate">1</property>
+                    <property name="tooltip_text" translatable="yes">Tamanho mínimo (em pixels) para uma região da cor de identificação da camisa contar como um blob de verdade. Baixo demais: ruído (reflexo, sombra, artefato de imagem) vira um blob extra e troca a identidade do robô. Alto demais: pode apagar um blob pequeno legítimo (algumas camisas têm um blob bem menor que o outro).</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Filtra ruído pequeno na cor de identificação (reflexo, sombra). É isso que decide QUAL robô (0, 1 ou 2) a visão acha que está vendo — valor baixo demais deixa passar ruído que troca a identidade; alto demais pode apagar um blob legítimo pequeno.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -96,7 +121,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
@@ -105,24 +130,49 @@
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_width_chars">7</property>
-                <property name="text" translatable="yes">5</property>
-                <property name="adjustment">adj_min_area_external_contour</property>
-                <property name="climb_rate">1</property>
-                <property name="value">5</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_width_chars">7</property>
+                    <property name="text" translatable="yes">5</property>
+                    <property name="adjustment">adj_min_area_external_contour</property>
+                    <property name="climb_rate">1</property>
+                    <property name="value">5</property>
+                    <property name="tooltip_text" translatable="yes">Tamanho mínimo (em pixels) para o contorno completo de uma camisa (não só a cor de identificação) ser considerado um robô de verdade. Filtra manchas pequenas do campo/fundo que não são robôs.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Filtra manchas pequenas do campo que não são robôs, olhando o contorno inteiro da camisa (fundo + detalhe).</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -136,7 +186,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
@@ -145,22 +195,48 @@
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_width_chars">7</property>
-                <property name="adjustment">adj_area_cont_rect</property>
-                <property name="climb_rate">0.01</property>
-                <property name="digits">2</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_width_chars">7</property>
+                    <property name="adjustment">adj_area_cont_rect</property>
+                    <property name="climb_rate">0.01</property>
+                    <property name="digits">2</property>
+                    <property name="tooltip_text" translatable="yes">Limiar que decide se a forma da marcação da camisa é um triângulo ou um retângulo. Quanto mais perto de 1.0, mais "preenchido" o contorno precisa ser (em relação ao retângulo que o envolve) para contar como retângulo; abaixo disso é lido como triângulo. Essa forma + a quantidade de blobs de cor é o que identifica se o robô é o 0, 1 ou 2.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Decide se a marcação da camisa é lida como triângulo ou retângulo. Junto com a quantidade de blobs, é o que diferencia o robô 0 (1 triângulo), o 1 (2 triângulos) e o 2 (2 retângulos).</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -174,7 +250,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
@@ -183,49 +259,78 @@
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">5</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkSpinButton">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_width_chars">7</property>
-                    <property name="text" translatable="yes">0,75</property>
-                    <property name="adjustment">adj_stability_param</property>
-                    <property name="climb_rate">0.001</property>
-                    <property name="digits">3</property>
-                    <property name="value">0.995</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkSpinButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="max_width_chars">7</property>
+                        <property name="text" translatable="yes">0,75</property>
+                        <property name="adjustment">adj_stability_param</property>
+                        <property name="climb_rate">0.001</property>
+                        <property name="digits">3</property>
+                        <property name="value">0.995</property>
+                        <property name="tooltip_text" translatable="yes">Desativado: este controle não está ligado a nenhuma função da visão no momento (o código que o conectaria está comentado).</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="stability_usecurrent">
+                        <property name="label" translatable="yes">Usar valor instantâneo</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Desativado: este controle não está ligado a nenhuma função da visão no momento (o código que o conectaria está comentado).</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
-                <child>
-                  <object class="GtkButton" id="stability_usecurrent">
-                    <property name="label" translatable="yes">Usar valor instantâneo</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Este controle não está conectado a nenhuma função no código atual — mexer nele não tem efeito.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -234,12 +339,12 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Parâmetro de estabilidade:</property>
+            <property name="label" translatable="yes">Parâmetro de estabilidade: (desativado)</property>
           </object>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">3</property>
       </packing>
@@ -248,18 +353,44 @@
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSwitch" id="use_clahe_switch">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSwitch" id="use_clahe_switch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Aplica equalização adaptativa de contraste (CLAHE) na imagem antes da segmentação de cores, compensando sombras e iluminação desigual no campo. Ajuda os limiares de cor (HSV) a ficarem mais estáveis mesmo com luz variando.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Compensa sombras e iluminação desigual no campo antes de segmentar as cores, deixando os limiares HSV mais estáveis com luz variando.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -273,29 +404,55 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">4</property>
       </packing>
     </child>
-  <child>
+    <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton" id="spin_robot_angle_0">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adj_robot_angle_0</property>
-                <property name="numeric">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton" id="spin_robot_angle_0">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adj_robot_angle_0</property>
+                    <property name="numeric">True</property>
+                    <property name="tooltip_text" translatable="yes">Correção fixa (graus) somada ao ângulo que a visão estima para o Robô 0. Use se esse robô aparecer sempre girado a mais ou a menos do que a direção real — por desalinhamento entre a marcação de "frente" impressa na camisa e o eixo físico do robô.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Corrige um desalinhamento fixo entre a marcação de "frente" da camisa do Robô 0 e a direção real de deslocamento dele.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -309,28 +466,55 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">5</property>
       </packing>
-    </child><child>
+    </child>
+    <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton" id="spin_robot_angle_1">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adj_robot_angle_1</property>
-                <property name="numeric">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton" id="spin_robot_angle_1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adj_robot_angle_1</property>
+                    <property name="numeric">True</property>
+                    <property name="tooltip_text" translatable="yes">Correção fixa (graus) somada ao ângulo que a visão estima para o Robô 1. Use se esse robô aparecer sempre girado a mais ou a menos do que a direção real — por desalinhamento entre a marcação de "frente" impressa na camisa e o eixo físico do robô.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Corrige um desalinhamento fixo entre a marcação de "frente" da camisa do Robô 1 e a direção real de deslocamento dele.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -344,28 +528,55 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">6</property>
       </packing>
-    </child><child>
+    </child>
+    <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton" id="spin_robot_angle_2">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adj_robot_angle_2</property>
-                <property name="numeric">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton" id="spin_robot_angle_2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adj_robot_angle_2</property>
+                    <property name="numeric">True</property>
+                    <property name="tooltip_text" translatable="yes">Correção fixa (graus) somada ao ângulo que a visão estima para o Robô 2. Use se esse robô aparecer sempre girado a mais ou a menos do que a direção real — por desalinhamento entre a marcação de "frente" impressa na camisa e o eixo físico do robô.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Corrige um desalinhamento fixo entre a marcação de "frente" da camisa do Robô 2 e a direção real de deslocamento dele.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -379,28 +590,55 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">7</property>
       </packing>
-    </child><child>
+    </child>
+    <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton" id="spin_robot_angle_3">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adj_robot_angle_3</property>
-                <property name="numeric">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton" id="spin_robot_angle_3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adj_robot_angle_3</property>
+                    <property name="numeric">True</property>
+                    <property name="tooltip_text" translatable="yes">Correção fixa (graus) somada ao ângulo que a visão estima para o Robô 3. Use se esse robô aparecer sempre girado a mais ou a menos do que a direção real — por desalinhamento entre a marcação de "frente" impressa na camisa e o eixo físico do robô.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Corrige um desalinhamento fixo entre a marcação de "frente" da camisa do Robô 3 e a direção real de deslocamento dele.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -414,28 +652,55 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">8</property>
       </packing>
-    </child><child>
+    </child>
+    <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="left_padding">12</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkSpinButton" id="spin_robot_angle_4">
+              <object class="GtkAlignment">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">adj_robot_angle_4</property>
-                <property name="numeric">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkSpinButton" id="spin_robot_angle_4">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adj_robot_angle_4</property>
+                    <property name="numeric">True</property>
+                    <property name="tooltip_text" translatable="yes">Correção fixa (graus) somada ao ângulo que a visão estima para o Robô 4. Use se esse robô aparecer sempre girado a mais ou a menos do que a direção real — por desalinhamento entre a marcação de "frente" impressa na camisa e o eixo físico do robô.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">6</property>
+                <property name="label" translatable="yes">Corrige um desalinhamento fixo entre a marcação de "frente" da camisa do Robô 4 e a direção real de deslocamento dele.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -449,9 +714,10 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">9</property>
       </packing>
-    </child></object>
+    </child>
+  </object>
 </child></object></child></object></interface>

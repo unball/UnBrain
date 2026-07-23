@@ -11,6 +11,8 @@ class VisionNoiseView(StackSelector):
 
   def ui(self):
     scrolled = Gtk.ScrolledWindow()
+    scrolled.set_propagate_natural_width(False)
+    scrolled.set_propagate_natural_height(False)
     scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
     mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)

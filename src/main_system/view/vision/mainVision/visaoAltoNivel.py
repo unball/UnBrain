@@ -31,16 +31,19 @@ class VisaoAltoNivel(FrameRenderer):
     """Retorna um frame que desenha retângulos ao redor dos robôs com seus identificadores e círculo ao redor da bola"""
     frame = self.__visionSystem.cameraHandler.getFrame()
     if frame is None: return None
-    
-    img_warpped = self.__visionSystem.warp(frame)
-    img_hsv = self.__visionSystem.converterHSV(img_warpped)
-    fgMask = self.__visionSystem.obterMascaraElementos(img_hsv)
-    img_filtered = cv2.bitwise_and(img_warpped, img_warpped, mask=fgMask)
+
+    # `process()` já faz warp+HSV+máscara de elementos internamente; reusamos
+    # esses artefatos (cacheados em `process`) em vez de recalculá-los aqui e
+    # DEPOIS chamar `process()` de novo — isso fazia o pipeline de CV rodar
+    # até 2x neste método sozinho.
     t0 = time.time()
     message = self.__visionSystem.process(frame)
     # print("loop da visao:", (time.time()-t0)*1000)
+    img_warpped = self.__visionSystem.last_warpped_frame
+    fgMask = self.__visionSystem.last_elements_mask
+    img_filtered = cv2.bitwise_and(img_warpped, img_warpped, mask=fgMask)
     GLib.idle_add(self.updateRobotsInfo, message)
-    
+
     Drawing.draw_field(self.__world, img_filtered)
     
     for i,allyPose in enumerate(message.allyPoses):

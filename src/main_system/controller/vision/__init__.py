@@ -8,7 +8,7 @@ from main_system.controller.vision.visionMessage import VisionMessage
 # Método C: liga a medição de latência interna do pipeline de visão (buffer da
 # câmera + thread de captura + process() + world.update()). Imprime uma linha
 # resumida ~1x por segundo. Desligue (False) em produção para não poluir o log.
-VISION_LATENCY_DEBUG = True
+VISION_LATENCY_DEBUG = False
 
 class Vision(ABC):
   """Classe que define as interfaces que qualquer sistema de visão deve ter no sistema."""
@@ -22,6 +22,9 @@ class Vision(ABC):
     self._world = world
     """Mantém referência ao mundo"""
 
+    # Não usados por MainVision (que decide seed vs. track sozinha, olhando
+    # `poseDefined` dos robôs em `_assign_ids`). Mantidos por compatibilidade
+    # caso outra implementação de Vision os utilize.
     self.usePastPositions = False
     self.lastCandidateUse = 0
 
@@ -48,10 +51,13 @@ class Vision(ABC):
     frame, capture_ts = self.cameraHandler.getFrameWithCaptureTime()
     if frame is None: return self.giveUpAndWait()
 
-    # Renova a identificação a cada 2 segundos
-    if time.time()-self.lastCandidateUse > 2.0 and np.all([x.spin == 0 for x in self._world.robots]):
-      self.usePastPositions = False
-
+    # Identidade é SEED-ÚNICO: `MainVision._assign_ids` semeia por forma só
+    # enquanto nem todos os robôs têm pose definida e, depois, rastreia por
+    # posição (associação global). O re-seed PERIÓDICO por forma que existia
+    # aqui (a cada 2s) foi REMOVIDO: com a calibração de forma atual (config
+    # intencional) ele re-semeava com um sinal ruidoso e embaralhava a
+    # identidade a cada 2s — era uma fonte direta da "troca constante" de
+    # robôs. Sem hardware para recalibrar a forma, rastrear é mais estável.
     t_start = time.perf_counter()
     data = self.process(frame)
     self._world.update(data)
@@ -59,10 +65,6 @@ class Vision(ABC):
 
     if VISION_LATENCY_DEBUG and capture_ts is not None:
       self._report_latency(capture_ts, t_start, t_end)
-
-    if self.usePastPositions is False:
-      self.usePastPositions = True
-      self.lastCandidateUse = time.time()
 
     return True
 

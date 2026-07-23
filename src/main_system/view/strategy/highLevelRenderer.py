@@ -12,7 +12,12 @@ import os
 
 class HighLevelRenderer(cv2Renderer):
   def __init__(self, world, robotsGetter=None, ballGetter=None, on_click=None, on_scroll=None):
-    super().__init__(worker=self.renderer)
+    # target_fps=60: este renderer só desenha o estado do mundo (robôs, campo
+    # vetorial, bola) — não processa imagem de câmera nenhuma — então não há
+    # ganho perceptível em desenhar acima da taxa de um monitor comum. Ao
+    # contrário do cv2Renderer da aba de visão (MainVisionView), cujo worker É
+    # o próprio pipeline de visão e por isso continua no padrão de 150 FPS.
+    super().__init__(worker=self.renderer, target_fps=60)
     
     self.__world = world
     

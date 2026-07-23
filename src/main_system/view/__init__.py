@@ -323,7 +323,21 @@ class View:
 
     # Nova aba de Treino IA
     from main_system.view.states.aiTrainingView import AITrainingView
-    AITrainingView(self.__controller, self.__controller.world, mainStack)
+    aiTrainingView = AITrainingView(self.__controller, self.__controller.world, mainStack)
+
+    # Enquanto a aba "AI Training" estiver visível, troca o painel lateral
+    # padrão (sidePanelBox) pela caixa de opções da própria aba, via o
+    # leftPanelStack que envolve o sidePanelBox em main.ui.
+    leftPanelStack = builder.get_object("leftPanelStack")
+    if leftPanelStack:
+        leftPanelStack.add_named(aiTrainingView.options_scrolled, "aiTraining")
+
+        def on_main_stack_page_changed(stack, _param):
+            visible_name = stack.get_visible_child_name()
+            target = "aiTraining" if visible_name == "aiTraining" else "default"
+            leftPanelStack.set_visible_child_name(target)
+
+        mainStack.connect("notify::visible-child-name", on_main_stack_page_changed)
 
     # Nova aba de Teste de Episódios
     from main_system.view.states.episodeTestView import EpisodeTestView

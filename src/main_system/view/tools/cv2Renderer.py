@@ -7,9 +7,23 @@ import time
 class cv2Renderer(Gtk.Frame, LoopThread):
   """Esta classe é um renderizador de um frame retornado pela opencv"""
 
-  def __init__(self, worker=None, interpolation=cv2.INTER_LINEAR, widthHeightProportion=471/350):
-    """Se for passado uma função `worker`, ela será executada a cada 30ms para atualizar o GtkImage gerado dentro do GtkFrame"""
+  def __init__(self, worker=None, interpolation=cv2.INTER_LINEAR, widthHeightProportion=471/350, target_fps=150):
+    """Se for passado uma função `worker`, ela será executada repetidamente para
+    atualizar o GtkImage gerado dentro do GtkFrame, a até `target_fps` quadros
+    por segundo.
+
+    `target_fps` controla só a taxa de EXIBIÇÃO deste renderer específico — não
+    a taxa de captura/tracking da visão (que roda à parte, no loop do
+    Controller, e não é afetada por este valor). O padrão (150) é o usado pela
+    aba de visão (`MainVisionView`), cujo `worker` É o próprio pipeline de
+    visão sendo mostrado; subclasses que só desenham o estado do mundo (ex.:
+    `HighLevelRenderer`, usado nas abas HLC/Controle/Teleporte/Teste de
+    Episódios) devem passar um valor menor (ex.: 60), já que redesenhar um
+    campo vetorial a 150 FPS não traz nenhum ganho perceptível e só consome
+    CPU/GIL que a UI precisa para responder a cliques."""
     Gtk.Frame.__init__(self)
+
+    self.__target_period = 1.0 / target_fps
 
     self.set_shadow_type(Gtk.ShadowType.NONE)
 
@@ -70,23 +84,34 @@ class cv2Renderer(Gtk.Frame, LoopThread):
     self.__shape = (width, height)
 
   def get_worker_frame(self):
-    """Método que fica executando a thread que mantém a GUI renderizando"""
+    """Método que fica executando a thread que mantém a GUI renderizando.
+
+    O trabalho pesado de imagem (resize/cvtColor/tobytes) é feito AQUI, na
+    thread de fundo, e não mais em `do_update_frame` (que roda na thread
+    principal do GTK via `idle_add`). Antes, `resize`+`cvtColor` de um frame
+    inteiro rodavam na thread da UI a até 150x/s, roubando tempo do
+    processamento de eventos (cliques, redesenho) — a causa da sensação de
+    interface "travando". Agora a thread principal só recebe bytes prontos e
+    monta o pixbuf."""
     t0 = time.time()
-    GLib.idle_add(self.do_update_frame, self.__worker())
+    image_data = self.__worker()
+    if image_data is not None:
+        image_sized = cv2.resize(image_data, self.__shape, interpolation=self.__interpolation)
+        image_rgb = cv2.cvtColor(image_sized, cv2.COLOR_BGR2RGB)
+        h, w, d = image_rgb.shape
+        # tobytes() já roda fora da thread do GTK
+        image_bytes = image_rgb.tobytes()
+        GLib.idle_add(self.do_update_frame, image_bytes, w, h, d)
     dt = time.time() - t0
-    remaining = (1.0 / 150.0) - dt
+    remaining = self.__target_period - dt
     if remaining > 0:
         time.sleep(remaining)
 
-  def do_update_frame(self, image_data):
-    """Atualiza a o GtkImage para o conteúdo do frame passado `image_data` no formato de numpy array com dimensão (height,width,depth) no formato BGR."""
-    if image_data is None: return
-
-    image_sized = cv2.resize(image_data, self.__shape, interpolation=self.__interpolation).copy()
-    image_rgb = cv2.cvtColor(image_sized, cv2.COLOR_BGR2RGB).copy()
-    h, w, d = image_rgb.shape
-    
-    self._current_image_bytes = image_rgb.tobytes()
+  def do_update_frame(self, image_bytes, w, h, d):
+    """Monta o pixbuf a partir de bytes RGB já prontos (produzidos em
+    `get_worker_frame`, na thread de fundo) e atualiza o GtkImage. Roda na
+    thread principal do GTK — deve ficar o mais leve possível."""
+    self._current_image_bytes = image_bytes
     pixbuf = GdkPixbuf.Pixbuf.new_from_data(self._current_image_bytes, GdkPixbuf.Colorspace.RGB, False, 8, w, h, w * d)
     self.__gtk_image.set_from_pixbuf(pixbuf)
     self.__gtk_image.show()

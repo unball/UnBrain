@@ -5,6 +5,10 @@
   <object class="GtkScrolledWindow" id="main">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
+    <property name="hscrollbar_policy">automatic</property>
+    <property name="vscrollbar_policy">automatic</property>
+    <property name="min_content_width">100</property>
+    <property name="min_content_height">100</property>
     <child>
       <object class="GtkViewport">
         <property name="visible">True</property>

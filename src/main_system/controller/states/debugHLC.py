@@ -8,10 +8,22 @@ from main_system.controller.control.UFC import UFC
 from main_system.controller.tools.simulator import simulate, simulateBall
 from main_system.model.paramsPattern import ParamsPattern
 from main_system.helpers import Mux
+from collections import deque
 import numpy as np
 import time
 import copy
 import json
+
+# Teto de amostras retidas em memória pelos buffers de debug/replay. Sem isso,
+# `appendDebugData` (chamado a cada tick do loop principal, até ~150-1000Hz)
+# faz as listas de debugData/replayData crescerem sem limite durante toda a
+# sessão em que o robô estiver "running" — em especial `replayData`, que guarda
+# `copy.deepcopy()` de Robot/Ball inteiros (não só números), causando aumento
+# constante de RAM e mais trabalho de GC ao longo do tempo de uso. O valor
+# cobre sessões de vários minutos com folga; amostras mais antigas que isso
+# são descartadas automaticamente.
+_MAX_REPLAY_SAMPLES = 20000
+_MAX_DEBUG_SAMPLES = 20000
 
 class DebugHLC(ParamsPattern, State):
   """Estado de debug HLC. Executa a visão, define campos específicos para os robôs, passa um target ao controle de alto nível e envia sinal via rádio."""
@@ -81,7 +93,13 @@ class DebugHLC(ParamsPattern, State):
       "velRobotX": [],
       "velRobotY": [],
       "velRobotMod": [],
-      "replayData": {"time": [], "robot": [], "robot1": [], "robot2": [], "ball": []},
+      "replayData": {
+        "time": deque(maxlen=_MAX_REPLAY_SAMPLES),
+        "robot": deque(maxlen=_MAX_REPLAY_SAMPLES),
+        "robot1": deque(maxlen=_MAX_REPLAY_SAMPLES),
+        "robot2": deque(maxlen=_MAX_REPLAY_SAMPLES),
+        "ball": deque(maxlen=_MAX_REPLAY_SAMPLES),
+      },
       "loopTime": 0,
       "FPS": 0,
       "Camera FPS": 0,
@@ -118,6 +136,17 @@ class DebugHLC(ParamsPattern, State):
     with open(filename, "w") as f:
       json.dump(self.debugData, f, indent=4)
 
+  def _append_bounded(self, key, value):
+    """Faz `.append()` numa lista de `debugData` mantendo-a como `list` comum
+    (serializável em JSON, ao contrário de um `deque`), mas cortando o excesso
+    em lote (amortizado) para que não cresça sem limite ao longo de uma sessão
+    longa. O corte só acontece quando passa do dobro do teto, então o custo de
+    `del lst[:n]` é diluído a cada `_MAX_DEBUG_SAMPLES` chamadas."""
+    lst = self.debugData[key]
+    lst.append(value)
+    if len(lst) > _MAX_DEBUG_SAMPLES * 2:
+      del lst[:len(lst) - _MAX_DEBUG_SAMPLES]
+
   def appendDebugData(self, reference, speeds, dt):
     """Alimenta os dados de debug com o estado atual das variáveis"""
 
@@ -125,25 +154,25 @@ class DebugHLC(ParamsPattern, State):
       # Alimenta dados de debug
       if self.initialTime is None: self.initialTime = time.time()
 
-      self.debugData["time"].append(time.time()-self.initialTime)
-      self.debugData["posX"].append(self.robots[0].x)
-      self.debugData["posY"].append(self.robots[0].y)
-      self.debugData["posTh"].append(adjustAngle(self.robots[0].th))
-      self.debugData["posThRef"].append(adjustAngle(reference))
-      self.debugData["posThErr"].append(angError(reference, self.robots[0].th))
-      self.debugData["velLin"].append(abs(speeds[0].v))
-      self.debugData["visionLin"].append(self.robots[0].velmod)
-      self.debugData["velAng"].append(speeds[0].w)
-      self.debugData["visionAng"].append(self.robots[0].w)
-      self.debugData["velBallX"].append(self.world.ball.vel[0])
-      self.debugData["velBallY"].append(self.world.ball.vel[1])
-      self.debugData["velBallMod"].append(self.world.ball.velmod)
-      self.debugData["accBallX"].append(self.world.ball.acc[0])
-      self.debugData["accBallY"].append(self.world.ball.acc[1])
-      self.debugData["accBallMod"].append(self.world.ball.accmod)
-      self.debugData["velRobotX"].append(self.robots[0].vel[0])
-      self.debugData["velRobotY"].append(self.robots[0].vel[1])
-      self.debugData["velRobotMod"].append(self.robots[0].velmod)
+      self._append_bounded("time", time.time()-self.initialTime)
+      self._append_bounded("posX", self.robots[0].x)
+      self._append_bounded("posY", self.robots[0].y)
+      self._append_bounded("posTh", adjustAngle(self.robots[0].th))
+      self._append_bounded("posThRef", adjustAngle(reference))
+      self._append_bounded("posThErr", angError(reference, self.robots[0].th))
+      self._append_bounded("velLin", abs(speeds[0].v))
+      self._append_bounded("visionLin", self.robots[0].velmod)
+      self._append_bounded("velAng", speeds[0].w)
+      self._append_bounded("visionAng", self.robots[0].w)
+      self._append_bounded("velBallX", self.world.ball.vel[0])
+      self._append_bounded("velBallY", self.world.ball.vel[1])
+      self._append_bounded("velBallMod", self.world.ball.velmod)
+      self._append_bounded("accBallX", self.world.ball.acc[0])
+      self._append_bounded("accBallY", self.world.ball.acc[1])
+      self._append_bounded("accBallMod", self.world.ball.accmod)
+      self._append_bounded("velRobotX", self.robots[0].vel[0])
+      self._append_bounded("velRobotY", self.robots[0].vel[1])
+      self._append_bounded("velRobotMod", self.robots[0].velmod)
 
       if self.firstLoopRunning:
         for k in self.debugData["replayData"]: self.debugData["replayData"][k].clear()
@@ -151,10 +180,20 @@ class DebugHLC(ParamsPattern, State):
         self.replayInitialTime = time.time()
       
       self.debugData["replayData"]["time"].append(time.time()-self.replayInitialTime)
-      self.debugData["replayData"]["robot"].append(copy.deepcopy(self.robots[0]))
-      self.debugData["replayData"]["robot1"].append(copy.deepcopy(self.robots[1]))
-      self.debugData["replayData"]["robot2"].append(copy.deepcopy(self.robots[2]))
-      self.debugData["replayData"]["ball"].append(copy.deepcopy(self.world.ball))
+      # `Robot`/`Ball` guardam uma referência de volta a `self.world`, e
+      # `world.robots` contém os robôs de volta (referência circular) — sem o
+      # `memo` abaixo, `copy.deepcopy()` seguiria essa referência e copiaria o
+      # MUNDO INTEIRO (os 3 robôs + bola) a cada uma das 4 chamadas, a cada
+      # frame. Pré-preenchendo o memo com `world` já "copiado para si mesmo",
+      # o deepcopy reaproveita a mesma instância de `world` em vez de clonar
+      # o grafo inteiro — sem alterar em nada os campos do robô/bola que de
+      # fato são salvos para o replay (posição, velocidade, etc.), que
+      # continuam sendo cópias independentes e congeladas no tempo.
+      world_memo = {id(self.world): self.world}
+      self.debugData["replayData"]["robot"].append(copy.deepcopy(self.robots[0], world_memo))
+      self.debugData["replayData"]["robot1"].append(copy.deepcopy(self.robots[1], world_memo))
+      self.debugData["replayData"]["robot2"].append(copy.deepcopy(self.robots[2], world_memo))
+      self.debugData["replayData"]["ball"].append(copy.deepcopy(self.world.ball, world_memo))
 
     else: self.firstLoopRunning = True
 

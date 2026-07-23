@@ -28,7 +28,8 @@ def main():
   import signal
   import gi
   gi.require_version('GLib', '2.0')
-  from gi.repository import GLib
+  gi.require_version('Gtk', '3.0')
+  from gi.repository import GLib, Gtk
 
   def sigint_handler(*args_tuple):
       print("\n[MainSystem] Ctrl+C detectado! Encerrando processos...")
@@ -36,7 +37,10 @@ def main():
       if hasattr(controller, 'enemy_launcher') and controller.enemy_launcher: controller.enemy_launcher.stop()
       controller.stop()
       Model().flush()
-      sys.exit(0)
+      # Nunca levante SystemExit dentro de um callback do GLib: o PyGObject não
+      # consegue propagar isso de volta pelo loop C, e o processo aborta com
+      # "FATAL: exception not rethrown" (mesmo padrão do View.on_destroy).
+      Gtk.main_quit()
       return False
 
   # GLib.unix_signal_add é a forma correta de capturar sinais em aplicações GTK3
